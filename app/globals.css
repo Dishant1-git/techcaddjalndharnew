@@ -25,6 +25,9 @@
   --color-brand-700: #1d4ed8;
   --color-brand-900: #1e3a8a;
 
+  /* Navy of the techcadd wordmark itself — darker and cooler than brand-900. */
+  --color-ink: #2a2c5e;
+
   --color-accent-400: #22d3ee;
   --color-accent-500: #0ea5e9;
   --color-accent-glow: #00d4ff;

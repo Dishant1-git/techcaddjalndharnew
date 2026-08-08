@@ -1,7 +1,7 @@
+import { Footer } from "@/components/footer"
 import { Hero } from "@/components/hero"
 import { Navbar } from "@/components/navbar"
 import { Technologies } from "@/components/technologies"
-import { CONTACT, NAV_ITEMS, QUICK_LINKS } from "@/lib/navigation"
 
 const CAPABILITIES = [
   {
@@ -71,63 +71,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-foreground/10 bg-subtle py-16">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
-          <div className="grid gap-10 lg:grid-cols-[1.5fr_1fr_1fr]">
-            <div>
-              <p className="font-display text-2xl font-semibold tracking-tight">
-                Tech<span className="text-brand-600">cadd</span>
-              </p>
-              <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
-                Tell us your goal. We&apos;ll code it into reality.
-              </p>
-              <div className="mt-5 flex flex-col gap-1 font-mono text-sm">
-                <a href={CONTACT.phoneHref} className="hover:text-brand-600">
-                  {CONTACT.phone}
-                </a>
-                <a href={CONTACT.emailHref} className="hover:text-brand-600">
-                  {CONTACT.email}
-                </a>
-              </div>
-            </div>
-
-            <FooterCol title="Navigate" links={NAV_ITEMS} />
-            <FooterCol title="Quick links" links={QUICK_LINKS} />
-          </div>
-
-          <p className="mt-14 border-t border-foreground/10 pt-6 font-mono text-xs text-muted">
-            © {new Date().getFullYear()} TechCadd. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </>
-  )
-}
-
-function FooterCol({
-  title,
-  links,
-}: {
-  title: string
-  links: readonly { label: string; href: string }[]
-}) {
-  return (
-    <div>
-      <p className="mb-4 font-mono text-xs tracking-wide text-muted uppercase">
-        {title}
-      </p>
-      <ul className="space-y-2">
-        {links.map((l) => (
-          <li key={l.href}>
-            <a
-              href={l.href}
-              className="text-sm text-foreground/70 transition-colors hover:text-brand-600"
-            >
-              {l.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
   )
 }
