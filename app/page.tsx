@@ -1,5 +1,7 @@
+import { About } from "@/components/about"
 import { Faq } from "@/components/faq"
 import { Footer } from "@/components/footer"
+import { FeaturedCourses } from "@/components/featured-courses"
 import { Hero } from "@/components/hero"
 import { Navbar } from "@/components/navbar"
 import { Stats } from "@/components/stats"
@@ -36,7 +38,13 @@ export default function Home() {
       <main>
         <Hero />
 
+<<<<<<< Updated upstream
         <Stats />
+=======
+        <About />
+
+        <FeaturedCourses />
+>>>>>>> Stashed changes
 
         <Technologies />
 
