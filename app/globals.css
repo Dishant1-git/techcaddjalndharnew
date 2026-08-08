@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/*
+  TechCadd design tokens.
+  Palette sampled from the live mohali.techcadd.com stylesheet:
+  #2563eb / #1d4ed8 / #1e3a8a  (brand blues)
+  #3b82f6 / #60a5fa            (light blues)
+  #0ea5e9 / #22d3ee / #00d4ff  (cyan accents)
+  #0f172a / #64748b / #e2e8f0 / #f8fafc / #f1f5f9 (slate neutrals)
+*/
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-muted: #64748b;
+  --color-subtle: #f8fafc;
+  --color-line: #e2e8f0;
+
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-900: #1e3a8a;
+
+  --color-accent-400: #22d3ee;
+  --color-accent-500: #0ea5e9;
+  --color-accent-glow: #00d4ff;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-600);
+    color: #ffffff;
+  }
+}
+
+/* --- Hero character reveal (mirrors the Optimus per-letter entrance) --- */
+@keyframes char-in {
+  0% {
+    opacity: 0;
+    transform: translateY(0.4em) rotate(4deg);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
+.animate-char-in {
+  animation: char-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* --- Generic entrance used by the hero copy blocks --- */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: reveal-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* --- Bottom stats marquee --- */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Two identical tracks + the flex gap between them. */
+    transform: translateX(calc(-50% - 2rem));
+  }
+}
+
+.marquee {
+  animation: marquee 38s linear infinite;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+/* --- Technology orbit ---
+   The ring spins; each chip counter-spins at the same duration so the logos
+   stay upright while travelling around the circle. */
+@keyframes orbit-cw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.orbit-cw {
+  animation: orbit-cw var(--orbit-duration, 40s) linear infinite;
+}
+
+.orbit-ccw {
+  animation: orbit-ccw var(--orbit-duration, 40s) linear infinite;
+}
+
+/* Pausing on hover lets people actually read the logos. */
+.orbit-stage:hover .orbit-cw,
+.orbit-stage:hover .orbit-ccw {
+  animation-play-state: paused;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* --- Mega-menu entrance --- */
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-menu-in {
+  animation: menu-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-char-in,
+  .animate-menu-in,
+  .animate-fade-in,
+  .reveal,
+  .marquee {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Chips keep their placement transform, so only the spin is cancelled. */
+  .orbit-cw,
+  .orbit-ccw {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
