@@ -2,7 +2,9 @@ import { Faq } from "@/components/faq"
 import { Footer } from "@/components/footer"
 import { Hero } from "@/components/hero"
 import { Navbar } from "@/components/navbar"
+import { Stats } from "@/components/stats"
 import { Technologies } from "@/components/technologies"
+import { Testimonials } from "@/components/testimonials"
 
 const CAPABILITIES = [
   {
@@ -33,6 +35,8 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
+
+        <Stats />
 
         <Technologies />
 
@@ -70,6 +74,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <Testimonials />
 
         <Faq />
       </main>

@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <!--
+    Backdrop for the testimonials band. Abstract rather than photographic: a
+    soft brand-blue horizon, blurred light blooms and a fine grain pass, so the
+    section gets real texture without shipping a bitmap.
+  -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="0.3" stop-color="#eff6ff" />
+      <stop offset="0.62" stop-color="#dbeafe" />
+      <stop offset="1" stop-color="#bfdbfe" />
+    </linearGradient>
+
+    <radialGradient id="bloom" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="ridgeFar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#93c5fd" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#60a5fa" stop-opacity="0.25" />
+    </linearGradient>
+
+    <linearGradient id="ridgeNear" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0.4" />
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0.28" />
+    </linearGradient>
+
+    <filter id="soften" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="46" />
+    </filter>
+
+    <filter id="haze" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14" />
+    </filter>
+
+    <!-- Monochrome fractal noise, dropped to a low alpha for a film-grain pass. -->
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.14" />
+      </feComponentTransfer>
+    </filter>
+
+    <!-- Coarser noise warps the near ridge so its edge is organic, not vector-clean. -->
+    <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.02" numOctaves="3" result="n" />
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="38" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </defs>
+
+  <rect width="1440" height="900" fill="url(#sky)" />
+
+  <!-- Light blooms -->
+  <g filter="url(#soften)">
+    <ellipse cx="1130" cy="120" rx="330" ry="220" fill="url(#bloom)" />
+    <ellipse cx="250" cy="230" rx="300" ry="190" fill="#ffffff" opacity="0.6" />
+    <ellipse cx="720" cy="430" rx="420" ry="180" fill="#e0f2fe" opacity="0.75" />
+    <ellipse cx="1320" cy="640" rx="280" ry="200" fill="#22d3ee" opacity="0.18" />
+    <ellipse cx="120" cy="700" rx="260" ry="190" fill="#2563eb" opacity="0.12" />
+  </g>
+
+  <!-- Far ridge -->
+  <path
+    d="M0 540 C 180 470, 320 520, 470 486 C 640 448, 760 512, 940 478 C 1120 444, 1270 502, 1440 462 L1440 900 L0 900 Z"
+    fill="url(#ridgeFar)"
+    filter="url(#haze)"
+  />
+
+  <!-- Near ridge, displaced into a softer organic edge -->
+  <path
+    d="M0 664 C 200 616, 380 690, 560 656 C 760 618, 900 700, 1080 668 C 1240 640, 1340 690, 1440 660 L1440 900 L0 900 Z"
+    fill="url(#ridgeNear)"
+    filter="url(#rough)"
+  />
+
+  <!-- Foreground speckle: scattered blooms standing in for a meadow -->
+  <g opacity="0.5">
+    <g fill="#ffffff" opacity="0.55">
+      <circle cx="90" cy="812" r="7" />
+      <circle cx="212" cy="770" r="5" />
+      <circle cx="356" cy="838" r="8" />
+      <circle cx="498" cy="784" r="5" />
+      <circle cx="640" cy="852" r="7" />
+      <circle cx="788" cy="796" r="6" />
+      <circle cx="930" cy="844" r="8" />
+      <circle cx="1074" cy="778" r="5" />
+      <circle cx="1216" cy="836" r="7" />
+      <circle cx="1360" cy="790" r="6" />
+    </g>
+    <g fill="#0ea5e9" opacity="0.4">
+      <circle cx="150" cy="866" r="5" />
+      <circle cx="292" cy="806" r="4" />
+      <circle cx="434" cy="874" r="6" />
+      <circle cx="576" cy="818" r="4" />
+      <circle cx="718" cy="880" r="5" />
+      <circle cx="860" cy="812" r="4" />
+      <circle cx="1002" cy="870" r="6" />
+      <circle cx="1148" cy="808" r="4" />
+      <circle cx="1290" cy="876" r="5" />
+      <circle cx="1412" cy="826" r="4" />
+    </g>
+  </g>
+
+  <!-- Grain over everything -->
+  <rect width="1440" height="900" filter="url(#grain)" opacity="0.55" />
+</svg>
