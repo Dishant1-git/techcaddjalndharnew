@@ -1,3 +1,4 @@
+import { Faq } from "@/components/faq"
 import { Footer } from "@/components/footer"
 import { Hero } from "@/components/hero"
 import { Navbar } from "@/components/navbar"
@@ -69,6 +70,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <Faq />
       </main>
 
       <Footer />
