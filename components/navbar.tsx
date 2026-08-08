@@ -46,6 +46,9 @@ export function Navbar() {
     if (closeTimer.current) clearTimeout(closeTimer.current)
   }
 
+  // Unscrolled, the bar floats over the dark hero video and has to invert.
+  const onDark = !scrolled && !mobileOpen
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 transition-all duration-500">
       <nav
@@ -54,7 +57,7 @@ export function Navbar() {
           scrolled
             ? "mt-3 max-w-[1240px] rounded-full border border-line/80 bg-white/75 shadow-[0_8px_40px_-16px_rgba(15,23,42,0.28)] backdrop-blur-xl"
             : "mt-0 max-w-[1400px] border border-transparent bg-transparent"
-        }`}
+        } ${onDark ? "text-white" : ""}`}
       >
         <div
           className={`flex items-center justify-between px-3 transition-all duration-500 sm:px-5 lg:px-8 ${
@@ -69,6 +72,7 @@ export function Navbar() {
               <DesktopNavLink
                 key={item.label}
                 item={item}
+                onDark={onDark}
                 open={openMenu === item.label}
                 onOpen={() => {
                   cancelClose()
@@ -82,13 +86,21 @@ export function Navbar() {
           <div className="hidden items-center gap-4 xl:flex">
             <a
               href={CONTACT.phoneHref}
-              className="font-mono text-sm text-muted transition-colors duration-300 hover:text-foreground"
+              className={`font-mono text-sm transition-colors duration-300 ${
+                onDark
+                  ? "text-white/70 hover:text-white"
+                  : "text-muted hover:text-foreground"
+              }`}
             >
               {CONTACT.phone}
             </a>
             <a
               href="/enquiry"
-              className="inline-flex h-9 items-center justify-center rounded-full bg-foreground px-6 text-sm font-medium text-background transition-all duration-500 hover:bg-brand-600"
+              className={`inline-flex h-9 items-center justify-center rounded-full px-6 text-sm font-medium transition-all duration-500 ${
+                onDark
+                  ? "bg-white text-[#0a0e14] hover:bg-brand-500 hover:text-white"
+                  : "bg-foreground text-background hover:bg-brand-600"
+              }`}
             >
               Enroll now
             </a>
@@ -104,14 +116,14 @@ export function Navbar() {
             <span className="sr-only">Menu</span>
             <span className="flex h-6 w-6 flex-col items-center justify-center gap-1.5">
               <span
-                className={`block h-px w-6 bg-foreground transition-all duration-300 ${
-                  mobileOpen ? "translate-y-[3.5px] rotate-45" : ""
-                }`}
+                className={`block h-px w-6 transition-all duration-300 ${
+                  onDark ? "bg-white" : "bg-foreground"
+                } ${mobileOpen ? "translate-y-[3.5px] rotate-45" : ""}`}
               />
               <span
-                className={`block h-px w-6 bg-foreground transition-all duration-300 ${
-                  mobileOpen ? "-translate-y-[3.5px] -rotate-45" : ""
-                }`}
+                className={`block h-px w-6 transition-all duration-300 ${
+                  onDark ? "bg-white" : "bg-foreground"
+                } ${mobileOpen ? "-translate-y-[3.5px] -rotate-45" : ""}`}
               />
             </span>
           </button>
@@ -219,11 +231,17 @@ function DesktopNavLink({
   item,
   open,
   onOpen,
+  onDark,
 }: {
   item: NavItem
   open: boolean
   onOpen: () => void
+  onDark: boolean
 }) {
+  const idle = onDark
+    ? "text-white/75 hover:text-white"
+    : "text-foreground/70 hover:text-foreground"
+
   return (
     <a
       href={item.href}
@@ -231,7 +249,7 @@ function DesktopNavLink({
       onFocus={onOpen}
       aria-expanded={item.groups ? open : undefined}
       className={`group relative text-sm transition-colors duration-300 ${
-        open ? "text-foreground" : "text-foreground/70 hover:text-foreground"
+        open ? (onDark ? "text-white" : "text-foreground") : idle
       }`}
     >
       <span className="flex items-center gap-1.5">
@@ -256,9 +274,9 @@ function DesktopNavLink({
         )}
       </span>
       <span
-        className={`absolute -bottom-1 left-0 h-px bg-foreground transition-all duration-300 group-hover:w-full ${
-          open ? "w-full" : "w-0"
-        }`}
+        className={`absolute -bottom-1 left-0 h-px transition-all duration-300 group-hover:w-full ${
+          onDark ? "bg-white" : "bg-foreground"
+        } ${open ? "w-full" : "w-0"}`}
       />
     </a>
   )
@@ -281,7 +299,7 @@ function MegaMenu({
       onMouseLeave={onLeave}
       className="animate-menu-in absolute inset-x-0 top-full hidden px-3 pt-2 xl:block"
     >
-      <div className="mx-auto max-w-[1240px] overflow-hidden rounded-3xl border border-line/80 bg-white/90 shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35)] backdrop-blur-xl">
+      <div className="mx-auto max-w-[1240px] overflow-hidden rounded-3xl border border-line/80 bg-white/90 text-foreground shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35)] backdrop-blur-xl">
         <div className="grid grid-cols-4 gap-8 p-8">
           {item.groups.map((group) => (
             <div key={group.title}>
