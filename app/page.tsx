@@ -1,9 +1,12 @@
 import { About } from "@/components/about"
+import { Blogs } from "@/components/blogs"
+import { Categories } from "@/components/categories"
 import { Cta } from "@/components/cta"
 import { Faq } from "@/components/faq"
 import { Footer } from "@/components/footer"
 import { FeaturedCourses } from "@/components/featured-courses"
 import { Hero } from "@/components/hero"
+import { Modules } from "@/components/modules"
 import { Navbar } from "@/components/navbar"
 import { Stats } from "@/components/stats"
 import { Technologies } from "@/components/technologies"
@@ -40,11 +43,19 @@ export default function Home() {
       <main>
         <Hero />
 
-        <Stats />
-
         <About />
 
+        <Categories />
+
         <FeaturedCourses />
+
+        <WhyUs />
+
+        <Stats />
+
+        <Testimonials />
+
+        <Modules />
 
         <Technologies />
 
@@ -83,11 +94,9 @@ export default function Home() {
           </div>
         </section>
 
-        <WhyUs />
-
-        <Testimonials />
-
         <Faq />
+
+        <Blogs />
 
         <Cta />
       </main>

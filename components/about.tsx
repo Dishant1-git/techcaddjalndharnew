@@ -33,16 +33,6 @@ const PATH = [
   },
 ]
 
-/** Included with every programme, regardless of track. */
-const INCLUDED = [
-  "Industry-recognised certificate",
-  "Internship letter",
-  "Live client projects",
-  "Doubt-clearing sessions",
-  "Interview preparation",
-  "Lifetime batch access",
-]
-
 export function About() {
   return (
     /* overflow-hidden clips the decorative glow, which would otherwise push the
@@ -199,39 +189,6 @@ export function About() {
           </div>
         </div>
 
-        {/* --- What every programme ships with --- */}
-        <div className="mt-16 rounded-[1.75rem] border border-line/70 bg-subtle px-6 py-8 lg:mt-20 lg:px-10 lg:py-9">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
-            <p className="shrink-0 font-display text-lg font-bold tracking-tight lg:max-w-[13rem]">
-              Included with every programme
-            </p>
-
-            <ul className="flex flex-wrap gap-2.5">
-              {INCLUDED.map((item) => (
-                <li
-                  key={item}
-                  className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2 text-sm font-medium"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="size-3.5 shrink-0 text-brand-600"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="m5 12.5 4.5 4.5L19 7.5"
-                      stroke="currentColor"
-                      strokeWidth="2.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
     </section>
   )
