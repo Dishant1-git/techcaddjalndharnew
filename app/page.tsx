@@ -8,6 +8,7 @@ import { Navbar } from "@/components/navbar"
 import { Stats } from "@/components/stats"
 import { Technologies } from "@/components/technologies"
 import { Testimonials } from "@/components/testimonials"
+import { WhyUs } from "@/components/why-us"
 
 const CAPABILITIES = [
   {
@@ -81,6 +82,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <WhyUs />
 
         <Testimonials />
 
