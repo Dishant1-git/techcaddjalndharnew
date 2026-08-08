@@ -1,4 +1,5 @@
 import { About } from "@/components/about"
+import { Cta } from "@/components/cta"
 import { Faq } from "@/components/faq"
 import { Footer } from "@/components/footer"
 import { FeaturedCourses } from "@/components/featured-courses"
@@ -84,6 +85,8 @@ export default function Home() {
         <Testimonials />
 
         <Faq />
+
+        <Cta />
       </main>
 
       <Footer />

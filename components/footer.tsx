@@ -33,18 +33,10 @@ const COMPANY_LINKS: NavLink[] = NAV_ITEMS.filter(
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-linear-to-b from-subtle to-brand-50 px-4 pt-16 pb-6 lg:px-8 lg:pt-24 lg:pb-10">
-      {/* Brand glows behind the card, in the site's blue/cyan accents. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-32 -left-24 size-[36rem] rounded-full bg-brand-500/15 blur-[120px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-24 -bottom-40 size-[34rem] rounded-full bg-accent-400/15 blur-[120px]"
-      />
-
-      <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/85 shadow-[0_40px_90px_-40px_rgba(42,44,94,0.45)] backdrop-blur-xl lg:rounded-[2.5rem]">
+    /* Flat surface by design — the blue wash belongs to the CTA directly
+       above, so the footer stays quiet and doesn't compete with it. */
+    <footer className="relative overflow-hidden bg-subtle px-4 pt-16 pb-6 lg:px-8 lg:pt-24 lg:pb-10">
+      <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[1.75rem] border border-line/70 bg-white shadow-[0_40px_90px_-40px_rgba(42,44,94,0.45)] lg:rounded-[2.5rem]">
         {/* --- Oversized wordmark background --- */}
         <span
           aria-hidden="true"
