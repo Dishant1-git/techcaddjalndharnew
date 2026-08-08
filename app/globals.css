@@ -42,9 +42,18 @@
     border-color: var(--color-line);
   }
 
+  /*
+    A single decorative blur, rotated card or wide track escaping its section
+    is enough to widen the document and hand the whole page a horizontal
+    scrollbar. `clip` stops that without turning the root into a scroll
+    container the way `hidden` would — so `position: sticky` and anchor
+    scrolling keep working. Both elements need it: the root propagates its
+    overflow from `body` otherwise.
+  */
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    overflow-x: clip;
   }
 
   body {
@@ -53,6 +62,7 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   ::selection {

@@ -38,13 +38,11 @@ export default function Home() {
       <main>
         <Hero />
 
-<<<<<<< Updated upstream
         <Stats />
-=======
+
         <About />
 
         <FeaturedCourses />
->>>>>>> Stashed changes
 
         <Technologies />
 

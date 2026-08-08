@@ -1,28 +1,46 @@
 import Image from "next/image"
 import { CONTACT } from "@/lib/navigation"
 
-/** Short proof points, written the way the counsellors pitch them on a call. */
-const POINTS = [
+/** The four intakes counsellors actually enrol students into. */
+const FORMATS = [
+  { duration: "45 Days", label: "Summer & winter industrial training" },
+  { duration: "6 Weeks", label: "University-mandated training" },
+  { duration: "6 Months", label: "Industrial training with internship" },
+  { duration: "Weekend", label: "Batches for working professionals" },
+]
+
+/** The journey a student moves through, start to offer letter. */
+const PATH = [
   {
-    title: "An IT company first",
-    body: "We ship client software, then teach from the same codebases.",
-    icon: "M4 8.5h16v11H4v-11Zm5 0V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v2.5M4 13.5h16",
+    step: "01",
+    title: "Career counselling",
+    body: "Sit with a counsellor, compare tracks and pick the one that fits your degree and goal.",
   },
   {
-    title: "Labs, not lectures",
-    body: "Every batch builds a live project and defends it before a panel.",
-    icon: "M4 5.5h16v13H4v-13Zm0 3.5h16M8.5 13l1.8 1.8-1.8 1.8M12.5 16.6H15",
+    step: "02",
+    title: "Classroom & lab",
+    body: "Small batches, daily practicals on licensed software, and doubt sessions until it clicks.",
   },
   {
-    title: "Placement built in",
-    body: "Mock interviews, portfolio reviews and drives with hiring partners.",
-    icon: "M12 3.5 3.5 8 12 12.5 20.5 8 12 3.5ZM6.5 10v5.2c0 1.3 2.5 2.3 5.5 2.3s5.5-1 5.5-2.3V10",
+    step: "03",
+    title: "Live project & internship",
+    body: "Build something real from our client work, then walk out with an internship letter.",
   },
   {
-    title: "Certified & recognised",
-    body: "ISO-certified centre with industry-endorsed course completion.",
-    icon: "M12 3.5 5 6v5.5c0 3.6 2.9 6.9 7 9 4.1-2.1 7-5.4 7-9V6l-7-2.5Zm-3 8.5 2.2 2.2L15.5 10",
+    step: "04",
+    title: "Placement drives",
+    body: "Portfolio reviews, mock interviews and drives with our hiring partner network.",
   },
+]
+
+/** Included with every programme, regardless of track. */
+const INCLUDED = [
+  "Industry-recognised certificate",
+  "Internship letter",
+  "Live client projects",
+  "Doubt-clearing sessions",
+  "Interview preparation",
+  "Lifetime batch access",
 ]
 
 export function About() {
@@ -48,24 +66,36 @@ export function About() {
             </h2>
 
             <p className="mt-5 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
-              TechCadd started in Jalandhar as a small CAD training room and grew
-              into an IT company that also trains the people who build with it.
-              The work we deliver for clients — AI systems, cloud platforms,
-              full-stack products — is the same work our students learn on.
+              TechCadd is an IT company that trains the people who build with
+              it. Every course is taught from the same stack we ship client work
+              on — so the syllabus moves when the industry does, and your mentor
+              is an engineer who still writes code for a living.
             </p>
 
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
-              That loop is the whole point. Curriculum changes when the industry
-              changes, mentors are engineers who are still shipping, and every
-              programme ends with something you can show a hiring manager.
-            </p>
+            {/* Formats sit high on the page: it's the first thing a student
+                asks a counsellor. */}
+            <dl className="mt-9 grid gap-x-6 gap-y-5 sm:grid-cols-2">
+              {FORMATS.map((f) => (
+                <div
+                  key={f.duration}
+                  className="border-l-2 border-brand-600/25 pl-4"
+                >
+                  <dt className="font-display text-lg font-bold tracking-tight">
+                    {f.duration}
+                  </dt>
+                  <dd className="mt-1 text-sm leading-relaxed text-muted">
+                    {f.label}
+                  </dd>
+                </div>
+              ))}
+            </dl>
 
             <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
               <a
-                href="/about"
+                href="/courses"
                 className="group inline-flex items-center gap-3 rounded-full bg-brand-600 py-2 pr-2 pl-7 text-sm font-semibold text-white shadow-[0_10px_30px_-8px_rgba(37,99,235,0.85)] transition-colors duration-300 hover:bg-brand-700"
               >
-                More about TechCadd
+                Find your course
                 <span className="grid size-8 place-items-center rounded-full bg-white/20 transition-transform duration-300 group-hover:translate-x-0.5">
                   <svg viewBox="0 0 24 24" fill="none" className="size-4" aria-hidden="true">
                     <path
@@ -81,9 +111,12 @@ export function About() {
 
               <a
                 href={CONTACT.phoneHref}
-                className="font-mono text-sm text-muted transition-colors duration-200 hover:text-brand-600"
+                className="text-sm font-medium transition-colors duration-200 hover:text-brand-600"
               >
-                {CONTACT.phone}
+                Talk to a counsellor
+                <span className="mt-0.5 block font-mono text-xs text-muted">
+                  {CONTACT.phone}
+                </span>
               </a>
             </div>
           </div>
@@ -126,31 +159,78 @@ export function About() {
           </div>
         </div>
 
-        {/* --- Proof points --- */}
-        <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">
-          {POINTS.map((p) => (
-            <div
-              key={p.title}
-              className="rounded-2xl border border-line/70 bg-subtle p-6 transition-colors duration-300 hover:border-brand-200 hover:bg-brand-50 lg:p-7"
-            >
-              <span className="grid size-11 place-items-center rounded-xl border border-line bg-white text-brand-600">
-                <svg viewBox="0 0 24 24" fill="none" className="size-5" aria-hidden="true">
-                  <path
-                    d={p.icon}
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+        {/* --- How a programme runs --- */}
+        <div className="mt-20 border-t border-line pt-14 lg:mt-28 lg:pt-16">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="font-mono text-xs tracking-[0.18em] text-muted uppercase">
+              How it works
+            </span>
+            <h3 className="mt-4 font-display text-3xl leading-tight font-bold tracking-tight text-balance lg:text-4xl">
+              From your first counselling call to your first offer
+            </h3>
+          </div>
 
-              <p className="mt-5 font-display text-lg font-bold tracking-tight">
-                {p.title}
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{p.body}</p>
-            </div>
-          ))}
+          <div className="relative mt-12 lg:mt-16">
+            {/* Dashed rail threading the numbered badges, hidden behind them. */}
+            <div
+              aria-hidden="true"
+              className="absolute top-6 right-[12.5%] left-[12.5%] hidden border-t border-dashed border-line lg:block"
+            />
+
+            <ol className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+              {PATH.map((p) => (
+                <li
+                  key={p.step}
+                  className="lg:flex lg:flex-col lg:items-center lg:text-center"
+                >
+                  <span className="grid size-12 place-items-center rounded-full border border-line bg-white font-display text-sm font-bold tracking-tight text-brand-600 shadow-[0_10px_24px_-14px_rgba(15,23,42,0.5)]">
+                    {p.step}
+                  </span>
+
+                  <p className="mt-5 font-display text-lg font-bold tracking-tight">
+                    {p.title}
+                  </p>
+                  <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted">
+                    {p.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        {/* --- What every programme ships with --- */}
+        <div className="mt-16 rounded-[1.75rem] border border-line/70 bg-subtle px-6 py-8 lg:mt-20 lg:px-10 lg:py-9">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
+            <p className="shrink-0 font-display text-lg font-bold tracking-tight lg:max-w-[13rem]">
+              Included with every programme
+            </p>
+
+            <ul className="flex flex-wrap gap-2.5">
+              {INCLUDED.map((item) => (
+                <li
+                  key={item}
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2 text-sm font-medium"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="size-3.5 shrink-0 text-brand-600"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m5 12.5 4.5 4.5L19 7.5"
+                      stroke="currentColor"
+                      strokeWidth="2.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

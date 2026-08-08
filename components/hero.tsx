@@ -83,7 +83,9 @@ export function Hero() {
         <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col px-6 pt-10 pb-10 lg:px-12 lg:pt-14 lg:pb-12">
           {/* --- Eyebrow pill --- */}
           <div className="reveal">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-mono text-[10px] tracking-[0.18em] text-white/80 uppercase backdrop-blur-md sm:text-[11px]">
+            {/* Both phrases plus the tracking run past 360px, so the pill
+                wraps rather than being clipped by the section. */}
+            <span className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-mono text-[10px] tracking-[0.12em] text-white/80 uppercase backdrop-blur-md sm:text-[11px] sm:tracking-[0.18em]">
               TechCadd Jalandhar
               <span className="size-1 rounded-full bg-white/40" />
               AI &amp; Software Training
