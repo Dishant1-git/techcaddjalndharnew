@@ -1,4 +1,5 @@
 import { Fragment } from "react"
+import { ScrollHeading } from "./scroll-heading"
 
 /** Reassurances under the form — the objections counsellors hear most. */
 const ASSURANCES = [
@@ -45,9 +46,10 @@ export function Cta() {
           Ready to get started?
         </p>
 
-        <h2 className="mt-5 font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance text-ink sm:text-5xl lg:text-6xl">
-          Start building your career today.
-        </h2>
+        <ScrollHeading
+          lines={["Start building your", "career today."]}
+          className="mt-5 font-display text-4xl leading-[1.05] font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl"
+        />
 
         <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
           Join the 15,000+ students who trained at TechCadd to learn a real
@@ -55,6 +57,7 @@ export function Cta() {
         </p>
 
         <form
+          data-reveal
           action="/contact"
           method="get"
           className="mx-auto mt-10 flex w-full max-w-lg flex-col gap-3 sm:flex-row sm:gap-0 sm:overflow-hidden sm:rounded-xl sm:bg-white sm:shadow-[0_20px_45px_-20px_rgba(42,44,94,0.45)]"

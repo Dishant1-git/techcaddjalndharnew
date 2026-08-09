@@ -1,4 +1,5 @@
 import { FaqAccordion } from "./faq-accordion"
+import { ScrollHeading } from "./scroll-heading"
 import { FAQS } from "@/lib/faqs"
 import { CONTACT } from "@/lib/navigation"
 
@@ -15,18 +16,17 @@ export function Faq() {
       <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
         {/* --- Left rail --- */}
         <div>
-          <h2 className="font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-5xl">
-            Frequently
-            <br />
-            asked questions
-          </h2>
+          <ScrollHeading
+            lines={["Frequently", "asked questions"]}
+            className="font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
+          />
 
           <p className="mt-5 max-w-sm text-base leading-relaxed text-muted">
             Find quick answers to common questions about our courses, batches,
             fees and placement support.
           </p>
 
-          <div className="mt-10 rounded-3xl bg-subtle p-8 lg:mt-14">
+          <div data-reveal className="mt-10 rounded-3xl bg-subtle p-8 lg:mt-14">
             <div className="flex items-center gap-3">
               <div className="flex -space-x-3">
                 {COUNSELLORS.map((c) => (

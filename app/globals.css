@@ -190,6 +190,295 @@
   animation: menu-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* --- Dark panel textures ---
+   Layered over `bg-ink` to give the ink sections the depth an IT/engineering
+   site expects: a blueprint grid, a PCB-style trace field, and film grain.
+   All three are CSS-generated, so they cost no requests and stay crisp at any
+   density. Kept here rather than as Tailwind arbitrary values because the
+   data URI and mask syntax are unreadable inline. */
+
+/* Blueprint grid, faded out towards the panel edges so it never hits a hard
+   line against the rounded corners. */
+.panel-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 85% 70% at 50% 0%,
+    #000 35%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 85% 70% at 50% 0%,
+    #000 35%,
+    transparent 100%
+  );
+}
+
+/* Fine diagonal hatch, an order of magnitude subtler than the grid — it reads
+   as surface rather than as a second pattern. */
+.panel-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0 1px,
+    transparent 1px 9px
+  );
+}
+
+/* feTurbulence grain. Overlay blending keeps it tonal instead of grey-washing
+   the panel, and the low opacity stops it reading as compression noise. */
+.panel-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+}
+
+/* --- Spinning gradient border ---
+   A conic gradient on a square pseudo-element, rotated behind the element and
+   clipped by its radius. The element itself carries only padding; the child
+   `.spin-border__face` paints the real surface on top, so what shows through
+   the padding ring is the moving light.
+
+   Rotating a conic gradient is not animatable without @property, so the square
+   itself spins — supported everywhere the individual `rotate` property is. */
+.spin-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.spin-border::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 190deg,
+    var(--spin-from, #22d3ee) 255deg,
+    var(--spin-to, #ffffff) 300deg,
+    var(--spin-from, #22d3ee) 335deg,
+    transparent 360deg
+  );
+  animation: spin-border var(--spin-duration, 3.4s) linear infinite;
+}
+
+.spin-border__face {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes spin-border {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* --- Twinkling stars --- */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(35deg);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle var(--twinkle-duration, 3s) ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0ms);
+}
+
+/* --- Light sweeping an edge --- */
+@keyframes edge-sweep {
+  0% {
+    transform: translateX(-70%);
+  }
+  100% {
+    transform: translateX(170%);
+  }
+}
+
+.animate-edge-sweep {
+  animation: edge-sweep 3.6s ease-in-out infinite;
+}
+
+/* --- Boot preloader --- */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background-color: #101841;
+  background-image: radial-gradient(
+    ellipse 70% 55% at 50% 45%,
+    #1b2a63 0%,
+    #101841 55%,
+    #0b1130 100%
+  );
+  transition:
+    opacity 0.7s ease,
+    visibility 0.7s ease;
+}
+
+.preloader[data-done="true"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* --- Skeletons ---
+   A tinted block with a light sweep running across it. The sweep is a
+   pseudo-element transform, so it animates on the compositor and costs
+   nothing even with a screenful of them. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-line);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+}
+
+/* For skeletons sitting on a dark panel, where a white sweep would blow out. */
+.skeleton-dark {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.skeleton-dark::after {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.14),
+    transparent
+  );
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* --- Scroll-triggered reveals ---
+   The hidden state is scoped to `.reveal-ready`, a class the ScrollReveal
+   client component puts on <html> as it mounts. Without JavaScript the class
+   never lands, so every section renders plainly instead of staying invisible. */
+
+[data-reveal],
+[data-reveal-words] .sh-word {
+  transition-property: opacity, transform, filter;
+  transition-duration: 0.9s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.75rem);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Word-by-word headings ---
+   Each word is clipped by a wrapper and slides up out of it, which reads as
+   the line being written rather than merely fading in. The wrapper's padding
+   and matching negative margin give descenders (g, y, p) room to exist
+   without the clip cutting them off. */
+.sh-clip {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+.sh-word {
+  display: inline-block;
+  transition-delay: var(--word-delay, 0ms);
+}
+
+.reveal-ready [data-reveal-words] .sh-word {
+  opacity: 0;
+  transform: translateY(115%);
+  filter: blur(4px);
+}
+
+.reveal-ready [data-reveal-words].is-visible .sh-word {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+/* --- Cursor follower ---
+   A ring that trails the native pointer. Positioned by transform from a rAF
+   loop, so it never triggers layout. */
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: -1.125rem 0 0 -1.125rem;
+  border: 1.5px solid var(--color-brand-600);
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  transition:
+    opacity 0.3s ease,
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.cursor-ring[data-visible="true"] {
+  opacity: 0.75;
+}
+
+/* Over anything clickable the ring opens up and picks up a tint. */
+.cursor-ring[data-active="true"] {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: -1.75rem 0 0 -1.75rem;
+  background-color: color-mix(in srgb, var(--color-brand-600) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-brand-600) 70%, transparent);
+}
+
+/* On the ink panels the brand blue is too close to the ground to read. */
+.cursor-ring[data-invert="true"] {
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.cursor-ring[data-invert="true"][data-active="true"] {
+  background-color: rgba(255, 255, 255, 0.16);
+  border-color: #ffffff;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-char-in,
   .animate-menu-in,
@@ -206,6 +495,34 @@
   .orbit-cw,
   .orbit-ccw {
     animation: none !important;
+  }
+
+  /* The border and stars stop moving but stay lit, so the AI nav keeps its
+     accent rather than collapsing to a flat pill. */
+  .spin-border::before,
+  .animate-edge-sweep {
+    animation: none !important;
+  }
+
+  .animate-twinkle {
+    animation: none !important;
+    opacity: 0.8 !important;
+  }
+
+  /* A shimmer is the whole point of a skeleton, so it stays — but slowed to
+     a pulse rather than a sweep. */
+  .skeleton::after {
+    animation-duration: 3.2s;
+  }
+
+  /* Scroll reveals resolve instantly rather than being suppressed, so nothing
+     is left hidden waiting for an intersection that no longer animates. */
+  .reveal-ready [data-reveal],
+  .reveal-ready [data-reveal-words] .sh-word {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
   }
 
   html {

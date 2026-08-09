@@ -12,6 +12,8 @@
  * order of the JSX below is load-bearing.
  */
 
+import { ScrollHeading } from "./scroll-heading"
+
 const PLACEMENT_TREND = "M0 64 C16 60 26 42 40 40 C54 38 60 56 74 57 C88 58 96 22 112 18 C128 14 132 48 146 52 C160 56 168 36 182 32 C196 28 204 50 218 54 C232 58 244 42 260 38"
 
 const STACK_ROWS = [
@@ -42,16 +44,20 @@ export function FeaturedCourses() {
           <span className="inline-flex items-center rounded-full border border-white/60 bg-white/60 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
             Featured Courses
           </span>
-          <h2 className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-6xl">
-            Courses that get you hired
-          </h2>
+          <ScrollHeading
+            lines={["Courses that get you hired"]}
+            className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-6xl"
+          />
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted lg:text-lg">
             Industry-built curriculum, live projects and a placement cell behind
             every programme.
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[8rem]">
+        <div
+          data-reveal
+          className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[8rem]"
+        >
           {/* --- 1. Cybersecurity --- */}
           <Card href="/courses/cybersecurity" className="lg:row-span-2">
             <CardTitle>Cybersecurity &amp; Ethical Hacking</CardTitle>

@@ -1,3 +1,4 @@
+import { ScrollHeading } from "./scroll-heading"
 import { TestimonialSlider } from "./testimonial-slider"
 import {
   TESTIMONIALS,
@@ -30,11 +31,10 @@ export function Testimonials() {
       <div className={GUTTER}>
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-5xl">
-              What our students say
-              <br />
-              about TechCadd
-            </h2>
+            <ScrollHeading
+              lines={["What our students say", "about TechCadd"]}
+              className="font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
+            />
 
             <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
               <Meta icon={<StarIcon className="size-4 text-amber-400" />}>

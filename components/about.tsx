@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
 
 /** The four intakes counsellors actually enrol students into. */
@@ -49,11 +50,10 @@ export function About() {
               About Us
             </span>
 
-            <h2 className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-5xl">
-              Two decades of turning
-              <br />
-              students into engineers
-            </h2>
+            <ScrollHeading
+              lines={["Two decades of turning", "students into engineers"]}
+              className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
+            />
 
             <p className="mt-5 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
               TechCadd is an IT company that trains the people who build with
@@ -64,7 +64,7 @@ export function About() {
 
             {/* Formats sit high on the page: it's the first thing a student
                 asks a counsellor. */}
-            <dl className="mt-9 grid gap-x-6 gap-y-5 sm:grid-cols-2">
+            <dl data-reveal className="mt-9 grid gap-x-6 gap-y-5 sm:grid-cols-2">
               {FORMATS.map((f) => (
                 <div
                   key={f.duration}
@@ -167,7 +167,10 @@ export function About() {
               className="absolute top-6 right-[12.5%] left-[12.5%] hidden border-t border-dashed border-line lg:block"
             />
 
-            <ol className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            <ol
+              data-reveal
+              className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8"
+            >
               {PATH.map((p) => (
                 <li
                   key={p.step}
@@ -211,6 +214,10 @@ function Photo({
     <div
       className={`group relative overflow-hidden rounded-2xl bg-subtle ring-1 ring-line/70 ${className}`}
     >
+      {/* Shimmers until the photo paints over it — no JS needed, since the
+          image is `fill object-cover` and covers this completely. */}
+      <div aria-hidden="true" className="skeleton absolute inset-0" />
+
       <Image
         src={src}
         alt={alt}

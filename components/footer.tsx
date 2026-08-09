@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { siFacebook, siInstagram, siX, siYoutube } from "simple-icons"
 import {
@@ -49,21 +50,14 @@ export function Footer() {
           <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
             {/* --- Brand --- */}
             <div className="max-w-sm">
-              <Link href="/" className="group inline-flex items-center gap-3" aria-label="TechCadd home">
-                <span className="grid size-10 shrink-0 place-items-center rounded-[12px] bg-linear-to-br from-brand-600 via-brand-500 to-accent-400 transition-transform duration-500 group-hover:scale-105">
-                  <svg viewBox="0 0 24 24" fill="none" className="size-5 text-white" aria-hidden="true">
-                    <path
-                      d="M9 7.5 4.5 12 9 16.5M15 7.5 19.5 12 15 16.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                <span className="font-display text-3xl font-bold tracking-tight text-ink">
-                  techcadd<span className="text-brand-600">.</span>
-                </span>
+              <Link href="/" className="block" aria-label="TechCadd home">
+                <Image
+                  src="/assets/icon/tce.png"
+                  alt="TechCadd — Your Skill & Technology Partner"
+                  width={952}
+                  height={262}
+                  className="h-14 w-auto"
+                />
               </Link>
 
               <p className="mt-5 text-sm leading-relaxed text-muted">

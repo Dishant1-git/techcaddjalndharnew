@@ -58,7 +58,10 @@ export function Hero() {
   }
 
   return (
-    <section className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a0e14] pt-20 text-white">
+    <section
+      data-cursor="light"
+      className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a0e14] pt-20 text-white"
+    >
       {/* --- Background loop --- */}
       <video
         ref={videoRef}

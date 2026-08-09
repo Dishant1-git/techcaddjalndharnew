@@ -11,7 +11,10 @@ import { STATS, type Stat } from "@/lib/stats"
 export function Stats() {
   return (
     <section id="stats" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-2 lg:py-12">
+      <div
+        data-reveal
+        className="mx-auto grid max-w-[1240px] grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-2 lg:py-12"
+      >
         {STATS.map((stat) => (
           <Ring key={stat.label} stat={stat} />
         ))}

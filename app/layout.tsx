@@ -1,5 +1,8 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google"
+import { CursorFollower } from "@/components/cursor-follower"
+import { Preloader } from "@/components/preloader"
+import { ScrollReveal } from "@/components/scroll-reveal"
 import "./globals.css"
 
 const inter = Inter({
@@ -52,7 +55,21 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {/* Arms the reveal styles during HTML parsing, before anything paints.
+            Waiting for ScrollReveal's effect would let above-the-fold blocks
+            render, then blink out as the class landed. Inline and script-gated,
+            so a no-JS visit still gets the plain, fully visible page. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("reveal-ready")`,
+          }}
+        />
+        <Preloader />
+        {children}
+        <ScrollReveal />
+        <CursorFollower />
+      </body>
     </html>
   )
 }

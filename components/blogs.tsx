@@ -1,3 +1,4 @@
+import { ScrollHeading } from "./scroll-heading"
 import { POSTS, type Post } from "@/lib/blogs"
 
 /** Stable across server and client — `toLocaleDateString` is not. */
@@ -20,11 +21,10 @@ export function Blogs() {
             <span className="inline-flex items-center rounded-full border border-line bg-subtle px-4 py-1.5 text-xs font-medium tracking-wide">
               Blogs
             </span>
-            <h2 className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-5xl">
-              Notes from the
-              <br />
-              classroom and the codebase
-            </h2>
+            <ScrollHeading
+              lines={["Notes from the", "classroom and the codebase"]}
+              className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
+            />
           </div>
 
           <a
@@ -46,7 +46,10 @@ export function Blogs() {
           </a>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+        <div
+          data-reveal
+          className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3"
+        >
           {POSTS.map((post) => (
             <Card key={post.href} post={post} />
           ))}

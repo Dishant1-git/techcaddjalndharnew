@@ -1,3 +1,4 @@
+import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
 
 /**
@@ -70,11 +71,10 @@ export function WhyUs() {
             <span className="text-brand-600">/</span> Why TechCadd?
           </p>
 
-          <h2 className="mt-6 font-display text-[clamp(2.75rem,7vw,4.75rem)] leading-[0.95] font-bold tracking-tight">
-            The TechCadd
-            <br />
-            Difference
-          </h2>
+          <ScrollHeading
+            lines={["The TechCadd", "Difference"]}
+            className="mt-6 font-display text-[clamp(2.75rem,7vw,4.75rem)] leading-[0.95] font-bold tracking-tight"
+          />
 
           <p className="mt-7 max-w-md text-base leading-relaxed text-muted">
             For nearly two decades we&apos;ve been the training partner students
@@ -89,7 +89,7 @@ export function WhyUs() {
         </div>
 
         {/* --- Differentiators --- */}
-        <div className="grid gap-x-12 sm:grid-cols-2">
+        <div data-reveal className="grid gap-x-12 sm:grid-cols-2">
           <div className="divide-y divide-line">
             {left.map((r) => (
               <Item key={r.title} reason={r} />

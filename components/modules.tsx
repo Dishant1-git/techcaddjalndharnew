@@ -1,3 +1,5 @@
+import { ScrollHeading } from "./scroll-heading"
+
 /**
  * Modules — what ships with every programme, regardless of which category or
  * intake format a student picks.
@@ -104,17 +106,19 @@ const MODULES: Module[] = [
 export function Modules() {
   return (
     <section id="modules" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto max-w-[1240px] overflow-hidden rounded-[2rem] bg-ink px-6 py-16 text-white lg:rounded-[2.5rem] lg:px-12 lg:py-20">
+      <div
+        data-cursor="light"
+        className="mx-auto max-w-[1240px] overflow-hidden rounded-[2rem] bg-ink px-6 py-16 text-white lg:rounded-[2.5rem] lg:px-12 lg:py-20"
+      >
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-xl">
             <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
               Modules
             </span>
-            <h2 className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-5xl">
-              Included with every
-              <br />
-              programme we run
-            </h2>
+            <ScrollHeading
+              lines={["Included with every", "programme we run"]}
+              className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
+            />
           </div>
 
           <p className="max-w-sm text-base leading-relaxed text-white/65">
@@ -123,7 +127,10 @@ export function Modules() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+        <div
+          data-reveal
+          className="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3"
+        >
           {MODULES.map((m) => (
             <div
               key={m.step}

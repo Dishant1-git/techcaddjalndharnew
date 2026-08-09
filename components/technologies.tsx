@@ -1,3 +1,5 @@
+import { ScrollHeading } from "./scroll-heading"
+import { TechcaddT } from "./techcadd-t"
 import { TechTabs } from "./tech-tabs"
 import { TECH_CATEGORIES, type Tech } from "@/lib/technologies"
 
@@ -17,9 +19,10 @@ export function Technologies() {
             Technologies
           </span>
 
-          <h2 className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-6xl">
-            Technologies We Master
-          </h2>
+          <ScrollHeading
+            lines={["Technologies We Master"]}
+            className="mt-6 font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-6xl"
+          />
 
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted lg:text-lg">
             From <strong className="font-semibold text-foreground">AI</strong> to{" "}
@@ -49,7 +52,7 @@ export function Technologies() {
           </a>
         </div>
 
-        <div className="mt-14">
+        <div data-reveal className="mt-14">
           <TechTabs labels={TECH_CATEGORIES.map((c) => c.label)}>
             {TECH_CATEGORIES.map((category) => (
               <Orbit key={category.id} items={category.items} />
@@ -100,15 +103,7 @@ function Orbit({ items }: { items: Tech[] }) {
 
       {/* Hub */}
       <div className="absolute top-1/2 left-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-foreground shadow-[0_18px_40px_-12px_rgba(15,23,42,0.6)] sm:size-20 lg:size-24">
-        <svg viewBox="0 0 24 24" fill="none" className="size-7 text-white sm:size-9 lg:size-10" aria-hidden="true">
-          <path
-            d="M9 7.5 4.5 12 9 16.5M15 7.5 19.5 12 15 16.5"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <TechcaddT className="h-8 w-auto text-white sm:h-10 lg:h-12" />
         <span className="sr-only">TechCadd</span>
       </div>
     </div>
