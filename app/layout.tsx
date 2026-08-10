@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google"
 import { CursorFollower } from "@/components/cursor-follower"
+import { EnquiryPopup } from "@/components/enquiry-popup"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import "./globals.css"
@@ -67,6 +68,7 @@ export default function RootLayout({
         />
         <Preloader />
         {children}
+        <EnquiryPopup />
         <ScrollReveal />
         <CursorFollower />
       </body>

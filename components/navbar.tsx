@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Logo } from "./logo"
 import Image from "next/image"
+import { ENQUIRY_EVENT } from "./enquiry-popup"
 import {
   AI_MENU,
   CONTACT,
@@ -57,6 +58,10 @@ export function Navbar() {
   // Unscrolled, the bar floats over the dark hero video and has to invert.
   const onDark = !scrolled && !mobileOpen
 
+  // The popup lives in the root layout, so it is reached by event rather than
+  // by lifting its open state up through the tree.
+  const openEnquiry = () => window.dispatchEvent(new Event(ENQUIRY_EVENT))
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 transition-all duration-500">
       <nav
@@ -92,26 +97,17 @@ export function Navbar() {
 
           {/* --- Desktop actions --- */}
           <div className="hidden items-center gap-4 xl:flex">
-            <a
-              href={CONTACT.phoneHref}
-              className={`font-mono text-sm transition-colors duration-300 ${
-                onDark
-                  ? "text-white/70 hover:text-white"
-                  : "text-muted hover:text-foreground"
-              }`}
-            >
-              {CONTACT.phone}
-            </a>
-            <a
-              href="/enquiry"
+            <button
+              type="button"
+              onClick={openEnquiry}
               className={`inline-flex h-9 items-center justify-center rounded-full px-6 text-sm font-medium transition-all duration-500 ${
                 onDark
                   ? "bg-white text-[#0a0e14] hover:bg-brand-500 hover:text-white"
                   : "bg-foreground text-background hover:bg-brand-600"
               }`}
             >
-              Enroll now
-            </a>
+              Enquire Now
+            </button>
           </div>
 
           <button
@@ -267,12 +263,16 @@ export function Navbar() {
             >
               Call us
             </a>
-            <a
-              href="/enquiry"
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false)
+                openEnquiry()
+              }}
               className="flex h-14 flex-1 items-center justify-center rounded-full bg-foreground text-base font-medium text-background transition-colors hover:bg-brand-600"
             >
-              Enroll now
-            </a>
+              Enquire Now
+            </button>
           </div>
         </div>
       </div>
