@@ -146,7 +146,7 @@
 }
 
 .orbit-cw {
-  animation: orbit-cw var(--orbit-duration, 40s) linear infinite;
+  animation: orbit-cw var(-add -orbit-duration, 40s) linear infinite;
 }
 
 .orbit-ccw {
