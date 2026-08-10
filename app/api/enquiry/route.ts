@@ -1,41 +1,107 @@
 import { NextResponse } from "next/server"
 import { verifyCaptcha } from "@/lib/captcha"
+import { claimCaptcha } from "@/lib/spent-captchas"
+import { ensureTable, isRateLimited, saveEnquiry } from "@/lib/enquiries"
 
 export const dynamic = "force-dynamic"
 
+/** Nothing legitimate comes close; anything larger is refused unread. */
+const MAX_BODY_BYTES = 4096
+
+type Fields = { name: string; phone: string; course: string }
+
 /** Rejects the obvious junk before anything downstream sees it. */
-function invalid(body: Record<string, unknown>) {
+function validate(
+  body: Record<string, unknown>,
+): { error: string } | { fields: Fields } {
   const name = String(body.name ?? "").trim()
   const phone = String(body.phone ?? "").trim()
   const course = String(body.course ?? "").trim()
 
-  if (name.length < 2 || name.length > 80) return "Please enter your full name."
-  if (!/^[0-9]{10}$/.test(phone)) return "Please enter a valid 10-digit number."
-  if (!course) return "Please choose a course."
-  return null
+  if (name.length < 2 || name.length > 80)
+    return { error: "Please enter your full name." }
+  if (!/^[0-9]{10}$/.test(phone))
+    return { error: "Please enter a valid 10-digit number." }
+  if (!course) return { error: "Please choose a course." }
+  if (course.length > 120) return { error: "Please choose a course." }
+
+  return { fields: { name, phone, course } }
+}
+
+/**
+ * First hop in X-Forwarded-For is the visitor; the rest are proxies. A client
+ * can forge this header, so treat it as a hint for triage and rate-limiting
+ * friction — never as identity.
+ */
+function clientIp(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for")
+  return forwarded?.split(",")[0]?.trim().slice(0, 45) || null
+}
+
+function bad(error: string, extra: Record<string, unknown> = {}, status = 400) {
+  return NextResponse.json({ error, ...extra }, { status })
 }
 
 export async function POST(request: Request) {
+  const declared = Number(request.headers.get("content-length") ?? 0)
+  if (declared > MAX_BODY_BYTES) return bad("That request was too large.", {}, 413)
+
   let body: Record<string, unknown>
   try {
-    body = await request.json()
+    const text = await request.text()
+    // Re-checked after reading: content-length is a claim, not a guarantee.
+    if (text.length > MAX_BODY_BYTES) return bad("That request was too large.", {}, 413)
+    body = JSON.parse(text)
   } catch {
-    return NextResponse.json({ error: "Malformed request." }, { status: 400 })
+    return bad("Malformed request.")
   }
 
-  // Captcha first — no point validating fields for a bot.
-  if (!verifyCaptcha(body.captchaToken, body.captchaAnswer)) {
-    return NextResponse.json(
-      { error: "That answer was wrong or expired. Here's a new one.", captcha: true },
-      { status: 400 },
+  if (!body || typeof body !== "object") return bad("Malformed request.")
+
+  // Signature check first: it is pure computation, so bots never reach the
+  // database. Burning the token comes later, once the fields are known good,
+  // so a visitor with a typo does not lose their captcha.
+  const solved = verifyCaptcha(body.captchaToken, body.captchaAnswer)
+  if (!solved)
+    return bad("That answer was wrong or expired. Here's a new one.", {
+      captcha: true,
+    })
+
+  const checked = validate(body)
+  if ("error" in checked) return bad(checked.error)
+
+  try {
+    await ensureTable()
+
+    if (await isRateLimited(clientIp(request), checked.fields.phone))
+      return bad(
+        "We already have your enquiry. A counsellor will call you shortly.",
+        {},
+        429,
+      )
+
+    // Single-use: a solved token cannot be replayed for the rest of its life.
+    if (!(await claimCaptcha(solved.nonce, solved.expiresAt)))
+      return bad("That verification was already used. Here's a new one.", {
+        captcha: true,
+      })
+
+    await saveEnquiry({
+      ...checked.fields,
+      source: String(body.source ?? "").trim().slice(0, 255) || null,
+      ip: clientIp(request),
+      userAgent: request.headers.get("user-agent"),
+    })
+  } catch (error) {
+    // The message can carry credentials or SQL, so it stays server-side and
+    // the visitor gets something they can act on.
+    console.error("[enquiry] could not be saved:", error)
+    return bad(
+      "We could not record your enquiry. Please call us instead.",
+      {},
+      500,
     )
   }
-
-  const message = invalid(body)
-  if (message) return NextResponse.json({ error: message }, { status: 400 })
-
-  // TODO: deliver the enquiry — email, CRM or database. Deliberately not
-  // logged here, since the payload is a name and a phone number.
 
   return NextResponse.json({ ok: true })
 }

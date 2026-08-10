@@ -44,11 +44,21 @@ export function createCaptcha() {
   }
 }
 
-export function verifyCaptcha(token: unknown, answer: unknown): boolean {
-  if (typeof token !== "string" || typeof answer !== "string") return false
+/**
+ * A correctly answered challenge. The nonce identifies this one token, so the
+ * caller can burn it after use — a signature that stays valid for its whole
+ * ten minutes would otherwise let one solved captcha be replayed endlessly.
+ */
+export type SolvedCaptcha = { nonce: string; expiresAt: Date }
+
+export function verifyCaptcha(
+  token: unknown,
+  answer: unknown,
+): SolvedCaptcha | null {
+  if (typeof token !== "string" || typeof answer !== "string") return null
 
   const parts = token.split(".")
-  if (parts.length !== 3) return false
+  if (parts.length !== 3) return null
 
   const [nonce, expires, signature] = parts
   const expected = sign(`${nonce}.${expires}`)
@@ -57,10 +67,13 @@ export function verifyCaptcha(token: unknown, answer: unknown): boolean {
   // length mismatch rather than returning false.
   const given = Buffer.from(signature)
   const want = Buffer.from(expected)
-  if (given.length !== want.length || !timingSafeEqual(given, want)) return false
+  if (given.length !== want.length || !timingSafeEqual(given, want)) return null
 
-  if (!Number(expires) || Number(expires) < Date.now()) return false
+  const expiresAt = Number(expires)
+  if (!expiresAt || expiresAt < Date.now()) return null
 
   const [a, b] = operands(nonce)
-  return Number(answer.trim()) === a + b
+  if (Number(answer.trim()) !== a + b) return null
+
+  return { nonce, expiresAt: new Date(expiresAt) }
 }

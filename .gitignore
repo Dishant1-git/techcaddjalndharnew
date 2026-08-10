@@ -4,7 +4,9 @@ out
 build
 .DS_Store
 *.pem
+.env
 .env*.local
+!.env.example
 next-env.d.ts
 .vercel
 *.tsbuildinfo

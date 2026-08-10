@@ -120,6 +120,7 @@ export function EnquiryPopup() {
           course: data.get("course"),
           name: data.get("name"),
           phone: data.get("phone"),
+          source: window.location.pathname,
           captchaToken: challenge.token,
           captchaAnswer: data.get("captcha"),
         }),
