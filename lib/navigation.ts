@@ -1,5 +1,5 @@
 /**
- * Navigation mirrored from the live TechCadd site (mohali.techcadd.com):
+ * Navigation mirrored from the live Techcadd site (mohali.techcadd.com):
  * Home · About Us · AI · Courses (mega menu) · Internship & Training ·
  * After 12th Courses · Contact Us
  */

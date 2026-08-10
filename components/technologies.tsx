@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 import { TechcaddT } from "./techcadd-t"
 import { TechTabs } from "./tech-tabs"
@@ -33,7 +34,7 @@ export function Technologies() {
             successful career.
           </p>
 
-          <a
+          <Link
             href="/courses"
             className="group mt-9 inline-flex items-center gap-3 rounded-full bg-brand-600 py-2 pr-2 pl-7 text-sm font-semibold text-white shadow-[0_10px_30px_-8px_rgba(37,99,235,0.85)] transition-colors duration-300 hover:bg-brand-700"
           >
@@ -49,7 +50,7 @@ export function Technologies() {
                 />
               </svg>
             </span>
-          </a>
+          </Link>
         </div>
 
         <div data-reveal className="mt-14">
@@ -104,7 +105,7 @@ function Orbit({ items }: { items: Tech[] }) {
       {/* Hub */}
       <div className="absolute top-1/2 left-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-foreground shadow-[0_18px_40px_-12px_rgba(15,23,42,0.6)] sm:size-20 lg:size-24">
         <TechcaddT className="h-8 w-auto text-white sm:h-10 lg:h-12" />
-        <span className="sr-only">TechCadd</span>
+        <span className="sr-only">Techcadd</span>
       </div>
     </div>
   )

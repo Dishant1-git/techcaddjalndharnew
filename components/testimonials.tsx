@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 import { TestimonialSlider } from "./testimonial-slider"
 import {
@@ -32,7 +33,7 @@ export function Testimonials() {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <ScrollHeading
-              lines={["What our students say", "about TechCadd"]}
+              lines={["What our students say", "about Techcadd"]}
               className="font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
             />
 
@@ -51,7 +52,7 @@ export function Testimonials() {
             </div>
           </div>
 
-          <a
+          <Link
             href="/contact"
             className="group inline-flex shrink-0 items-center gap-3 self-start rounded-full bg-ink py-2 pr-2 pl-7 text-sm font-semibold text-white shadow-[0_14px_34px_-14px_rgba(42,44,94,0.9)] transition-colors duration-300 hover:bg-brand-600 lg:self-auto"
           >
@@ -67,7 +68,7 @@ export function Testimonials() {
                 />
               </svg>
             </span>
-          </a>
+          </Link>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { PanelTexture } from "./panel-texture"
 import { ScrollHeading } from "./scroll-heading"
 import { COURSE_CATEGORIES, type CourseCategory } from "@/lib/categories"
@@ -88,7 +89,7 @@ export function Categories() {
             />
           </div>
 
-          <a
+          <Link
             href="/courses"
             className="group inline-flex shrink-0 items-center gap-3 self-start rounded-full bg-white py-2 pr-2 pl-7 text-sm font-semibold text-brand-700 transition-colors duration-300 hover:bg-brand-50 lg:self-auto"
           >
@@ -104,7 +105,7 @@ export function Categories() {
                 />
               </svg>
             </span>
-          </a>
+          </Link>
         </div>
 
         <div
@@ -122,7 +123,7 @@ export function Categories() {
 
 function Card({ category }: { category: CourseCategory }) {
   return (
-    <a
+    <Link
       href={category.href}
       /* basis-0 makes flex-grow the sole width authority, so the hover state
          is a clean 1 -> 2.4 ratio rather than content-dependent. */
@@ -171,7 +172,7 @@ function Card({ category }: { category: CourseCategory }) {
           </span>
         </div>
       </div>
-    </a>
+    </Link>
   )
 }
 

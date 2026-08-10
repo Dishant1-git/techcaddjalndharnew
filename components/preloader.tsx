@@ -99,7 +99,7 @@ export function Preloader() {
         {/* Inverted to white — the source artwork is navy on transparent. */}
         <Image
           src="/assets/icon/tce.png"
-          alt="TechCadd"
+          alt="Techcadd"
           width={952}
           height={262}
           priority

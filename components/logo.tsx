@@ -20,10 +20,10 @@ export function Logo({
   onDark?: boolean
 }) {
   return (
-    <Link href="/" className="block shrink-0" aria-label="TechCadd home">
+    <Link href="/" className="block shrink-0" aria-label="Techcadd home">
       <Image
         src="/assets/icon/tce.png"
-        alt="TechCadd — Your Skill & Technology Partner"
+        alt="Techcadd — Your Skill & Technology Partner"
         width={LOGO_WIDTH}
         height={LOGO_HEIGHT}
         priority

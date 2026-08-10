@@ -50,10 +50,10 @@ export function Footer() {
           <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
             {/* --- Brand --- */}
             <div className="max-w-sm">
-              <Link href="/" className="block" aria-label="TechCadd home">
+              <Link href="/" className="block" aria-label="Techcadd home">
                 <Image
                   src="/assets/icon/tce.png"
-                  alt="TechCadd — Your Skill & Technology Partner"
+                  alt="Techcadd — Your Skill & Technology Partner"
                   width={952}
                   height={262}
                   className="h-14 w-auto"
@@ -89,7 +89,7 @@ export function Footer() {
           {/* --- Bottom bar --- */}
           <div className="mt-14 flex flex-col gap-6 border-t border-ink/10 pt-6 sm:flex-row sm:items-center sm:justify-between lg:mt-20">
             <p className="text-sm text-muted">
-              © {new Date().getFullYear()} TechCadd. Built in{" "}
+              © {new Date().getFullYear()} Techcadd. Built in{" "}
               <span className="font-medium text-ink">Jalandhar</span> &{" "}
               <span className="font-medium text-ink">Mohali</span>.
             </p>
@@ -126,12 +126,12 @@ function FooterCol({ title, links }: { title: string; links: readonly NavLink[] 
       <ul className="mt-5 space-y-3">
         {links.map((l) => (
           <li key={l.href}>
-            <a
+            <Link
               href={l.href}
               className="text-sm text-muted transition-colors duration-200 hover:text-brand-600"
             >
               {l.label}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

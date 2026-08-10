@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
 
@@ -68,11 +69,11 @@ export function WhyUs() {
         {/* --- Statement --- */}
         <div>
           <p className="text-sm font-medium">
-            <span className="text-brand-600">/</span> Why TechCadd?
+            <span className="text-brand-600">/</span> Why Techcadd?
           </p>
 
           <ScrollHeading
-            lines={["The TechCadd", "Difference"]}
+            lines={["The Techcadd", "Difference"]}
             className="mt-6 font-display text-[clamp(2.75rem,7vw,4.75rem)] leading-[0.95] font-bold tracking-tight"
           />
 
@@ -125,18 +126,21 @@ function Item({ reason }: { reason: Reason }) {
 /** Inline link inside body copy — underlined, as in the reference. */
 function Inline({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <a
+    <Link
       href={href}
       className="font-medium text-brand-600 underline underline-offset-2 transition-colors duration-200 hover:text-brand-700"
     >
       {children}
-    </a>
+    </Link>
   )
 }
 
 function Cta({ href, children }: { href: string; children: React.ReactNode }) {
+  // "Call Now" is a tel: link, so only in-app routes get client navigation.
+  const Tag = href.startsWith("/") ? Link : "a"
+
   return (
-    <a
+    <Tag
       href={href}
       className="group inline-flex items-center gap-1.5 text-base font-medium text-brand-600 transition-colors duration-200 hover:text-brand-700"
     >
@@ -155,7 +159,7 @@ function Cta({ href, children }: { href: string; children: React.ReactNode }) {
           strokeLinejoin="round"
         />
       </svg>
-    </a>
+    </Tag>
   )
 }
 

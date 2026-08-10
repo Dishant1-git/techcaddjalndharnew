@@ -37,7 +37,7 @@ export type Capability = {
 }
 
 /**
- * What TechCadd builds and teaches, each backed by the stack it is actually
+ * What Techcadd builds and teaches, each backed by the stack it is actually
  * delivered on. The blurbs carry the copy the old capabilities list used.
  */
 export const CAPABILITIES: Capability[] = [

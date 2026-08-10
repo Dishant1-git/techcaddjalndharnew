@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Logo } from "./logo"
 import Image from "next/image"
+import Link from "next/link"
 import { ENQUIRY_EVENT } from "./enquiry-popup"
 import {
   AI_MENU,
@@ -182,13 +183,13 @@ export function Navbar() {
                     {mobileSection === item.label && (
                       <div className="animate-menu-in grid grid-cols-2 gap-x-6 gap-y-2 pb-6">
                         {item.groups.flatMap((g) => g.items).map((c) => (
-                          <a
+                          <Link
                             key={c.href}
                             href={c.href}
                             className="text-sm text-muted transition-colors hover:text-brand-600"
                           >
                             {c.label}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     )}
@@ -221,24 +222,24 @@ export function Navbar() {
                         {AI_MENU.columns
                           .flatMap((c) => c.items)
                           .map((c) => (
-                            <a
+                            <Link
                               key={c.href}
                               href={c.href}
                               className="text-sm text-muted transition-colors hover:text-brand-600"
                             >
                               {c.label}
-                            </a>
+                            </Link>
                           ))}
                       </div>
                     )}
                   </>
                 ) : (
-                  <a
+                  <Link
                     href={item.href}
                     className="block py-4 font-display text-3xl tracking-tight transition-colors duration-300 hover:text-brand-600 sm:text-4xl"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 )}
               </div>
             ))}
@@ -246,13 +247,13 @@ export function Navbar() {
 
           <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-foreground/10 pt-6">
             {QUICK_LINKS.map((q) => (
-              <a
+              <Link
                 key={q.href}
                 href={q.href}
                 className="font-mono text-xs tracking-wide text-muted uppercase transition-colors hover:text-foreground"
               >
                 {q.label}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -298,7 +299,7 @@ function DesktopNavLink({
   // AI is the promoted item: a filled pill with a light running its border.
   if (item.variant === "ai") {
     return (
-      <a
+      <Link
         href={item.href}
         onMouseEnter={onOpen}
         onFocus={onOpen}
@@ -311,12 +312,12 @@ function DesktopNavLink({
           {item.label}
           <SparkIcon className="animate-twinkle size-4 [--twinkle-duration:2.2s]" />
         </span>
-      </a>
+      </Link>
     )
   }
 
   return (
-    <a
+    <Link
       href={item.href}
       onMouseEnter={onOpen}
       onFocus={onOpen}
@@ -351,7 +352,7 @@ function DesktopNavLink({
           onDark ? "bg-white" : "bg-foreground"
         } ${open ? "w-full" : "w-0"}`}
       />
-    </a>
+    </Link>
   )
 }
 
@@ -400,7 +401,7 @@ function MegaMenu({
               <ul className="space-y-1.5">
                 {group.items.map((c) => (
                   <li key={c.href}>
-                    <a
+                    <Link
                       href={c.href}
                       className="group/link flex items-start gap-2 text-sm text-foreground/70 transition-colors duration-200 hover:text-brand-600"
                     >
@@ -411,7 +412,7 @@ function MegaMenu({
                           {c.badge}
                         </span>
                       )}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -422,16 +423,16 @@ function MegaMenu({
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-foreground/10 bg-subtle px-8 py-4">
           <div className="flex flex-wrap gap-x-7 gap-y-2">
             {QUICK_LINKS.map((q) => (
-              <a
+              <Link
                 key={q.href}
                 href={q.href}
                 className="font-mono text-xs tracking-wide text-muted uppercase transition-colors hover:text-foreground"
               >
                 {q.label}
-              </a>
+              </Link>
             ))}
           </div>
-          <a
+          <Link
             href={cta.href}
             className="group/all inline-flex items-center gap-2 text-sm font-medium text-brand-600"
           >
@@ -439,7 +440,7 @@ function MegaMenu({
             <span className="transition-transform duration-300 group-hover/all:translate-x-1">
               →
             </span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -507,7 +508,7 @@ function AiMenu({
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             {/* Featured course */}
-            <a
+            <Link
               href={AI_MENU.featured.href}
               className="group/f flex flex-col overflow-hidden rounded-2xl border border-white/15 bg-white/5"
             >
@@ -528,14 +529,14 @@ function AiMenu({
                   {AI_MENU.featured.title}
                 </span>
               </span>
-            </a>
+            </Link>
 
             {/* CTA */}
             <div className="flex flex-col justify-between rounded-2xl bg-linear-to-br from-brand-500 via-brand-400 to-accent-400 p-5">
               <p className="text-lg leading-snug font-bold tracking-tight text-white">
                 {AI_MENU.cta.text}
               </p>
-              <a
+              <Link
                 href={AI_MENU.cta.href}
                 className="group/cta mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-300 hover:bg-ink"
               >
@@ -549,7 +550,7 @@ function AiMenu({
                     strokeLinejoin="round"
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
           </div>
@@ -613,7 +614,7 @@ function AiColumnBlock({ column }: { column: AiColumn }) {
       <ul className="mt-4 space-y-2.5">
         {column.items.map((item) => (
           <li key={item.href}>
-            <a
+            <Link
               href={item.href}
               className="group/link inline-flex items-start gap-2 text-sm font-semibold text-white/80 transition-colors duration-200 hover:text-white"
             >
@@ -623,7 +624,7 @@ function AiColumnBlock({ column }: { column: AiColumn }) {
                   Hot
                 </span>
               )}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

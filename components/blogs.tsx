@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 import { POSTS, type Post } from "@/lib/blogs"
 
@@ -27,7 +28,7 @@ export function Blogs() {
             />
           </div>
 
-          <a
+          <Link
             href="/blog"
             className="group inline-flex shrink-0 items-center gap-3 self-start rounded-full border border-line bg-white py-2 pr-2 pl-7 text-sm font-semibold transition-colors duration-300 hover:border-brand-600/30 hover:text-brand-600 lg:self-auto"
           >
@@ -43,7 +44,7 @@ export function Blogs() {
                 />
               </svg>
             </span>
-          </a>
+          </Link>
         </div>
 
         <div
@@ -83,11 +84,11 @@ function Card({ post }: { post: Post }) {
         </div>
 
         <h3 className="mt-3 font-display text-lg leading-snug font-bold tracking-tight text-balance">
-          <a href={post.href} className="transition-colors duration-200 hover:text-brand-600">
+          <Link href={post.href} className="transition-colors duration-200 hover:text-brand-600">
             {/* Stretches the click target across the whole card. */}
             <span className="absolute inset-0" />
             {post.title}
-          </a>
+          </Link>
         </h3>
 
         <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">

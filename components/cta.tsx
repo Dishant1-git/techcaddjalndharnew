@@ -52,7 +52,7 @@ export function Cta() {
         />
 
         <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
-          Join the 15,000+ students who trained at TechCadd to learn a real
+          Join the 15,000+ students who trained at Techcadd to learn a real
           skill, build live projects, and get placed with confidence.
         </p>
 

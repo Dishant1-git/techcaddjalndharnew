@@ -4,6 +4,7 @@ import { CursorFollower } from "@/components/cursor-follower"
 import { EnquiryPopup } from "@/components/enquiry-popup"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
+import { organisationSchema, SITE } from "@/lib/site"
 import "./globals.css"
 
 const inter = Inter({
@@ -27,36 +28,61 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "TechCadd — The IT platform to build and ship",
-  description:
-    "TechCadd is an IT company and technology institute delivering AI, cloud, cybersecurity and full-stack engineering — plus the training that builds the teams behind it.",
-  keywords: [
-    "TechCadd",
-    "IT company",
-    "AI development",
-    "software development",
-    "cybersecurity",
-    "industrial training",
-    "Jalandhar",
-    "Mohali",
-  ],
-  openGraph: {
-    title: "TechCadd — The IT platform to build and ship",
-    description:
-      "AI, cloud, cybersecurity and full-stack engineering, delivered end to end.",
-    type: "website",
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: "Techcadd Jalandhar — IT Courses, Training & Placement",
+    // Course pages set their own full title; anything else inherits the brand.
+    template: "%s | Techcadd",
   },
+  description:
+    "Techcadd is an IT company and technology institute in Jalandhar — AI, data, cloud, cybersecurity, full-stack and digital marketing courses with live projects, internship letters and placement support.",
+  keywords: [
+    "Techcadd",
+    "IT institute in Jalandhar",
+    "computer course in Jalandhar",
+    "digital marketing course Jalandhar",
+    "industrial training Jalandhar",
+    "placement course Jalandhar",
+    "Jalandhar",
+    "Punjab",
+  ],
+  alternates: { canonical: SITE.url },
+  openGraph: {
+    title: "Techcadd Jalandhar — IT Courses, Training & Placement",
+    description:
+      "AI, cloud, cybersecurity, full-stack and digital marketing courses in Jalandhar, with live projects and placement support.",
+    url: SITE.url,
+    siteName: SITE.name,
+    type: "website",
+    locale: "en_IN",
+  },
+  robots: { index: true, follow: true },
 }
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
+    /*
+      suppressHydrationWarning is required, not cosmetic: the inline script
+      below adds `reveal-ready` to <html> during parsing, so the class attribute
+      React hydrates against is already different from the one it rendered.
+      Scoped to this element only — children still warn normally.
+    */
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <body>
+        {/* Organisation identity, emitted once for the whole site. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organisationSchema()),
+          }}
+        />
+
         {/* Arms the reveal styles during HTML parsing, before anything paints.
             Waiting for ScrollReveal's effect would let above-the-fold blocks
             render, then blink out as the class landed. Inline and script-gated,

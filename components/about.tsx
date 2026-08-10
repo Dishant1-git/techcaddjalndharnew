@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
 
@@ -56,7 +57,7 @@ export function About() {
             />
 
             <p className="mt-5 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
-              TechCadd is an IT company that trains the people who build with
+              Techcadd is an IT company that trains the people who build with
               it. Every course is taught from the same stack we ship client work
               on — so the syllabus moves when the industry does, and your mentor
               is an engineer who still writes code for a living.
@@ -81,7 +82,7 @@ export function About() {
             </dl>
 
             <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <a
+              <Link
                 href="/courses"
                 className="group inline-flex items-center gap-3 rounded-full bg-brand-600 py-2 pr-2 pl-7 text-sm font-semibold text-white shadow-[0_10px_30px_-8px_rgba(37,99,235,0.85)] transition-colors duration-300 hover:bg-brand-700"
               >
@@ -97,7 +98,7 @@ export function About() {
                     />
                   </svg>
                 </span>
-              </a>
+              </Link>
 
               <a
                 href={CONTACT.phoneHref}
@@ -123,12 +124,12 @@ export function About() {
               {/* Taller crop on phones so the group still reads at 360px. */}
               <Photo
                 src="/assets/images/about/team.jpg"
-                alt="The TechCadd team and students outside the Jalandhar campus"
+                alt="The Techcadd team and students outside the Jalandhar campus"
                 className="col-span-2 aspect-[2/1] sm:aspect-[14/5]"
                 sizes="(min-width: 1024px) 590px, 92vw"
               >
                 <span className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-black/45 px-3 py-1 font-mono text-[10px] tracking-[0.18em] text-white/85 uppercase backdrop-blur-md">
-                  Team TechCadd
+                  Team Techcadd
                 </span>
               </Photo>
 
@@ -141,7 +142,7 @@ export function About() {
 
               <Photo
                 src="/assets/images/about/lab-demo.webp"
-                alt="A robotics demonstration during a TechCadd lab session"
+                alt="A robotics demonstration during a Techcadd lab session"
                 className="aspect-[4/3]"
                 sizes="(min-width: 1024px) 290px, 45vw"
               />

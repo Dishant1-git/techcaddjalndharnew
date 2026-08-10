@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useRef, useState } from "react"
 
 const FEATURES = [
@@ -89,7 +90,7 @@ export function Hero() {
             {/* Both phrases plus the tracking run past 360px, so the pill
                 wraps rather than being clipped by the section. */}
             <span className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-mono text-[10px] tracking-[0.12em] text-white/80 uppercase backdrop-blur-md sm:text-[11px] sm:tracking-[0.18em]">
-              TechCadd Jalandhar
+              Techcadd Jalandhar
               <span className="size-1 rounded-full bg-white/40" />
               AI &amp; Software Training
             </span>
@@ -119,12 +120,12 @@ export function Hero() {
 
                 <p className="reveal mt-7 max-w-xl text-sm leading-relaxed text-white/75 [animation-delay:250ms] sm:text-base">
                   Learn the AI, cloud and full-stack systems businesses actually
-                  run on. TechCadd handles the curriculum, the live projects and
+                  run on. Techcadd handles the curriculum, the live projects and
                   the placement drives — so you only have to show up and build.
                 </p>
 
                 <div className="reveal mt-9 flex flex-col items-start gap-4 [animation-delay:350ms] sm:flex-row">
-                  <a
+                  <Link
                     href="/enquiry"
                     className="group inline-flex h-13 items-center justify-center rounded-full bg-white px-8 text-base font-medium text-[#0a0e14] transition-colors duration-300 hover:bg-brand-500 hover:text-white"
                   >
@@ -143,13 +144,13 @@ export function Hero() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/courses"
                     className="inline-flex h-13 items-center justify-center rounded-full border border-white/25 bg-white/5 px-8 text-base font-medium text-white backdrop-blur-md transition-colors duration-300 hover:bg-white/15"
                   >
                     Explore courses
-                  </a>
+                  </Link>
                 </div>
               </div>
 

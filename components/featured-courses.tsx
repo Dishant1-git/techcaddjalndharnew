@@ -12,6 +12,7 @@
  * order of the JSX below is load-bearing.
  */
 
+import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 
 const PLACEMENT_TREND = "M0 64 C16 60 26 42 40 40 C54 38 60 56 74 57 C88 58 96 22 112 18 C128 14 132 48 146 52 C160 56 168 36 182 32 C196 28 204 50 218 54 C232 58 244 42 260 38"
@@ -274,7 +275,7 @@ export function FeaturedCourses() {
         </div>
 
         <div className="mt-10 text-center">
-          <a
+          <Link
             href="/courses"
             className="group inline-flex items-center gap-3 rounded-full bg-brand-600 py-2 pr-2 pl-7 text-sm font-semibold text-white shadow-[0_10px_30px_-8px_rgba(37,99,235,0.85)] transition-colors duration-300 hover:bg-brand-700"
           >
@@ -290,7 +291,7 @@ export function FeaturedCourses() {
                 />
               </svg>
             </span>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -309,7 +310,7 @@ function Card({
   children: React.ReactNode
 }) {
   return (
-    <a
+    <Link
       href={href}
       className={`group relative flex flex-col overflow-hidden rounded-[1.75rem] p-6 transition-all duration-500 hover:-translate-y-1 ${
         dark
@@ -327,7 +328,7 @@ function Card({
         }`}
       />
       {children}
-    </a>
+    </Link>
   )
 }
 

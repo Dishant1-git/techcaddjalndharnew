@@ -43,7 +43,7 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     quote:
-      "As a working professional I needed evening batches, and TechCadd let me switch between the campus and the live online class whenever my shifts moved.",
+      "As a working professional I needed evening batches, and Techcadd let me switch between the campus and the live online class whenever my shifts moved.",
     name: "Neha Bansal",
     role: "Digital Marketing Lead, Ludhiana",
     initials: "NB",
