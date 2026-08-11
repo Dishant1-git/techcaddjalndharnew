@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node -v)",
+      "PowerShell(npm -v)",
+      "WebFetch(domain:mohali.techcadd.com)",
+      "WebFetch(domain:v0.app)",
+      "WebFetch(domain:v0-optimus-delta.vercel.app)",
+      "PowerShell(npm install --no-audit --no-fund 2>&1)",
+      "PowerShell(npm view next dist-tags --json)",
+      "PowerShell(npm run *)",
+      "PowerShell($env:PORT=3100; Start-Process -FilePath \"npx\" -ArgumentList \"next dev -p 3100\" -WindowStyle Hidden -RedirectStandardOutput \"$env:TEMP\\\\devout.log\" -RedirectStandardError \"$env:TEMP\\\\deverr.log\"; Start-Sleep -Seconds 12; Get-Content \"$env:TEMP\\\\devout.log\" -Tail 8)",
+      "PowerShell($pids = \\(Get-NetTCPConnection -LocalPort 3000 -State Listen\\).OwningProcess | Sort-Object -Unique; foreach \\($id in $pids\\) { Get-CimInstance Win32_Process -Filter \"ProcessId=$id\" | Select-Object ProcessId, Name, @{n='Cmd';e={$_.CommandLine}} | Format-List })"
+    ]
+  }
+}
