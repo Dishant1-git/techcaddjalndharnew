@@ -14,6 +14,8 @@ const THANK_YOU_MS = 5000
  * and the enquiry is filed against Python. The value posted comes from this
  * prop rather than the input, and the API re-checks it against the course
  * catalogue, so the lock survives someone editing the DOM.
+ *
+ * Styling lives in globals.css under "COURSE ENQUIRY FORM".
  */
 export function CourseEnquiryForm({
   course,
@@ -95,7 +97,7 @@ export function CourseEnquiryForm({
 
   if (status === "done") {
     return (
-      <div className="rounded-3xl bg-white p-8 text-center shadow-[0_24px_60px_-30px_rgba(15,23,42,0.35)]">
+      <div className="enquiry-form p-8 text-center">
         <span className="mx-auto grid size-14 place-items-center rounded-full bg-lime-400 text-ink">
           <svg viewBox="0 0 24 24" fill="none" className="size-7" aria-hidden="true">
             <path
@@ -110,7 +112,7 @@ export function CourseEnquiryForm({
         <p className="mt-5 font-display text-xl font-bold tracking-tight">
           Thank you!
         </p>
-        <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-muted">
+        <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-white/70">
           Your enquiry about {course} is in. A counsellor will call you shortly
           during working hours.
         </p>
@@ -119,34 +121,34 @@ export function CourseEnquiryForm({
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="rounded-3xl bg-white p-6 shadow-[0_24px_60px_-30px_rgba(15,23,42,0.35)] sm:p-8"
-    >
-      <Field label="Your Name" htmlFor="ce-name">
-        <input
-          id="ce-name"
-          name="name"
-          required
-          autoComplete="name"
-          placeholder="Enter your full name"
-          className={INPUT}
-        />
-      </Field>
+    <form onSubmit={onSubmit} className="enquiry-form p-6 sm:p-8">
+      {/* Name and phone share a row now that the panel is wider. */}
+      <div className="grid gap-x-5 sm:grid-cols-2">
+        <Field label="Your Name" htmlFor="ce-name">
+          <input
+            id="ce-name"
+            name="name"
+            required
+            autoComplete="name"
+            placeholder="Enter your full name"
+            className={INPUT}
+          />
+        </Field>
 
-      <Field label="Phone Number" htmlFor="ce-phone">
-        <input
-          id="ce-phone"
-          name="phone"
-          required
-          type="tel"
-          inputMode="numeric"
-          pattern="[0-9]{10}"
-          autoComplete="tel"
-          placeholder="10-digit mobile number"
-          className={INPUT}
-        />
-      </Field>
+        <Field label="Phone Number" htmlFor="ce-phone">
+          <input
+            id="ce-phone"
+            name="phone"
+            required
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]{10}"
+            autoComplete="tel"
+            placeholder="10-digit mobile number"
+            className={INPUT}
+          />
+        </Field>
+      </div>
 
       <Field label="Course or Service" htmlFor="ce-course">
         <input
@@ -155,7 +157,7 @@ export function CourseEnquiryForm({
           readOnly
           aria-readonly="true"
           tabIndex={-1}
-          className={`${INPUT} cursor-not-allowed border-line bg-slate-100 font-medium text-foreground/70`}
+          className={INPUT}
         />
       </Field>
 
@@ -187,12 +189,12 @@ export function CourseEnquiryForm({
           autoComplete="off"
           placeholder="Your answer"
           aria-invalid={Boolean(error)}
-          className={`${INPUT} disabled:opacity-60`}
+          className={INPUT}
         />
       </Field>
 
       {error && (
-        <p role="alert" className="mt-3 text-xs font-medium text-red-600">
+        <p role="alert" className="mt-3 text-xs font-medium text-amber-200">
           {error}
         </p>
       )}
@@ -205,15 +207,14 @@ export function CourseEnquiryForm({
         {status === "sending" ? "Sending…" : "Send Message"}
       </button>
 
-      <p className="mt-4 text-center text-xs text-muted">
+      <p className="mt-4 text-center text-xs text-white/60">
         We never share your number. Expect a call within working hours.
       </p>
     </form>
   )
 }
 
-const INPUT =
-  "w-full rounded-xl border border-line bg-subtle px-4 py-3.5 text-sm text-foreground outline-none transition-colors duration-200 placeholder:text-muted/70 focus-visible:border-brand-600 focus-visible:ring-2 focus-visible:ring-brand-600/20"
+const INPUT = "enquiry-input"
 
 function Field({
   label,
@@ -226,10 +227,7 @@ function Field({
 }) {
   return (
     <div className="mb-4">
-      <label
-        htmlFor={htmlFor}
-        className="mb-1.5 block text-sm font-medium text-foreground/80"
-      >
+      <label htmlFor={htmlFor} className="enquiry-label">
         {label}
       </label>
       {children}

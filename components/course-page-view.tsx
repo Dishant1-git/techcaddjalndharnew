@@ -339,15 +339,17 @@ export function CoursePageView({ page }: { page: CoursePage }) {
           Styling lives in globals.css under "HANDS-ON PROJECTS SECTION"; the
           markup below carries only layout and those class names. */}
       {page.projects && page.projects.length > 0 && (
-        <section id="projects" className="projects-section relative py-20 lg:py-28">
-          <Container className="relative">
-            <SectionHead
-              eyebrow="Portfolio"
-              lines={["Hands-on projects", "you will ship"]}
-            />
+        <Section id="projects" dark>
+          <SectionHead
+            eyebrow="Portfolio"
+            lines={["Hands-on projects", "you will ship"]}
+            dark
+          />
 
-            {/* Bento: two stacked on the left, two full-height beside them. */}
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+          {/* Bento: two stacked on the left, two full-height beside them.
+              `projects-section` carries the card custom properties, which
+              cascade down to every .project-card inside it. */}
+          <div className="projects-section mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
               {page.projects.map((project, i) => (
                 <article
                   key={project.title}
@@ -375,9 +377,8 @@ export function CoursePageView({ page }: { page: CoursePage }) {
                   </div>
                 </article>
               ))}
-            </div>
-          </Container>
-        </section>
+          </div>
+        </Section>
       )}
 
       {/* --- 10. Why Techcadd --- */}
@@ -532,7 +533,7 @@ export function CoursePageView({ page }: { page: CoursePage }) {
         />
 
         <Container className="relative">
-          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16">
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,36rem)] lg:gap-14">
             <div>
               <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
                 Course Information
