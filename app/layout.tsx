@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar"
 import { EnquiryPopup } from "@/components/enquiry-popup"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
+import { ScrollToTop } from "@/components/scroll-to-top"
 import { jsonLd } from "@/lib/json-ld"
 import { organisationSchema, SITE } from "@/lib/site"
 import "./globals.css"
@@ -88,9 +89,17 @@ export default function RootLayout({
             Waiting for ScrollReveal's effect would let above-the-fold blocks
             render, then blink out as the class landed. Inline and script-gated,
             so a no-JS visit still gets the plain, fully visible page. */}
+        {/* The second statement makes a reload start at the top of the page.
+            Browsers restore the previous scroll offset on reload by default,
+            and that restore happens after this script runs — so it has to be
+            switched off here rather than undone later with a scrollTo, which
+            would show the old position first and then jump.
+
+            Anchors are left alone: with `manual` set, a URL carrying a #hash is
+            still scrolled to its target by the browser. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("reveal-ready")`,
+            __html: `document.documentElement.classList.add("reveal-ready");if("scrollRestoration" in history)history.scrollRestoration="manual"`,
           }}
         />
         <Preloader />
@@ -106,6 +115,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <EnquiryPopup />
+        <ScrollToTop />
         <ScrollReveal />
         <CursorFollower />
       </body>
