@@ -1,0 +1,13 @@
+node_modules
+dist
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Uploaded media
+uploads
+
+*.log
+.DS_Store

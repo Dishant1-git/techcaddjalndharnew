@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans:
+    'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial,
+    sans-serif;
+
+  /* Brand */
+  --color-primary-50: #eef0ff;
+  --color-primary-100: #e1e4ff;
+  --color-primary-200: #c8ccff;
+  --color-primary-300: #a6adff;
+  --color-primary-400: #838dff;
+  --color-primary-500: #5f6fff;
+  --color-primary-600: #4b57ef;
+  --color-primary-700: #3d45cb;
+  --color-primary-800: #333aa3;
+  --color-primary-900: #2f3682;
+
+  /* Surfaces */
+  --color-canvas: #f5f6f9;
+  --color-surface: #ffffff;
+
+  /* Sidebar (dark professional shell) */
+  --color-shell-700: #2b3350;
+  --color-shell-800: #1f2540;
+  --color-shell-900: #171c33;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-slate-800 antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+}
+
+@layer components {
+  /* TipTap emits plain HTML and no typography plugin is installed, so the
+     editor body needs its own baseline. */
+  .prose-editor {
+    & h2 {
+      @apply mt-4 mb-2 text-lg font-semibold text-slate-900 first:mt-0;
+    }
+    & h3 {
+      @apply mt-3 mb-1.5 text-base font-semibold text-slate-900 first:mt-0;
+    }
+    & p {
+      @apply my-2 leading-relaxed first:mt-0;
+    }
+    & ul {
+      @apply my-2 list-disc pl-5;
+    }
+    & ol {
+      @apply my-2 list-decimal pl-5;
+    }
+    & li {
+      @apply my-0.5;
+    }
+    & blockquote {
+      @apply my-3 border-l-2 border-slate-200 pl-3 text-slate-600 italic;
+    }
+    & a {
+      @apply text-primary-600 underline underline-offset-2;
+    }
+    & code {
+      @apply rounded bg-slate-100 px-1 py-0.5 font-mono text-[0.85em] text-slate-800;
+    }
+    & img {
+      @apply my-3 max-w-full rounded-lg;
+    }
+    & hr {
+      @apply my-4 border-slate-200;
+    }
+
+    /* Placeholder for the empty document. */
+    & p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      @apply pointer-events-none float-left h-0 text-slate-400;
+    }
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-toast-in {
+  animation: toast-in 150ms ease-out;
+}
+
+/**
+ * Stand-in for a campus photograph on the signed-out pages. The design blurs
+ * the image heavily and covers it with a dark overlay, so layered gradients
+ * read the same as a real photo while costing no network request. Point
+ * `AuthBackground` at a real image whenever one is available.
+ */
+/**
+ * Product backdrop for the signed-out pages: deep navy on the left resolving to
+ * indigo/violet on the right. Deliberately abstract — no photograph — so it
+ * reads as part of the product rather than stock imagery.
+ */
+@utility auth-backdrop {
+  background-color: #0b1228;
+  background-image:
+    radial-gradient(58% 70% at 88% 8%, rgb(124 96 255 / 0.4) 0%, transparent 62%),
+    radial-gradient(50% 60% at 96% 62%, rgb(95 111 255 / 0.34) 0%, transparent 64%),
+    radial-gradient(46% 52% at 10% 92%, rgb(76 92 220 / 0.2) 0%, transparent 66%),
+    linear-gradient(115deg, #0b1228 0%, #131a3d 38%, #1d1f52 68%, #241f5e 100%);
+}
+
+@utility scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(148 163 184 / 0.4) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(148 163 184 / 0.4);
+    border-radius: 9999px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

@@ -1,0 +1,20 @@
+node_modules
+dist
+build
+
+# Local editor/agent settings — personal, not shared
+.claude/settings.local.json
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Uploaded media
+backend/uploads
+
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
