@@ -11,6 +11,7 @@ import { Alert } from '../../components/feedback/Alert'
 import { Spinner } from '../../components/feedback/Spinner'
 import { Checkbox } from '../../components/form/Checkbox'
 import { FormField } from '../../components/form/FormField'
+import { ImageField } from '../../components/form/ImageField'
 import { Input } from '../../components/form/Input'
 import { MultiSelect } from '../../components/form/MultiSelect'
 import { NumberInput } from '../../components/form/NumberInput'
@@ -266,6 +267,22 @@ export default function CourseFormPage() {
         </div>
 
         <div className="space-y-6">
+          <Card flush>
+            <CardHeader
+              title="Thumbnail"
+              subtitle="Shown on the course list and on cards across the site"
+            />
+            <CardBody>
+              <Controller
+                control={control}
+                name="thumbnail"
+                render={({ field }) => (
+                  <ImageField value={field.value} onChange={field.onChange} aspect="video" />
+                )}
+              />
+            </CardBody>
+          </Card>
+
           <Card flush>
             <CardHeader title="Publishing" />
             <CardBody className="space-y-5">
