@@ -8,7 +8,29 @@ import type { RowDataPacket } from "mysql2/promise"
  * validate-then-store story and the schema has one home.
  */
 
+/**
+ * Which form produced a row, keyed by what the client posts as `form`.
+ * The values are stored verbatim, so they read as-is in the table.
+ */
+export const FORM_TYPES = {
+  popup: "Call Request",
+  course: "Course Enquiry",
+} as const
+
+const FORM_LABELS = new Map<string, string>(Object.entries(FORM_TYPES))
+
+/**
+ * Resolves a posted form key to its stored label. Anything unknown — including
+ * an older client that posts nothing at all — is the popup, which is the form
+ * that shipped first.
+ */
+export function formTypeFor(key: unknown): string {
+  return FORM_LABELS.get(String(key ?? "")) ?? FORM_TYPES.popup
+}
+
 export type Enquiry = {
+  /** Label from FORM_TYPES, e.g. "Course Enquiry". */
+  formType: string
   name: string
   phone: string
   course: string
@@ -27,6 +49,7 @@ const MAX_PER_PHONE_PER_DAY = 3
 const CREATE_TABLE = `
   CREATE TABLE IF NOT EXISTS enquiries (
     id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    form_type   VARCHAR(32)  NULL,
     name        VARCHAR(80)  NOT NULL,
     phone       VARCHAR(20)  NOT NULL,
     course      VARCHAR(120) NOT NULL,
@@ -56,6 +79,10 @@ async function migrate() {
   // the first deploy needs its own pass. MySQL has no CREATE INDEX IF NOT
   // EXISTS or ADD COLUMN IF NOT EXISTS, hence the lookups.
   await ensureColumn("message", "TEXT NULL AFTER course")
+  // Nullable rather than defaulted: rows written before this column existed
+  // came from either form and there is no honest way to tell them apart, so
+  // they stay blank instead of all claiming to be call requests.
+  await ensureColumn("form_type", "VARCHAR(32) NULL AFTER id")
   await ensureIndex("idx_phone_created", "phone, created_at")
   await ensureIndex("idx_ip_created", "ip, created_at")
 }
@@ -87,7 +114,13 @@ async function ensureIndex(name: string, columns: string) {
 
 function ensureTable() {
   if (process.env.DB_AUTO_MIGRATE === "false") return Promise.resolve()
-  ensured ??= migrate()
+  // The failure is cleared, not cached: keeping a rejected promise here would
+  // turn one dropped connection into a form that stays broken until the next
+  // deploy — a self-inflicted outage a single bad moment could trigger.
+  ensured ??= migrate().catch((error) => {
+    ensured = null
+    throw error
+  })
   return ensured
 }
 
@@ -123,9 +156,11 @@ export async function saveEnquiry(enquiry: Enquiry): Promise<number> {
   await ensureTable()
 
   const result = await execute(
-    `INSERT INTO enquiries (name, phone, course, message, source, ip, user_agent)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO enquiries
+       (form_type, name, phone, course, message, source, ip, user_agent)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
+      enquiry.formType,
       enquiry.name,
       enquiry.phone,
       enquiry.course,

@@ -27,7 +27,15 @@ let ensured: Promise<void> | null = null
 
 function ensureTable() {
   if (process.env.DB_AUTO_MIGRATE === "false") return Promise.resolve()
-  ensured ??= execute(CREATE_TABLE).then(() => undefined)
+  // Cleared on failure rather than cached — a rejected promise parked here
+  // would keep rejecting for the life of the process, and this table is what
+  // makes a solved captcha single-use.
+  ensured ??= execute(CREATE_TABLE)
+    .then(() => undefined)
+    .catch((error) => {
+      ensured = null
+      throw error
+    })
   return ensured
 }
 
