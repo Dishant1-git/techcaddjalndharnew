@@ -216,6 +216,36 @@
   );
 }
 
+/* Frosted pane with no fill of its own — the blur and saturation are the whole
+   effect. Written out rather than using the Tailwind utilities so the
+   -webkit- prefix is explicit for older Safari and iOS WebViews, which still
+   need it for backdrop-filter. */
+.glass-blur {
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+}
+
+/* Dot matrix — the course-page counterpart to the blueprint grid. Dots read as
+   quieter and less "engineering schematic" than ruled lines, which suits a page
+   someone is reading rather than scanning. */
+.panel-dots {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.11) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 75% at 50% 0%,
+    #000 30%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 90% 75% at 50% 0%,
+    #000 30%,
+    transparent 100%
+  );
+}
+
 /* Fine diagonal hatch, an order of magnitude subtler than the grid — it reads
    as surface rather than as a second pattern. */
 .panel-hatch {
@@ -263,7 +293,10 @@
     var(--spin-from, #22d3ee) 335deg,
     transparent 360deg
   );
-  animation: spin-border var(--spin-duration, 3.4s) linear infinite;
+  /* A negative --spin-delay starts the sweep mid-cycle, which is how a field
+     of these is staggered instead of pulsing in unison. */
+  animation: spin-border var(--spin-duration, 3.4s) linear var(--spin-delay, 0s)
+    infinite;
 }
 
 .spin-border__face {
@@ -275,6 +308,90 @@
   to {
     rotate: 360deg;
   }
+}
+
+/* --- Opposing marquee rows ---
+   The track holds the same list twice, so translating exactly -50% lands the
+   second copy where the first began and the loop is seamless. That only holds
+   if the spacing is uniform, which is why the cards carry their own right
+   margin instead of the flex container using `gap`. */
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-left {
+  animation: marquee-left var(--marquee-duration, 70s) linear infinite;
+}
+
+.marquee-right {
+  animation: marquee-right var(--marquee-duration, 70s) linear infinite;
+}
+
+.marquee-row:hover .marquee-left,
+.marquee-row:hover .marquee-right {
+  animation-play-state: paused;
+}
+
+/* Dissolves the cards into the background at both edges, so the row reads as
+   continuous rather than being guillotined by the viewport. */
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+
+/* --- Waving hand ---
+   The pivot sits low-right, roughly where a wrist would be, so the hand
+   rocks rather than spinning about its centre. The long tail in the keyframes
+   gives a pause between waves instead of a continuous shake. */
+@keyframes wave {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10%,
+  30% {
+    transform: rotate(15deg);
+  }
+  20%,
+  40% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(11deg);
+  }
+}
+
+.animate-wave {
+  display: inline-block;
+  transform-origin: 70% 75%;
+  animation: wave 2.6s ease-in-out infinite;
 }
 
 /* --- Twinkling stars --- */
@@ -500,7 +617,10 @@
   /* The border and stars stop moving but stay lit, so the AI nav keeps its
      accent rather than collapsing to a flat pill. */
   .spin-border::before,
-  .animate-edge-sweep {
+  .animate-edge-sweep,
+  .animate-wave,
+  .marquee-left,
+  .marquee-right {
     animation: none !important;
   }
 

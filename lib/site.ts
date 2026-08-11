@@ -19,6 +19,12 @@ export const SITE = {
   phone: "+91 98881 22255",
   email: "info@techcadd.com",
   founded: "2007",
+  /**
+   * The walkthrough that opens from every course page.
+   * TODO: replace with Techcadd's own campus/course video — one edit here
+   * changes it on all 50+ course pages.
+   */
+  promoVideo: "https://www.youtube.com/watch?v=aircAruvnKk",
   /** Areas the Jalandhar centre actually draws students from. */
   areasServed: [
     "Jalandhar",

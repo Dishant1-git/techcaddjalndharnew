@@ -1,5 +1,15 @@
 import { COURSE_SPECS, GENERIC_SPEC, type CourseSpec } from "./course-specs"
-import type { CoursePage, Faq, LearnModule, Review, Segment } from "./course-pages"
+import { SITE } from "./site"
+import type {
+  CoursePage,
+  Faq,
+  LearnModule,
+  ModuleTrack,
+  Outcome,
+  Project,
+  Review,
+  Segment,
+} from "./course-pages"
 
 /**
  * Builds full page content from a course spec.
@@ -54,6 +64,150 @@ function buildReviews(courseName: string, seed: string): Review[] {
   const people = rotate(REVIEW_POOL, seed, 6)
   const quotes = rotate(QUOTE_TEMPLATES, seed + "q", 6)
   return people.map((person, i) => ({ ...person, quote: quotes[i](courseName) }))
+}
+
+/**
+ * The three enrolment lengths, each a real superset of the one before it.
+ *
+ * A student comparing 3 against 9 months should be able to see exactly what
+ * the extra six months buys, so the shorter tracks are prefixes rather than
+ * differently-worded versions of the same thing.
+ */
+function buildTracks(spec: CourseSpec, name: string): ModuleTrack[] {
+  const t = spec.topics
+
+  const foundations: LearnModule = { title: "Foundations", points: t.slice(0, 3) }
+  const core: LearnModule = { title: "Core Skills", points: t.slice(3, 6) }
+  const applied: LearnModule = {
+    title: "Applied Work",
+    points: [...t.slice(6, 8), "Industry standards and code review"],
+  }
+  const liveProject: LearnModule = {
+    title: "Live Client Project",
+    points: [
+      "A brief drawn from Techcadd's own delivery work",
+      "Built under a trainer's supervision",
+      "Reviewed, corrected and shipped",
+    ],
+  }
+  const placement: LearnModule = {
+    title: "Placement Preparation",
+    points: [
+      "Portfolio build and CV review",
+      "Aptitude drills and mock interviews",
+      "Drives with our hiring partner network",
+    ],
+  }
+
+  return [
+    {
+      months: 3,
+      label: "3 Months",
+      summary: `The core of ${name}, finished with a guided project you can show an employer.`,
+      modules: [
+        foundations,
+        core,
+        {
+          title: "Guided Project",
+          points: [
+            "A first build, scoped so you can finish it",
+            "Daily lab time and code review",
+            "An interview-ready walkthrough of your work",
+          ],
+        },
+      ],
+    },
+    {
+      months: 6,
+      label: "6 Months",
+      summary:
+        "Everything above, plus applied work on a live client account and a documented internship.",
+      modules: [foundations, core, applied, liveProject, placement],
+    },
+    {
+      months: 9,
+      label: "9 Months",
+      summary:
+        "The full track — specialisation, a longer internship and repeated placement drives until you are placed.",
+      modules: [
+        foundations,
+        core,
+        applied,
+        {
+          title: "Specialisation",
+          points: [
+            `Advanced ${name.toLowerCase()} topics chosen with your trainer`,
+            "Performance, scale and production concerns",
+            "Current tooling as the industry adopts it",
+          ],
+        },
+        liveProject,
+        {
+          title: "Extended Internship",
+          points: [
+            "Ongoing work on real client delivery",
+            "A documented internship letter",
+            "A reference from the team you worked with",
+          ],
+        },
+        placement,
+      ],
+    },
+  ]
+}
+
+/** Four deliverables, phrased from the course's own topics. */
+function buildProjects(spec: CourseSpec, name: string): Project[] {
+  const t = spec.topics
+
+  return [
+    {
+      title: `${name} Fundamentals Build`,
+      body: `Your first working piece, applying ${t[0]?.toLowerCase()} and ${t[1]?.toLowerCase()} end to end rather than as isolated exercises.`,
+      tags: [spec.tools[0], spec.tools[1]].filter(Boolean),
+    },
+    {
+      title: "Real-World Data Challenge",
+      body: `Work with messy, real inputs — ${t[3]?.toLowerCase()} and ${t[4]?.toLowerCase()} — and defend the choices you made to a trainer.`,
+      tags: [spec.tools[2], spec.tools[3]].filter(Boolean),
+    },
+    {
+      title: "Live Client Brief",
+      body: `A genuine requirement from Techcadd's delivery pipeline, scoped, built and shipped under supervision. This is the one interviewers ask about.`,
+      tags: ["Live work", "Supervised"],
+    },
+    {
+      title: "Portfolio Capstone",
+      body: `A ${name.toLowerCase()} project you specify yourself, covering ${t[6]?.toLowerCase() ?? "advanced topics"} and deployment, and present as your final piece.`,
+      tags: [spec.tools[4] ?? "Deployment", "Presentation"].filter(Boolean),
+    },
+  ]
+}
+
+/** Career questions, answered in the same accordion the FAQs use. */
+function buildOutcomes(spec: CourseSpec, name: string): Outcome[] {
+  return [
+    {
+      q: `What job roles open up after ${name}?`,
+      a: `Graduates move into ${spec.careers.join(", ")} and similar roles. ${spec.demand}`,
+    },
+    {
+      q: "What can I earn, and how fast does it grow?",
+      a: `A fresher with a working portfolio starts around ${spec.salary} a month in the Jalandhar and Mohali market. With two years of delivery experience that typically doubles, and specialists who keep learning move well beyond it.`,
+    },
+    {
+      q: "Can I freelance or work remotely with this skill?",
+      a: `Yes. A Jalandhar address costs you nothing on a remote brief — students bill clients in Delhi, Dubai and Canada. The course covers client handling, proposals and reporting so you can price and defend your work, not just do it.`,
+    },
+    {
+      q: "Which industries hire for this in Punjab?",
+      a: `Beyond IT companies, the export houses, sports goods and hand tool manufacturers, immigration consultancies, hospitals, schools and real estate firms across Jalandhar all now hire for these skills directly.`,
+    },
+    {
+      q: "Can I continue to higher studies or a specialisation later?",
+      a: `The certificate and portfolio stand on their own, and they stack. Most students move on to an adjacent Techcadd track — the tools overlap, so the second course is faster than the first.`,
+    },
+  ]
 }
 
 function buildModules(spec: CourseSpec): LearnModule[] {
@@ -223,6 +377,13 @@ export function generateContent(
       tools: spec.tools,
     },
 
+    video: {
+      url: SITE.promoVideo,
+      title: `Inside the ${name} course at Techcadd Jalandhar`,
+    },
+    tracks: buildTracks(spec, name),
+    projects: buildProjects(spec, name),
+    outcomes: buildOutcomes(spec, name),
     reviews: buildReviews(name, seed),
     faqs: buildFaqs(name, page.h1, spec, page.segment),
   }

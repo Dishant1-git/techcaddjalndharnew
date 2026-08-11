@@ -86,13 +86,24 @@ export function Preloader() {
   const percent = Math.round(progress)
 
   return (
-    <div
-      className="preloader"
-      data-done={done}
-      role="status"
-      aria-live="polite"
-      aria-label={`Loading, ${percent} percent`}
-    >
+    <>
+      {/*
+        The overlay is server-rendered so it covers the page from the very
+        first paint — but only JavaScript can ever dismiss it. Without this,
+        a visitor with JS disabled (or blocked by an extension) stares at a
+        splash screen forever.
+      */}
+      <noscript>
+        <style>{`.preloader{display:none!important}`}</style>
+      </noscript>
+
+      <div
+        className="preloader"
+        data-done={done}
+        role="status"
+        aria-live="polite"
+        aria-label={`Loading, ${percent} percent`}
+      >
       <PanelTexture />
 
       <div className="relative w-[min(22rem,80vw)] text-center">
@@ -116,8 +127,9 @@ export function Preloader() {
         <p className="mt-5 font-mono text-[11px] tracking-[0.22em] text-white/60 uppercase">
           Booting up experience{" "}
           <span className="text-accent-glow tabular-nums">{percent}%</span>
-        </p>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

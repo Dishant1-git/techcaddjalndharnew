@@ -7,7 +7,6 @@ import { Faq } from "@/components/faq"
 import { FeaturedCourses } from "@/components/featured-courses"
 import { Hero } from "@/components/hero"
 import { Modules } from "@/components/modules"
-import { Stats } from "@/components/stats"
 import { Technologies } from "@/components/technologies"
 import { Testimonials } from "@/components/testimonials"
 import { WhyUs } from "@/components/why-us"
@@ -25,8 +24,6 @@ export default function Home() {
         <FeaturedCourses />
 
         <WhyUs />
-
-        <Stats />
 
         <Testimonials />
 

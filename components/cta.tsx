@@ -1,6 +1,7 @@
 import { Fragment } from "react"
 import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
+import { CONTACT } from "@/lib/navigation"
 
 /** Reassurances under the form — the objections counsellors hear most. */
 const ASSURANCES = [
@@ -54,35 +55,40 @@ export function Cta() {
         />
 
         <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
-          Join the 15,000+ students who trained at Techcadd to learn a real
-          skill, build live projects, and get placed with confidence.
+          Talk to a counsellor today. One call is usually enough to know which
+          track fits your degree, your schedule and the job you want.
         </p>
 
-        <form
+        <div
           data-reveal
-          action="/contact"
-          method="get"
-          className="mx-auto mt-10 flex w-full max-w-lg flex-col gap-3 sm:flex-row sm:gap-0 sm:overflow-hidden sm:rounded-xl sm:bg-white sm:shadow-[0_20px_45px_-20px_rgba(42,44,94,0.45)]"
+          className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <label htmlFor="cta-email" className="sr-only">
-            Your email address
-          </label>
-          <input
-            id="cta-email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            placeholder="Enter your email"
-            className="min-w-0 flex-1 rounded-xl bg-white px-5 py-4 text-sm text-foreground shadow-[0_20px_45px_-20px_rgba(42,44,94,0.45)] outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-brand-600 sm:rounded-none sm:shadow-none sm:focus-visible:ring-inset"
-          />
-          <button
-            type="submit"
-            className="shrink-0 rounded-xl bg-brand-600 px-8 py-4 text-sm font-semibold text-white transition-colors duration-300 hover:bg-brand-700 sm:rounded-none"
+          <a
+            href={CONTACT.phoneHref}
+            className="group inline-flex items-center gap-3 rounded-full bg-brand-600 py-3 pr-8 pl-3 text-white shadow-[0_20px_45px_-18px_rgba(37,99,235,0.9)] transition-colors duration-300 hover:bg-brand-700"
           >
-            Get started
-          </button>
-        </form>
+            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white/20">
+              {/* Reuses .animate-wave so the shake is covered by the same
+                  prefers-reduced-motion rule as the hand. */}
+              <PhoneIcon className="animate-wave size-5" />
+            </span>
+            <span className="text-left">
+              <span className="block text-[11px] font-medium tracking-[0.14em] text-white/70 uppercase">
+                Call now
+              </span>
+              <span className="block font-display text-lg font-bold tracking-tight">
+                {CONTACT.phone}
+              </span>
+            </span>
+          </a>
+
+          <a
+            href="/contact"
+            className="inline-flex h-14 items-center justify-center rounded-full border border-ink/15 bg-white px-8 text-sm font-semibold text-ink transition-colors duration-300 hover:border-brand-600/40 hover:text-brand-600"
+          >
+            Book a free demo
+          </a>
+        </div>
 
         <ul className="mt-10 flex flex-col items-center justify-center gap-3 text-sm text-muted sm:flex-row sm:gap-5">
           {ASSURANCES.map((item, i) => (
@@ -105,6 +111,29 @@ export function Cta() {
         </div>
       </Container>
     </section>
+  )
+}
+
+/**
+ * Handset with signal arcs. The arcs are separate paths so they can be given
+ * their own opacity — a solid handset with faint waves reads as "ringing"
+ * where a uniform outline just reads as a phone.
+ */
+function PhoneIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M16.9 21c-1.9 0-3.9-.5-5.9-1.6a20.6 20.6 0 0 1-6.4-5.4A19.5 19.5 0 0 1 1.5 7c-.2-1 0-1.9.6-2.6l2-2.1c.5-.5 1.3-.5 1.8 0l2.6 2.7c.5.5.5 1.3 0 1.8L7.1 8.3c.5 1 1.2 2 2 2.9.9.9 1.9 1.6 3 2.2l1.4-1.5c.5-.5 1.3-.5 1.8 0l2.6 2.7c.5.5.5 1.3 0 1.8l-2 2.1c-.5.4-1.2.6-1.9.5Z"
+        fill="currentColor"
+      />
+      <path
+        d="M14.5 3.5a6.5 6.5 0 0 1 6 6M14 7.2a3 3 0 0 1 2.8 2.9"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        opacity="0.6"
+      />
+    </svg>
   )
 }
 

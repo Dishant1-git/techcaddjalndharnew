@@ -187,8 +187,10 @@ export function EnquiryPopup() {
             id="enquiry-title"
             className="font-display text-2xl leading-tight font-bold tracking-tight sm:text-3xl"
           >
-            Still exploring? Let us help{" "}
-            <span aria-hidden="true">🚀</span>
+            <span aria-hidden="true" className="animate-wave">
+              👋
+            </span>{" "}
+            Still exploring? Let us help
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-white/65">
             Talk to a counsellor and we&apos;ll map the shortest route from
@@ -223,8 +225,12 @@ export function EnquiryPopup() {
           </figure>
 
           <div className="mt-7 flex items-center justify-between gap-4 rounded-2xl bg-white/90 px-5 py-4 text-ink">
-            <span className="text-sm font-semibold">
-              Our students say: <strong className="font-bold">EXCELLENT</strong>
+            <span className="flex items-center gap-2.5">
+              <GoogleMark />
+              <span className="inline-flex items-center gap-1.5 text-sm font-bold">
+                Google Verified
+                <VerifiedBadge />
+              </span>
             </span>
             <span className="flex gap-0.5" aria-label="Rated 5 out of 5">
               {Array.from({ length: 5 }, (_, i) => (
@@ -435,5 +441,56 @@ export function EnquiryPopup() {
         </form>
       </div>
     </div>
+  )
+}
+
+/**
+ * Google's four-colour "G". Drawn inline rather than pulled from simple-icons,
+ * which distributes it as a single monochrome path — a one-colour G reads as a
+ * generic letter and loses the recognition the badge depends on.
+ */
+function GoogleMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-5 shrink-0" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.86c2.26-2.09 3.56-5.17 3.56-8.87Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.27 14.29a7.2 7.2 0 0 1 0-4.58V6.62H1.29A11.99 11.99 0 0 0 0 12c0 1.94.46 3.77 1.29 5.38l3.98-3.09Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.7 0 3.99 2.47 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75Z"
+      />
+    </svg>
+  )
+}
+
+/**
+ * Google's own `verified` mark from Material Symbols — the twelve-point
+ * scalloped badge, not an approximation of it.
+ *
+ * The single Material path carries the tick as a reverse-wound subpath, which
+ * relies on the fill rule to knock it out. Drawing the tick separately in
+ * white is equivalent and cannot be broken by a renderer's winding choice.
+ */
+function VerifiedBadge() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4 shrink-0" aria-hidden="true">
+      <path
+        fill="#1a73e8"
+        d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12z"
+      />
+      <path
+        fill="#ffffff"
+        d="M10.09 16.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"
+      />
+    </svg>
   )
 }

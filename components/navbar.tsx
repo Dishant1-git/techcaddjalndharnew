@@ -123,7 +123,7 @@ export function Navbar() {
                   : "bg-foreground text-background hover:bg-brand-600"
               }`}
             >
-              Enquire Now
+              Book Demo
             </button>
           </div>
 
@@ -288,7 +288,7 @@ export function Navbar() {
               }}
               className="flex h-14 flex-1 items-center justify-center rounded-full bg-foreground text-base font-medium text-background transition-colors hover:bg-brand-600"
             >
-              Enquire Now
+              Book Demo
             </button>
           </div>
         </div>
@@ -328,7 +328,10 @@ function DesktopNavLink({
       >
         <span className="spin-border__face inline-flex items-center gap-1.5 rounded-full bg-linear-to-r from-brand-700 via-brand-600 to-brand-500 px-5 py-2 text-sm font-semibold text-white transition-colors duration-300 group-hover/ai:from-brand-600 group-hover/ai:to-brand-500">
           {item.label}
-          <SparkIcon className="animate-twinkle size-4 [--twinkle-duration:2.2s]" />
+          {/* fill-white explicitly: passing a className replaces SparkIcon's
+              default, which is where `fill-current` lives — without it the
+              star falls back to black on the blue pill. */}
+          <SparkIcon className="animate-twinkle size-4 fill-white [--twinkle-duration:2.2s]" />
         </span>
       </Link>
     )
@@ -479,17 +482,23 @@ function MegaMenu({
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-foreground/10 bg-subtle px-8 py-4">
-          <div className="flex flex-wrap gap-x-7 gap-y-2">
-            {QUICK_LINKS.map((q) => (
-              <Link
-                key={q.href}
-                href={q.href}
-                className="font-mono text-xs tracking-wide text-muted uppercase transition-colors hover:text-foreground"
-              >
-                {q.label}
-              </Link>
-            ))}
-          </div>
+          {/* A line worth reading beats four links nobody clicks from a course
+              menu — the same destinations live in the footer's Support column. */}
+          <figure className="flex min-w-0 items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="font-display text-3xl leading-none font-bold text-brand-600/25"
+            >
+              &ldquo;
+            </span>
+            <blockquote className="text-sm leading-snug text-muted italic">
+              Everybody should learn to program a computer, because it teaches
+              you how to think.
+              <cite className="ml-1.5 font-medium text-foreground not-italic">
+                — Steve Jobs
+              </cite>
+            </blockquote>
+          </figure>
           <Link
             href={cta.href}
             className="group/all inline-flex items-center gap-2 text-sm font-medium text-brand-600"

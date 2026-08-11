@@ -110,7 +110,10 @@ export function Modules() {
     <section
       id="modules"
       data-cursor="light"
-      className="relative isolate overflow-hidden bg-ink py-20 text-white lg:py-28"
+      /* overflow-clip, not overflow-hidden: `hidden` makes this element a
+         scroll container, which silently disables `position: sticky` on the
+         cards inside. `clip` still contains the texture without doing that. */
+      className="relative isolate overflow-clip bg-ink py-20 text-white lg:py-28"
     >
       <PanelTexture />
 
@@ -132,30 +135,54 @@ export function Modules() {
           </p>
         </div>
 
-        <div
-          data-reveal
-          className="mt-12 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3"
-        >
-          {MODULES.map((m) => (
+        {/*
+          Sticky stack. Each card pins a little lower than the one before it,
+          so a card scrolling up covers its predecessor while leaving that
+          card's top edge visible — the deck grows as you read down.
+
+          The cards must be opaque: a translucent surface would show the card
+          underneath and the stack would read as a mess rather than a deck.
+          `pb` on the last wrapper gives the final card room to settle before
+          the section ends.
+        */}
+        <div className="mt-12 lg:mt-16">
+          {MODULES.map((m, i) => (
             <div
               key={m.step}
-              className="group border-t border-white/15 pt-6 transition-colors duration-500 hover:border-white/40"
+              className="sticky"
+              style={{ top: `calc(6.5rem + ${i * 1.1}rem)` }}
             >
-              <div className="flex items-center justify-between">
-                <span className="grid size-11 place-items-center rounded-xl border border-white/15 bg-white/10 text-white transition-colors duration-500 group-hover:bg-white group-hover:text-ink">
-                  <svg viewBox="0 0 24 24" fill="none" className="size-5" aria-hidden="true">
-                    {m.icon}
-                  </svg>
-                </span>
-                <span className="font-mono text-xs text-white/40">{m.step}</span>
-              </div>
+              <article
+                className={`group relative overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#33366f] p-7 shadow-[0_30px_70px_-30px_rgba(6,10,35,0.95)] transition-colors duration-500 hover:border-white/25 sm:p-9 lg:p-10 ${
+                  i === MODULES.length - 1 ? "mb-0" : "mb-6"
+                }`}
+              >
+                {/* Keeps each card from reading as a flat rectangle. */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/30 to-transparent"
+                />
 
-              <h3 className="mt-5 font-display text-lg font-bold tracking-tight">
-                {m.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/60">
-                {m.body}
-              </p>
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
+                  <span className="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/15 bg-white/10 text-white transition-colors duration-500 group-hover:bg-white group-hover:text-ink">
+                    <svg viewBox="0 0 24 24" fill="none" className="size-6" aria-hidden="true">
+                      {m.icon}
+                    </svg>
+                  </span>
+
+                  <div className="min-w-0 flex-1">
+                    <span className="font-mono text-xs text-white/40">
+                      {m.step}
+                    </span>
+                    <h3 className="mt-2 font-display text-xl font-bold tracking-tight lg:text-2xl">
+                      {m.title}
+                    </h3>
+                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/65 lg:text-base">
+                      {m.body}
+                    </p>
+                  </div>
+                </div>
+              </article>
             </div>
           ))}
         </div>

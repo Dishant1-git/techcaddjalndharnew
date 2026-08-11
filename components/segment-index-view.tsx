@@ -48,7 +48,7 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
         data-cursor="light"
         className="relative isolate overflow-hidden bg-ink pt-32 pb-16 text-white lg:pt-40 lg:pb-20"
       >
-        <PanelTexture />
+        <PanelTexture variant="aurora" />
 
         <Container className="relative">
           <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">

@@ -40,14 +40,40 @@ export function Footer() {
        above, so the footer stays quiet and doesn't compete with it. */
     <footer className="relative overflow-hidden border-t border-line bg-subtle pt-20 pb-8 lg:pt-28 lg:pb-10">
       {/* --- Oversized wordmark background ---
-          Bleeds to the viewport edge now that the footer is full width, so it
-          reads as a watermark on the surface rather than art inside a card. */}
-      <span
+          Drawn as SVG text rather than a CSS font-size: `textLength` forces the
+          word to exactly the viewBox width, so it fills the footer edge to edge
+          and can never be clipped by `overflow-hidden` — which is what a `vw`
+          size did, because the word's real width depends on font metrics no
+          `clamp()` can know. */}
+      <svg
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 -bottom-[0.16em] block bg-linear-to-b from-ink/[0.11] to-brand-600/0 bg-clip-text text-center font-display text-[clamp(5rem,24vw,20rem)] leading-none font-bold tracking-tighter text-transparent select-none"
+        viewBox="0 0 1000 190"
+        /* Height follows the width so the letterforms keep their proportions —
+           forcing a fixed height with preserveAspectRatio="none" would squash
+           them. */
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-auto w-full select-none"
       >
-        techcadd.
-      </span>
+        <defs>
+          <linearGradient id="footer-wordmark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-ink)" stopOpacity="0.13" />
+            <stop offset="100%" stopColor="var(--color-brand-600)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <text
+          x="500"
+          y="176"
+          textAnchor="middle"
+          textLength="980"
+          /* `spacing` tightens the gaps only — `spacingAndGlyphs` would stretch
+             the letterforms and the wordmark would stop being the wordmark. */
+          lengthAdjust="spacing"
+          className="font-display"
+          style={{ fontSize: 200, fontWeight: 700 }}
+          fill="url(#footer-wordmark)"
+        >
+          techcadd.
+        </text>
+      </svg>
 
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">

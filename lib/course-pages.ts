@@ -28,6 +28,19 @@ export type Review = {
 }
 export type LearnModule = { title: string; points: string[] }
 
+/** A duration a student can enrol for; the syllabus changes with it. */
+export type ModuleTrack = {
+  months: 3 | 6 | 9
+  label: string
+  summary: string
+  modules: LearnModule[]
+}
+
+export type Project = { title: string; body: string; tags: string[] }
+
+/** Career-outcome questions, rendered in the same accordion as the FAQs. */
+export type Outcome = { q: string; a: string }
+
 export type CoursePage = {
   slug: string
   segment: Segment
@@ -43,6 +56,12 @@ export type CoursePage = {
   facts: Fact[]
 
   // --- Sections, authored in stages ---
+  /** YouTube URL for the walkthrough popup. */
+  video?: { url: string; title: string }
+  /** 3 / 6 / 9-month syllabus variants. */
+  tracks?: ModuleTrack[]
+  projects?: Project[]
+  outcomes?: Outcome[]
   overview?: string[]
   whoCanDo?: { intro?: string; groups?: { title: string; body: string }[] }
   whyProgram?: string[]
@@ -586,17 +605,27 @@ function stubPage(entry: CatalogueEntry): CoursePage {
   }
 }
 
-export function getCoursePage(segment: Segment, slug: string) {
-  // Hand-authored pages always win over generated content.
-  const authored = COURSE_PAGES.find(
-    (p) => p.segment === segment && p.slug === slug,
-  )
-  if (authored) return authored
+/** Drops keys the author left out, so they fall through to generated content. */
+function defined<T extends object>(value: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(value).filter(([, v]) => v !== undefined),
+  ) as Partial<T>
+}
 
+export function getCoursePage(segment: Segment, slug: string) {
   const entry = CATALOGUE.find((e) => e.segment === segment && e.slug === slug)
   if (!entry) return undefined
 
-  return generateContent(stubPage(entry), `${segment}/${slug}`)
+  const generated = generateContent(stubPage(entry), `${segment}/${slug}`)
+
+  // Generated content is the floor, hand-authored copy the override. Layering
+  // this way means a page authored before a section existed still gets that
+  // section rather than silently missing it.
+  const authored = COURSE_PAGES.find(
+    (p) => p.segment === segment && p.slug === slug,
+  )
+
+  return authored ? { ...generated, ...defined(authored) } : generated
 }
 
 export function pagesInSegment(segment: Segment): CoursePage[] {

@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
-import { TestimonialSlider } from "./testimonial-slider"
 import {
   TESTIMONIALS,
   TESTIMONIAL_META,
@@ -21,8 +20,22 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="relative isolate overflow-hidden bg-[url('/assets/texture.svg')] bg-cover bg-center py-20 lg:py-28"
+      className="relative isolate overflow-hidden bg-subtle py-20 lg:py-28"
     >
+      {/* The generated grain-and-horizon backdrop. Kept as its own layer
+          rather than a background on the section, so the wash and colour
+          blooms below can sit between it and the cards. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-20 bg-[url('/assets/texture.svg')] bg-cover bg-center opacity-90"
+      />
+
+      {/* Colour under the glass cards — without it the row reads as grey. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-20 left-[12%] size-[30rem] rounded-full bg-brand-400/25 blur-[120px]" />
+        <div className="absolute right-[8%] bottom-0 size-[26rem] rounded-full bg-accent-400/20 blur-[120px]" />
+      </div>
+
       {/* Keeps the heading legible wherever the texture lands. */}
       <div
         aria-hidden="true"
@@ -72,22 +85,85 @@ export function Testimonials() {
         </div>
       </div>
 
-      <TestimonialSlider
-        className={`mt-12 gap-5 pb-4 lg:mt-16 ${GUTTER}`}
-        listClassName="flex shrink-0 gap-5"
-      >
-        {TESTIMONIALS.map((t) => (
-          <Card key={t.name} testimonial={t} />
-        ))}
-      </TestimonialSlider>
+      {/* Two rows travelling in opposite directions. Splitting the list means
+          the same quote never appears on both rows at the same moment. */}
+      <div className="marquee-row mt-14 space-y-6 lg:mt-20 lg:space-y-8">
+        <Row items={TESTIMONIALS.slice(0, Math.ceil(TESTIMONIALS.length / 2))} />
+        <Row
+          items={TESTIMONIALS.slice(Math.ceil(TESTIMONIALS.length / 2))}
+          reverse
+        />
+      </div>
     </section>
+  )
+}
+
+/**
+ * Cards per copy needed before a row is reliably wider than the viewport.
+ *
+ * A card is ~21rem plus its margin, so six clears roughly 2100px. Without this
+ * the shorter row (three quotes) would run out of cards on a wide monitor and
+ * the loop would show a blank stretch.
+ */
+const MIN_PER_COPY = 6
+
+function fill(items: Testimonial[]): Testimonial[] {
+  if (!items.length) return items
+  const out = [...items]
+  while (out.length < MIN_PER_COPY) out.push(...items)
+  return out
+}
+
+/**
+ * One infinitely scrolling row.
+ *
+ * The track holds the list exactly twice, so translating -50% lands copy two
+ * where copy one began and the seam is invisible. Spacing lives on the cards
+ * (`mr-6`) rather than as a flex `gap`: a gap would also fall between the two
+ * copies and throw that -50% off by half a gap, which shows up as a stutter
+ * once per loop.
+ */
+function Row({
+  items,
+  reverse = false,
+}: {
+  items: Testimonial[]
+  reverse?: boolean
+}) {
+  const copy = fill(items)
+
+  return (
+    <div className="marquee-fade overflow-hidden py-2">
+      <ul
+        className={`flex w-max ${reverse ? "marquee-right" : "marquee-left"}`}
+        style={
+          { "--marquee-duration": `${copy.length * 8}s` } as React.CSSProperties
+        }
+      >
+        {[0, 1].map((pass) => (
+          <li key={pass} className="flex" aria-hidden={pass === 1}>
+            {copy.map((t, i) => (
+              <Card key={`${pass}-${i}-${t.name}`} testimonial={t} />
+            ))}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
 function Card({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <li className="flex w-[19rem] shrink-0 flex-col justify-between rounded-2xl bg-white p-6 shadow-[0_24px_50px_-24px_rgba(15,23,42,0.45)] sm:w-[21rem]">
-      <div>
+    <figure className="group relative mr-6 flex w-[19rem] shrink-0 flex-col justify-between overflow-hidden rounded-2xl border border-white/70 bg-white/85 p-6 shadow-[0_24px_50px_-24px_rgba(15,23,42,0.35)] backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/25 hover:shadow-[0_32px_60px_-28px_rgba(37,99,235,0.45)] sm:w-[21rem]">
+      {/* Oversized quote mark, clipped by the card — decoration, not content. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-6 right-3 font-display text-[7rem] leading-none font-bold text-brand-600/[0.07] select-none"
+      >
+        &rdquo;
+      </span>
+
+      <div className="relative">
         <div className="flex gap-0.5" aria-label="Rated 5 out of 5">
           {Array.from({ length: 5 }, (_, i) => (
             <StarIcon key={i} className="size-4 text-amber-400" />
@@ -99,7 +175,7 @@ function Card({ testimonial }: { testimonial: Testimonial }) {
         </blockquote>
       </div>
 
-      <figcaption className="mt-8 flex items-center gap-3">
+      <figcaption className="relative mt-8 flex items-center gap-3 border-t border-line/70 pt-5">
         <span
           aria-hidden="true"
           className={`grid size-10 shrink-0 place-items-center rounded-full bg-linear-to-br ${testimonial.from} ${testimonial.to} font-display text-xs font-bold text-white`}
@@ -113,7 +189,7 @@ function Card({ testimonial }: { testimonial: Testimonial }) {
           <span className="block text-xs text-muted">{testimonial.role}</span>
         </span>
       </figcaption>
-    </li>
+    </figure>
   )
 }
 
