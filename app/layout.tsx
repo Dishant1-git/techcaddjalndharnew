@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google"
 import { CursorFollower } from "@/components/cursor-follower"
+import { Footer } from "@/components/footer"
+import { Navbar } from "@/components/navbar"
 import { EnquiryPopup } from "@/components/enquiry-popup"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
@@ -93,7 +95,17 @@ export default function RootLayout({
           }}
         />
         <Preloader />
+
+        {/*
+          Navbar and Footer live here rather than in each page. They are
+          identical on every route, so rendering them per-page meant every
+          client-side navigation re-sent the whole nav — six menus, ~60 links —
+          and the footer in the RSC payload, then remounted them. In the layout
+          they render once and persist, so a navigation only ships the page.
+        */}
+        <Navbar />
         {children}
+        <Footer />
         <EnquiryPopup />
         <ScrollReveal />
         <CursorFollower />

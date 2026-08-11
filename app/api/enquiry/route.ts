@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { verifyCaptcha } from "@/lib/captcha"
+import { COURSE_LABELS } from "@/lib/course-pages"
 import { claimCaptcha } from "@/lib/spent-captchas"
 import { ensureTable, isRateLimited, saveEnquiry } from "@/lib/enquiries"
 
@@ -8,7 +9,15 @@ export const dynamic = "force-dynamic"
 /** Nothing legitimate comes close; anything larger is refused unread. */
 const MAX_BODY_BYTES = 4096
 
-type Fields = { name: string; phone: string; course: string }
+/** Anything longer is a paste, not a message. */
+const MAX_MESSAGE = 2000
+
+type Fields = {
+  name: string
+  phone: string
+  course: string
+  message: string | null
+}
 
 /** Rejects the obvious junk before anything downstream sees it. */
 function validate(
@@ -17,15 +26,23 @@ function validate(
   const name = String(body.name ?? "").trim()
   const phone = String(body.phone ?? "").trim()
   const course = String(body.course ?? "").trim()
+  const message = String(body.message ?? "").trim()
 
   if (name.length < 2 || name.length > 80)
     return { error: "Please enter your full name." }
   if (!/^[0-9]{10}$/.test(phone))
     return { error: "Please enter a valid 10-digit number." }
-  if (!course) return { error: "Please choose a course." }
-  if (course.length > 120) return { error: "Please choose a course." }
 
-  return { fields: { name, phone, course } }
+  // The course-page form locks this field in the UI, but the lock is only
+  // real once the server refuses anything outside the catalogue.
+  if (!course) return { error: "Please choose a course." }
+  if (!COURSE_LABELS.has(course))
+    return { error: "That course is not one we run." }
+
+  if (message.length > MAX_MESSAGE)
+    return { error: "Please shorten your message." }
+
+  return { fields: { name, phone, course, message: message || null } }
 }
 
 /**

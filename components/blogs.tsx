@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 import { POSTS, type Post } from "@/lib/blogs"
 
@@ -15,8 +16,8 @@ function formatDate(iso: string) {
 
 export function Blogs() {
   return (
-    <section id="blogs" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto max-w-[1240px]">
+    <section id="blogs" className="py-20 lg:py-28">
+      <Container>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-xl">
             <span className="inline-flex items-center rounded-full border border-line bg-subtle px-4 py-1.5 text-xs font-medium tracking-wide">
@@ -55,7 +56,7 @@ export function Blogs() {
             <Card key={post.href} post={post} />
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

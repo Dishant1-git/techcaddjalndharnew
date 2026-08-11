@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
 
@@ -64,8 +65,8 @@ export function WhyUs() {
   const [left, right] = [REASONS.slice(0, 2), REASONS.slice(2)]
 
   return (
-    <section id="why-us" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-[1240px] gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-20">
+    <section id="why-us" className="py-20 lg:py-28">
+      <Container className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-20">
         {/* --- Statement --- */}
         <div>
           <p className="text-sm font-medium">
@@ -102,7 +103,7 @@ export function WhyUs() {
             ))}
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

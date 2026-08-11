@@ -64,18 +64,29 @@ export function Navbar() {
   const openEnquiry = () => window.dispatchEvent(new Event(ENQUIRY_EVENT))
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-3 transition-all duration-500">
+    /* The scrolled pill needs breathing room from the viewport edge; the
+       unscrolled bar must not, or it would sit 12px inside the content line. */
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        scrolled ? "px-3" : "px-0"
+      }`}
+    >
       <nav
         onMouseLeave={scheduleClose}
         className={`mx-auto transition-all duration-500 ${
           scrolled
             ? "mt-3 max-w-[1240px] rounded-full border border-line/80 bg-white/75 shadow-[0_8px_40px_-16px_rgba(15,23,42,0.28)] backdrop-blur-xl"
-            : "mt-0 max-w-[1400px] border border-transparent bg-transparent"
+            /* 1304px + the same px-4/lg:px-8 gutter Container uses, so the
+               logo sits exactly on the page's content edge when unscrolled. */
+            : "mt-0 max-w-[1304px] border border-transparent bg-transparent"
         } ${onDark ? "text-white" : ""}`}
       >
         <div
-          className={`flex items-center justify-between px-3 transition-all duration-500 sm:px-5 lg:px-8 ${
-            scrolled ? "h-16" : "h-20"
+          /* px-4/lg:px-8 unscrolled matches the page gutter so the logo sits
+             on the same line as section headings; the scrolled pill keeps a
+             slightly tighter inset because it has its own rounded edge. */
+          className={`flex items-center justify-between transition-all duration-500 ${
+            scrolled ? "h-16 px-4 sm:px-6 lg:px-8" : "h-20 px-4 lg:px-8"
           }`}
         >
           <Logo compact={scrolled} onDark={onDark} />
@@ -403,6 +414,9 @@ function MegaMenu({
                   <li key={c.href}>
                     <Link
                       href={c.href}
+                      /* A mega menu holds ~26 links; prefetching every one as
+                         it opens floods the network. Hover still prefetches. */
+                      prefetch={false}
                       className="group/link flex items-start gap-2 text-sm text-foreground/70 transition-colors duration-200 hover:text-brand-600"
                     >
                       <span className="mt-2.5 h-px w-0 shrink-0 bg-brand-600 transition-all duration-300 group-hover/link:w-3" />

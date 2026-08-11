@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { Container } from "./container"
 import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
@@ -41,9 +42,9 @@ export function About() {
        page wider than the viewport on small screens. */
     <section
       id="about"
-      className="relative overflow-hidden px-4 py-20 lg:px-8 lg:py-28"
+      className="relative overflow-hidden py-20 lg:py-28"
     >
-      <div className="mx-auto max-w-[1240px]">
+      <Container>
         {/* --- Story + collage, balanced as one row --- */}
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
@@ -193,7 +194,7 @@ export function About() {
           </div>
         </div>
 
-      </div>
+      </Container>
     </section>
   )
 }

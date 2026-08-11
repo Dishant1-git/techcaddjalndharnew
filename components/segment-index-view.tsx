@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Container } from "./container"
 import { EnquireButton } from "./enquire-button"
 import { PanelTexture } from "./panel-texture"
 import { ScrollHeading } from "./scroll-heading"
@@ -49,7 +50,7 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
       >
         <PanelTexture />
 
-        <div className="relative mx-auto max-w-[1240px] px-4 lg:px-8">
+        <Container className="relative">
           <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
             {copy.eyebrow}
           </span>
@@ -76,15 +77,15 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
               </svg>
             </span>
           </EnquireButton>
-        </div>
+        </Container>
       </section>
 
       {groups.map(([title, entries], index) => (
         <section
           key={title}
-          className={`px-4 py-16 lg:px-8 lg:py-20 ${index % 2 ? "bg-subtle" : ""}`}
+          className={`py-16 lg:py-20 ${index % 2 ? "bg-subtle" : ""}`}
         >
-          <div className="mx-auto max-w-[1240px]">
+          <Container>
             <ScrollHeading
               lines={[title]}
               as="h2"
@@ -96,6 +97,10 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
                 <Link
                   key={entry.slug}
                   href={`/${entry.segment}/${entry.slug}`}
+                  /* Up to 35 cards on one index. Viewport prefetching them all
+                     would fire 35 RSC requests on load; hover prefetch still
+                     applies, so the click itself stays instant. */
+                  prefetch={false}
                   className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_24px_50px_-30px_rgba(15,23,42,0.5)]"
                 >
                   <span>
@@ -120,7 +125,7 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
                 </Link>
               ))}
             </div>
-          </div>
+          </Container>
         </section>
       ))}
     </article>

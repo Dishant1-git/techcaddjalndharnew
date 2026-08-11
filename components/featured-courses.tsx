@@ -13,6 +13,7 @@
  */
 
 import Link from "next/link"
+import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 
 const PLACEMENT_TREND = "M0 64 C16 60 26 42 40 40 C54 38 60 56 74 57 C88 58 96 22 112 18 C128 14 132 48 146 52 C160 56 168 36 182 32 C196 28 204 50 218 54 C232 58 244 42 260 38"
@@ -30,7 +31,7 @@ const ALERTS = [
 
 export function FeaturedCourses() {
   return (
-    <section id="courses" className="relative overflow-hidden px-4 py-20 lg:px-8 lg:py-28">
+    <section id="courses" className="relative overflow-hidden py-20 lg:py-28">
       {/* Colour beneath the glass — without something to refract, frosted
           panels just read as grey boxes. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
@@ -40,7 +41,7 @@ export function FeaturedCourses() {
         <div className="absolute right-1/4 bottom-10 size-[22rem] rounded-full bg-rose-300/25 blur-[110px]" />
       </div>
 
-      <div className="mx-auto max-w-[1240px]">
+      <Container>
         <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center rounded-full border border-white/60 bg-white/60 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
             Featured Courses
@@ -293,7 +294,7 @@ export function FeaturedCourses() {
             </span>
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

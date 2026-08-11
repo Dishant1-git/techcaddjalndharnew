@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
+import { Container } from "@/components/container"
 import { EnquireButton } from "@/components/enquire-button"
-import { Footer } from "@/components/footer"
-import { Navbar } from "@/components/navbar"
 import { PanelTexture } from "@/components/panel-texture"
 import { ScrollHeading } from "@/components/scroll-heading"
 import { SITE } from "@/lib/site"
@@ -40,7 +39,6 @@ const REASONS = [
 export default function ContactPage() {
   return (
     <>
-      <Navbar />
       <main>
         {/* --- Hero --- */}
         <section
@@ -49,7 +47,7 @@ export default function ContactPage() {
         >
           <PanelTexture />
 
-          <div className="relative mx-auto max-w-[1240px] px-4 lg:px-8">
+          <Container className="relative">
             <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
               Contact
             </span>
@@ -87,12 +85,12 @@ export default function ContactPage() {
                 Call {SITE.phone}
               </a>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* --- NAP + hours --- */}
-        <section className="px-4 py-16 lg:px-8 lg:py-24">
-          <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
+        <section className="py-20 lg:py-28">
+          <Container className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
             <div>
               <ScrollHeading
                 lines={["Visit the", "Jalandhar centre"]}
@@ -189,10 +187,9 @@ export default function ContactPage() {
                 </span>
               </EnquireButton>
             </div>
-          </div>
+          </Container>
         </section>
       </main>
-      <Footer />
     </>
   )
 }

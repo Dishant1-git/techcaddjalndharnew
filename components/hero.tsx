@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useRef, useState } from "react"
+import { Container } from "./container"
 
 const FEATURES = [
   {
@@ -70,7 +71,10 @@ export function Hero() {
         muted
         loop
         playsInline
-        preload="auto"
+        /* "metadata" rather than "auto": the file is ~5.5 MB and the preloader
+           waits on window load, so eager buffering delayed first paint AND the
+           splash dismissing. The loop still starts promptly. */
+        preload="metadata"
         aria-hidden="true"
         /* Scaled up so the blur's soft edges never reveal the backdrop. */
         className="pointer-events-none absolute inset-0 h-full w-full scale-105 object-cover blur-[3px]"
@@ -84,7 +88,9 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/55" />
 
       <div className="relative z-10 flex flex-1 flex-col">
-        <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col px-6 pt-10 pb-10 lg:px-12 lg:pt-14 lg:pb-12">
+        {/* Same column as every section below, so the hero copy sits on the
+            page's single vertical alignment line. */}
+        <Container className="flex flex-1 flex-col pt-10 pb-10 lg:pt-14 lg:pb-12">
           {/* --- Eyebrow pill --- */}
           <div className="reveal">
             {/* Both phrases plus the tracking run past 360px, so the pill
@@ -216,7 +222,7 @@ export function Hero() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </div>
     </section>
   )

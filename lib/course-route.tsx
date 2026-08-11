@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { CoursePageView } from "@/components/course-page-view"
-import { Footer } from "@/components/footer"
-import { Navbar } from "@/components/navbar"
 import { SegmentIndexView, SEGMENT_INDEX } from "@/components/segment-index-view"
 import { getCoursePage, hrefFor, pagesInSegment, type Segment } from "./course-pages"
 
@@ -75,11 +73,9 @@ export function SegmentIndexRoute({ segment }: { segment: Segment }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <Navbar />
       <main>
         <SegmentIndexView segment={segment} />
       </main>
-      <Footer />
     </>
   )
 }
@@ -169,11 +165,9 @@ export function CourseRoute({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <Navbar />
       <main>
         <CoursePageView page={page} />
       </main>
-      <Footer />
     </>
   )
 }

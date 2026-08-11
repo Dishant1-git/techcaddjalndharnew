@@ -1,4 +1,5 @@
 import { CapabilityTabs } from "./capability-tabs"
+import { Container } from "./container"
 import { PanelTexture } from "./panel-texture"
 import { ScrollHeading } from "./scroll-heading"
 import { CAPABILITIES } from "@/lib/capabilities"
@@ -6,14 +7,15 @@ import type { Tech } from "@/lib/technologies"
 
 export function Capabilities() {
   return (
-    <section id="capabilities" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div
-        data-cursor="light"
-        className="relative isolate mx-auto max-w-[1240px] overflow-hidden rounded-[2rem] bg-ink px-6 py-14 text-white lg:rounded-[2.5rem] lg:px-12 lg:py-16"
-      >
-        <PanelTexture />
+    <section
+      id="capabilities"
+      data-cursor="light"
+      className="relative isolate overflow-hidden bg-ink py-20 text-white lg:py-28"
+    >
+      <PanelTexture />
 
-        <div className="relative max-w-3xl">
+      <Container className="relative">
+        <div className="max-w-3xl">
           <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
             Capabilities
           </span>
@@ -24,7 +26,7 @@ export function Capabilities() {
           />
         </div>
 
-        <div data-reveal className="relative mt-10 lg:mt-12">
+        <div data-reveal className="mt-10 lg:mt-12">
           <CapabilityTabs
             labels={CAPABILITIES.map((c) => c.label)}
             blurbs={CAPABILITIES.map((c) => c.blurb)}
@@ -41,7 +43,7 @@ export function Capabilities() {
             ))}
           </CapabilityTabs>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

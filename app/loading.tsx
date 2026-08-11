@@ -10,25 +10,12 @@ import { Skeleton } from "@/components/skeleton"
 export default function Loading() {
   return (
     <div aria-busy="true" aria-label="Loading page">
-      {/* --- Navbar --- */}
-      <div className="fixed inset-x-0 top-0 z-50 px-3">
-        <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-3 sm:px-5 lg:px-8">
-          <div className="flex items-center gap-2.5">
-            <Skeleton className="size-9" rounded="rounded-[10px]" />
-            <Skeleton className="h-6 w-28" />
-          </div>
-          <div className="hidden items-center gap-7 xl:flex">
-            {["w-14", "w-16", "w-12", "w-16", "w-36", "w-20"].map((w) => (
-              <Skeleton key={w} className={`h-4 ${w}`} rounded="rounded-full" />
-            ))}
-          </div>
-          <Skeleton className="h-9 w-28" rounded="rounded-full" />
-        </div>
-      </div>
+      {/* No navbar skeleton: the real navbar lives in the layout and stays
+          mounted through navigation, so only the page body is ever missing. */}
 
       {/* --- Hero --- */}
-      <div className="flex min-h-screen flex-col justify-between bg-[#0a0e14] px-6 pt-32 pb-10 lg:px-12 lg:pb-12">
-        <div className="mx-auto w-full max-w-[1400px]">
+      <div className="flex min-h-screen flex-col justify-between bg-[#0a0e14] pt-32 pb-10 lg:pb-12">
+        <div className="mx-auto w-full max-w-[1304px] px-4 lg:px-8">
           <Skeleton dark className="h-7 w-64" rounded="rounded-full" />
 
           <div className="mt-14 space-y-4">
@@ -48,7 +35,7 @@ export default function Loading() {
           </div>
         </div>
 
-        <div className="mx-auto mt-14 grid w-full max-w-[1400px] gap-4 sm:grid-cols-3">
+        <div className="mx-auto mt-14 grid w-full max-w-[1304px] px-4 lg:px-8 gap-4 sm:grid-cols-3">
           {[0, 1, 2].map((i) => (
             <Skeleton key={i} dark className="h-20" rounded="rounded-2xl" />
           ))}
@@ -56,15 +43,15 @@ export default function Loading() {
       </div>
 
       {/* --- Stats --- */}
-      <div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-x-4 gap-y-10 px-4 py-20 sm:gap-x-8 lg:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-[1304px] grid-cols-2 gap-x-4 gap-y-10 px-4 py-20 sm:gap-x-8 lg:grid-cols-4 lg:px-8">
         {[0, 1, 2, 3].map((i) => (
           <Skeleton key={i} className="mx-auto aspect-square w-full max-w-[13rem]" rounded="rounded-full" />
         ))}
       </div>
 
-      {/* --- Categories panel --- */}
-      <div className="px-4 py-20 lg:px-8">
-        <div className="mx-auto max-w-[1240px] rounded-[2rem] bg-ink px-5 py-14 lg:rounded-[2.5rem] lg:px-10 lg:py-16">
+      {/* --- Categories panel (full-bleed, matching the real section) --- */}
+      <div className="bg-ink py-20 lg:py-28">
+        <div className="mx-auto max-w-[1304px] px-4 lg:px-8">
           <Skeleton dark className="h-7 w-32" rounded="rounded-full" />
           <div className="mt-6 space-y-3">
             <Skeleton dark className="h-9 w-[min(30rem,80%)] lg:h-11" />
@@ -85,7 +72,7 @@ export default function Loading() {
       </div>
 
       {/* --- Card grid --- */}
-      <div className="mx-auto max-w-[1240px] px-4 py-20 lg:px-8">
+      <div className="mx-auto max-w-[1304px] px-4 py-20 lg:px-8">
         <div className="mx-auto max-w-2xl space-y-4 text-center">
           <Skeleton className="mx-auto h-7 w-40" rounded="rounded-full" />
           <Skeleton className="mx-auto h-10 w-[min(28rem,90%)] lg:h-14" />

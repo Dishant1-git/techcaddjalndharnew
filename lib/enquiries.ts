@@ -12,6 +12,8 @@ export type Enquiry = {
   name: string
   phone: string
   course: string
+  /** Free text from the course-page form; the popup does not collect it. */
+  message?: string | null
   /** Where on the site the form was opened — useful for attribution later. */
   source?: string | null
   ip?: string | null
@@ -28,6 +30,7 @@ const CREATE_TABLE = `
     name        VARCHAR(80)  NOT NULL,
     phone       VARCHAR(20)  NOT NULL,
     course      VARCHAR(120) NOT NULL,
+    message     TEXT         NULL,
     source      VARCHAR(255) NULL,
     ip          VARCHAR(45)  NULL,
     user_agent  VARCHAR(255) NULL,
@@ -49,11 +52,24 @@ let ensured: Promise<void> | null = null
 
 async function migrate() {
   await execute(CREATE_TABLE)
-  // CREATE TABLE skips a table that already exists, so indexes added after
-  // the first deploy need their own pass. MySQL has no CREATE INDEX IF NOT
-  // EXISTS, hence the lookup.
+  // CREATE TABLE skips a table that already exists, so anything added after
+  // the first deploy needs its own pass. MySQL has no CREATE INDEX IF NOT
+  // EXISTS or ADD COLUMN IF NOT EXISTS, hence the lookups.
+  await ensureColumn("message", "TEXT NULL AFTER course")
   await ensureIndex("idx_phone_created", "phone, created_at")
   await ensureIndex("idx_ip_created", "ip, created_at")
+}
+
+async function ensureColumn(name: string, definition: string) {
+  const rows = await query<RowDataPacket>(
+    `SELECT 1 FROM information_schema.COLUMNS
+     WHERE table_schema = DATABASE() AND table_name = 'enquiries'
+       AND column_name = ?
+     LIMIT 1`,
+    [name],
+  )
+  // Name and definition are ours, never a caller's — DDL cannot take ?.
+  if (!rows.length) await execute(`ALTER TABLE enquiries ADD COLUMN ${name} ${definition}`)
 }
 
 async function ensureIndex(name: string, columns: string) {
@@ -107,12 +123,13 @@ export async function saveEnquiry(enquiry: Enquiry): Promise<number> {
   await ensureTable()
 
   const result = await execute(
-    `INSERT INTO enquiries (name, phone, course, source, ip, user_agent)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO enquiries (name, phone, course, message, source, ip, user_agent)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [
       enquiry.name,
       enquiry.phone,
       enquiry.course,
+      enquiry.message ?? null,
       enquiry.source ?? null,
       enquiry.ip ?? null,
       // The column is capped, and a hostile client controls this header.

@@ -1,4 +1,5 @@
 import { FaqAccordion } from "./faq-accordion"
+import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 import { FAQS } from "@/lib/faqs"
 import { CONTACT } from "@/lib/navigation"
@@ -12,8 +13,8 @@ const COUNSELLORS = [
 
 export function Faq() {
   return (
-    <section id="faq" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+    <section id="faq" className="py-20 lg:py-28">
+      <Container className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
         {/* --- Left rail --- */}
         <div>
           <ScrollHeading
@@ -78,7 +79,7 @@ export function Faq() {
 
         {/* --- Questions --- */}
         <FaqAccordion items={FAQS} />
-      </div>
+      </Container>
     </section>
   )
 }

@@ -1,4 +1,5 @@
 import { Fragment } from "react"
+import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 
 /** Reassurances under the form — the objections counsellors hear most. */
@@ -20,7 +21,7 @@ export function Cta() {
   return (
     <section
       id="cta"
-      className="relative isolate overflow-hidden px-4 py-24 lg:px-8 lg:py-32"
+      className="relative isolate overflow-hidden py-20 lg:py-28"
     >
       {/* Soft blue wash: tinted corners fading into a clear centre so the
           heading never sits on top of a colour edge. */}
@@ -41,7 +42,8 @@ export function Cta() {
         className="pointer-events-none absolute top-1/2 left-1/2 -z-10 size-[46rem] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 blur-[100px]"
       />
 
-      <div className="mx-auto max-w-2xl text-center">
+      <Container className="text-center">
+        <div className="mx-auto max-w-2xl">
         <p className="text-xs font-bold tracking-[0.22em] text-brand-600 uppercase">
           Ready to get started?
         </p>
@@ -100,7 +102,8 @@ export function Cta() {
             </Fragment>
           ))}
         </ul>
-      </div>
+        </div>
+      </Container>
     </section>
   )
 }

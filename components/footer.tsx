@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { Container } from "./container"
 import { siFacebook, siInstagram, siX, siYoutube } from "simple-icons"
 import {
   CONTACT,
@@ -36,18 +37,19 @@ export function Footer() {
   return (
     /* Flat surface by design — the blue wash belongs to the CTA directly
        above, so the footer stays quiet and doesn't compete with it. */
-    <footer className="relative overflow-hidden bg-subtle px-4 pt-16 pb-6 lg:px-8 lg:pt-24 lg:pb-10">
-      <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[1.75rem] border border-line/70 bg-white shadow-[0_40px_90px_-40px_rgba(42,44,94,0.45)] lg:rounded-[2.5rem]">
-        {/* --- Oversized wordmark background --- */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 -bottom-[0.16em] block bg-linear-to-b from-ink/[0.13] to-brand-600/0 bg-clip-text text-center font-display text-[clamp(4.5rem,21vw,17rem)] leading-none font-bold tracking-tighter text-transparent select-none"
-        >
-          techcadd.
-        </span>
+    <footer className="relative overflow-hidden border-t border-line bg-subtle pt-20 pb-8 lg:pt-28 lg:pb-10">
+      {/* --- Oversized wordmark background ---
+          Bleeds to the viewport edge now that the footer is full width, so it
+          reads as a watermark on the surface rather than art inside a card. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 -bottom-[0.16em] block bg-linear-to-b from-ink/[0.11] to-brand-600/0 bg-clip-text text-center font-display text-[clamp(5rem,24vw,20rem)] leading-none font-bold tracking-tighter text-transparent select-none"
+      >
+        techcadd.
+      </span>
 
-        <div className="relative px-6 pt-12 pb-8 sm:px-10 lg:px-16 lg:pt-16 lg:pb-10">
-          <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
+      <Container className="relative">
+        <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
             {/* --- Brand --- */}
             <div className="max-w-sm">
               <Link href="/" className="block" aria-label="Techcadd home">
@@ -111,8 +113,7 @@ export function Footer() {
               ))}
             </div>
           </div>
-        </div>
-      </div>
+      </Container>
     </footer>
   )
 }

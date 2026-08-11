@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { Container } from "./container"
 import { PanelTexture } from "./panel-texture"
 import { ScrollHeading } from "./scroll-heading"
 import { COURSE_CATEGORIES, type CourseCategory } from "@/lib/categories"
@@ -71,14 +72,18 @@ const ICONS: Record<string, React.ReactNode> = {
 
 export function Categories() {
   return (
-    <section id="categories" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div
-        data-cursor="light"
-        className="relative isolate mx-auto max-w-[1240px] overflow-hidden rounded-[2rem] bg-ink px-5 py-14 text-white lg:rounded-[2.5rem] lg:px-10 lg:py-16"
-      >
-        <PanelTexture />
+    <section
+      id="categories"
+      data-cursor="light"
+      className="relative isolate overflow-hidden bg-ink py-20 text-white lg:py-28"
+    >
+      <PanelTexture />
 
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      {/* Full-bleed surface, contained content — the panel spans the viewport
+          while the copy stays on the same 1240px column as every other
+          section, so headings line up down the whole page. */}
+      <Container className="relative">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
               Categories
@@ -110,13 +115,13 @@ export function Categories() {
 
         <div
           data-reveal
-          className="relative mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-14 lg:flex lg:h-[34rem] lg:gap-4"
+          className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-14 lg:flex lg:h-[34rem] lg:gap-4"
         >
           {COURSE_CATEGORIES.map((category) => (
             <Card key={category.id} category={category} />
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

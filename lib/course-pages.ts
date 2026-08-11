@@ -506,6 +506,18 @@ function buildCatalogue(): CatalogueEntry[] {
 
 export const CATALOGUE = buildCatalogue()
 
+/**
+ * Every course name a form may legitimately submit.
+ *
+ * The course-page form renders its field read-only, but that is presentation
+ * only — anyone can POST whatever they like. Checking the value against this
+ * set is what actually stops the enquiries table filling with junk course
+ * names, and it keeps the popup's dropdown honest too.
+ */
+export const COURSE_LABELS: ReadonlySet<string> = new Set(
+  CATALOGUE.map((entry) => entry.label),
+)
+
 const SEGMENT_COPY: Record<
   Segment,
   { heading: (label: string) => string; intro: string; facts: Fact[] }

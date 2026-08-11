@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 import { TechcaddT } from "./techcadd-t"
 import { TechTabs } from "./tech-tabs"
@@ -13,8 +14,8 @@ const INNER_DURATION = "34s"
 
 export function Technologies() {
   return (
-    <section id="technologies" className="px-4 py-20 lg:px-8 lg:py-28">
-      <div className="mx-auto max-w-[1240px] overflow-hidden rounded-[2rem] border border-line/70 bg-linear-to-b from-slate-100 to-slate-50 px-6 py-16 lg:rounded-[2.5rem] lg:px-12 lg:py-20">
+    <section id="technologies" className="py-20 lg:py-28">
+      <Container className="overflow-hidden rounded-[2rem] border border-line/70 bg-linear-to-b from-slate-100 to-slate-50 px-6 py-16 lg:rounded-[2.5rem] lg:px-12 lg:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center rounded-full border border-line bg-white px-4 py-1.5 text-xs font-medium tracking-wide">
             Technologies
@@ -68,7 +69,7 @@ export function Technologies() {
             taught and growing
           </p>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

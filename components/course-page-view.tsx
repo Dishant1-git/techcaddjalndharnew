@@ -1,4 +1,6 @@
 import Link from "next/link"
+import { Container } from "./container"
+import { CourseEnquiryForm } from "./course-enquiry-form"
 import { EnquireButton } from "./enquire-button"
 import { PanelTexture } from "./panel-texture"
 import { RichText } from "./rich-text"
@@ -24,7 +26,7 @@ export function CoursePageView({ page }: { page: CoursePage }) {
       >
         <PanelTexture />
 
-        <div className="relative mx-auto max-w-[1240px] px-4 lg:px-8">
+        <Container className="relative">
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex flex-wrap items-center gap-2 font-mono text-xs text-white/55">
               <li>
@@ -85,7 +87,7 @@ export function CoursePageView({ page }: { page: CoursePage }) {
               </div>
             ))}
           </dl>
-        </div>
+        </Container>
       </section>
 
       {/* --- Overview --- */}
@@ -335,6 +337,50 @@ export function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      {/* --- Enquiry --- */}
+      <Section id="enquiry" tinted>
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16">
+          <div>
+            <SectionHead
+              eyebrow="Course Information"
+              lines={["Ask about", `${page.eyebrow}`]}
+            />
+            <p className="mt-8 max-w-md text-base leading-relaxed text-muted">
+              Send your question and a counsellor will call you back — batch
+              timings, fees, EMI options, placement record, or whether this
+              course fits your degree. No obligation, and no registration fee to
+              sit in on a demo class.
+            </p>
+
+            <ul className="mt-8 space-y-3">
+              {[
+                "Free counselling and demo class",
+                "Weekday, evening and weekend batches",
+                "Internship letter and placement support",
+              ].map((point) => (
+                <li key={point} className="flex items-start gap-3 text-sm text-muted">
+                  <span className="mt-1.5 grid size-4 shrink-0 place-items-center rounded-full bg-brand-600/10 text-brand-600">
+                    <svg viewBox="0 0 24 24" fill="none" className="size-2.5" aria-hidden="true">
+                      <path
+                        d="m5 12.5 4.5 4.5L19 7.5"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* The course is fixed by the page it is rendered on. */}
+          <CourseEnquiryForm course={page.eyebrow} source={self} />
+        </div>
+      </Section>
+
       {/* --- Related --- */}
       {page.related && page.related.length > 0 && (
         <Section id="related">
@@ -379,7 +425,7 @@ function Section({
       }`}
     >
       {dark && <PanelTexture />}
-      <div className="relative mx-auto max-w-[1240px]">{children}</div>
+      <Container className="relative">{children}</Container>
     </section>
   )
 }
