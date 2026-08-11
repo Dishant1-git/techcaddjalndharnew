@@ -1,14 +1,14 @@
 import { randomBytes, randomUUID } from 'node:crypto'
 
 import { execute, query, queryOne, type Row } from '../../db/pool.js'
-import { badRequest, forbidden, notFound, unprocessable } from '../../http/errors.js'
+import { badRequest, notFound, unprocessable } from '../../http/errors.js'
 import {
   buildFilters,
   resolveSort,
   type ListParams,
   type ListResult,
 } from '../../http/listParams.js'
-import { hashPassword, type SessionUser, type UserRole } from '../auth/auth.service.js'
+import { hashPassword, type SessionUser } from '../auth/auth.service.js'
 import type { UserInput, UserPatch } from './users.schema.js'
 
 const SORTABLE: Record<string, string> = {
@@ -101,39 +101,32 @@ async function assertEmailFree(email: string, exceptId?: string): Promise<void> 
 }
 
 /**
- * Only a super-admin may create or alter one.
+ * How many active administrators would remain if this one were excluded.
  *
- * Without this an admin could promote themselves and escape every remaining
- * restriction, which makes the role boundary decorative.
+ * There is only one role, so every account is an administrator and this is the
+ * whole safety net: locking out the last one leaves nobody able to sign in and
+ * no way back without database access.
  */
-function assertMayGrant(role: UserRole, actor: SessionUser): void {
-  if (role === 'super-admin' && actor.role !== 'super-admin') {
-    throw forbidden('Only a super admin can grant the super admin role.')
-  }
-}
-
-/** How many active super admins would remain if this one were excluded. */
-async function otherActiveSuperAdmins(exceptId: string): Promise<number> {
+async function otherActiveAdmins(exceptIds: string[]): Promise<number> {
+  const placeholders = exceptIds.map(() => '?').join(',')
   const row = await queryOne<{ n: number }>(
     `SELECT COUNT(*) AS n FROM users
-      WHERE role = 'super-admin' AND active = 1 AND id <> ?`,
-    [exceptId],
+      WHERE active = 1 AND id NOT IN (${placeholders})`,
+    exceptIds,
   )
   return Number(row?.n ?? 0)
 }
 
-/** A temporary password, shown once because there is no mailer yet. */
+/** A temporary password, shown once because the CMS form does not collect one. */
 function generatePassword(): string {
   return randomBytes(12).toString('base64url')
 }
 
 export async function create(
   input: UserInput,
-  actor: SessionUser,
 ): Promise<{ user: unknown; temporaryPassword?: string }> {
   const email = input.email.toLowerCase()
   await assertEmailFree(email)
-  assertMayGrant(input.role, actor)
 
   const temporary = input.password ? undefined : generatePassword()
   const id = randomUUID()
@@ -165,25 +158,14 @@ export async function update(id: string, patch: UserPatch, actor: SessionUser): 
   const email = patch.email?.toLowerCase()
   if (email !== undefined) await assertEmailFree(email, id)
 
-  // Both directions matter: granting the role, and changing someone who
-  // already holds it.
-  if (patch.role !== undefined) assertMayGrant(patch.role, actor)
-  if (existing.role === 'super-admin' && actor.role !== 'super-admin') {
-    throw forbidden('Only a super admin can modify another super admin.')
-  }
-
-  // Locking out the last super admin would leave nobody able to restore access.
-  const losingLastSuperAdmin =
-    existing.role === 'super-admin' &&
-    ((patch.role !== undefined && patch.role !== 'super-admin') || patch.active === false) &&
-    (await otherActiveSuperAdmins(id)) === 0
-
-  if (losingLastSuperAdmin) {
-    throw badRequest('This is the last active super admin. Promote another one first.')
-  }
-
   if (id === actor.userId && patch.active === false) {
     throw badRequest('You cannot deactivate your own account.')
+  }
+
+  // Deactivating the last active account would leave nobody able to sign in,
+  // and no way back without database access.
+  if (patch.active === false && existing.active && (await otherActiveAdmins([id])) === 0) {
+    throw badRequest('This is the only active account. Add another one first.')
   }
 
   const assignments: string[] = []
@@ -237,32 +219,14 @@ export async function remove(ids: string[], actor: SessionUser): Promise<void> {
     throw badRequest('You cannot delete your own account.')
   }
 
-  const placeholders = ids.map(() => '?').join(',')
-  const targets = await query<{ id: string; role: UserRole }>(
-    `SELECT id, role FROM users WHERE id IN (${placeholders})`,
-    ids,
-  )
-
-  if (targets.some((user) => user.role === 'super-admin') && actor.role !== 'super-admin') {
-    throw forbidden('Only a super admin can delete another super admin.')
-  }
-
-  // Counting per id would be wrong for a bulk delete: two super admins removed
-  // together would each see the other as a survivor.
-  const superAdminIds = targets.filter((user) => user.role === 'super-admin').map((user) => user.id)
-  if (superAdminIds.length > 0) {
-    const remaining = await queryOne<{ n: number }>(
-      `SELECT COUNT(*) AS n FROM users
-        WHERE role = 'super-admin' AND active = 1
-          AND id NOT IN (${superAdminIds.map(() => '?').join(',')})`,
-      superAdminIds,
-    )
-    if (Number(remaining?.n ?? 0) === 0) {
-      throw badRequest('That would remove the last super admin. Promote another one first.')
-    }
+  // Counted as a set, not per row: two accounts deleted together would each
+  // otherwise see the other as a survivor.
+  if ((await otherActiveAdmins(ids)) === 0) {
+    throw badRequest('That would remove the last account. Add another one first.')
   }
 
   // sessions cascade; content authored by the user keeps its rows, with the
   // foreign keys nulling the reference.
+  const placeholders = ids.map(() => '?').join(',')
   await execute(`DELETE FROM users WHERE id IN (${placeholders})`, ids)
 }

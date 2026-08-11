@@ -67,7 +67,7 @@ mediaRouter.get(
  */
 mediaRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   upload.array('files', 20),
   asyncHandler(async (req, res) => {
     const files = Array.isArray(req.files) ? req.files : []
@@ -103,7 +103,7 @@ mediaRouter.post(
 
 mediaRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), mediaPatchSchema.parse(req.body)))
   }),

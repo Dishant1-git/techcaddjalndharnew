@@ -22,7 +22,6 @@ describe('provisioning', () => {
     const created = await root.post('/users', {
       name: 'Priya Editor',
       email: 'Priya@Example.com',
-      role: 'editor',
     })
 
     expect(created.status).toBe(201)
@@ -50,49 +49,28 @@ describe('provisioning', () => {
   })
 })
 
-describe('role escalation', () => {
-  async function makeAdmin(): Promise<Client> {
-    await root.post('/users', {
-      name: 'Amit Admin',
-      email: 'amit@example.com',
-      role: 'admin',
-      password: 'AdminPassword1',
-    })
-    const admin = client()
-    await admin.signIn('amit@example.com', 'AdminPassword1')
-    return admin
-  }
-
-  it('stops an admin minting a super admin', async () => {
-    const admin = await makeAdmin()
-    const res = await admin.post('/users', {
-      name: 'Sneaky',
-      email: 'sneaky@example.com',
-      role: 'super-admin',
-    })
-    expect(res.status).toBe(403)
+describe('one role', () => {
+  it('assigns admin without being asked', async () => {
+    // The CMS form has no role picker, so the server decides.
+    const created = await root.post('/users', { name: 'Implicit', email: 'implicit@example.com' })
+    expect(created.body.role).toBe('admin')
   })
 
-  it('stops an admin editing a super admin', async () => {
-    const admin = await makeAdmin()
-    const list = await root.get('/users?role=super-admin')
-    const superAdminId = list.body.items[0].id
-
-    const res = await admin.patch(`/users/${superAdminId}`, { name: 'Renamed' })
-    expect(res.status).toBe(403)
+  it('refuses a role that no longer exists', async () => {
+    const res = await root.post('/users', {
+      name: 'Old Role',
+      email: 'old-role@example.com',
+      role: 'editor',
+    })
+    expect(res.status).toBe(422)
   })
 })
 
-describe('the last super admin', () => {
+describe('the last account', () => {
   async function rootId(): Promise<string> {
     const me = await root.get('/auth/me')
     return me.body.userId
   }
-
-  it('cannot be demoted', async () => {
-    const res = await root.patch(`/users/${await rootId()}`, { role: 'admin' })
-    expect(res.status).toBe(400)
-  })
 
   it('cannot be deactivated', async () => {
     const res = await root.patch(`/users/${await rootId()}`, { active: false })
@@ -104,21 +82,30 @@ describe('the last super admin', () => {
     expect(res.status).toBe(400)
   })
 
-  it('can step down once another one exists', async () => {
-    await root.post('/users', {
-      name: 'Second Root',
+  it('cannot be emptied by deleting everyone at once', async () => {
+    const second = await root.post('/users', {
+      name: 'Second',
       email: 'second@example.com',
-      role: 'super-admin',
-      password: 'SecondRoot1',
+      password: 'SecondPassword1',
     })
 
-    const demoted = await root.patch(`/users/${await rootId()}`, { role: 'admin' })
-    expect(demoted.status).toBe(200)
-    expect(demoted.body.role).toBe('admin')
+    const other = client()
+    await other.signIn('second@example.com', 'SecondPassword1')
 
-    // And cannot climb back on its own — that is the whole point of the gate.
-    const selfRestore = await root.patch(`/users/${await rootId()}`, { role: 'super-admin' })
-    expect(selfRestore.status).toBe(403)
+    // Counted as a set: deleting both would otherwise let each look like the
+    // survivor of the other.
+    const wipe = await other.delete('/users', { ids: [await rootId(), second.body.id] })
+    expect(wipe.status).toBe(400)
+  })
+
+  it('allows removing a spare account', async () => {
+    const spare = await root.post('/users', {
+      name: 'Spare',
+      email: 'spare@example.com',
+      password: 'SparePassword1',
+    })
+
+    expect((await root.delete('/users', { ids: [spare.body.id] })).status).toBe(204)
   })
 })
 
@@ -127,7 +114,6 @@ describe('sessions follow the account', () => {
     const created = await root.post('/users', {
       name: 'Temp',
       email: 'temp@example.com',
-      role: 'editor',
       password: 'TempPassword1',
     })
 
@@ -145,7 +131,6 @@ describe('sessions follow the account', () => {
     const created = await root.post('/users', {
       name: 'Rotate',
       email: 'rotate@example.com',
-      role: 'editor',
       password: 'FirstPassword1',
     })
 

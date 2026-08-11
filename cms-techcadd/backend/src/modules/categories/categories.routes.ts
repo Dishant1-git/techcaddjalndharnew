@@ -28,7 +28,7 @@ categoriesRouter.get(
 
 categoriesRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(categorySchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ categoriesRouter.post(
 
 categoriesRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     // Partial on purpose — drag-reorder sends `{ order }` on its own.
     const patch = categoryPatchSchema.parse(req.body)

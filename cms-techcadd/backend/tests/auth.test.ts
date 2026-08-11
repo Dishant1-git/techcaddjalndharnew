@@ -19,7 +19,7 @@ describe('sign in', () => {
     const api = client()
     const user = await api.signIn()
     expect(user.email).toBe(ADMIN_EMAIL)
-    expect(user.role).toBe('super-admin')
+    expect(user.role).toBe('admin')
   })
 
   it('gives the same answer for a wrong password and an unknown address', async () => {
@@ -106,24 +106,36 @@ describe('password reset', () => {
   })
 })
 
-describe('role gate', () => {
-  it('stops an editor from writing', async () => {
+describe('access', () => {
+  /**
+   * There is one role, so every signed-in account can do everything. What
+   * still has to hold is that being signed in is required at all — the gate is
+   * authentication now, not authorisation.
+   */
+  it('lets any signed-in account reach every area', async () => {
     const admin = client()
     await admin.signIn()
 
     const created = await admin.post('/users', {
-      name: 'Gate Editor',
-      email: 'gate-editor@example.com',
-      role: 'editor',
-      password: 'EditorPassword1',
+      name: 'Second Admin',
+      email: 'second-admin@example.com',
+      password: 'AdminPassword1',
     })
     expect(created.status).toBe(201)
+    expect(created.body.role).toBe('admin')
 
-    const editor = client()
-    await editor.signIn('gate-editor@example.com', 'EditorPassword1')
+    const other = client()
+    await other.signIn('second-admin@example.com', 'AdminPassword1')
 
-    expect((await editor.get('/courses')).status).toBe(200)
-    expect((await editor.delete('/courses', { ids: ['whatever'] })).status).toBe(403)
-    expect((await editor.patch('/settings', { siteName: 'Hijacked' })).status).toBe(403)
+    expect((await other.get('/courses')).status).toBe(200)
+    expect((await other.patch('/settings', { siteName: 'TechCADD' })).status).toBe(200)
+    expect((await other.get('/users')).status).toBe(200)
+  })
+
+  it('refuses everything without a session', async () => {
+    const anonymous = client()
+    expect((await anonymous.get('/courses')).status).toBe(401)
+    expect((await anonymous.patch('/settings', { siteName: 'Hijacked' })).status).toBe(401)
+    expect((await anonymous.post('/users', { name: 'X', email: 'x@y.z' })).status).toBe(401)
   })
 })

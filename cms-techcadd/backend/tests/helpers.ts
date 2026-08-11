@@ -88,25 +88,24 @@ export type Client = ReturnType<typeof client>
 export const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL ?? 'admin@techcadd.com'
 export const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD ?? 'ChangeMe123'
 
-/**
- * Empties the tables a test touches, children first.
- *
- * The seeded admin is preserved and reset: the users tests deliberately demote
- * it, so an aborted run would otherwise leave the next one asserting against
- * the wrong starting state.
- */
+/** Empties the tables a test touches, children first. */
 export async function resetTables(...tables: string[]): Promise<void> {
   for (const table of tables) {
     await pool.query(`DELETE FROM \`${table}\``)
   }
 }
 
+/**
+ * Leaves exactly the seeded administrator, active and named as it started.
+ *
+ * The tests rename and deactivate accounts, so an aborted run would otherwise
+ * leave the next one asserting against the wrong starting state.
+ */
 export async function resetUsers(): Promise<void> {
   await pool.query('DELETE FROM users WHERE email <> ?', [ADMIN_EMAIL])
-  await pool.query(
-    "UPDATE users SET name = 'techcadd-team', role = 'super-admin', active = 1 WHERE email = ?",
-    [ADMIN_EMAIL],
-  )
+  await pool.query("UPDATE users SET name = 'techcadd-team', active = 1 WHERE email = ?", [
+    ADMIN_EMAIL,
+  ])
 }
 
 export { pool }

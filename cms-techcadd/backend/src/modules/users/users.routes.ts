@@ -36,8 +36,7 @@ usersRouter.post(
   '/',
   requireRole('admin'),
   asyncHandler(async (req, res) => {
-    if (!req.user) throw unauthorised()
-    const { user, temporaryPassword } = await repo.create(userSchema.parse(req.body), req.user)
+    const { user, temporaryPassword } = await repo.create(userSchema.parse(req.body))
 
     // Returned once, and only on creation — there is no way to read it back.
     res.status(201).json(temporaryPassword ? { ...(user as object), temporaryPassword } : user)

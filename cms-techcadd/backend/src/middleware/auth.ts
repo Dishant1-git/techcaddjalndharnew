@@ -35,13 +35,19 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction): v
   next()
 }
 
-const RANK: Record<UserRole, number> = { editor: 1, admin: 2, 'super-admin': 3 }
+const RANK: Record<UserRole, number> = { admin: 1 }
 
 /**
  * Role gate for mutating routes.
  *
- * This is the real check. `useCan()` in the CMS only hides buttons — anyone can
- * call the API directly, so permission has to be enforced here.
+ * There is only one role now, so every signed-in user clears every gate and
+ * this is currently equivalent to `requireAuth`. It is kept at the call sites
+ * rather than deleted because it marks which routes mutate data — if a second
+ * role is ever introduced, the places that need a decision are already named,
+ * instead of having to be rediscovered across thirteen modules.
+ *
+ * This is the real check either way. `useCan()` in the CMS only hides buttons;
+ * anyone can call the API directly.
  */
 export function requireRole(minimum: UserRole) {
   return (req: Request, _res: Response, next: NextFunction): void => {

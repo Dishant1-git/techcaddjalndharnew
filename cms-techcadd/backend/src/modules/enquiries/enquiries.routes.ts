@@ -26,7 +26,7 @@ enquiriesRouter.get(
 // Declared before '/:id' so "bulk" is not read as an id.
 enquiriesRouter.patch(
   '/bulk',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     const updated = await repo.bulkUpdate(enquiryBulkSchema.parse(req.body))
     res.json({ updated })
@@ -42,7 +42,7 @@ enquiriesRouter.get(
 
 enquiriesRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(enquirySchema.parse(req.body)))
   }),
@@ -50,7 +50,7 @@ enquiriesRouter.post(
 
 enquiriesRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), enquiryPatchSchema.parse(req.body)))
   }),

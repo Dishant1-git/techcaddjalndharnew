@@ -28,7 +28,7 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     if (!req.user) throw unauthorised()
     // The form has no author field, so the signed-in user is the author.
@@ -38,7 +38,7 @@ blogsRouter.post(
 
 blogsRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), blogPatchSchema.parse(req.body)))
   }),

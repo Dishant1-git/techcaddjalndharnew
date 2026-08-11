@@ -61,7 +61,15 @@ beforeAll(async () => {
   await api.signIn()
 })
 
-afterAll(stopServer)
+afterAll(async () => {
+  // Delete through the API so the bytes go with the rows — otherwise the last
+  // test in the file leaves a file behind in the upload directory.
+  const remaining = await api.get('/media?pageSize=200')
+  if (remaining.body?.items?.length) {
+    await api.delete('/media', { ids: remaining.body.items.map((m: any) => m.id) })
+  }
+  await stopServer()
+})
 
 beforeEach(async () => {
   // Rows first: deleting through the API removes the files too.

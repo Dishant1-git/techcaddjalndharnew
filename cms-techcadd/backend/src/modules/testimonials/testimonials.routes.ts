@@ -28,7 +28,7 @@ testimonialsRouter.get(
 
 testimonialsRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(testimonialSchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ testimonialsRouter.post(
 
 testimonialsRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     // Partial on purpose — the list toggles `featured` on its own.
     res.json(await repo.update(requireParam(req, 'id'), testimonialPatchSchema.parse(req.body)))

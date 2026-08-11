@@ -5,7 +5,8 @@ import { config } from '../../config.js'
 import { execute, query, queryOne } from '../../db/pool.js'
 import { forbidden, unauthorised, unprocessable } from '../../http/errors.js'
 
-export type UserRole = 'super-admin' | 'admin' | 'editor'
+/** The CMS has a single role: an admin can do everything. */
+export type UserRole = 'admin'
 
 export interface SessionUser {
   userId: string
@@ -58,7 +59,7 @@ export async function login(
   if (!user || !ok) throw unauthorised('That email and password combination is not recognised.')
 
   if (!user.active) {
-    throw forbidden('This account has been deactivated. Ask a Super Admin to restore it.')
+    throw forbidden('This account has been deactivated. Ask another administrator to restore it.')
   }
 
   const sessionId = randomUUID()
