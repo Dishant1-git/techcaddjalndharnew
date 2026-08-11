@@ -4,6 +4,9 @@ import { useCallback, useEffect, useState } from "react"
 
 type Challenge = { token: string; question: string }
 
+/** How long the thank-you holds before the form returns. */
+const THANK_YOU_MS = 5000
+
 /**
  * The enquiry form embedded in every course page.
  *
@@ -37,6 +40,18 @@ export function CourseEnquiryForm({
     void loadChallenge()
   }, [loadChallenge])
 
+  // The thank-you is a moment, not a dead end: the form comes back so a
+  // visitor can ask about another course. It remounts empty, and the spent
+  // captcha is replaced — its token cannot be submitted twice.
+  useEffect(() => {
+    if (status !== "done") return
+    const timer = window.setTimeout(() => {
+      setStatus("idle")
+      void loadChallenge()
+    }, THANK_YOU_MS)
+    return () => window.clearTimeout(timer)
+  }, [status, loadChallenge])
+
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!challenge || status === "sending") return
@@ -50,6 +65,8 @@ export function CourseEnquiryForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // Tags the row's form_type; the server maps the key to its label.
+          form: "course",
           name: data.get("name"),
           phone: data.get("phone"),
           // From the prop, never the input — the field is display only.

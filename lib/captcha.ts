@@ -15,20 +15,43 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto"
 
 const TTL_MS = 10 * 60 * 1000
 
+/** Shortest secret worth calling one for HMAC-SHA256. */
+const MIN_SECRET_LENGTH = 32
+
+const DEV_SECRET = "techcadd-dev-only-secret-set-CAPTCHA_SECRET"
+
 /**
- * Set CAPTCHA_SECRET in the environment for production. The fallback keeps
- * local development working, and is deliberately obvious in a leak.
+ * Read per call rather than at import, so a missing secret fails the request
+ * that needs it instead of the whole build.
+ *
+ * Production fails closed on purpose. A known secret is not a weak captcha —
+ * it is no captcha: anyone holding it can mint a token and compute its answer,
+ * which is the single control standing between the enquiries table and a bot.
+ * Falling back silently would hide that, and the fallback value lives in a
+ * public repository.
  */
-const SECRET =
-  process.env.CAPTCHA_SECRET ?? "techcadd-dev-only-secret-set-CAPTCHA_SECRET"
+function secret(): string {
+  const configured = process.env.CAPTCHA_SECRET?.trim()
+
+  if (process.env.NODE_ENV === "production") {
+    if (!configured || configured.length < MIN_SECRET_LENGTH)
+      throw new Error(
+        `CAPTCHA_SECRET must be set to at least ${MIN_SECRET_LENGTH} random characters in production.`,
+      )
+    if (configured === DEV_SECRET)
+      throw new Error("CAPTCHA_SECRET is still the development placeholder.")
+  }
+
+  return configured || DEV_SECRET
+}
 
 function sign(payload: string) {
-  return createHmac("sha256", SECRET).update(payload).digest("base64url")
+  return createHmac("sha256", secret()).update(payload).digest("base64url")
 }
 
 /** Both operands come from the nonce, so they survive a round trip unstored. */
 function operands(nonce: string): [number, number] {
-  const digest = createHmac("sha256", SECRET).update(`ops:${nonce}`).digest()
+  const digest = createHmac("sha256", secret()).update(`ops:${nonce}`).digest()
   return [2 + (digest[0] % 8), 1 + (digest[1] % 9)]
 }
 

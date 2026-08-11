@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar"
 import { EnquiryPopup } from "@/components/enquiry-popup"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
+import { jsonLd } from "@/lib/json-ld"
 import { organisationSchema, SITE } from "@/lib/site"
 import "./globals.css"
 
@@ -80,9 +81,7 @@ export default function RootLayout({
         {/* Organisation identity, emitted once for the whole site. */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organisationSchema()),
-          }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(organisationSchema()) }}
         />
 
         {/* Arms the reveal styles during HTML parsing, before anything paints.

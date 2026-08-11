@@ -117,6 +117,8 @@ export function EnquiryPopup() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // Tags the row's form_type; the server maps the key to its label.
+          form: "popup",
           course: data.get("course"),
           name: data.get("name"),
           phone: data.get("phone"),

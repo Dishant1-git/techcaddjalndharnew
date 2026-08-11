@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { CoursePageView } from "@/components/course-page-view"
 import { SegmentIndexView, SEGMENT_INDEX } from "@/components/segment-index-view"
 import { getCoursePage, hrefFor, pagesInSegment, type Segment } from "./course-pages"
+import { jsonLd } from "./json-ld"
 
 /**
  * Shared plumbing for the three course segments, so /courses/[slug],
@@ -71,7 +72,7 @@ export function SegmentIndexRoute({ segment }: { segment: Segment }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
       />
       <main>
         <SegmentIndexView segment={segment} />
@@ -163,7 +164,7 @@ export function CourseRoute({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
       />
       <main>
         <CoursePageView page={page} />
