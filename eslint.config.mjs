@@ -15,6 +15,8 @@ const eslintConfig = [
       "next-env.d.ts",
       // Stray empty git repo checked into the project root.
       "techcaddjalndharnew/**",
+      // Separate apps with their own toolchains — see tsconfig.json.
+      "cms-techcadd/**",
     ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
