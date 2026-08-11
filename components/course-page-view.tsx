@@ -14,33 +14,6 @@ import { hrefFor, type CoursePage } from "@/lib/course-pages"
 import { CONTACT } from "@/lib/navigation"
 
 /**
- * Blurred colour blobs painted inside each card. Positions rotate per card so
- * four cards side by side do not read as one repeated texture.
- */
-const PROJECT_AURORAS = [
-  [
-    "absolute -top-16 -left-12 size-64 rounded-full bg-accent-400/50 blur-[64px]",
-    "absolute top-1/3 left-1/3 size-72 rounded-full bg-violet-400/45 blur-[72px]",
-    "absolute -right-14 -bottom-16 size-64 rounded-full bg-brand-400/50 blur-[64px]",
-  ],
-  [
-    "absolute -top-14 right-0 size-64 rounded-full bg-brand-400/50 blur-[64px]",
-    "absolute bottom-0 left-1/4 size-72 rounded-full bg-accent-400/45 blur-[72px]",
-    "absolute -bottom-20 -left-16 size-60 rounded-full bg-violet-400/45 blur-[64px]",
-  ],
-  [
-    "absolute -top-20 left-1/4 size-72 rounded-full bg-violet-400/45 blur-[72px]",
-    "absolute top-1/2 -left-16 size-64 rounded-full bg-brand-400/50 blur-[64px]",
-    "absolute -right-16 bottom-1/4 size-64 rounded-full bg-accent-400/50 blur-[64px]",
-  ],
-  [
-    "absolute -top-16 -right-10 size-64 rounded-full bg-accent-400/50 blur-[64px]",
-    "absolute top-1/3 -left-14 size-72 rounded-full bg-violet-400/45 blur-[72px]",
-    "absolute right-1/4 -bottom-16 size-64 rounded-full bg-brand-400/50 blur-[64px]",
-  ],
-]
-
-/**
  * Explicit placement for the first four cards: two stacked in column one, two
  * full-height beside them. Auto-placement fills row-wise and would put the
  * second card next to the first instead of under it.
@@ -362,12 +335,11 @@ export function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
-      {/* --- 9. Hands-on projects --- */}
+      {/* --- 9. Hands-on projects ---
+          Styling lives in globals.css under "HANDS-ON PROJECTS SECTION"; the
+          markup below carries only layout and those class names. */}
       {page.projects && page.projects.length > 0 && (
-        <section
-          id="projects"
-          className="relative bg-linear-to-b from-[#eef1f6] to-[#f8fafc] py-20 lg:py-28"
-        >
+        <section id="projects" className="projects-section relative py-20 lg:py-28">
           <Container className="relative">
             <SectionHead
               eyebrow="Portfolio"
@@ -379,41 +351,22 @@ export function CoursePageView({ page }: { page: CoursePage }) {
               {page.projects.map((project, i) => (
                 <article
                   key={project.title}
-                  className={`glass-blur group relative isolate flex flex-col justify-between overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/40 p-7 shadow-[0_20px_50px_-32px_rgba(15,23,42,0.4)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_30px_65px_-32px_rgba(37,99,235,0.45)] ${
+                  className={`project-card relative flex flex-col justify-between ${
                     PROJECT_PLACEMENT[i] ?? ""
                   }`}
                 >
-                  {/* The card's own aurora, clipped by its corners. Heavily
-                      blurred colour *inside* the card is what the frosted look
-                      needs — the blur has to have something to work on. */}
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 -z-10"
-                  >
-                    {PROJECT_AURORAS[i % PROJECT_AURORAS.length].map((blob, b) => (
-                      <span key={b} className={blob} />
-                    ))}
-                  </span>
-
-                  <span className="relative inline-flex w-fit rounded-full border border-line px-3.5 py-1.5 text-xs font-semibold text-brand-600">
+                  <span className="project-badge relative inline-flex w-fit">
                     Project {String(i + 1).padStart(2, "0")}
                   </span>
 
                   <div className="relative mt-10">
-                    <h3 className="font-display text-xl leading-snug font-bold tracking-tight text-balance">
-                      {project.title}
-                    </h3>
-                    <p className="mt-2.5 text-sm leading-relaxed text-foreground/70">
-                      {project.body}
-                    </p>
+                    <h3 className="project-title">{project.title}</h3>
+                    <p className="project-body">{project.body}</p>
 
                     {project.tags.length > 0 && (
                       <div className="mt-5 flex flex-wrap gap-2">
                         {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full bg-subtle px-3 py-1.5 text-xs font-medium text-muted"
-                          >
+                          <span key={tag} className="project-tag">
                             {tag}
                           </span>
                         ))}
