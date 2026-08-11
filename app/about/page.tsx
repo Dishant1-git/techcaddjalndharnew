@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
+import { HeroVideo } from "@/components/hero-video"
 import { SITE } from "@/lib/site"
 import { STATS } from "@/lib/stats"
 
@@ -72,38 +73,7 @@ export default function AboutPage() {
            only a floor for that case. */
         className="relative isolate flex min-h-screen items-center overflow-hidden bg-ink pt-32 pb-20 text-white lg:pt-40 lg:pb-28"
       >
-        {/* Ambient loop. `bg-ink` stays on the section so the panel is the right
-            colour before a single frame decodes, and stays right if the file
-            never loads. */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          /* Same reasoning as the homepage loop: metadata-only, so buffering
-             never competes with first paint. */
-          preload="metadata"
-          aria-hidden="true"
-          /* Scaled past the edges so the blur's soft border can't reveal the
-             panel behind it. */
-          className="pointer-events-none absolute inset-0 size-full scale-105 object-cover blur-[1px]"
-        >
-          <source src="/assets/video/aboutus-bg.mp4" type="video/mp4" />
-        </video>
-
-        {/* Legibility scrim. Content covers this panel edge to edge — headline,
-            stats and four timeline cards — so the footage is held right back and
-            works as texture. Tinted with `ink` rather than black to keep the
-            hero the same colour it was, and deepened at the foot so the section
-            still ends on the flat panel colour. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-ink/80"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-linear-to-b from-ink/60 via-transparent to-ink"
-        />
+        <HeroVideo src="/assets/video/aboutus-bg.mp4" />
 
         <Container className="relative">
           <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
