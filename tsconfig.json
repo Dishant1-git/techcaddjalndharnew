@@ -19,5 +19,13 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    // cms-techcadd holds two standalone apps (an Express backend and a Vite
+    // frontend) with their own package.json, tsconfig and dependencies. The
+    // `**/*.ts` include above swept them into this project's type-check, so
+    // the build failed on imports whose packages are only installed inside
+    // those folders — e.g. cookie-parser. They compile under their own configs.
+    "cms-techcadd"
+  ]
 }

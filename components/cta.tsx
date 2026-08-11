@@ -22,39 +22,25 @@ export function Cta() {
   return (
     <section
       id="cta"
-      className="relative isolate overflow-hidden py-20 lg:py-28"
+      data-cursor="light"
+      /* Flat `ink` — the same panel navy the dark sections sit on. Deliberately
+         one solid colour: no gradient, no corner glows and no PanelTexture, so
+         it reads as a plain block of brand colour. */
+      className="relative isolate overflow-hidden bg-ink py-20 text-white lg:py-28"
     >
-      {/* Soft blue wash: tinted corners fading into a clear centre so the
-          heading never sits on top of a colour edge. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-20 bg-linear-to-br from-brand-100 via-brand-50 to-accent-400/25"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 -left-32 -z-10 size-[38rem] rounded-full bg-brand-300/35 blur-[130px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-32 -bottom-48 -z-10 size-[36rem] rounded-full bg-accent-400/30 blur-[130px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-1/2 -z-10 size-[46rem] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 blur-[100px]"
-      />
 
       <Container className="text-center">
         <div className="mx-auto max-w-2xl">
-        <p className="text-xs font-bold tracking-[0.22em] text-brand-600 uppercase">
+        <p className="text-xs font-bold tracking-[0.22em] text-accent-400 uppercase">
           Ready to get started?
         </p>
 
         <ScrollHeading
           lines={["Start building your", "career today."]}
-          className="mt-5 font-display text-4xl leading-[1.05] font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl"
+          className="mt-5 font-display text-4xl leading-[1.05] font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
         />
 
-        <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
+        <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-white/70 lg:text-lg">
           Talk to a counsellor today. One call is usually enough to know which
           track fits your degree, your schedule and the job you want.
         </p>
@@ -82,15 +68,17 @@ export function Cta() {
             </span>
           </a>
 
+          {/* Glass rather than the solid white it was: two filled buttons side
+              by side on navy compete, where an outline lets the blue lead. */}
           <a
             href="/contact"
-            className="inline-flex h-14 items-center justify-center rounded-full border border-ink/15 bg-white px-8 text-sm font-semibold text-ink transition-colors duration-300 hover:border-brand-600/40 hover:text-brand-600"
+            className="inline-flex h-14 items-center justify-center rounded-full border border-white/25 bg-white/10 px-8 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-300 hover:border-white/40 hover:bg-white/20"
           >
             Book a free demo
           </a>
         </div>
 
-        <ul className="mt-10 flex flex-col items-center justify-center gap-3 text-sm text-muted sm:flex-row sm:gap-5">
+        <ul className="mt-10 flex flex-col items-center justify-center gap-3 text-sm text-white/70 sm:flex-row sm:gap-5">
           {ASSURANCES.map((item, i) => (
             <Fragment key={item}>
               {/* Separator as its own item — nesting it would need
@@ -98,11 +86,11 @@ export function Cta() {
               {i > 0 && (
                 <li
                   aria-hidden="true"
-                  className="hidden h-4 w-px bg-ink/15 sm:block"
+                  className="hidden h-4 w-px bg-white/20 sm:block"
                 />
               )}
               <li className="inline-flex items-center gap-2">
-                <CheckIcon className="size-4 shrink-0 text-brand-600" />
+                <CheckIcon className="size-4 shrink-0 text-accent-400" />
                 {item}
               </li>
             </Fragment>
