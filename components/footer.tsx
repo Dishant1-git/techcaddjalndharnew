@@ -28,7 +28,8 @@ const COURSE_LINKS: NavLink[] = COURSE_GROUPS.map((g) => ({
   href: `/courses#${g.title.toLowerCase().replace(/[^a-z]+/g, "-")}`,
 }))
 
-/** Everything in the top nav except Home and Courses (which has its own column). */
+/** Everything in the top nav except Home and the mega menus (Courses has its
+ *  own column). Dropdown items collapse back to their top-level link. */
 const COMPANY_LINKS: NavLink[] = NAV_ITEMS.filter(
   (i) => i.href !== "/" && !i.groups,
 ).map(({ label, href }) => ({ label, href }))

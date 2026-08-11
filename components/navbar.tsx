@@ -92,7 +92,7 @@ export function Navbar() {
           <Logo compact={scrolled} onDark={onDark} />
 
           {/* --- Desktop links --- */}
-          <div className="hidden items-center gap-7 xl:flex">
+          <div className="hidden items-center gap-5 self-stretch xl:flex 2xl:gap-7">
             {NAV_ITEMS.map((item) => (
               <DesktopNavLink
                 key={item.label}
@@ -101,8 +101,13 @@ export function Navbar() {
                 open={openMenu === item.label}
                 onOpen={() => {
                   cancelClose()
-                  setOpenMenu(item.groups || item.variant ? item.label : null)
+                  setOpenMenu(
+                    item.groups || item.links || item.variant
+                      ? item.label
+                      : null,
+                  )
                 }}
+                onLeave={scheduleClose}
               />
             ))}
           </div>
@@ -170,7 +175,7 @@ export function Navbar() {
           <div className="flex flex-1 flex-col justify-center gap-1">
             {NAV_ITEMS.map((item, i) => (
               <div key={item.label} className="border-b border-foreground/5">
-                {item.groups ? (
+                {item.groups || item.links ? (
                   <>
                     <button
                       type="button"
@@ -193,7 +198,7 @@ export function Navbar() {
                     </button>
                     {mobileSection === item.label && (
                       <div className="animate-menu-in grid grid-cols-2 gap-x-6 gap-y-2 pb-6">
-                        {item.groups.flatMap((g) => g.items).map((c) => (
+                        {(item.groups?.flatMap((g) => g.items) ?? item.links ?? []).map((c) => (
                           <Link
                             key={c.href}
                             href={c.href}
@@ -296,11 +301,13 @@ function DesktopNavLink({
   item,
   open,
   onOpen,
+  onLeave,
   onDark,
 }: {
   item: NavItem
   open: boolean
   onOpen: () => void
+  onLeave: () => void
   onDark: boolean
 }) {
   const idle = onDark
@@ -327,19 +334,21 @@ function DesktopNavLink({
     )
   }
 
-  return (
+  const expandable = Boolean(item.groups || item.links)
+
+  const link = (
     <Link
       href={item.href}
       onMouseEnter={onOpen}
       onFocus={onOpen}
-      aria-expanded={item.groups ? open : undefined}
+      aria-expanded={expandable ? open : undefined}
       className={`group relative text-sm transition-colors duration-300 ${
         open ? (onDark ? "text-white" : "text-foreground") : idle
       }`}
     >
       <span className="flex items-center gap-1.5">
         {item.label}
-        {item.groups && (
+        {expandable && (
           <svg
             viewBox="0 0 12 12"
             className={`size-2.5 transition-transform duration-300 ${
@@ -364,6 +373,41 @@ function DesktopNavLink({
         } ${open ? "w-full" : "w-0"}`}
       />
     </Link>
+  )
+
+  if (!item.links) return link
+
+  // Short flat menus hang off the trigger itself; the wrapper stretches to the
+  // full bar height so the panel drops from the bottom edge, not the label.
+  return (
+    <div
+      className="relative flex items-center self-stretch"
+      onMouseEnter={onOpen}
+      onMouseLeave={onLeave}
+    >
+      {link}
+      <div
+        className={`absolute top-full left-1/2 w-56 -translate-x-1/2 pt-2 transition-all duration-300 ${
+          open
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-2 opacity-0"
+        }`}
+      >
+        <ul className="overflow-hidden rounded-2xl border border-line/80 bg-white/90 p-2 text-foreground shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35)] backdrop-blur-3xl">
+          {item.links.map((l) => (
+            <li key={l.href}>
+              <Link
+                href={l.href}
+                className="group/link flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-foreground/70 transition-colors duration-200 hover:bg-subtle hover:text-brand-600"
+              >
+                <span className="h-px w-0 shrink-0 bg-brand-600 transition-all duration-300 group-hover/link:w-3" />
+                <span className="leading-snug">{l.label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   )
 }
 

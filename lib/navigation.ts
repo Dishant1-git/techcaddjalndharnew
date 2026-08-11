@@ -24,6 +24,9 @@ export type NavItem = {
   href: string
   /** Any item with groups opens the mega menu. */
   groups?: CourseGroup[]
+  /** A flat list opens the compact dropdown instead — too few links to warrant
+   *  the full-width mega menu. */
+  links?: NavLink[]
   /** Footer link of the mega menu. Defaults to browsing all courses. */
   cta?: NavLink
   /** "ai" renders the highlighted pill and opens the AI panel instead. */
@@ -264,9 +267,25 @@ export const AFTER_12TH_GROUPS: CourseGroup[] = [
   },
 ]
 
+/** About Us — the institute's own story. */
+export const ABOUT_LINKS: NavLink[] = [
+  { label: "About Techcadd", href: "/about" },
+  { label: "Mission and Vision", href: "/about/mission-vision" },
+  { label: "Our Founder", href: "/about/founder" },
+]
+
+/** Resources — everything around the courses rather than a course itself. */
+export const RESOURCE_LINKS: NavLink[] = [
+  { label: "Blogs", href: "/blogs" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "College Partnerships", href: "/college-partnerships" },
+]
+
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
+  { label: "About Us", href: "/about", links: ABOUT_LINKS },
   { label: "AI", href: "/ai", variant: "ai" },
   { label: "Courses", href: "/courses", groups: COURSE_GROUPS },
   {
@@ -281,6 +300,7 @@ export const NAV_ITEMS: NavItem[] = [
     groups: AFTER_12TH_GROUPS,
     cta: { label: "Browse After 12th courses", href: "/after-12th-courses" },
   },
+  { label: "Resources", href: "/blogs", links: RESOURCE_LINKS },
   { label: "Contact Us", href: "/contact" },
 ]
 
