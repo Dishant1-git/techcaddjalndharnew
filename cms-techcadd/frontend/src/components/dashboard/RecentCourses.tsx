@@ -7,6 +7,7 @@ import { ContentStatusBadge } from '../common/Badge'
 import { Button } from '../common/Button'
 import { Card, CardBody, CardHeader } from '../common/Card'
 import { EmptyState } from '../common/EmptyState'
+import { assetUrl } from '../../api/client'
 
 export function RecentCourses() {
   const { data } = useRecentCourses()
@@ -52,7 +53,7 @@ function CourseCard({ course }: { course: Course }) {
       {/* Image placeholder until the media library is wired up. */}
       <div className="h-24 border-b border-slate-100 bg-slate-50">
         {course.thumbnail?.url ? (
-          <img src={course.thumbnail.url} alt="" className="size-full object-cover" />
+          <img src={assetUrl(course.thumbnail.url)} alt="" className="size-full object-cover" />
         ) : (
           <span className="grid size-full place-items-center text-slate-300" aria-hidden="true">
             <ImageIcon size={20} />

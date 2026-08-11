@@ -27,6 +27,7 @@ import type { GalleryImage } from '../../types'
 import { STATUS_OPTIONS } from '../courses/courseSchema'
 import { albumSchema, emptyAlbum, type AlbumFormValues } from './gallerySchema'
 import { galleryHooks } from './useGallery'
+import { assetUrl } from '../../api/client'
 
 export default function AlbumFormPage() {
   const { id } = useParams<{ id: string }>()
@@ -264,7 +265,7 @@ function AlbumImages({
 
               <div className="h-16 w-24 shrink-0 overflow-hidden rounded border border-slate-200 bg-slate-50">
                 {image.media.url ? (
-                  <img src={image.media.url} alt={image.media.alt} className="size-full object-cover" />
+                  <img src={assetUrl(image.media.url)} alt={image.media.alt} className="size-full object-cover" />
                 ) : (
                   <span className="grid size-full place-items-center text-slate-300" aria-hidden="true">
                     <ImageIcon size={16} />

@@ -14,4 +14,18 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+
+  css: {
+    /**
+     * An empty inline config, so PostCSS stops searching.
+     *
+     * Tailwind is applied by the Vite plugin above, not through PostCSS. Left
+     * unset, PostCSS walks up the directory tree looking for a config and finds
+     * the public website's `postcss.config.mjs` in the repository root, which
+     * declares a plugin this package does not install — so the build fails with
+     * "Cannot find module '@tailwindcss/postcss'". Declaring it here keeps the
+     * two projects from configuring each other.
+     */
+    postcss: {},
+  },
 })

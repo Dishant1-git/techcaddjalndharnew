@@ -19,6 +19,7 @@ import { formatShortDate } from '../../lib/format'
 import type { Blog } from '../../types'
 import { readingTimeMinutes } from './blogSchema'
 import { blogHooks } from './useBlogs'
+import { assetUrl } from '../../api/client'
 
 const TABS = [
   { value: '', label: 'All' },
@@ -52,7 +53,7 @@ export default function BlogsListPage() {
           <div className="flex items-center gap-3">
             {blog.coverImage ? (
               <img
-                src={blog.coverImage.url}
+                src={assetUrl(blog.coverImage.url)}
                 alt=""
                 width={40}
                 height={40}

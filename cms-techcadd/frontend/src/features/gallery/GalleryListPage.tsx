@@ -20,6 +20,7 @@ import { formatShortDate } from '../../lib/format'
 import type { GalleryAlbum } from '../../types'
 import { STATUS_OPTIONS } from '../courses/courseSchema'
 import { galleryHooks } from './useGallery'
+import { assetUrl } from '../../api/client'
 
 export default function GalleryListPage() {
   const navigate = useNavigate()
@@ -116,7 +117,7 @@ export default function GalleryListPage() {
                   <div className="aspect-video bg-slate-50">
                     {album.cover?.url ? (
                       <img
-                        src={album.cover.url}
+                        src={assetUrl(album.cover.url)}
                         alt={album.cover.alt}
                         className="size-full object-cover"
                       />
