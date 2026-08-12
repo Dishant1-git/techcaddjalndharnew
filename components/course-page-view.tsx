@@ -114,15 +114,16 @@ export function CoursePageView({ page }: { page: CoursePage }) {
       {page.overview && (
         <Section id="overview">
           <SectionHead eyebrow="Overview" lines={["Course overview"]} />
-          {/* Two columns rather than one narrow measure — the section reads as
-              full width while each line stays a comfortable length. */}
-          <div className="mt-10 grid gap-x-16 gap-y-5 lg:grid-cols-2">
+          {/* One short paragraph, running the full width of the section — no
+              column split and no narrow measure to divide it across. It sizes
+              up a step because it is the only copy in the block. */}
+          <div className="mt-10 space-y-5">
             {page.overview.map((para, i) => (
               <RichText
                 key={i}
                 text={para}
                 exclude={self}
-                className="text-base leading-relaxed text-muted lg:text-lg"
+                className="text-lg leading-relaxed text-muted lg:text-xl"
               />
             ))}
           </div>

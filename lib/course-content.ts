@@ -24,6 +24,22 @@ import type {
 const LOCAL_AREAS =
   "Model Town, Urban Estate, Adarsh Nagar, Basti Bawa Khel and Rama Mandi, with weekend students travelling in from Phagwara, Kapurthala, Nakodar, Hoshiarpur and Adampur"
 
+/**
+ * How the overview's last sentence names the length of the programme.
+ *
+ * Segment-specific because the durations genuinely differ: a blanket "choose
+ * 3, 6 or 9 months" contradicted the hero on /internship-training/6-months and
+ * on the after-12th pages, whose facts row says 6 months to a year.
+ */
+const OVERVIEW_CLOSE: Record<Segment, string> = {
+  courses:
+    "Choose 3, 6 or 9 months — every stage ends in a portfolio deliverable.",
+  "internship-training":
+    "Every stage ends in a portfolio deliverable, and you finish with a documented internship letter.",
+  "after-12th-courses":
+    "You start from zero with no prior background, and every stage ends in a portfolio deliverable.",
+}
+
 /** Deterministic pick so a page renders identically on server and client. */
 function hash(seed: string) {
   let h = 0
@@ -306,10 +322,21 @@ export function generateContent(
     description: `${page.h1} at Techcadd — ${spec.tagline}. Live projects, industry trainers, internship letter and placement support. ${spec.careers.slice(0, 2).join(" and ")} roles start around ${spec.salary}.`,
     intro: `Learn ${spec.tagline} — taught on live client work at Techcadd Jalandhar, not from slides.`,
 
+    /**
+     * Deliberately one short paragraph.
+     *
+     * The overview is the first thing under the hero and its whole job is to
+     * answer "what is this and how long does it take" before the reader has to
+     * decide whether to keep scrolling. Everything that used to live here —
+     * demand, the toolchain, who joins from where — is still on the page, in
+     * the sections built for it.
+     */
+    /* Topics keep their own capitalisation. Lowercasing the first letter to
+       fit them mid-sentence turned "Search Console and rank tracking" into
+       "search Console" and "APIs with Flask" into "aPIs" — the strings are
+       product names as often as they are prose. */
     overview: [
-      `Techcadd's ${name} course in Jalandhar is ${spec.tagline}. You begin with fundamentals and move quickly into supervised work on real projects, because the difference between a candidate who gets shortlisted and one who does not is almost always a portfolio rather than a certificate.`,
-      `${spec.demand} The syllabus covers ${spec.topics.slice(0, 4).join(", ").toLowerCase()} and more, taught on ${spec.tools.slice(0, 4).join(", ")} — the same toolchain used on client delivery. Classes run in small batches at our Jalandhar centre with daily lab practice and trainers who still work on production projects of their own.`,
-      `Students join from ${LOCAL_AREAS}. Whether you have just finished 12th, are completing a degree at a local college, or are switching from a non-technical job, the course starts at zero. Every module ends with something you can show an employer, and the programme closes with an internship letter and Techcadd's placement drives.`,
+      `Techcadd's ${page.h1} takes you from ${spec.topics[0]} to ${spec.topics[spec.topics.length - 1]}, taught on ${spec.tools.slice(0, 3).join(", ")}. You work on live client briefs under trainer supervision, not slideware. ${OVERVIEW_CLOSE[page.segment]}`,
     ],
 
     whoCanDo: {
@@ -339,6 +366,10 @@ export function generateContent(
       `What separates this from a playlist of tutorials is supervision on real work. From the second half of the course you build on live client projects with a trainer beside you, make decisions that have consequences, and correct them the following week. That loop is the skill. No employer in Jalandhar or Mohali will take your word for it without work they can inspect.`,
       `Be realistic about the money. A fresher who finishes with a working portfolio typically starts around ${spec.salary} a month locally, and moves up quickly with experience. Roles include ${spec.careers.join(", ")}. The ceiling is high, but it is earned — nobody pays a beginner well for a certificate alone.`,
       `The alternative is what most people try first: free videos, a cheap online course, six months of drifting, and knowledge you cannot demonstrate. A structured programme with live projects, a mentor who corrects you, an internship letter and a placement cell that actually calls employers is the difference between knowing the subject and being hired to do it.`,
+      /* Moved down from the overview when that was cut to one paragraph — the
+         local-area names are worth keeping on the page for search, just not in
+         the first block a reader meets. */
+      `Students reach the Jalandhar centre from ${LOCAL_AREAS}. Whether you have just finished 12th, are completing a degree at a local college, or are switching from a non-technical job, the course starts at zero — which is why weekday, evening and weekend timings all exist rather than a single fixed slot.`,
     ],
 
     whyTechcadd: {

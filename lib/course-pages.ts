@@ -190,8 +190,6 @@ export const COURSE_PAGES: CoursePage[] = [
     // --- Stage 1 ---
     overview: [
       "Techcadd's Digital Marketing Course in Jalandhar takes you from buyer psychology to AI-powered campaigns across SEO, Meta Ads and Google Ads. You build a real website, rank real keywords and run client budgets under trainer supervision. Choose 3, 6 or 9 months — every stage ends in a portfolio deliverable.",
-      "Advertising interrupts; a growth system compounds. The work here is building assets — a page that ranks, a list you own, a pixel that has learned, a channel that publishes — so that every rupee of spend costs less than the one before it. Attract, capture, convert, learn: every cycle makes the next one cheaper, and that loop is the whole job.",
-      "It is also a job that has changed shape in about three years. Tracking restrictions, AI-generated creative, AI search answers and automated bidding mean the platform buttons matter less than they did, while measurement, creative volume, offer design and owned audience matter far more. Companies are advertising into that new shape with teams trained for the old one, and this programme is built to fill the gap.",
     ],
 
     // --- Stage 2A ---
