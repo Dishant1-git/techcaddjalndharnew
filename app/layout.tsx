@@ -4,6 +4,7 @@ import { CursorFollower } from "@/components/cursor-follower"
 import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
 import { EnquiryPopup } from "@/components/enquiry-popup"
+import { NavProgress } from "@/components/nav-progress"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollToTop } from "@/components/scroll-to-top"
@@ -103,6 +104,9 @@ export default function RootLayout({
           }}
         />
         <Preloader />
+        {/* Covers the gap between a link click and the new route committing —
+            after which the per-segment loading.tsx skeletons take over. */}
+        <NavProgress />
 
         {/*
           Navbar and Footer live here rather than in each page. They are

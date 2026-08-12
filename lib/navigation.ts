@@ -91,7 +91,7 @@ export const AI_MENU = {
   cta: {
     text: "Start with AI fundamentals, then move into real projects and career-ready tools.",
     label: "Explore AI",
-    href: "/ai",
+    href: "/courses/artificial-intelligence",
   },
 }
 
@@ -198,7 +198,6 @@ export const TRAINING_GROUPS: CourseGroup[] = [
         label: "Internship Program",
         href: "/internship-training/internship-programme",
       },
-      { label: "Placement Cell", href: "/placement-cell" },
     ],
   },
 ]
@@ -267,26 +266,37 @@ export const AFTER_12TH_GROUPS: CourseGroup[] = [
   },
 ]
 
-/** About Us — the institute's own story. */
+/**
+ * About Us — the institute's own story.
+ *
+ * "Our Founder" is not listed: /about/founder was never built, and a menu item
+ * that 404s costs more than a missing one. Add it back alongside the page.
+ */
 export const ABOUT_LINKS: NavLink[] = [
   { label: "About Techcadd", href: "/about" },
   { label: "Mission and Vision", href: "/about/mission-vision" },
-  { label: "Our Founder", href: "/about/founder" },
 ]
 
-/** Resources — everything around the courses rather than a course itself. */
+/**
+ * Resources — everything around the courses rather than a course itself.
+ *
+ * These point at homepage sections because that is where the content actually
+ * lives; there are no standalone /blogs, /faq or /reviews pages yet. Gallery
+ * and College Partnerships are omitted for the same reason as Our Founder.
+ */
 export const RESOURCE_LINKS: NavLink[] = [
-  { label: "Blogs", href: "/blogs" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Reviews", href: "/reviews" },
-  { label: "College Partnerships", href: "/college-partnerships" },
+  { label: "Blogs", href: "/#blogs" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Reviews", href: "/#testimonials" },
 ]
 
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about", links: ABOUT_LINKS },
-  { label: "AI", href: "/ai", variant: "ai" },
+  /* The pill is a dropdown trigger, but it still has to go somewhere when
+     clicked or followed by a keyboard. /ai was never built; the AI course page
+     is the real destination its menu is pointing at anyway. */
+  { label: "AI", href: "/courses/artificial-intelligence", variant: "ai" },
   { label: "Courses", href: "/courses", groups: COURSE_GROUPS },
   {
     label: "Internship & Training",
@@ -300,16 +310,36 @@ export const NAV_ITEMS: NavItem[] = [
     groups: AFTER_12TH_GROUPS,
     cta: { label: "Browse After 12th courses", href: "/after-12th-courses" },
   },
-  { label: "Resources", href: "/blogs", links: RESOURCE_LINKS },
+  { label: "Resources", href: "/#blogs", links: RESOURCE_LINKS },
   { label: "Contact Us", href: "/contact" },
 ]
 
+/**
+ * The footer's Support column, and the strip at the foot of the mobile menu.
+ *
+ * Previously Student Login, Placement Cell, Certificate Verification and
+ * Franchise — four routes that were never built, so every one of them 404'd
+ * from all 59 pages. Each is now pointed at content that exists. Restore the
+ * originals as their pages are built; the portal ones in particular need real
+ * systems behind them, not just a route.
+ */
 export const QUICK_LINKS: NavLink[] = [
-  { label: "Student Login", href: "/student-login" },
-  { label: "Placement Cell", href: "/placement-cell" },
-  { label: "Certificate Verification", href: "/certificate-verification" },
-  { label: "Franchise", href: "/franchise" },
+  { label: "Placement Support", href: "/#why-us" },
+  { label: "Student Reviews", href: "/#testimonials" },
+  { label: "FAQs", href: "/#faq" },
+  { label: "Enquire Now", href: "/contact" },
 ]
+
+/**
+ * Anchor id for a course-group heading, e.g. "AI & Data" → "ai-data".
+ *
+ * Shared deliberately: the footer links to /courses#<slug> and the index page
+ * stamps the id. When each computed its own, the two drifted and the links
+ * silently scrolled nowhere — a broken link no status code ever reports.
+ */
+export function groupSlug(title: string): string {
+  return title.toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "")
+}
 
 export const CONTACT = {
   phone: "+91 98881 22255",

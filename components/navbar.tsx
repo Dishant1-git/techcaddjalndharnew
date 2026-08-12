@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Logo } from "./logo"
 import Image from "next/image"
 import Link from "next/link"
+import { PrefetchLink } from "./prefetch-link"
 import { ENQUIRY_EVENT } from "./enquiry-popup"
 import {
   AI_MENU,
@@ -473,11 +474,11 @@ function MegaMenu({
               <ul className="space-y-1.5">
                 {group.items.map((c) => (
                   <li key={c.href}>
-                    <Link
+                    {/* A mega menu holds ~26 links, so viewport prefetching
+                        them all floods the network the moment it opens.
+                        PrefetchLink warms only the one being hovered. */}
+                    <PrefetchLink
                       href={c.href}
-                      /* A mega menu holds ~26 links; prefetching every one as
-                         it opens floods the network. Hover still prefetches. */
-                      prefetch={false}
                       className="group/link flex items-start gap-2 text-sm text-foreground/70 transition-colors duration-200 hover:text-brand-600"
                     >
                       <span className="mt-2.5 h-px w-0 shrink-0 bg-brand-600 transition-all duration-300 group-hover/link:w-3" />
@@ -487,7 +488,7 @@ function MegaMenu({
                           {c.badge}
                         </span>
                       )}
-                    </Link>
+                    </PrefetchLink>
                   </li>
                 ))}
               </ul>

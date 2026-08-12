@@ -3,9 +3,11 @@ import { Container } from "./container"
 import { CourseEnquiryForm } from "./course-enquiry-form"
 import { EnquireButton } from "./enquire-button"
 import { FaqAccordion } from "./faq-accordion"
+import { ModuleComparison } from "./module-comparison"
 import { ModuleTracks } from "./module-tracks"
 import { ReviewMarquee } from "./review-marquee"
 import { PanelTexture } from "./panel-texture"
+import { PrefetchLink } from "./prefetch-link"
 import { RichText } from "./rich-text"
 import { ScrollHeading } from "./scroll-heading"
 import { ToolMesh } from "./tool-mesh"
@@ -221,8 +223,12 @@ export function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
-      {/* --- 5. Modules, by duration --- */}
-      {page.tracks && page.tracks.length > 0 && (
+      {/* --- 5. Modules, by duration ---
+          Two presentations of the same question. A course with an authored
+          `syllabus` gets the comparison table; everything else keeps the
+          sticky stack it already had, so adding one never disturbs the other
+          fifty-one pages. */}
+      {(page.syllabus || (page.tracks && page.tracks.length > 0)) && (
         <section
           id="modules"
           data-cursor="light"
@@ -242,7 +248,11 @@ export function CoursePageView({ page }: { page: CoursePage }) {
               />
             </div>
 
-            <ModuleTracks tracks={page.tracks} />
+            {page.syllabus ? (
+              <ModuleComparison syllabus={page.syllabus} />
+            ) : (
+              page.tracks && <ModuleTracks tracks={page.tracks} />
+            )}
           </Container>
         </section>
       )}
@@ -486,10 +496,9 @@ export function CoursePageView({ page }: { page: CoursePage }) {
           <SectionHead eyebrow="Explore more" lines={["Related courses"]} />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {page.related.map((href) => (
-              <Link
+              <PrefetchLink
                 key={href}
                 href={href}
-                prefetch={false}
                 className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_24px_50px_-30px_rgba(15,23,42,0.5)]"
               >
                 <span className="min-w-0">
@@ -503,7 +512,7 @@ export function CoursePageView({ page }: { page: CoursePage }) {
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-600/10 text-brand-600 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
                   <ArrowIcon />
                 </span>
-              </Link>
+              </PrefetchLink>
             ))}
           </div>
         </Section>

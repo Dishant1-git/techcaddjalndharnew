@@ -44,8 +44,8 @@ const REASONS: Reason[] = [
     icon: "placement",
     body: (
       <>
-        500+ hiring partners, mock interviews and on-campus drives — see our{" "}
-        <Inline href="/placement-cell">Placement Cell</Inline>.
+        500+ hiring partners, mock interviews and on-campus drives, run by our
+        placement cell.
       </>
     ),
   },
@@ -86,7 +86,7 @@ export function WhyUs() {
 
           <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
             <Cta href={CONTACT.phoneHref}>Call Now</Cta>
-            <Cta href="/enquiry">Book a Free Demo</Cta>
+            <Cta href="/contact">Book a Free Demo</Cta>
           </div>
         </div>
 

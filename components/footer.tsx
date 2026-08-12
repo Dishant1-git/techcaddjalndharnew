@@ -5,6 +5,7 @@ import { siFacebook, siInstagram, siX, siYoutube } from "simple-icons"
 import {
   CONTACT,
   COURSE_GROUPS,
+  groupSlug,
   NAV_ITEMS,
   QUICK_LINKS,
   type NavLink,
@@ -25,7 +26,7 @@ const SOCIALS = [
 /** Mega-menu groups double as the footer's course column. */
 const COURSE_LINKS: NavLink[] = COURSE_GROUPS.map((g) => ({
   label: g.title,
-  href: `/courses#${g.title.toLowerCase().replace(/[^a-z]+/g, "-")}`,
+  href: `/courses#${groupSlug(g.title)}`,
 }))
 
 /** Everything in the top nav except Home and the mega menus (Courses has its

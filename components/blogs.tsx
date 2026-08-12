@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 import { POSTS, type Post } from "@/lib/blogs"
@@ -29,23 +28,8 @@ export function Blogs() {
             />
           </div>
 
-          <Link
-            href="/blog"
-            className="group inline-flex shrink-0 items-center gap-3 self-start rounded-full border border-line bg-white py-2 pr-2 pl-7 text-sm font-semibold transition-colors duration-300 hover:border-brand-600/30 hover:text-brand-600 lg:self-auto"
-          >
-            Read all posts
-            <span className="grid size-8 place-items-center rounded-full bg-brand-600 text-white transition-transform duration-300 group-hover:translate-x-0.5">
-              <svg viewBox="0 0 24 24" fill="none" className="size-4" aria-hidden="true">
-                <path
-                  d="M5 12h14m-7-7 7 7-7 7"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </Link>
+          {/* "Read all posts" removed with /blog — there is no index to send
+              anyone to yet. Restore it alongside the route. */}
         </div>
 
         <div
@@ -63,7 +47,9 @@ export function Blogs() {
 
 function Card({ post }: { post: Post }) {
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_28px_60px_-32px_rgba(15,23,42,0.5)]">
+    /* Static styling while the cards are not clickable — a hover lift on
+       something that cannot be opened reads as a broken link. */
+    <article className="relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
       {/* Gradient stand-in until real cover art exists. */}
       <div
         className={`relative aspect-[16/9] bg-linear-to-br ${post.from} ${post.to}`}
@@ -84,35 +70,17 @@ function Card({ post }: { post: Post }) {
           {post.readTime}
         </div>
 
+        {/* Not a link, and no "Read article" affordance: POSTS holds teasers
+            only — there are no article bodies and no /blog route behind them,
+            so every one of these pointed at a 404. Wrap the title in a Link to
+            post.href again the moment the posts themselves exist. */}
         <h3 className="mt-3 font-display text-lg leading-snug font-bold tracking-tight text-balance">
-          <Link href={post.href} className="transition-colors duration-200 hover:text-brand-600">
-            {/* Stretches the click target across the whole card. */}
-            <span className="absolute inset-0" />
-            {post.title}
-          </Link>
+          {post.title}
         </h3>
 
         <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">
           {post.excerpt}
         </p>
-
-        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600">
-          Read article
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
-            aria-hidden="true"
-          >
-            <path
-              d="M5 12h14m-7-7 7 7-7 7"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
       </div>
     </article>
   )

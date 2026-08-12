@@ -36,6 +36,42 @@ export type ModuleTrack = {
   modules: LearnModule[]
 }
 
+/**
+ * One module in a single numbered ladder.
+ *
+ * `from` is the shortest track that reaches it. The tracks are nested — the
+ * 6-month programme continues where the 3-month one ended, the 9-month where
+ * the 6-month ended — so this one number decides the tick in all three
+ * columns: a module is included in every duration at or above `from`. Storing
+ * a range per module instead would let the three columns contradict each
+ * other, which is precisely what a comparison table must never do.
+ */
+export type SyllabusModule = {
+  /** Position in the ladder, 1-based; rendered as 01, 02, … */
+  n: number
+  title: string
+  body: string
+  from: 3 | 6 | 9
+}
+
+export type SyllabusStage = {
+  months: 3 | 6 | 9
+  /** The level this stage certifies, e.g. "Practitioner". */
+  label: string
+  /** Which modules it spans, e.g. "Modules 1 – 10". */
+  range: string
+  summary: string
+}
+
+/** A duration comparison: the same ladder read across three enrolment lengths. */
+export type Syllabus = {
+  intro?: string
+  stages: SyllabusStage[]
+  modules: SyllabusModule[]
+  /** Closing note under the table. */
+  note?: string
+}
+
 export type Project = { title: string; body: string; tags: string[] }
 
 /** Career-outcome questions, rendered in the same accordion as the FAQs. */
@@ -58,8 +94,14 @@ export type CoursePage = {
   // --- Sections, authored in stages ---
   /** YouTube URL for the walkthrough popup. */
   video?: { url: string; title: string }
-  /** 3 / 6 / 9-month syllabus variants. */
+  /** 3 / 6 / 9-month syllabus variants, shown as a sticky stack. */
   tracks?: ModuleTrack[]
+  /**
+   * A numbered ladder shown as a duration comparison table. Takes precedence
+   * over `tracks` where both exist — a course whose stages genuinely nest is
+   * clearer as one table than as three separate stacks.
+   */
+  syllabus?: Syllabus
   projects?: Project[]
   outcomes?: Outcome[]
   overview?: string[]
@@ -110,7 +152,9 @@ export const KEYWORD_LINKS: Record<string, string> = {
   "internship program": "/internship-training/internship-programme",
   "6 months training": "/internship-training/6-months",
   "45 days training": "/internship-training/45-days",
-  "placement cell": "/placement-cell",
+  /* No "placement cell" entry: /placement-cell does not exist, and this map is
+     applied to body copy across every page, so one dead target here became a
+     404 on all of them. Re-add it with the page. */
 }
 
 export const COURSE_PAGES: CoursePage[] = [
@@ -137,7 +181,7 @@ export const COURSE_PAGES: CoursePage[] = [
     intro:
       "Learn the skill Jalandhar businesses are actively hiring for — taught on live client accounts, not slide decks.",
     facts: [
-      { label: "Duration", value: "3 – 6 Months" },
+      { label: "Duration", value: "3 / 6 / 9 Months" },
       { label: "Mode", value: "Classroom & Weekend" },
       { label: "Eligibility", value: "12th Pass Onward" },
       { label: "Includes", value: "Internship Letter" },
@@ -145,201 +189,407 @@ export const COURSE_PAGES: CoursePage[] = [
 
     // --- Stage 1 ---
     overview: [
-      "Techcadd's digital marketing course in Jalandhar is built for students who want a skill they can earn from in months, not years. You start with how search engines and social platforms actually decide what to rank and show, then move quickly into running live campaigns on real client accounts with real budgets.",
-      "The syllabus covers SEO, Google Ads, Meta Ads, content and email marketing, WordPress and Shopify storefronts, analytics, and AI-assisted marketing workflows — the same stack Jalandhar agencies and Punjab businesses are hiring for right now. Classes run in small batches at our Jalandhar centre with daily lab practice, taught by trainers who still manage client campaigns of their own.",
-      "Whether you have just finished 12th, are completing a degree at a local college, or are switching from a non-technical job, the course begins at zero. Every module ends with something you can show an employer: a page that ranks, an ad account that runs, a store that sells. That portfolio, plus an internship letter and Techcadd's placement drives, is what turns a certificate into an offer letter.",
+      "Techcadd's Digital Marketing Course in Jalandhar takes you from buyer psychology to AI-powered campaigns across SEO, Meta Ads and Google Ads. You build a real website, rank real keywords and run client budgets under trainer supervision. Choose 3, 6 or 9 months — every stage ends in a portfolio deliverable.",
+      "Advertising interrupts; a growth system compounds. The work here is building assets — a page that ranks, a list you own, a pixel that has learned, a channel that publishes — so that every rupee of spend costs less than the one before it. Attract, capture, convert, learn: every cycle makes the next one cheaper, and that loop is the whole job.",
+      "It is also a job that has changed shape in about three years. Tracking restrictions, AI-generated creative, AI search answers and automated bidding mean the platform buttons matter less than they did, while measurement, creative volume, offer design and owned audience matter far more. Companies are advertising into that new shape with teams trained for the old one, and this programme is built to fill the gap.",
     ],
 
     // --- Stage 2A ---
     whoCanDo: {
       intro:
-        "A digital marketing course suits more people than almost any other IT track, because it does not assume you can already code. What it does assume is that you are willing to write, test, read numbers and try again next week. If that sounds like you, your background matters far less than your consistency. Techcadd runs mixed batches on purpose — in one classroom you will find a B.Com final-year student from a Jalandhar college, a shopkeeper's son taking the family sports-goods business online, and a school teacher retraining after eight years out of work. They finish at different speeds, but they all finish, because every module is judged on something you built rather than something you memorised.",
+        "The Digital Marketing course is open at Module 01 to people with zero marketing background — funnel maths, buyer psychology and design fundamentals are taught from the ground up before any live account work begins. The batch at Techcadd Jalandhar is deliberately mixed, and what decides your outcome is consistency through the modules, not your starting point.",
       groups: [
         {
           title: "Students after 12th",
-          body: "Join straight after your board exams, from any stream. Arts and commerce students often do better here than science students, because the work rewards writing, curiosity and patience with numbers rather than mathematics. Most start a weekday batch alongside a BA, BBA or B.Com at a local college.",
+          body: "Join from Commerce, Arts or Science with no assumed knowledge. Most run the 3-month Practitioner track alongside a first year of college, using the weekday or weekend batch.",
         },
         {
           title: "Graduates and final-year students",
-          body: "Finishing a BA, BBA, B.Com, BCA or B.Tech? This is the shortest route from degree to salary. Run it alongside your final year and you enter placement season with live campaign results in your portfolio instead of a blank CV — which is what separates shortlisted candidates from ignored ones.",
+          body: "If you're finishing a BA, BBA, B.Com, BCA or MBA, this is the shortest route from degree to a Digital Marketing Executive offer. Enter placement season with a live website, a ranked listing and a real Meta campaign in hand instead of a blank CV.",
         },
         {
-          title: "Job seekers and career switchers",
-          body: "Teachers, bank staff, hotel and retail employees switch into marketing every year. You are not starting from zero — you already understand customers, targets and pressure. The weekend batch exists for exactly this: you keep earning while you retrain, and most switchers are interview-ready in five to six months.",
+          title: "Working professionals and career switchers",
+          body: "The weekend and evening batches exist for people already earning. Career switchers typically become interview-ready for Digital Marketing Executive or SEO Executive roles within three to six months, without leaving their current job.",
         },
         {
-          title: "Business owners and family firms",
-          body: "Jalandhar runs on family businesses — sports goods, hand tools, leather, agri implements, immigration consultancies. Owners and their children take this course to stop paying an agency every month for work they cannot judge. You will leave able to brief, audit and if needed replace an agency on evidence.",
-        },
-        {
-          title: "Freelancers and remote workers",
-          body: "This is one of the few skills where a Jalandhar address costs you nothing. Freelancers here bill clients in Delhi, Dubai and Canada. The course covers client handling, proposals and reporting, so you learn to price and defend your work — not just do it.",
-        },
-        {
-          title: "Anyone with no technical background",
-          body: "There is no coding requirement at any stage. You need a laptop, basic English reading and about ten hours a week outside class. If you have ever run an Instagram page for a college fest or a family shop, you have already done a rough version of what this course makes rigorous.",
+          title: "Business owners and freelancers",
+          body: "Owners take this course to stop outsourcing spend they cannot judge and start running their own Meta and Google accounts. Freelancers and agency founders take the 9-month Expert track specifically for the client-commercial skills — audits, proposals, quotations and GST invoicing — that let them bill clients beyond Punjab.",
         },
       ],
     },
 
     // --- Stage 2B ---
     whyProgram: [
-      "Jalandhar is not a metro, and that is exactly why this skill pays here. The city runs on export houses, sports goods manufacturers, hand tool units, leather workshops, agri-implement makers, immigration and study-visa consultancies, hospitals, schools and real estate. Almost all of them now sell through search, Instagram and WhatsApp rather than through a salesman on a scooter, and very few have anyone in-house who understands how that actually works. The result is a genuine shortage: businesses with budgets and nobody trustworthy to hand them to. Local firms routinely ask Techcadd for a trained marketer before they ask for a developer, because a marketer shows a return within ninety days.",
-      "What separates this programme from a playlist of tutorials is that you spend money. Not your own — Techcadd allocates live ad budgets on real client accounts, and you make the targeting, bidding and creative decisions with a trainer beside you. You will watch a campaign lose money because of a bad audience choice, fix it, and watch the cost per lead fall the following week. That loop, repeated across search, social and ecommerce, is the entire skill. You cannot get it from a course that ends in a quiz, and no employer in Jalandhar or Chandigarh will take your word for it without the account screenshots to prove it.",
-      "Be realistic about the money. A fresher who finishes with a working portfolio typically starts between ₹15,000 and ₹25,000 a month at a Jalandhar or Mohali agency, and reaches ₹35,000 to ₹50,000 within about two years if they keep learning. Freelancers handling three to five retainer clients often pass that sooner, because a Jalandhar address costs nothing on a call with a client in Delhi or Dubai. The ceiling is high, but it is earned — nobody pays a beginner well for a certificate alone.",
-      "Students reach the Jalandhar centre from Model Town, Urban Estate, Adarsh Nagar, Basti Bawa Khel, Rama Mandi and Guru Nanak Pura, and travel in from Phagwara, Kapurthala, Nakodar, Hoshiarpur and Adampur for the weekend batch. Many are studying at DAV College, Lyallpur Khalsa, HMV, Apeejay or Lovely Professional University at the same time, which is why weekday, evening and weekend timings all exist rather than a single fixed slot.",
-      "The alternative is what most people try first: free videos, a cheap online course, and six months of drifting. It fails for a predictable reason — nobody gives a beginner a real ad account, a real client, or an honest review of their work. You end up with knowledge you cannot demonstrate. A structured programme with live projects, a mentor who corrects you, an internship letter and a placement cell that actually calls employers is not a luxury in this city. It is the difference between knowing the subject and being hired to do it.",
+      "Digital marketing sits under nearly every business's growth line today, and Jalandhar's export houses, hospitals, real estate firms, immigration consultancies, schools and D2C brands are hiring for it directly rather than routing everything through a Chandigarh or Delhi agency. That gap between local demand and locally trained talent is the argument for this course.",
+      "What separates it from a stack of YouTube tutorials is supervised work on live accounts. From Module 02 onward at Techcadd, every session is production work — a real website goes live, a real Meta Pixel fires, a real ranking is tracked with dates. That loop of building, being corrected and shipping again is the actual skill an interviewer is testing for, and no employer in Jalandhar or Mohali will take your word for it without work they can open and inspect.",
+      "Be realistic about the numbers too. A fresher who finishes the Practitioner stage with a working portfolio typically starts as a Digital Marketing Executive or SEO Executive locally, moving into Performance Marketing Executive or SEO Specialist roles after the Professional stage, and Growth Manager, Digital Growth Architect or Agency Founder territory after the full Expert track. The ceiling in this field is high specifically because so few people can back a claim with a tracked conversion.",
+      "The alternative most people try first is free content, a cheap online certificate, six months of drifting between platforms, and no evidence they can defend in an interview. A structured programme with live client budgets, a mentor who corrects your work weekly, a documented internship and a placement cell that calls employers is the difference between having watched digital marketing and being hired to do it.",
     ],
+
+    /**
+     * One ladder of 34 modules, read across three enrolment lengths.
+     *
+     * Numbering runs 01–34 without restarting, because the stages nest: the
+     * 6-month track continues from Module 11, the 9-month from Module 23. That
+     * is the fact the table exists to make obvious — extending later repeats
+     * nothing.
+     */
+    syllabus: {
+      intro:
+        "Modules are numbered 01 to 34 in a single sequence, and progression is capability-gated: you advance when a deliverable passes review, not when the calendar says so. Every module is specified the same way — topics, tool stack, the commercial problem the skill solves, and a graded artefact that goes into your portfolio.",
+      stages: [
+        {
+          months: 3,
+          label: "Practitioner",
+          range: "Modules 1 – 10",
+          summary:
+            "Plan, build and run your first live campaign — starting from no marketing background.",
+        },
+        {
+          months: 6,
+          label: "Professional",
+          range: "Modules 11 – 22",
+          summary:
+            "Run a business's entire acquisition, with AI in the workflow and numbers you can defend.",
+        },
+        {
+          months: 9,
+          label: "Expert",
+          range: "Modules 23 – 34",
+          summary:
+            "Own the growth system a business runs on, not just one channel.",
+        },
+      ],
+      modules: [
+        {
+          n: 1,
+          from: 3,
+          title: "Marketing Foundations, Funnels & Campaign Maths",
+          body: "Buyer psychology, funnel architecture (TOFU/MOFU/BOFU) and the metric chain — CPM, CPC, CPL, CAC, ROAS, break-even ROAS.",
+        },
+        {
+          n: 2,
+          from: 3,
+          title: "Brand Positioning & Competitive Intelligence",
+          body: "Positioning statements, brand archetypes, and a structured competitor ad-spy method using the Meta Ad Library and Google Ads Transparency Center.",
+        },
+        {
+          n: 3,
+          from: 3,
+          title: "Ad Creative Production (Photoshop & Canva)",
+          body: "Visual hierarchy, static and carousel ad design, and creative production in Adobe Photoshop and Canva Pro to live platform specifications.",
+        },
+        {
+          n: 4,
+          from: 3,
+          title: "Website Building with WordPress & Gutenberg",
+          body: "Domains, hosting, WordPress installation and the Gutenberg block editor, with enquiry forms and Core Web Vitals basics.",
+        },
+        {
+          n: 5,
+          from: 3,
+          title: "Keyword Research & Search Intent",
+          body: "Classifying search intent, keyword scoring and clustering, and building a keyword-to-URL matrix in Semrush, Ahrefs and Google Keyword Planner.",
+        },
+        {
+          n: 6,
+          from: 3,
+          title: "On-Page SEO & Content Optimisation",
+          body: "Title tags, meta descriptions, E-E-A-T signals and Rank Math configuration for on-page ranking factors.",
+        },
+        {
+          n: 7,
+          from: 3,
+          title: "Local SEO & Google Business Profile",
+          body: "Map-pack ranking factors, citation building, review generation and geo-grid rank tracking.",
+        },
+        {
+          n: 8,
+          from: 3,
+          title: "Organic Social Media Operations",
+          body: "Content pillars, caption frameworks and publishing workflows across Instagram, Facebook, LinkedIn and YouTube.",
+        },
+        {
+          n: 9,
+          from: 3,
+          title: "Meta Ads Manager & Conversion Tracking",
+          body: "Business Manager setup, Meta Pixel and Conversions API, audience building and campaign structure.",
+        },
+        {
+          n: 10,
+          from: 3,
+          title: "Practitioner Capstone — Live Campaign & Client Report",
+          body: "A live campaign built on a real account, presented with a Looker Studio dashboard and a written client report to a mock client panel.",
+        },
+        {
+          n: 11,
+          from: 6,
+          title: "Generative AI for Marketing — Prompting & Assistants",
+          body: "Prompt frameworks for ChatGPT, Claude, Gemini and Perplexity, and building a brand-trained custom AI assistant.",
+        },
+        {
+          n: 12,
+          from: 6,
+          title: "Conversion Copywriting & AI Content Systems",
+          body: "Direct-response copy frameworks — AIDA, PAS, FAB — and AI-assisted drafting across ads, landing pages and email sequences.",
+        },
+        {
+          n: 13,
+          from: 6,
+          title: "Video Production & Short-Form Editing",
+          body: "Scriptwriting, retention-curve design and editing in Adobe Premiere Pro and CapCut for Reels, Shorts and YouTube.",
+        },
+        {
+          n: 14,
+          from: 6,
+          title: "Elementor Pro — Conversion Landing Pages",
+          body: "Building dedicated, split-tested landing pages without a developer, using Elementor Pro's theme builder and pro widgets.",
+        },
+        {
+          n: 15,
+          from: 6,
+          title: "WooCommerce Store Engineering & Plugin Stack",
+          body: "Product catalogues, Indian payment gateways, GST tax classes and the professional WordPress plugin stack for stores.",
+        },
+        {
+          n: 16,
+          from: 6,
+          title: "Technical SEO, Schema & Site Health",
+          body: "Crawl audits in Screaming Frog, Core Web Vitals remediation and JSON-LD schema implementation.",
+        },
+        {
+          n: 17,
+          from: 6,
+          title: "Off-Page SEO, Digital PR & Link Acquisition",
+          body: "Link prospecting, outreach templates and digital PR to move a site from page two to page one.",
+        },
+        {
+          n: 18,
+          from: 6,
+          title: "Analytics Infrastructure — GTM, GA4 & Conversions API",
+          body: "Google Tag Manager, GA4 event architecture, attribution models and Meta Conversions API deployment.",
+        },
+        {
+          n: 19,
+          from: 6,
+          title: "Google Search & Display Advertising",
+          body: "Account architecture, Quality Score, Responsive Search Ads and bidding strategies across Search and Display.",
+        },
+        {
+          n: 20,
+          from: 6,
+          title: "Shopping, Performance Max & YouTube Advertising",
+          body: "Google Merchant Center feeds, Shopping and Performance Max campaigns, and YouTube ad formats.",
+        },
+        {
+          n: 21,
+          from: 6,
+          title: "Meta Ads at Scale — Creative Testing & Scaling",
+          body: "Creative testing matrices, fatigue detection and vertical/horizontal budget scaling while holding cost per acquisition steady.",
+        },
+        {
+          n: 22,
+          from: 6,
+          title: "Professional Capstone — Omnichannel Campaign & Reporting",
+          body: "A full account audit across website, SEO, paid and social, a monthly reporting pack, and a case study defended to a mock client panel.",
+        },
+        {
+          n: 23,
+          from: 9,
+          title: "AI Video Generation & Synthetic Creative",
+          body: "Text-to-video and AI avatars using Sora, Google Veo, Runway, Kling and HeyGen, with multilingual AI voice via ElevenLabs.",
+        },
+        {
+          n: 24,
+          from: 9,
+          title: "Niche Instagram Channel Launch & Positioning",
+          body: "Validating a niche, building a content-pillar system, and launching an owned audience channel from zero.",
+        },
+        {
+          n: 25,
+          from: 9,
+          title: "Mobile Cinematography & the 15-Day Reel Sprint",
+          body: "Smartphone camera control, lighting and audio capture, followed by fifteen consecutive days of shoot, edit and publish.",
+        },
+        {
+          n: 26,
+          from: 9,
+          title: "Vibe-Coded Web Design with Lovable",
+          body: "Building deployed web products — landing pages and lead-capture apps with a database — using Lovable and Supabase.",
+        },
+        {
+          n: 27,
+          from: 9,
+          title: "Shopify Store Development & D2C Operations",
+          body: "Store setup, Indian payments, conversion apps and Shopify SEO for direct-to-consumer brands.",
+        },
+        {
+          n: 28,
+          from: 9,
+          title: "Site Migration, Performance & Maintenance Operations",
+          body: "Zero-loss site migrations, performance engineering and pricing a website maintenance retainer.",
+        },
+        {
+          n: 29,
+          from: 9,
+          title: "AI Integration — Chatbots, WhatsApp & CRM",
+          body: "Training a brand chatbot, WhatsApp Business API deployment and CRM routing for inbound leads.",
+        },
+        {
+          n: 30,
+          from: 9,
+          title: "LinkedIn Ads & B2B Demand Generation",
+          body: "Campaign Manager setup, account-based targeting and B2B lead-quality scoring.",
+        },
+        {
+          n: 31,
+          from: 9,
+          title: "Multi-Platform & Marketplace Advertising",
+          body: "Advertising on X, Pinterest, Reddit, Amazon and Flipkart, plus unified cross-channel reporting.",
+        },
+        {
+          n: 32,
+          from: 9,
+          title: "GEO & AEO — Visibility Inside AI Search",
+          body: "Structuring content so brands get cited inside ChatGPT Search, Perplexity, Google AI Overviews and Gemini.",
+        },
+        {
+          n: 33,
+          from: 9,
+          title: "Marketing Automation & Predictive Analytics",
+          body: "Building automation pipelines in Zapier, Make and n8n, and predictive work like churn signals and LTV forecasting.",
+        },
+        {
+          n: 34,
+          from: 9,
+          title: "Agency Operating System, Client Commercials & Architect Capstone",
+          body: "A complete client kit — audit, proposal, quotation and GST invoice — plus a live growth system presented as an agency pitch deck.",
+        },
+      ],
+      note: "Nested, not parallel. The six-month programme contains everything in the three-month programme and continues from Module 11; the nine-month programme contains both and continues from Module 23. Choosing a shorter programme costs you scope, never depth — and you can extend later without repeating a single module.",
+    },
 
     // --- Stage 3 ---
     whyTechcadd: {
       intro:
-        "There are a dozen places to learn this subject in Jalandhar, and the brochure syllabus looks much the same at all of them. What differs is who teaches, whether you ever touch a real account, and whether anyone picks up the phone after you have paid. Techcadd has trained students across Punjab for close to two decades, and the model has not changed because it works: small batches, working practitioners as trainers, client projects as coursework, and a placement cell that treats your offer letter as its own deliverable.",
+        "There are several places to learn digital marketing in Jalandhar and the brochure syllabus looks similar at most of them. What differs is whether you ever touch a live account, whether the trainer still does client work, and whether the placement cell keeps calling after your batch ends. Techcadd has trained students across Punjab since 2007 on the same model: small batches, practitioner trainers, live client work as coursework.",
       points: [
         {
-          title: "Trainers who still run campaigns",
-          body: "Your trainer is not a full-time lecturer. They manage live client accounts for Techcadd's own services arm, so the examples in class are last month's data rather than a 2019 case study. When Google changes an ad format or Meta breaks attribution, you hear about it the week it happens.",
+          title: "Trainers who still do the work",
+          body: "Your trainer runs live client accounts for Techcadd's own services arm, so the Meta and Google Ads examples in class are from this quarter, not a five-year-old case study.",
         },
         {
-          title: "Live client accounts, real budgets",
-          body: "From the second month you work on real businesses under supervision — a local exporter, a clinic, a school, a D2C store. Real budgets, real leads, real consequences. This is where a portfolio comes from, and it is the first thing interviewers in Jalandhar and Mohali ask to see.",
+          title: "Live budgets, real consequences",
+          body: "You spend real advertising budgets and publish to real domains under supervision. A tracked conversion and a before-and-after ranking record are what an interviewer asks to see first.",
         },
         {
-          title: "Small batches and daily lab time",
-          body: "Batches stay small enough that a trainer can look at your screen every single day. Open lab hours run outside class time, and doubt sessions continue until the concept lands rather than until the clock says stop.",
+          title: "Small batches, daily lab time",
+          body: "Batches stay small enough that a trainer reviews your dashboard daily. Lab hours run outside class and doubt sessions continue until a concept lands.",
         },
         {
-          title: "Internship letter and portfolio",
-          body: "Every student finishes with a documented internship on client work plus a portfolio of campaigns, audits and ranked pages. Certificates are easy to print; a portfolio is not, and employers know exactly what that difference means.",
+          title: "Internship letter and certificate",
+          body: "Every student finishes with an industry-recognised certificate and a documented internship on real client work, accepted for university industrial training requirements.",
         },
         {
-          title: "A placement cell that actually calls",
-          body: "Mock interviews, CV reviews and drives with a hiring partner network across Jalandhar, Mohali, Chandigarh and Ludhiana. Support does not end at your first rejection — students come back for the second and third round of drives until they are placed.",
+          title: "A placement cell that persists",
+          body: "Mock interviews, CV reviews and drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana — repeated after a rejection, not abandoned.",
         },
         {
-          title: "Two decades, 25,000+ students",
-          body: "Techcadd has trained students in Punjab since 2007 and works with hiring partners who have taken candidates from us for years. That history is why a call from our placement cell gets answered, and why local employers already know what our certificate stands for.",
+          title: "Since 2007, 25,000+ students",
+          body: "Nearly two decades of hiring relationships in Punjab is why local employers know exactly what a Techcadd certificate in digital marketing means.",
         },
       ],
     },
 
     // --- Stage 4 ---
     learn: {
+      /* No `modules` here on purpose: the comparison table above already
+         lists all thirty-four, and repeating them as an accordion would make
+         a reader scroll the same syllabus twice. */
       intro:
-        "The syllabus is arranged so that every module produces an asset. You do not learn SEO and then hope to apply it — you rank a page. You do not study Google Ads theory — you build, run and optimise a campaign on a live account. By the end you hold a folder of work: audits, ranked URLs, ad accounts, a storefront and a reporting dashboard that between them answer every question an interviewer will ask. Modules run in the order a real project runs. You start by understanding the customer and the funnel, build somewhere for traffic to land, learn to earn traffic for free through search, then learn to buy it through ads, then measure everything and report it in language a business owner accepts. AI tools are woven through the modules rather than bolted on at the end, because that is how the work is actually done now.",
-      modules: [
-        {
-          title: "Digital Marketing Foundations",
-          points: [
-            "Funnels, buyer journeys and channel selection",
-            "Positioning and offer design for local businesses",
-            "Competitor research in the Jalandhar market",
-            "Goals and KPIs a business owner will accept",
-          ],
-        },
-        {
-          title: "Websites & Landing Pages",
-          points: [
-            "WordPress setup, themes and page builders",
-            "Landing page structure that converts",
-            "Core Web Vitals, speed and mobile-first fixes",
-            "Forms, WhatsApp integration and lead capture",
-          ],
-        },
-        {
-          title: "Search Engine Optimisation",
-          points: [
-            "Keyword research and search intent mapping",
-            "On-page: titles, schema and internal linking",
-            "Technical: crawling, indexing, sitemaps, robots",
-            "Off-page: backlinks, digital PR and outreach",
-          ],
-        },
-        {
-          title: "Local SEO for Punjab Businesses",
-          points: [
-            "Google Business Profile optimisation and posts",
-            "Citations, NAP consistency and directories",
-            "Review generation and reputation management",
-            "Ranking in the map pack for near-me searches",
-          ],
-        },
-        {
-          title: "Google Ads",
-          points: [
-            "Search campaigns, match types and negatives",
-            "Display, YouTube and Performance Max",
-            "Shopping campaigns for ecommerce sellers",
-            "Bidding strategies, budgets and quality score",
-          ],
-        },
-        {
-          title: "Meta & Social Media Marketing",
-          points: [
-            "Instagram and Facebook content strategy",
-            "Meta Ads Manager, audiences and retargeting",
-            "Creative testing and ad copy that converts",
-            "LinkedIn for B2B and export businesses",
-          ],
-        },
-        {
-          title: "Content, Email & WhatsApp",
-          points: [
-            "Blog and content calendars built to rank",
-            "Email sequences and marketing automation",
-            "WhatsApp Business API and broadcast campaigns",
-            "Copywriting for Indian and NRI audiences",
-          ],
-        },
-        {
-          title: "Ecommerce & Shopify",
-          points: [
-            "Store setup, products and collections",
-            "Product page SEO and conversion optimisation",
-            "Payments, shipping and returns for Indian sellers",
-            "Marketplace basics — Amazon and Flipkart listings",
-          ],
-        },
-        {
-          title: "Analytics & Reporting",
-          points: [
-            "GA4 events, conversions and audiences",
-            "Google Tag Manager and tracking setup",
-            "Search Console diagnostics and fixes",
-            "Looker Studio dashboards for clients",
-          ],
-        },
-        {
-          title: "AI for Marketers & Career Prep",
-          points: [
-            "Prompting for research, briefs and ad copy",
-            "AI tools for content, images and bulk keyword work",
-            "Freelance pricing, proposals and client handling",
-            "Portfolio build, CV review and mock interviews",
-          ],
-        },
-      ],
+        "The syllabus runs as a single ladder, not three separate courses — the 6-month Professional track continues exactly where the 3-month Practitioner track ends, and the 9-month Expert track continues where the Professional track ends, so choosing a shorter duration costs you scope, never depth. You begin with buyer psychology and funnel maths, move into a live website, ranked keywords and a running Meta ad account by the end of Stage 1, then layer in generative AI, technical SEO, the full Google Ads suite and WooCommerce by the end of Stage 2. Stage 3 is where you stop running channels and start designing growth systems — AI video production, niche audience building, Shopify and vibe-coded web products, automation, GEO/AEO visibility and the commercial mechanics of running an agency. Every module is specified the same way and ends in a graded, portfolio-ready deliverable: a funnel blueprint, a ranked site, a live Meta campaign, a technical SEO audit, an AI-generated video ad set, a completed client kit. Evidence — a tracked conversion, a before-and-after ranking record, a documented cost per acquisition — is what interviewers in Jalandhar and Mohali actually ask to see, so every fortnight of the course is built around producing one.",
       tools: [
-        "Google Analytics 4",
-        "Google Search Console",
         "Google Ads",
-        "Google Tag Manager",
-        "Google Business Profile",
         "Meta Ads Manager",
-        "WordPress",
-        "Elementor",
-        "Shopify",
+        "Google Analytics 4",
+        "Google Tag Manager",
+        "Google Search Console",
+        "Google Business Profile",
+        "Google Merchant Center",
+        "Rank Math",
         "Semrush",
         "Ahrefs",
         "Screaming Frog",
-        "Looker Studio",
+        "WordPress",
+        "Elementor",
+        "WooCommerce",
+        "Shopify",
         "Canva",
-        "Mailchimp",
-        "WhatsApp Business",
+        "Adobe Photoshop",
+        "Adobe Premiere Pro",
+        "CapCut",
         "ChatGPT",
         "Claude",
+        "Gemini",
+        "Midjourney",
+        "Runway",
+        "HeyGen",
+        "Looker Studio",
+        "Microsoft Clarity",
+        "Zapier",
+        "n8n",
+        "WhatsApp Business",
+        "HubSpot",
+        "LinkedIn Campaign Manager",
       ],
     },
+
+    // --- Stage 4B: career outcomes, rendered in the FAQ accordion ---
+    outcomes: [
+      {
+        q: "What job roles open up after Digital Marketing?",
+        a: "Graduates move through Digital Marketing Executive, SEO Executive and Social Media Executive roles early, into Performance Marketing Executive, SEO Specialist and Digital Marketing Manager at mid-level, and toward Growth Manager, Digital Growth Architect or Agency Founder with the full 9-month track. Local demand across Jalandhar and Mohali's export, healthcare, education and D2C sectors is currently ahead of trained supply.",
+      },
+      {
+        q: "What can I earn, and how fast does it grow?",
+        a: "Entry-level Digital Marketing Executives in the Jalandhar and Mohali market typically start in a modest but realistic bracket and move up quickly once they can show a portfolio of ranked pages and profitable ad accounts. Performance and specialist roles command noticeably more, and pay scales fastest for people who can prove cost-per-acquisition improvements with dates and numbers, not just a certificate.",
+      },
+      {
+        q: "Can I freelance or work remotely with this skill?",
+        a: "Yes. A Jalandhar address is no barrier on a remote brief — the 9-month track specifically covers client acquisition, proposals, pricing models, GST invoicing and contracts so you can price and defend freelance or agency work for clients anywhere.",
+      },
+      {
+        q: "Which industries hire for this in Punjab?",
+        a: "Beyond marketing agencies, Jalandhar's export houses, sports goods and hand-tool manufacturers, immigration consultancies, hospitals, clinics, schools, coaching institutes and real estate firms all now run in-house digital marketing rather than outsourcing it entirely.",
+      },
+      {
+        q: "Can I continue to higher studies or a specialisation later?",
+        a: "Yes. The 34-module ladder is designed to be picked up again — a 3-month graduate can return and continue from Module 11 without repeating any module, and the certificate and portfolio from each stage stand on their own for university industrial training requirements.",
+      },
+    ],
+
+    projects: [
+      {
+        title: "Funnel & Break-Even Model",
+        body: "Your first working deliverable: a funnel blueprint for a real business plus a break-even calculator that turns budget, CPC and conversion rate into CAC and ROAS.",
+        tags: ["Google Sheets", "Miro"],
+      },
+      {
+        title: "Live Website & Ranked Listing",
+        body: "A five-page WordPress site on a real domain with working enquiry capture, alongside a fifty-keyword optimisation matrix and an optimised Google Business Profile with geo-grid proof.",
+        tags: ["WordPress", "Rank Math"],
+      },
+      {
+        title: "Live Meta Ad Campaign",
+        body: "A real advertising budget spent with verified Pixel events, a documented optimisation log and cost-per-lead tracked before and after.",
+        tags: ["Meta Ads Manager", "GA4"],
+      },
+      {
+        title: "Client Kit / Growth System Capstone",
+        body: "Depending on your track: a Practitioner client report, a Professional omnichannel audit, or — at 9 months — a complete agency kit of audit, proposal, quotation and GST invoice for a real business, defended to a mock client panel.",
+        tags: ["Looker Studio", "Zoho Books"],
+      },
+    ],
 
     // --- Stage 5 ---
     reviews: [
@@ -426,46 +676,56 @@ export const COURSE_PAGES: CoursePage[] = [
     ],
 
     // --- Stage 6 ---
+    /* Every answer opens with a direct, standalone sentence so it can be
+       lifted whole by an AI answer engine or read aloud by voice search, then
+       adds one supporting sentence with a concrete local detail.
+
+       Fees and salary bands deliberately carry no figure: the page must not
+       display a number a counsellor cannot honour. */
     faqs: [
       {
-        q: "What is the duration of the digital marketing course in Jalandhar at Techcadd?",
-        a: "The course runs 3 to 6 months depending on the track. The 3-month track covers core SEO, Google Ads, social media and analytics. The 6-month track adds ecommerce, advanced analytics, AI tools and a longer internship on live client accounts. Weekend batches take longer in calendar time but cover the same syllabus.",
+        q: "What is the duration of the Digital Marketing course in Jalandhar?",
+        a: "Techcadd runs the Digital Marketing course over 3, 6 or 9 months, structured as one continuous 34-module programme rather than three separate courses. Weekday, evening and weekend batches cover the same syllabus, and each stage picks up exactly where the previous one ended — no module is repeated if you extend later.",
       },
       {
-        q: "What is the fee for a digital marketing course in Jalandhar?",
-        a: "In Jalandhar, basic 2–3 month courses typically cost ₹8,000 to ₹15,000, while comprehensive 4–6 month programmes that include live ad budgets, an internship and placement support run roughly ₹18,000 to ₹40,000. Techcadd counsellors share the current fee sheet and EMI options on request, and a demo class carries no registration charge.",
+        q: "What is the fee for the Digital Marketing course in Jalandhar?",
+        a: "Techcadd's Digital Marketing course fee depends on the track — the 3-month Practitioner stage costs less than the 6-month Professional or 9-month Expert stages, which include live paid-media budgets, AI tools and a larger deliverable set. Counsellors share the current fee sheet and EMI options on request, and a demo class is free.",
       },
       {
-        q: "Can I do a digital marketing course after 12th?",
-        a: "Yes. Students from any stream — arts, commerce or science — can join straight after 12th. There is no coding or mathematics requirement. Many students run the course alongside a BA, BBA or B.Com at a Jalandhar college using the weekend or evening batch.",
+        q: "Who can join the Digital Marketing course?",
+        a: "Students after 12th, graduates, working professionals switching careers, and business owners or freelancers can all join — the course starts at Module 01 with no marketing or design background assumed. A basic comfort with computers is helpful but not required.",
       },
       {
-        q: "Is placement guaranteed after the course?",
-        a: "No honest institute can guarantee a job, and you should be cautious of any in Jalandhar that does. Techcadd guarantees placement support: CV reviews, mock interviews, portfolio preparation and drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana, repeated until you are placed.",
+        q: "What jobs can I get after the Digital Marketing course?",
+        a: "Graduates typically move into roles such as Digital Marketing Executive, SEO Executive, Social Media Executive or Performance Marketing Executive, depending on the track completed. The 9-month Expert track additionally prepares students for Growth Manager, Digital Growth Architect or Agency Founder roles.",
       },
       {
-        q: "What salary can a fresher expect in Jalandhar after this course?",
-        a: "A fresher with a working portfolio typically starts between ₹15,000 and ₹25,000 per month at a Jalandhar or Mohali agency, rising to ₹35,000–₹50,000 within about two years. Freelancers handling three to five retainer clients often earn more, since remote client work is not limited by location.",
+        q: "What salary can a fresher expect after this course in Jalandhar?",
+        a: "A fresher completing the Practitioner stage with a working portfolio typically starts as a Digital Marketing Executive in the Jalandhar and Mohali market, with pay rising as the portfolio grows to include paid-media results and technical SEO work. Freelancers and specialists in Performance Marketing or SEO generally earn more, since remote client work is not limited by location.",
       },
       {
-        q: "Do I need a technical or coding background?",
-        a: "No. This is one of the few high-demand skills with no coding prerequisite. You need a laptop, basic English reading and roughly ten hours a week outside class. Students from arts and commerce backgrounds frequently perform as well as engineering graduates.",
+        q: "Is placement guaranteed after the Digital Marketing course?",
+        a: "No institute can honestly guarantee a job, and any Jalandhar institute claiming otherwise should be treated with caution. Techcadd guarantees placement support — CV reviews, mock interviews, portfolio preparation and repeated drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana.",
       },
       {
-        q: "Will I work on real campaigns or only theory?",
-        a: "You work on live client accounts with real ad budgets from the second month, supervised by a trainer. Every module ends with a deliverable — a ranked page, a running ad account, a live store, a client dashboard — and those become the portfolio you carry into interviews.",
+        q: "Which tools and software will I learn?",
+        a: "Students work hands-on with Google Ads, Meta Ads Manager, GA4, Google Tag Manager, Semrush, Ahrefs, WordPress, Elementor Pro, WooCommerce, Shopify, Canva Pro, Photoshop, Premiere Pro, ChatGPT, Claude and Looker Studio, among others. All practice happens on live student accounts, not demo screenshots.",
       },
       {
-        q: "Does Techcadd provide an internship and certificate?",
-        a: "Yes. Every student receives an industry-recognised certificate on completion plus a documented internship letter based on live client work. Both are verifiable, and the internship satisfies the industrial training requirement at most Punjab universities.",
+        q: "Will I get a certificate and internship letter?",
+        a: "Yes. Every student receives an industry-recognised certificate on completion plus a documented internship letter based on live client work, which satisfies the industrial training requirement at most Punjab universities.",
       },
       {
-        q: "Which tools will I learn during the course?",
-        a: "You will work with Google Analytics 4, Search Console, Google Ads, Tag Manager, Google Business Profile, Meta Ads Manager, WordPress, Shopify, Semrush, Screaming Frog, Looker Studio, Canva, Mailchimp and AI assistants such as ChatGPT and Claude for research, copy and bulk keyword work.",
+        q: "Do you work on real campaigns or only theory?",
+        a: "Every module ends in a graded deliverable built on a real account — a live website, a ranked keyword set, a running Meta or Google Ads campaign with real spend. The course finishes with a capstone built on a live client brief, supervised by a trainer.",
       },
       {
-        q: "Are weekend batches available for working professionals?",
-        a: "Yes. Techcadd runs classroom batches in Jalandhar with weekday, evening and weekend options. The weekend batch exists specifically for working professionals and business owners who cannot attend on weekdays. Book a free demo class to see the lab and meet the trainer before enrolling.",
+        q: "Are weekend and evening batches available?",
+        a: "Yes. Techcadd Jalandhar runs weekday, evening and weekend batches in parallel so working professionals and college students can both attend without changing their existing schedule. A free demo class lets you see the lab and meet the trainer before enrolling.",
+      },
+      {
+        q: "What is the difference between the 3, 6 and 9-month Digital Marketing courses?",
+        a: "The 3-month Practitioner track covers foundations, a website, SEO basics and a first Meta ad campaign; the 6-month Professional track adds generative AI, technical SEO, WooCommerce and the full Google Ads suite; the 9-month Expert track adds AI video production, Shopify, automation, GEO/AEO visibility work and agency-level client commercials. Each stage is nested inside the next, so nothing is repeated if a student extends their programme.",
       },
     ],
 

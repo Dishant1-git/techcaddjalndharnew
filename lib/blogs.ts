@@ -1,6 +1,11 @@
 export type Post = {
   title: string
   excerpt: string
+  /**
+   * Where the post will live. Nothing renders this as a link today — there is
+   * no /blog route and these have no bodies — so it currently serves only as a
+   * stable key. The cards start linking again once the posts are real.
+   */
   href: string
   category: string
   /** ISO date — formatted at render time so the markup stays locale-agnostic. */

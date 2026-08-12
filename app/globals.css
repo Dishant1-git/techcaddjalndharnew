@@ -605,6 +605,131 @@
   pointer-events: none;
 }
 
+/* --- Route change preloader ---
+   Sits above the navbar (z-50) but below the enquiry popup (z-90) and the boot
+   preloader (z-100), so it can never cover a dialog the reader opened. */
+.nav-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  /* The wrapper only positions; it must never swallow a click, since the page
+     underneath stays fully usable while the next one loads. */
+  pointer-events: none;
+}
+
+.nav-progress__bar {
+  display: block;
+  height: 3px;
+  transform-origin: left center;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-brand-600) 0%,
+    var(--color-accent-500) 55%,
+    var(--color-accent-glow) 100%
+  );
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-accent-glow) 60%, transparent);
+  /* Eases hard at first, then crawls — a real transfer's shape, and it never
+     reaches the end on its own because only arrival may complete it. */
+  animation: nav-progress-trickle 10s cubic-bezier(0.12, 0.78, 0.28, 1) forwards;
+}
+
+.nav-progress[data-state="done"] .nav-progress__bar {
+  animation: none;
+  transform: scaleX(1);
+  opacity: 0;
+  transition:
+    transform 0.18s ease-out,
+    opacity 0.3s ease 0.12s;
+}
+
+@keyframes nav-progress-trickle {
+  0% {
+    transform: scaleX(0.03);
+  }
+  40% {
+    transform: scaleX(0.5);
+  }
+  70% {
+    transform: scaleX(0.72);
+  }
+  100% {
+    transform: scaleX(0.9);
+  }
+}
+
+/* Small corner acknowledgement for the same wait — the bar alone is easy to
+   miss when the eye is on the link that was just clicked. */
+.nav-progress__pill {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background-color: rgba(16, 24, 65, 0.72);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  padding: 0.5rem 0.9rem 0.5rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #fff;
+  box-shadow: 0 18px 40px -20px rgba(6, 10, 35, 0.9);
+  animation: nav-progress-pill-in 0.28s ease-out both;
+}
+
+.nav-progress[data-state="done"] .nav-progress__pill {
+  opacity: 0;
+  transform: translateY(0.35rem);
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease;
+}
+
+@keyframes nav-progress-pill-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-progress__spinner {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: var(--color-accent-glow);
+  animation: nav-progress-spin 0.7s linear infinite;
+}
+
+@keyframes nav-progress-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion keeps the indicator — losing it would mean losing the only
+   feedback there is — but drops the spin and the crawl for a steady bar. */
+@media (prefers-reduced-motion: reduce) {
+  .nav-progress__bar {
+    animation: none;
+    transform: scaleX(0.75);
+  }
+  .nav-progress__spinner {
+    animation: none;
+    border-top-color: rgba(255, 255, 255, 0.25);
+  }
+  .nav-progress__pill {
+    animation: none;
+  }
+}
+
 /* --- Skeletons ---
    A tinted block with a light sweep running across it. The sweep is a
    pseudo-element transform, so it animates on the compositor and costs

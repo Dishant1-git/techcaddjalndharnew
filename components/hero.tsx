@@ -132,7 +132,9 @@ export function Hero() {
 
                 <div className="reveal mt-9 flex flex-col items-start gap-4 [animation-delay:350ms] sm:flex-row">
                   <Link
-                    href="/enquiry"
+                    /* /enquiry was never built; /contact is the page that
+                       actually carries the counselling form. */
+                    href="/contact"
                     className="group inline-flex h-13 items-center justify-center rounded-full bg-white px-8 text-base font-medium text-[#0a0e14] transition-colors duration-300 hover:bg-brand-500 hover:text-white"
                   >
                     Start your career

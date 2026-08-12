@@ -1,9 +1,10 @@
-import Link from "next/link"
 import { Container } from "./container"
 import { EnquireButton } from "./enquire-button"
 import { PanelTexture } from "./panel-texture"
+import { PrefetchLink } from "./prefetch-link"
 import { ScrollHeading } from "./scroll-heading"
 import { groupedSegment, type Segment } from "@/lib/course-pages"
+import { groupSlug } from "@/lib/navigation"
 
 export const SEGMENT_INDEX: Record<
   Segment,
@@ -83,7 +84,9 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
       {groups.map(([title, entries], index) => (
         <section
           key={title}
-          className={`py-16 lg:py-20 ${index % 2 ? "bg-subtle" : ""}`}
+          /* The footer's course column deep-links to these. */
+          id={groupSlug(title)}
+          className={`scroll-mt-24 py-16 lg:py-20 ${index % 2 ? "bg-subtle" : ""}`}
         >
           <Container>
             <ScrollHeading
@@ -92,15 +95,14 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
               className="font-display text-2xl font-bold tracking-tight lg:text-3xl"
             />
 
+            {/* Up to 35 cards on one index — viewport prefetching them all
+                would fire 35 RSC requests on load, so these warm on hover
+                instead and the click itself stays instant. */}
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {entries.map((entry) => (
-                <Link
+                <PrefetchLink
                   key={entry.slug}
                   href={`/${entry.segment}/${entry.slug}`}
-                  /* Up to 35 cards on one index. Viewport prefetching them all
-                     would fire 35 RSC requests on load; hover prefetch still
-                     applies, so the click itself stays instant. */
-                  prefetch={false}
                   className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_24px_50px_-30px_rgba(15,23,42,0.5)]"
                 >
                   <span>
@@ -122,7 +124,7 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
                       />
                     </svg>
                   </span>
-                </Link>
+                </PrefetchLink>
               ))}
             </div>
           </Container>
