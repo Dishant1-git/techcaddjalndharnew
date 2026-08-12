@@ -1,0 +1,807 @@
+import type { Metadata } from "next"
+import { Container } from "@/components/container"
+import { Cta } from "@/components/cta"
+import { HeroVideo } from "@/components/hero-video"
+import { SITE } from "@/lib/site"
+
+export const metadata: Metadata = {
+  title: "Our Founder — Mr. Gourav Gupta",
+  description:
+    "Mr. Gourav Gupta founded techcadd in 2016 to bridge the gap between academics and industry through practical, future-ready skills. His vision, his work with institutions, and the recognition it has earned.",
+  alternates: { canonical: `${SITE.url}/about/founder` },
+}
+
+/** How he is described publicly, in the order the profile lists them. */
+const DESCRIPTORS = [
+  "Visionary Entrepreneur",
+  "Technology Educator",
+  "Skill Development Advocate",
+]
+
+/**
+ * Where techcadd's focus widened to under his leadership.
+ *
+ * `art` names the illustration each card leads with, and `wide` marks the two
+ * that take the top row. The bento is six columns: the two wide cards span
+ * three each, the remaining three span two each — so both rows fill exactly and
+ * there is never an orphan card sitting in a half-empty row.
+ */
+const FOCUS_AREAS = [
+  {
+    art: "chip" as const,
+    wide: true,
+    title: "Emerging Technologies",
+    body: "Moving the catalogue beyond conventional computer education into AI, cloud, cyber security and automation.",
+  },
+  {
+    art: "workbench" as const,
+    wide: true,
+    title: "Practical Training",
+    body: "Learning built on projects and hands-on work rather than theory alone.",
+  },
+  {
+    art: "network" as const,
+    wide: false,
+    title: "Industry Engagement",
+    body: "Working with employers and institutions so what is taught tracks what is actually hired for.",
+  },
+  {
+    art: "growth" as const,
+    wide: false,
+    title: "Career Development",
+    body: "Counselling, placement support and career pathways treated as part of the programme, not an afterthought.",
+  },
+  {
+    art: "spark" as const,
+    wide: false,
+    title: "Innovation",
+    body: "Bringing new technology into the classroom early, while it is still emerging.",
+  },
+]
+
+/**
+ * One duration and curve for every part of the leadership card hover.
+ *
+ * The curve is the site's own — the same one the project cards, scroll reveals
+ * and word-by-word headings use — so this section moves like the rest of the
+ * page. Kept as a constant because four elements animate together and they only
+ * read as a single gesture if they share the timing exactly; a literal string
+ * here still gets picked up by Tailwind's scanner.
+ */
+const HOVER_EASE = "duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+
+type Engagement = { tag: string; title: string; body: string }
+
+const ENGAGEMENTS: Engagement[] = [
+  {
+    tag: "IKGPTU · 2025",
+    title: "Pre-placement talk at I.K. Gujral Punjab Technical University",
+    body: "IKGPTU identifies Mr. Gourav Gupta as Founder & CEO of TechCADD, and hosted him for a pre-placement talk and interaction with students during TechCADD's 2025 campus placement drive.",
+  },
+  {
+    tag: "Workshops",
+    title: "Technology workshops at educational institutions",
+    body: "He has participated in technology-focused workshops and discussions covering Artificial Intelligence, robotics, cyber security and other emerging technologies.",
+  },
+]
+
+type Recognition = { title: string; body: string; icon: "badge" | "handshake" | "campus" | "spark" }
+
+const RECOGNITION: Recognition[] = [
+  {
+    icon: "badge",
+    title: "ISO 9001 Certified",
+    body: "techcadd's public LinkedIn profile describes the organization as an ISO 9001-certified and government-registered IT institute.",
+  },
+  {
+    icon: "handshake",
+    title: "Industry–Academia Engagement",
+    body: "techcadd has participated in institutional initiatives and placement activities, including a joint campus placement drive hosted by I.K. Gujral Punjab Technical University in November 2025.",
+  },
+  {
+    icon: "campus",
+    title: "Academic Collaboration",
+    body: "Publicly available information also records techcadd's collaboration with educational institutions for skill development, workshops and experiential learning initiatives.",
+  },
+  {
+    icon: "spark",
+    title: "Technology & Innovation Initiatives",
+    body: "techcadd has participated in AI and robotics-focused initiatives, including demonstrations involving its AI robotic dog Chi-Chi at educational and technology events.",
+  },
+]
+
+export default function FounderPage() {
+  return (
+    <main>
+      {/* Same hero shell as /about and /about/mission-vision — one video, one
+          scrim, `min-h-screen` so a short window grows the panel rather than
+          pushing the name out of the bottom. */}
+      <section
+        data-cursor="light"
+        className="relative isolate flex min-h-screen items-center overflow-hidden bg-ink pt-32 pb-16 text-white lg:pt-40 lg:pb-20"
+      >
+        <HeroVideo src="/assets/video/aboutus-bg.mp4" />
+
+        <Container className="relative">
+          <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
+            Founder
+          </span>
+
+          {/* A name is not a sentence, so the two-tone treatment the sibling
+              heroes use would have nothing to emphasise — this one is solid
+              white and lets the role line underneath carry the context. */}
+          <h1
+            data-reveal
+            className="mt-7 font-display text-5xl leading-[1.05] font-bold tracking-tight text-white text-balance sm:text-6xl lg:text-7xl"
+          >
+            Mr. Gourav Gupta
+          </h1>
+
+          <p
+            data-reveal
+            className="mt-5 font-display text-lg font-medium tracking-tight text-white/75 lg:text-xl"
+          >
+            Founder &amp; CEO, techcadd
+          </p>
+
+          <ul
+            data-reveal
+            className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/60"
+          >
+            {DESCRIPTORS.map((item, index) => (
+              <li key={item} className="inline-flex items-center gap-3">
+                {/* The bullet belongs to the item that follows it, so it wraps
+                    with that item instead of being stranded at a line end. */}
+                {index > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="size-1 rounded-full bg-accent-400"
+                  />
+                )}
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      {/*
+        The story. Copy on the left, portrait on the right, centred against each
+        other — the photograph keeps a fixed portrait ratio at every width rather
+        than stretching to the text, because a founder portrait cropped to
+        whatever height the paragraph happens to need is a worse picture.
+      */}
+      <section className="bg-subtle py-20 lg:py-28">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-20">
+            <div>
+              <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+                The founder
+              </p>
+
+              <h2
+                data-reveal
+                className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
+              >
+                Making young people{" "}
+                <span className="text-brand-600">capable and confident</span>{" "}
+                with technology.
+              </h2>
+
+              <div
+                data-reveal
+                className="mt-7 space-y-5 text-base leading-relaxed text-muted lg:text-[17px]"
+              >
+                <p>
+                  Mr. Gourav Gupta founded techcadd in 2016 with a vision of
+                  making young people more capable and confident in using
+                  technology and building careers in the digital economy.
+                </p>
+                <p>
+                  Under his leadership, techcadd has expanded its focus beyond
+                  conventional computer education into emerging technologies,
+                  practical training, industry engagement, career development
+                  and innovation.
+                </p>
+              </div>
+
+              {/* Sign-off, in place of the handwritten signature the layout
+                  would otherwise carry — the rule does the same job of closing
+                  the block without needing an asset that does not exist. */}
+              <div className="mt-9 border-t border-line pt-6">
+                <p className="font-display text-lg font-bold tracking-tight text-ink">
+                  Mr. Gourav Gupta
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  Founder &amp; CEO, techcadd
+                </p>
+              </div>
+            </div>
+
+            {/*
+              Monogram panel, standing in for the portrait.
+
+              TODO: when the photograph is available, put it at
+              public/assets/images/about/founder.jpg and swap this block for:
+
+                <Image
+                  src="/assets/images/about/founder.jpg"
+                  alt="Mr. Gourav Gupta, Founder and CEO of techcadd"
+                  fill
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  className="object-cover"
+                />
+
+              An <Image> pointing at a file that is not there 404s on every
+              request and logs an error in the dev terminal, so this holds the
+              same frame and ratio without asking for an asset that does not
+              exist yet.
+            */}
+            <div
+              data-reveal
+              className="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-3xl border border-line bg-linear-to-br from-brand-50 to-subtle text-center"
+            >
+              <div>
+                <span
+                  aria-hidden="true"
+                  className="font-display text-7xl font-bold tracking-tight text-brand-600/25 lg:text-8xl"
+                >
+                  GG
+                </span>
+
+                <span
+                  aria-hidden="true"
+                  className="mx-auto mt-6 block h-0.5 w-14 rounded-full bg-linear-to-r from-brand-600 to-accent-400"
+                />
+
+                <p className="mt-6 font-display text-base font-bold tracking-tight text-ink">
+                  Mr. Gourav Gupta
+                </p>
+                <p className="mt-1 text-sm text-muted">Founder &amp; CEO</p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/*
+        The one idea the whole page hangs on, given a band of its own. Centred
+        and short on purpose: it is the only thing in this section, so it is read
+        rather than skimmed past inside a column of prose.
+      */}
+      <section className="py-20 lg:py-28">
+        <Container>
+          <div className="mx-auto max-w-4xl text-center">
+            <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+              His vision
+            </p>
+
+            <p className="mt-6 text-base text-muted lg:text-lg">
+              His vision centres on one fundamental idea:
+            </p>
+
+            <blockquote
+              data-reveal
+              className="mt-5 font-display text-2xl leading-[1.2] font-bold tracking-tight text-ink text-balance sm:text-3xl lg:text-4xl"
+            >
+              Bridge the gap between academics and industry through practical,
+              future-ready skills.
+            </blockquote>
+
+            <span
+              aria-hidden="true"
+              className="mx-auto mt-10 block h-0.5 w-24 rounded-full bg-linear-to-r from-brand-600 to-accent-400"
+            />
+          </div>
+
+          <div className="mt-16 text-center lg:mt-24">
+            {/* Rule-and-label eyebrow: the bar is a separate element rather
+                than a "|" character, so it keeps its weight and alignment
+                independently of the font. */}
+            <p className="flex items-center justify-center gap-2.5">
+              <span
+                aria-hidden="true"
+                className="h-3.5 w-0.5 rounded-full bg-brand-600"
+              />
+              <span className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+                Leadership
+              </span>
+            </p>
+
+            <h3
+              data-reveal
+              className="mx-auto mt-4 max-w-2xl font-display text-3xl leading-[1.15] font-bold tracking-tight text-ink text-balance lg:text-4xl"
+            >
+              Under his leadership
+            </h3>
+          </div>
+
+          {/*
+            Bento grid. Six columns at `lg` so the two wide cards can take three
+            each on the first row and the three narrow ones take two each on the
+            second — the split lives in the data as `wide`, not in index maths,
+            so reordering the list cannot silently break the layout.
+
+            Below `lg` it drops to two columns and the last card spans both,
+            which is what keeps five cards from leaving a gap at that width.
+          */}
+          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:mt-14 lg:grid-cols-6 lg:gap-6">
+            {FOCUS_AREAS.map((area, index) => (
+              <li
+                key={area.title}
+                data-reveal
+                /* Staggered left to right: all five arrive together, and firing
+                   at once would read as one block appearing rather than a set
+                   being laid down. */
+                style={
+                  { "--reveal-delay": `${index * 80}ms` } as React.CSSProperties
+                }
+                /*
+                  Lift on hover, settling back on its own the moment the
+                  pointer leaves — the transition is declared on the resting
+                  state, so nothing latches.
+
+                  Three things make it read as smooth rather than as a jump:
+                  the site's own easing curve at the same 0.5s the project
+                  cards use, so the motion matches the rest of the page; a
+                  resting shadow for the hover shadow to interpolate *from*,
+                  since animating out of `none` pops the shadow in at full
+                  strength; and `transform-gpu`, which puts the card on its own
+                  layer so the 8px travel cannot land on a subpixel and shimmer.
+                */
+                className={`group flex transform-gpu flex-col rounded-2xl border border-line bg-subtle p-5 shadow-[0_1px_2px_-1px_rgba(15,23,42,0.06)] transition-[transform,box-shadow,border-color,background-color] ${HOVER_EASE} hover:-translate-y-2 hover:border-brand-600/40 hover:bg-background hover:shadow-[0_24px_50px_-24px_rgba(15,23,42,0.32)] motion-reduce:transform-none motion-reduce:transition-none lg:p-6 ${
+                  area.wide ? "lg:col-span-3" : "sm:last:col-span-2 lg:col-span-2"
+                }`}
+              >
+                {/* The illustration panel is white against the card's tinted
+                    ground, which is what gives the art an edge to sit on
+                    without needing a second border colour. */}
+                {/* The card and this panel trade places on hover — the card
+                    lightens to white while the panel picks up the brand tint,
+                    so the inversion happens without either one changing its
+                    contrast against the text. */}
+                <div
+                  className={`grid h-44 place-items-center overflow-hidden rounded-xl border border-line/70 bg-background transition-colors ${HOVER_EASE} group-hover:border-brand-600/25 group-hover:bg-brand-50/60 lg:h-48`}
+                >
+                  {/* Scaled from its own centre rather than the card's, and
+                      clipped by the panel's `overflow-hidden`, so the art grows
+                      into the frame instead of spilling past its corners. */}
+                  <div
+                    className={`grid size-full transform-gpu place-items-center transition-transform ${HOVER_EASE} group-hover:scale-[1.06] motion-reduce:transform-none motion-reduce:transition-none`}
+                  >
+                    <FocusArt name={area.art} />
+                  </div>
+                </div>
+
+                <h4
+                  className={`mt-6 font-display text-lg font-bold tracking-tight text-ink transition-colors ${HOVER_EASE} group-hover:text-brand-600`}
+                >
+                  {area.title}
+                </h4>
+
+                <p className="mt-2.5 text-sm leading-relaxed text-muted">
+                  {area.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      {/* Industry and academia. Two entries, so a grid of equal cards rather
+          than a timeline — there is no sequence to draw yet. */}
+      <section className="bg-subtle py-20 lg:py-28">
+        <Container>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+              Engagement
+            </p>
+
+            <h2
+              data-reveal
+              className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
+            >
+              Present where students are
+            </h2>
+
+            <p
+              data-reveal
+              className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
+            >
+              His involvement extends into technology awareness and
+              industry–academia engagement, on campus and at technology events.
+            </p>
+          </div>
+
+          <ul className="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-2">
+            {ENGAGEMENTS.map((item, index) => (
+              <li
+                key={item.title}
+                data-reveal
+                style={
+                  { "--reveal-delay": `${index * 110}ms` } as React.CSSProperties
+                }
+                className="flex flex-col rounded-2xl border border-line bg-background p-7 lg:p-9"
+              >
+                <span className="inline-flex self-start rounded-full bg-brand-50 px-3 py-1.5 font-mono text-[11px] font-medium tracking-[0.14em] text-brand-700 uppercase">
+                  {item.tag}
+                </span>
+
+                <h3 className="mt-5 font-display text-xl leading-snug font-bold tracking-tight text-ink text-balance lg:text-2xl">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-relaxed text-muted lg:text-[15px]">
+                  {item.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      {/* His belief, on ink — the page's one dark beat, placed between the two
+          evidence sections so the reading has somewhere to pause. */}
+      <section data-cursor="light" className="bg-ink py-20 text-white lg:py-28">
+        <Container className="text-center">
+          <p className="font-mono text-xs tracking-[0.22em] text-accent-400 uppercase">
+            His belief
+          </p>
+
+          <blockquote
+            data-reveal
+            className="mx-auto mt-6 max-w-4xl font-display text-3xl leading-[1.14] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
+          >
+            &ldquo;The future belongs to learners who continuously adapt,
+            innovate and build.&rdquo;
+          </blockquote>
+
+          <p className="mt-8 text-sm text-white/55">
+            Mr. Gourav Gupta, Founder &amp; CEO
+          </p>
+        </Container>
+      </section>
+
+      <section className="py-20 lg:py-28">
+        <Container>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+              Awards, Recognition &amp; Accreditation
+            </p>
+
+            <h2
+              data-reveal
+              className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
+            >
+              Recognition built through learning, innovation and industry
+              engagement
+            </h2>
+
+            <p
+              data-reveal
+              className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
+            >
+              techcadd&apos;s credibility is supported not only by its training
+              programs but also by its participation in industry–academia
+              initiatives, campus placements, workshops, technology events and
+              institutional collaborations.
+            </p>
+          </div>
+
+          <ul className="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-2">
+            {RECOGNITION.map((item, index) => (
+              <li
+                key={item.title}
+                data-reveal
+                style={
+                  { "--reveal-delay": `${index * 90}ms` } as React.CSSProperties
+                }
+                className="flex gap-5 rounded-2xl border border-line bg-subtle p-7 lg:p-8"
+              >
+                <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-brand-600 text-white shadow-[0_14px_32px_-14px_rgba(37,99,235,0.9)]">
+                  <RecognitionIcon name={item.icon} className="size-6" />
+                </span>
+
+                <div className="min-w-0">
+                  <h3 className="font-display text-lg font-bold tracking-tight text-ink">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    {item.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          {/* Attribution, same as the mission page carries: these are drawn
+              from published sources rather than being our own claims, and they
+              are marked as such. */}
+          <p className="mx-auto mt-12 max-w-3xl text-center text-xs leading-relaxed text-muted lg:mt-16">
+            The recognitions above are drawn from publicly available
+            information, institutional announcements and techcadd&apos;s own
+            published profiles.
+          </p>
+        </Container>
+      </section>
+
+      {/*
+        The legacy strip. Two dates with a rule between them — the rule is the
+        decade, so it grows to whatever space is left rather than being a fixed
+        width, and the pair stacks with the rule dropped below `sm` where there
+        is no horizontal room for it.
+      */}
+      <section className="bg-subtle py-20 lg:py-24">
+        <Container>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+              A growing legacy
+            </p>
+
+            <div
+              data-reveal
+              className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6"
+            >
+              <span className="font-display text-4xl font-bold tracking-tight text-ink lg:text-5xl">
+                2016
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="hidden h-0.5 w-24 rounded-full bg-linear-to-r from-brand-600 to-accent-400 sm:block lg:w-32"
+              />
+
+              <span className="font-display text-4xl font-bold tracking-tight text-brand-600 lg:text-5xl">
+                Today
+              </span>
+            </div>
+
+            <p
+              data-reveal
+              className="mt-8 text-base leading-relaxed text-muted lg:text-lg"
+            >
+              From a vision to make technology education more accessible, to
+              today&apos;s focus on AI, automation, cloud, cyber security and
+              industry-ready skills — techcadd continues to evolve with the
+              technology landscape.
+            </p>
+          </div>
+        </Container>
+      </section>
+
+      <Cta />
+    </main>
+  )
+}
+
+/**
+ * The five leadership illustrations.
+ *
+ * Abstract line art rather than photographs: these are areas of focus, not
+ * things that can be photographed, and vector art stays crisp at any density
+ * while costing no request — the same reasoning the panel textures are built
+ * on. Colours are read from the theme tokens, so a palette change carries
+ * through here without touching this file.
+ */
+function FocusArt({ name }: { name: (typeof FOCUS_AREAS)[number]["art"] }) {
+  /* One frame for all five, so every illustration is drawn on the same grid
+     and they optically match across cards of different widths. */
+  const frame = {
+    viewBox: "0 0 200 140",
+    className: "h-full w-full px-6 py-4",
+    fill: "none",
+    "aria-hidden": true as const,
+  }
+
+  const line = "var(--color-line)"
+  const brand = "var(--color-brand-600)"
+
+  if (name === "workbench") {
+    return (
+      <svg {...frame}>
+        <rect x="26" y="24" width="148" height="92" rx="10" stroke={line} strokeWidth="3" />
+        <path d="M26 46h148" stroke={line} strokeWidth="3" />
+        <g fill={line}>
+          <circle cx="41" cy="35" r="3.5" />
+          <circle cx="53" cy="35" r="3.5" />
+          <circle cx="65" cy="35" r="3.5" />
+        </g>
+        <g fill={line}>
+          <rect x="40" y="60" width="64" height="7" rx="3.5" />
+          <rect x="40" y="74" width="96" height="7" rx="3.5" />
+          <rect x="40" y="88" width="44" height="7" rx="3.5" />
+        </g>
+        {/* The one solid element — it reads as the thing being built. */}
+        <rect x="98" y="84" width="50" height="17" rx="8.5" fill={brand} />
+      </svg>
+    )
+  }
+
+  if (name === "network") {
+    return (
+      <svg {...frame}>
+        <g stroke={line} strokeWidth="2.5">
+          <path d="M100 70 54 44M100 70l46-26M100 70 54 96M100 70l46 26" />
+        </g>
+        <circle cx="100" cy="70" r="38" stroke={line} strokeWidth="2" strokeDasharray="4 7" />
+        <circle cx="100" cy="70" r="20" fill={brand} fillOpacity="0.12" stroke={brand} strokeWidth="2.5" />
+        <circle cx="100" cy="70" r="7" fill={brand} />
+        {/* Filled with the page ground, so each node punches a clean hole in
+            the spoke running underneath it. */}
+        <g fill="var(--color-background)" stroke={line} strokeWidth="2.5">
+          <circle cx="54" cy="44" r="11" />
+          <circle cx="146" cy="44" r="11" />
+          <circle cx="54" cy="96" r="11" />
+          <circle cx="146" cy="96" r="11" />
+        </g>
+      </svg>
+    )
+  }
+
+  if (name === "growth") {
+    return (
+      <svg {...frame}>
+        <path d="M32 112h136" stroke={line} strokeWidth="3" strokeLinecap="round" />
+        <g fill={line}>
+          <rect x="42" y="88" width="16" height="24" rx="4" />
+          <rect x="68" y="76" width="16" height="36" rx="4" />
+          <rect x="94" y="82" width="16" height="30" rx="4" />
+        </g>
+        <g fill={brand}>
+          <rect x="120" y="60" width="16" height="52" rx="4" fillOpacity="0.5" />
+          <rect x="146" y="42" width="16" height="70" rx="4" />
+        </g>
+        {/* Rides ten units above every bar top, so the trend never collides
+            with the columns it is describing. */}
+        <path
+          d="M50 78 76 66l26 6 26-22 26-18"
+          stroke={brand}
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 6"
+        />
+      </svg>
+    )
+  }
+
+  if (name === "spark") {
+    return (
+      <svg {...frame}>
+        <g stroke={line} strokeWidth="3" strokeLinecap="round">
+          <path d="M100 18v10M64 34l7 7M136 34l-7 7M46 70h10M144 70h10" />
+        </g>
+        <circle cx="100" cy="66" r="28" fill={brand} fillOpacity="0.1" stroke={brand} strokeWidth="2.5" />
+        <path
+          d="M92 62c0-6 4-10 8-10s8 4 8 10c0 4-3 6-4 10h-8c-1-4-4-6-4-10Z"
+          stroke={brand}
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+        />
+        <g stroke={line} strokeWidth="3" strokeLinecap="round">
+          <path d="M90 100h20M93 110h14" />
+        </g>
+      </svg>
+    )
+  }
+
+  return (
+    <svg {...frame}>
+      <g stroke={line} strokeWidth="3" strokeLinecap="round">
+        <path d="M76 34V20M100 34V20M124 34V20" />
+        <path d="M76 106v14M100 106v14M124 106v14" />
+        <path d="M64 58H50M64 70H50M64 82H50" />
+        <path d="M136 58h14M136 70h14M136 82h14" />
+      </g>
+      <rect x="64" y="34" width="72" height="72" rx="14" stroke={line} strokeWidth="3" />
+      <rect
+        x="82"
+        y="52"
+        width="36"
+        height="36"
+        rx="8"
+        fill={brand}
+        fillOpacity="0.12"
+        stroke={brand}
+        strokeWidth="2.5"
+      />
+      <path d="M164 24l3.5 9 9 3.5-9 3.5-3.5 9-3.5-9-9-3.5 9-3.5 3.5-9Z" fill={brand} fillOpacity="0.55" />
+    </svg>
+  )
+}
+
+/**
+ * The four recognition marks. One component with a switch rather than four
+ * exported icons, because nothing else on the site uses them and the card data
+ * already names which one it wants.
+ */
+function RecognitionIcon({
+  name,
+  className,
+}: {
+  name: Recognition["icon"]
+  className?: string
+}) {
+  const common = {
+    className,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    "aria-hidden": true as const,
+  }
+
+  if (name === "handshake") {
+    return (
+      <svg {...common}>
+        <path
+          d="M8 12.5 5.5 15a1.8 1.8 0 0 0 2.5 2.6l.6-.6.9.9a1.8 1.8 0 0 0 2.6-2.5l1 1a1.8 1.8 0 0 0 2.5-2.6l-3.9-3.9-1.6 1.2a2 2 0 0 1-2.5-.1L7 10"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M2.75 8.5 6 5.75l3.25 1.5L12 6l2.75 1.25L18 5.75l3.25 2.75"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    )
+  }
+
+  if (name === "campus") {
+    return (
+      <svg {...common}>
+        <path
+          d="M12 3.75 21 8l-9 4.25L3 8l9-4.25Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M6.5 10.25V15c0 1.5 2.5 2.75 5.5 2.75s5.5-1.25 5.5-2.75v-4.75M20.25 9v5"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    )
+  }
+
+  if (name === "spark") {
+    return (
+      <svg {...common}>
+        <path
+          d="M12 3.25 13.9 9l5.85 1.9-5.85 1.9L12 18.65 10.1 12.8 4.25 10.9 10.1 9 12 3.25Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M18.5 16.5 19.2 18.6l2.05.65-2.05.65-.7 2.1-.7-2.1-2.05-.65 2.05-.65.7-2.1Z"
+          fill="currentColor"
+        />
+      </svg>
+    )
+  }
+
+  return (
+    <svg {...common}>
+      <path
+        d="M12 2.75 14 4.6l2.7-.35.9 2.55 2.4 1.3-.85 2.6.85 2.6-2.4 1.3-.9 2.55-2.7-.35L12 18.6l-2-1.85-2.7.35-.9-2.55-2.4-1.3.85-2.6-.85-2.6 2.4-1.3.9-2.55L10 4.6l2-1.85Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m9.4 10.9 1.9 1.9 3.4-3.7"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
