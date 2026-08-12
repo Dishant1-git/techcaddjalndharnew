@@ -16,14 +16,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     COURSE_PAGES.map((p) => `/${p.segment}/${p.slug}`),
   )
 
-  const staticRoutes = ["", "/courses", "/internship-training", "/after-12th-courses", "/contact"]
+  /* The About pages were missing here while being fully prerendered and linked
+     from every page's nav — crawlable, but not declared. They sit below the
+     index pages in priority: they convert, they do not rank for course terms. */
+  const staticRoutes = [
+    "",
+    "/courses",
+    "/internship-training",
+    "/after-12th-courses",
+    "/contact",
+    "/about",
+    "/about/mission-vision",
+    "/about/founder",
+  ]
 
   return [
     ...staticRoutes.map((path) => ({
       url: `${SITE.url}${path}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
-      priority: path === "" ? 1 : 0.8,
+      priority: path === "" ? 1 : path.startsWith("/about") ? 0.6 : 0.8,
     })),
     ...CATALOGUE.map((entry) => {
       const path = `/${entry.segment}/${entry.slug}`

@@ -55,11 +55,17 @@ export function Navbar() {
   // happened to leave it. Closing on pathname change fires once the route has
   // committed, so the menu disappears with the page it belongs to.
   useEffect(() => {
+    closeMenus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
+
+  /** Shuts every menu and cancels a pending close. */
+  const closeMenus = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current)
     setOpenMenu(null)
     setMobileOpen(false)
     setMobileSection(null)
-  }, [pathname])
+  }
 
   // A small grace period keeps the mega menu open while the pointer
   // travels from the trigger down into the panel.
@@ -88,6 +94,14 @@ export function Navbar() {
     >
       <nav
         onMouseLeave={scheduleClose}
+        /* Closing on pathname change is not enough on its own: several menu
+           entries are same-page anchors (/#faq, /#testimonials), where the
+           pathname never changes and the panel would hang over the section it
+           just scrolled to. Any link click inside the bar closes the menu —
+           capture phase, so it still runs if a child stops propagation. */
+        onClickCapture={(e) => {
+          if ((e.target as Element | null)?.closest?.("a")) closeMenus()
+        }}
         className={`mx-auto transition-all duration-500 ${
           scrolled
             ? "mt-3 max-w-[1240px] rounded-full border border-line/80 bg-white/75 shadow-[0_8px_40px_-16px_rgba(15,23,42,0.28)] backdrop-blur-xl"
