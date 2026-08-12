@@ -18,6 +18,7 @@ import { useListParams } from '../../hooks/useListParams'
 import { useToast } from '../../hooks/useToast'
 import type { Faculty } from '../../types'
 import { facultyHooks } from './useFaculty'
+import { assetUrl } from '../../api/client'
 
 export default function FacultyListPage() {
   const navigate = useNavigate()
@@ -165,7 +166,7 @@ function FacultyRow({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <Avatar name={member.name} src={member.photo?.url} />
+      <Avatar name={member.name} src={assetUrl(member.photo?.url)} />
 
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-slate-900">{member.name}</p>

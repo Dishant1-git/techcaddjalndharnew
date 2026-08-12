@@ -6,6 +6,7 @@ import type { MediaRef } from '../../types'
 import { Button } from '../common/Button'
 import { MediaPicker } from '../media/MediaPicker'
 import { Input } from './Input'
+import { assetUrl } from '../../api/client'
 
 interface ImageFieldProps {
   value?: MediaRef | null
@@ -40,7 +41,7 @@ export function ImageField({ value, onChange, aspect = 'video', className }: Ima
         {value?.url ? (
           <>
             <img
-              src={value.url}
+              src={assetUrl(value.url)}
               alt={value.alt}
               width={value.width}
               height={value.height}

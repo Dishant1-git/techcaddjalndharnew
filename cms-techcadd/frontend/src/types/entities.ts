@@ -39,7 +39,8 @@ export type CourseLevel = 'beginner' | 'intermediate' | 'advanced'
 export type CourseMode = 'online' | 'offline' | 'hybrid'
 export type EnquirySource = 'website' | 'walk-in' | 'phone' | 'referral' | 'social'
 export type BannerPlacement = 'home-hero' | 'course-page' | 'sidebar' | 'popup'
-export type UserRole = 'super-admin' | 'admin' | 'editor'
+/** The CMS has a single role: an admin can do everything. */
+export type UserRole = 'admin'
 
 /* ------------------------------------------------------------------ */
 /* Courses                                                              */

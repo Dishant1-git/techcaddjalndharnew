@@ -28,7 +28,7 @@ galleryRouter.get(
 
 galleryRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(albumSchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ galleryRouter.post(
 
 galleryRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), albumPatchSchema.parse(req.body)))
   }),

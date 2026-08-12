@@ -28,7 +28,7 @@ branchesRouter.get(
 
 branchesRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(branchSchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ branchesRouter.post(
 
 branchesRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), branchPatchSchema.parse(req.body)))
   }),

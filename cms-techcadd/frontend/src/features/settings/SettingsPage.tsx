@@ -15,13 +15,12 @@ import { Spinner } from '../../components/feedback/Spinner'
 import { FormField } from '../../components/form/FormField'
 import { ImageField } from '../../components/form/ImageField'
 import { Input } from '../../components/form/Input'
-import { Select } from '../../components/form/Select'
 import { Switch } from '../../components/form/Switch'
 import { Textarea } from '../../components/form/Textarea'
 import { PageHeader } from '../../components/layout/PageHeader'
 import { useConfirm } from '../../hooks/useConfirm'
 import { useToast } from '../../hooks/useToast'
-import type { SiteSettings, User, UserRole } from '../../types'
+import type { SiteSettings, User } from '../../types'
 import { useSettings, useUpdateSettings } from '../seo/useSeo'
 import { createResourceHooks } from '../shared/createResourceHooks'
 import { SecurityTab } from './SecurityTab'
@@ -37,12 +36,6 @@ const TABS = [
   { value: 'users', label: 'Users & Roles' },
   { value: 'notifications', label: 'Notifications' },
   { value: 'integrations', label: 'Integrations' },
-]
-
-const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
-  { value: 'super-admin', label: 'Super Admin' },
-  { value: 'admin', label: 'Admin' },
-  { value: 'editor', label: 'Editor' },
 ]
 
 export default function SettingsPage() {
@@ -403,7 +396,7 @@ function UsersTab() {
   const remove = userHooks.useRemove()
 
   const [editing, setEditing] = useState<User | 'new' | null>(null)
-  const [form, setForm] = useState({ name: '', email: '', role: 'editor' as UserRole })
+  const [form, setForm] = useState({ name: '', email: '' })
   const [error, setError] = useState<string | undefined>()
 
   function openEditor(user: User | 'new') {
@@ -411,8 +404,8 @@ function UsersTab() {
     setError(undefined)
     setForm(
       user === 'new'
-        ? { name: '', email: '', role: 'editor' }
-        : { name: user.name, email: user.email, role: user.role },
+        ? { name: '', email: '' }
+        : { name: user.name, email: user.email },
     )
   }
 
@@ -469,15 +462,6 @@ function UsersTab() {
       ),
     },
     {
-      id: 'role',
-      header: 'Role',
-      cell: (user) => (
-        <Badge tone={user.role === 'super-admin' ? 'primary' : 'neutral'}>
-          {ROLE_OPTIONS.find((option) => option.value === user.role)?.label ?? user.role}
-        </Badge>
-      ),
-    },
-    {
       id: 'active',
       header: 'Status',
       cell: (user) => (
@@ -501,7 +485,7 @@ function UsersTab() {
         rows={query.data?.items ?? []}
         columns={columns}
         getRowId={(user) => user.id}
-        caption="CMS users with their role and status"
+        caption="CMS users and their status"
         loading={query.isLoading}
         error={query.error as Error | null}
         onRetry={() => query.refetch()}
@@ -587,13 +571,9 @@ function UsersTab() {
             />
           </FormField>
 
-          <FormField label="Role" description="Super Admins can manage users and settings.">
-            <Select
-              options={ROLE_OPTIONS}
-              value={form.role}
-              onChange={(event) => setForm({ ...form, role: event.target.value as UserRole })}
-            />
-          </FormField>
+          <p className="text-xs text-slate-500">
+            Everyone who signs in to this CMS is an administrator with full access.
+          </p>
         </div>
       </Modal>
     </div>

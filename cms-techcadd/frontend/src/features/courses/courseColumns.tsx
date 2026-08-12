@@ -4,6 +4,7 @@ import { ContentStatusBadge } from '../../components/common/Badge'
 import type { Column } from '../../components/data/DataTable'
 import { formatShortDate } from '../../lib/format'
 import type { Course } from '../../types'
+import { assetUrl } from '../../api/client'
 
 const currency = new Intl.NumberFormat('en-IN', {
   style: 'currency',
@@ -30,7 +31,7 @@ export function buildCourseColumns(
         <div className="flex items-center gap-3">
           {course.thumbnail ? (
             <img
-              src={course.thumbnail.url}
+              src={assetUrl(course.thumbnail.url)}
               alt=""
               width={40}
               height={40}

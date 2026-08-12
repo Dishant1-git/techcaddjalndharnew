@@ -27,6 +27,7 @@ import { formatShortDate } from '../../lib/format'
 import type { Banner } from '../../types'
 import { PLACEMENT_OPTIONS, SCHEDULE_META, scheduleStateOf } from './bannerSchema'
 import { bannerHooks } from './useBanners'
+import { assetUrl } from '../../api/client'
 
 // Banners are hand-ordered within a placement, so they all load at once.
 const ALL: ListParams = { page: 1, pageSize: 200, sort: { field: 'order', dir: 'asc' } }
@@ -165,7 +166,7 @@ function BannerRow({
       <div className="h-14 w-24 shrink-0 overflow-hidden rounded-md border border-slate-200 bg-slate-50">
         {banner.desktopImage?.url ? (
           <img
-            src={banner.desktopImage.url}
+            src={assetUrl(banner.desktopImage.url)}
             alt={banner.altText}
             className="size-full object-cover"
           />

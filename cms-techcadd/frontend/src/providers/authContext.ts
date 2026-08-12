@@ -6,14 +6,19 @@ import type { UserRole } from '../types'
 /** Coarse permissions. The server must enforce these too — hiding UI is not security. */
 export type Permission = 'manage-users' | 'manage-settings' | 'delete-content' | 'publish-content'
 
+/**
+ * One role, and it can do everything.
+ *
+ * The permission names are kept rather than deleted: the call sites already
+ * say what each control needs, so reintroducing a narrower role later is a
+ * change to this table alone instead of an audit of every button.
+ */
 const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
-  'super-admin': ['manage-users', 'manage-settings', 'delete-content', 'publish-content'],
-  admin: ['manage-settings', 'delete-content', 'publish-content'],
-  editor: ['publish-content'],
+  admin: ['manage-users', 'manage-settings', 'delete-content', 'publish-content'],
 }
 
 export function roleAllows(role: UserRole, permission: Permission): boolean {
-  return ROLE_PERMISSIONS[role].includes(permission)
+  return ROLE_PERMISSIONS[role]?.includes(permission) ?? false
 }
 
 /**

@@ -28,7 +28,7 @@ facultyRouter.get(
 
 facultyRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(facultySchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ facultyRouter.post(
 
 facultyRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), facultyPatchSchema.parse(req.body)))
   }),

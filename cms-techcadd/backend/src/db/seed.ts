@@ -4,7 +4,7 @@ import { execute, pool, queryOne } from './pool.js'
 import { hashPassword } from '../modules/auth/auth.service.js'
 
 /**
- * Creates the first Super Admin so the CMS is reachable. Idempotent — running
+ * Creates the first administrator so the CMS is reachable. Idempotent — running
  * it twice leaves the existing account alone rather than resetting a password
  * someone has already changed.
  */
@@ -24,11 +24,11 @@ async function seed(): Promise<void> {
 
   await execute(
     `INSERT INTO users (id, name, email, password_hash, role, active, created_at, updated_at)
-     VALUES (?, ?, ?, ?, 'super-admin', 1, NOW(3), NOW(3))`,
+     VALUES (?, ?, ?, ?, 'admin', 1, NOW(3), NOW(3))`,
     [randomUUID(), NAME, EMAIL, await hashPassword(PASSWORD)],
   )
 
-  console.log(`Created Super Admin: ${EMAIL}`)
+  console.log(`Created administrator: ${EMAIL}`)
   console.log(`Password: ${PASSWORD}`)
   console.log('\nChange it after the first sign-in (Settings → Security).')
 }

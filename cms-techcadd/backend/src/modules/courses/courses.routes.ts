@@ -29,7 +29,7 @@ coursesRouter.get(
 
 coursesRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     const input = courseSchema.parse(req.body)
     res.status(201).json(await repo.create(input))
@@ -38,7 +38,7 @@ coursesRouter.post(
 
 coursesRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     // The CMS form always submits the complete record, so a full parse is
     // correct here — a partial merge would silently drop cleared fields.

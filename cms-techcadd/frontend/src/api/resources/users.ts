@@ -1,7 +1,13 @@
 import type { BaseEntity, User } from '../../types'
 import { createHttpResource } from '../http/resource'
 
-export type UserCreate = Omit<User, keyof BaseEntity>
+/**
+ * Role is assigned by the server, not chosen here.
+ *
+ * There is one role — admin — so the CMS has nothing to pick and the API
+ * defaults it.
+ */
+export type UserCreate = Omit<User, keyof BaseEntity | 'role'> & { role?: User['role'] }
 export type UserUpdate = Partial<UserCreate>
 
 /**

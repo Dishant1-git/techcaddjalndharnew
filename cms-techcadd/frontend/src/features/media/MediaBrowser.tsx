@@ -18,6 +18,7 @@ import { cn } from '../../lib/cn'
 import { formatFileSize } from '../../lib/format'
 import type { MediaItem, MediaRef } from '../../types'
 import { mediaHooks, UPLOAD_LIMIT, useUploadMedia } from './useMedia'
+import { assetUrl } from '../../api/client'
 
 const TYPE_OPTIONS = [
   { value: 'image', label: 'Images' },
@@ -218,7 +219,7 @@ export function MediaBrowser({ mode, multiple = false, onConfirm }: MediaBrowser
                     <span className="block aspect-square bg-slate-50">
                       {item.mimeType.startsWith('image/') ? (
                         <img
-                          src={item.url}
+                          src={assetUrl(item.url)}
                           alt={item.alt || item.filename}
                           width={item.width}
                           height={item.height}

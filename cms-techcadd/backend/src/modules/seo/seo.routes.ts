@@ -28,7 +28,7 @@ redirectsRouter.get(
 
 redirectsRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(redirectSchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ redirectsRouter.post(
 
 redirectsRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     // Partial on purpose — the list toggles `enabled` on its own.
     res.json(await repo.update(requireParam(req, 'id'), redirectPatchSchema.parse(req.body)))

@@ -28,7 +28,7 @@ bannersRouter.get(
 
 bannersRouter.post(
   '/',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(bannerSchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ bannersRouter.post(
 
 bannersRouter.patch(
   '/:id',
-  requireRole('editor'),
+  requireRole('admin'),
   asyncHandler(async (req, res) => {
     // Partial on purpose — drag-reorder sends `{ order }` on its own.
     res.json(await repo.update(requireParam(req, 'id'), bannerPatchSchema.parse(req.body)))

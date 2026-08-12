@@ -9,7 +9,8 @@ const mediaRef = z.object({
   height: z.number().optional(),
 })
 
-export const ROLES = ['super-admin', 'admin', 'editor'] as const
+/** One role. Kept as a list so adding another stays a one-line change. */
+export const ROLES = ['admin'] as const
 
 /**
  * Long rather than complex.
@@ -31,7 +32,7 @@ const base = z.object({
 })
 
 export const userSchema = base.extend({
-  role: z.enum(ROLES).default('editor'),
+  role: z.enum(ROLES).default('admin'),
   active: z.boolean().default(true),
   /**
    * Optional: the CMS form does not collect one.

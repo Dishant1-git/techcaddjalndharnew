@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { usePathname } from "next/navigation"
 import { Logo } from "./logo"
 import Image from "next/image"
 import Link from "next/link"
@@ -20,6 +21,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileSection, setMobileSection] = useState<string | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -45,6 +47,18 @@ export function Navbar() {
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
   }, [])
+
+  // The navbar lives in the layout, so a client-side navigation never remounts
+  // it and every menu stays exactly as it was. Clicking a course inside the
+  // mega menu would leave the panel hanging over the new page until the pointer
+  // happened to leave it. Closing on pathname change fires once the route has
+  // committed, so the menu disappears with the page it belongs to.
+  useEffect(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setOpenMenu(null)
+    setMobileOpen(false)
+    setMobileSection(null)
+  }, [pathname])
 
   // A small grace period keeps the mega menu open while the pointer
   // travels from the trigger down into the panel.

@@ -2,6 +2,29 @@ import { ApiError } from './types'
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api'
 
+/** The API host without the `/api` prefix — uploads are served from its root. */
+const API_ORIGIN = BASE_URL.replace(/\/api\/?$/, '')
+
+/**
+ * Resolves an uploaded file's path against the API.
+ *
+ * Media is stored as a site-relative path (`/uploads/<name>`) so the database
+ * survives a change of domain. But the CMS is served from a different origin
+ * than the API, so `<img src="/uploads/…">` would resolve against the CMS —
+ * and a dev server answers every unknown path with the app shell, so the tag
+ * receives HTML and renders as a broken image rather than failing loudly.
+ *
+ * Absolute, data: and blob: URLs are returned untouched, as are assets served
+ * by the CMS itself.
+ */
+export function assetUrl(url: string | undefined | null): string | undefined {
+  if (!url) return undefined
+  if (/^(https?:|data:|blob:)/i.test(url)) return url
+  if (!url.startsWith('/uploads/')) return url
+
+  return `${API_ORIGIN}${url}`
+}
+
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
   body?: unknown

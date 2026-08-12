@@ -18,7 +18,7 @@ export default function Forbidden() {
       <h2 className="mt-1 text-xl font-semibold text-slate-900">You don&apos;t have access</h2>
       <p className="mx-auto mt-2 max-w-sm text-sm text-slate-500">
         {session
-          ? `Your role (${session.role}) cannot open this section. Ask a Super Admin if you need access.`
+          ? `Your role (${session.role}) cannot open this section. Ask another administrator if you need access.`
           : 'Sign in with an account that has permission for this section.'}
       </p>
 

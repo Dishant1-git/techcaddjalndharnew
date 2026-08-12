@@ -23,6 +23,7 @@ import type { Testimonial } from '../../types'
 import { STATUS_OPTIONS } from '../courses/courseSchema'
 import { RATING_OPTIONS } from './testimonialSchema'
 import { courseRefHooks, testimonialHooks } from './useTestimonials'
+import { assetUrl } from '../../api/client'
 
 const FILTER_KEYS = ['status', 'rating', 'courseId', 'featured'] as const
 
@@ -205,7 +206,7 @@ function TestimonialCard({
   return (
     <article className="flex h-full flex-col rounded-lg border border-slate-200 p-4">
       <div className="flex items-start gap-3">
-        <Avatar name={testimonial.studentName} src={testimonial.photo?.url} size="sm" />
+        <Avatar name={testimonial.studentName} src={assetUrl(testimonial.photo?.url)} size="sm" />
 
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-slate-900">{testimonial.studentName}</p>
