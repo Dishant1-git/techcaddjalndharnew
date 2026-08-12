@@ -280,6 +280,7 @@ export const AFTER_12TH_GROUPS: CourseGroup[] = [
   },
 ]
 
+<<<<<<< Updated upstream
 /**
  * About Us — the institute's own story.
  *
@@ -300,9 +301,27 @@ export const ABOUT_LINKS: NavLink[] = [
   picture-led version of the same destinations, not a second set of places to
   go. Keep the two lists in step — a card whose title does not appear in the
   column beside it reads as a different link.
+=======
+/** About Us — the institute's own story. */
+export const ABOUT_LINKS: NavLink[] = [
+  { label: "About Techcadd", href: "/about" },
+  { label: "Mission and Vision", href: "/about/mission-vision" },
+  /* Restored: /about/founder now exists, which is the condition the note here
+     set for putting it back. */
+  { label: "Our Founder", href: "/about/founder" },
+]
 
-  The tag and meta carry what the shared title cannot, so neither simply
-  restates the words directly above it.
+/*
+  Titles and order deliberately mirror ABOUT_LINKS above: the cards are the
+  picture-led version of the same three destinations, not a second set of
+  places to go. Keep the two lists in step — a card whose title does not appear
+  in the column beside it reads as a different link. The tag and meta carry
+  what the shared title cannot, so neither restates the words above it.
+>>>>>>> Stashed changes
+
+  TODO: the three photographs are the only ones in the repo, so both menus draw
+  on the same set. Swap in art of the actual destination when it exists — only
+  the `image` fields need to change.
 */
 export const ABOUT_FEATURED: FeaturedCard[] = [
   {
@@ -331,21 +350,46 @@ export const ABOUT_FEATURED: FeaturedCard[] = [
 /**
  * Resources — everything around the courses rather than a course itself.
  *
+<<<<<<< Updated upstream
  * These point at homepage sections because that is where the content actually
  * lives; there are no standalone /blogs, /faq or /reviews pages yet. Gallery
  * and College Partnerships are omitted for the same reason as Our Founder.
+=======
+ * FAQ and Reviews point at homepage sections because that is where the content
+ * actually lives; there are no standalone pages for them yet. Blogs has its own
+ * index now, so it points at the real route.
+ *
+ * Gallery has its own page now too.
+ *
+ * TODO: College Partnerships has neither a page nor a homepage section to
+ * anchor to, so it still 404s. It is listed because the menu is meant to
+ * advertise it — build /college-partnerships, or drop the line again.
+>>>>>>> Stashed changes
  */
 export const RESOURCE_LINKS: NavLink[] = [
-  { label: "Blogs", href: "/#blogs" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "Gallery", href: "/gallery" },
   { label: "FAQ", href: "/#faq" },
   { label: "Reviews", href: "/#testimonials" },
+  { label: "College Partnerships", href: "/college-partnerships" },
 ]
 
 /*
+<<<<<<< Updated upstream
   Same rule as ABOUT_FEATURED — titles, order and hrefs mirror RESOURCE_LINKS
   exactly, so the three cards are now Blogs, FAQ and Reviews. Gallery was
   dropped with its link (/gallery does not exist) and Reviews took the third
   slot, which keeps the `sm:grid-cols-3` row full.
+=======
+  The cards cover the three resources that have somewhere real to go, so unlike
+  ABOUT_FEATURED this is a subset of the column beside it rather than a mirror
+  of it — Gallery and College Partnerships are deliberately left to the link
+  list until they are built. Give them cards once they are.
+
+  Where a card and a link do share a title, they must share an href too: one
+  pointing at /blogs while its neighbour points at /#blogs would send the same
+  name to two different places, one of them a 404.
+>>>>>>> Stashed changes
 */
 export const RESOURCE_FEATURED: FeaturedCard[] = [
   {
@@ -367,7 +411,11 @@ export const RESOURCE_FEATURED: FeaturedCard[] = [
     href: "/#testimonials",
     image: "/assets/images/about/team.jpg",
     tag: "Students",
+<<<<<<< Updated upstream
     meta: "In their words",
+=======
+    meta: "Alumni",
+>>>>>>> Stashed changes
   },
 ]
 

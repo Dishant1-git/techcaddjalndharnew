@@ -17,6 +17,22 @@ const isDev = process.env.NODE_ENV !== "production"
  * React escapes everything it renders, and the two inline scripts we control
  * are static strings, so that second case has no route in today's code.
  */
+/**
+ * Google reCAPTCHA hosts.
+ *
+ * The only exception to the 'self' rule above, and a deliberate one: the
+ * "I'm not a robot" widget is a Google-hosted script inside a Google-hosted
+ * iframe, so it cannot run under a policy pinned to this origin. Listed
+ * explicitly rather than as a wildcard, and only on the four directives the
+ * widget actually needs — an injected script pointing anywhere else still does
+ * not execute.
+ *
+ * `recaptcha.google.com` is the alternate origin the widget falls back to in
+ * regions where `google.com` is unreachable.
+ */
+const RECAPTCHA_SCRIPT = "https://www.google.com https://www.gstatic.com https://recaptcha.google.com"
+const RECAPTCHA_FRAME = "https://www.google.com https://recaptcha.google.com"
+
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -24,12 +40,14 @@ const csp = [
   "frame-ancestors 'none'",
   "form-action 'self'",
   // 'unsafe-eval' is React Fast Refresh in development only.
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' ${RECAPTCHA_SCRIPT}${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://www.gstatic.com https://www.google.com",
   "font-src 'self' data:",
   // ws: is the dev server's hot-reload socket.
-  `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
+  `connect-src 'self' ${RECAPTCHA_SCRIPT}${isDev ? " ws: wss:" : ""}`,
+  // Without this the widget's iframe falls back to default-src and is blocked.
+  `frame-src 'self' ${RECAPTCHA_FRAME}`,
   "media-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",

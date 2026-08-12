@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
-import { verifyCaptcha } from "@/lib/captcha"
 import { COURSE_LABELS } from "@/lib/course-pages"
-import { claimCaptcha } from "@/lib/spent-captchas"
+import { verifyRecaptcha } from "@/lib/recaptcha"
 import {
   ensureTable,
   formTypeFor,
@@ -133,24 +132,37 @@ export async function POST(request: Request) {
 
   if (!body || typeof body !== "object") return bad("Malformed request.")
 
-  // Signature check first: it is pure computation, so bots never reach the
-  // database. Burning the token comes later, once the fields are known good,
-  // so a visitor with a typo does not lose their captcha.
-  let solved
-  try {
-    solved = verifyCaptcha(body.captchaToken, body.captchaAnswer)
-  } catch (error) {
-    // A misconfigured CAPTCHA_SECRET must not degrade into "no verification".
-    console.error("[enquiry] captcha could not be verified:", error)
-    return bad("Verification is unavailable right now.", {}, 500)
-  }
-  if (!solved)
-    return bad("That answer was wrong or expired. Here's a new one.", {
-      captcha: true,
-    })
+  /*
+    Fields first, then reCAPTCHA.
 
+    The order is the reverse of the arithmetic captcha's, and deliberately so.
+    That one was pure local computation, so checking it first was free. This one
+    is a network round trip to Google, and a token is single-use — verifying
+    before validating would spend the visitor's tick on a submission that then
+    fails on a mistyped phone number, forcing them to solve it again.
+  */
   const checked = validate(body)
   if ("error" in checked) return bad(checked.error)
+
+  let verification
+  try {
+    verification = await verifyRecaptcha(body.recaptchaToken, ip)
+  } catch (error) {
+    // A missing RECAPTCHA_SECRET_KEY throws in production rather than
+    // degrading into "no verification".
+    console.error("[enquiry] recaptcha could not be verified:", error)
+    return bad("Verification is unavailable right now.", {}, 500)
+  }
+
+  if (!verification.ok) {
+    console.warn("[enquiry] recaptcha rejected:", verification.reason)
+    return verification.retry
+      ? // `captcha: true` tells the form to reset the widget.
+        bad("That verification expired. Please tick the box again.", {
+          captcha: true,
+        })
+      : bad("We could not verify that request. Please try again later.", {}, 503)
+  }
 
   try {
     await ensureTable()
@@ -161,12 +173,6 @@ export async function POST(request: Request) {
         {},
         429,
       )
-
-    // Single-use: a solved token cannot be replayed for the rest of its life.
-    if (!(await claimCaptcha(solved.nonce, solved.expiresAt)))
-      return bad("That verification was already used. Here's a new one.", {
-        captcha: true,
-      })
 
     await saveEnquiry({
       ...checked.fields,

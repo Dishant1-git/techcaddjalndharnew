@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { Recaptcha, RECAPTCHA_ENABLED } from "./recaptcha"
 import { COURSE_GROUPS, CONTACT } from "@/lib/navigation"
 
 /** Fires the popup from anywhere — the header button dispatches this. */
@@ -15,33 +16,29 @@ const SCROLL_TRIGGER_PX = 200
 /** Marks the auto-open as spent, so it never nags twice in one session. */
 const SESSION_KEY = "techcadd:enquiry-seen"
 
-type Challenge = { token: string; question: string }
-
 export function EnquiryPopup() {
   const [open, setOpen] = useState(false)
-  const [challenge, setChallenge] = useState<Challenge | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle")
   const dialogRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
 
-  /** The question comes from the server; only it knows the answer. */
-  const loadChallenge = useCallback(async () => {
-    setChallenge(null)
-    try {
-      const res = await fetch("/api/captcha", { cache: "no-store" })
-      if (res.ok) setChallenge(await res.json())
-    } catch {
-      // Leaves the field disabled with its retry button showing.
-    }
+  // The token the widget hands back once the box is ticked; single-use, so it
+  // is cleared and the widget reset on every rejection.
+  const [token, setToken] = useState<string | null>(null)
+  const [resetSignal, setResetSignal] = useState(0)
+
+  const resetCaptcha = useCallback(() => {
+    setToken(null)
+    setResetSignal((n) => n + 1)
   }, [])
 
   const show = useCallback(() => {
     setError(null)
     setStatus("idle")
     setOpen(true)
-    void loadChallenge()
-  }, [loadChallenge])
+    resetCaptcha()
+  }, [resetCaptcha])
 
   // --- Auto-open: 30s in, but only once the visitor has scrolled ---
   useEffect(() => {
@@ -104,9 +101,13 @@ export function EnquiryPopup() {
 
   if (!open) return null
 
+  /* With no site key configured there is no widget to tick, so the button
+     stays usable and the server decides — it refuses outright in production. */
+  const verified = !RECAPTCHA_ENABLED || Boolean(token)
+
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!challenge || status === "sending") return
+    if (!verified || status === "sending") return
 
     const data = new FormData(event.currentTarget)
     setStatus("sending")
@@ -123,8 +124,7 @@ export function EnquiryPopup() {
           name: data.get("name"),
           phone: data.get("phone"),
           source: window.location.pathname,
-          captchaToken: challenge.token,
-          captchaAnswer: data.get("captcha"),
+          recaptchaToken: token,
         }),
       })
 
@@ -136,8 +136,8 @@ export function EnquiryPopup() {
       const payload = await res.json().catch(() => ({}))
       setError(payload.error ?? "Something went wrong. Please try again.")
       setStatus("idle")
-      // A spent or wrong challenge is never reusable, so replace it.
-      if (payload.captcha) void loadChallenge()
+      // Any rejection burns the token, so the box always has to be re-ticked.
+      resetCaptcha()
     } catch {
       setError("Could not reach the server. Please try again.")
       setStatus("idle")
@@ -359,43 +359,11 @@ export function EnquiryPopup() {
             />
           </div>
 
-          <div className="mt-5 flex items-center gap-2">
-            <p className="text-sm font-medium">
-              Security verification check:{" "}
-              {challenge ? (
-                <span className="font-bold tabular-nums">{challenge.question}</span>
-              ) : (
-                <span className="text-white/60">loading…</span>
-              )}
-            </p>
-            <button
-              type="button"
-              onClick={() => void loadChallenge()}
-              aria-label="Get a new verification question"
-              className="grid size-7 shrink-0 place-items-center rounded-full border border-white/30 transition-colors duration-300 hover:bg-white/15"
-            >
-              <svg viewBox="0 0 24 24" fill="none" className="size-3.5" aria-hidden="true">
-                <path
-                  d="M20 12a8 8 0 1 1-2.7-6M20 4v5h-5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+          <div className="mt-5">
+            <p className="mb-2 text-sm font-medium">Security verification</p>
+            <Recaptcha onChange={setToken} resetSignal={resetSignal} />
           </div>
-          <input
-            name="captcha"
-            required
-            disabled={!challenge}
-            inputMode="numeric"
-            autoComplete="off"
-            placeholder="Enter your math answer*"
-            aria-label="Answer to the verification question"
-            aria-invalid={Boolean(error)}
-            className="mt-2 w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-sm text-white outline-none placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70 disabled:opacity-60"
-          />
+
           {error && (
             <p role="alert" className="mt-2 text-xs font-medium text-amber-200">
               {error}
@@ -419,7 +387,7 @@ export function EnquiryPopup() {
 
           <button
             type="submit"
-            disabled={!challenge || status === "sending"}
+            disabled={!verified || status === "sending"}
             className="group mt-6 inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-ink transition-colors duration-300 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {status === "sending" ? "Sending…" : "Submit"}

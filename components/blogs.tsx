@@ -1,17 +1,7 @@
+import Link from "next/link"
 import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
-import { POSTS, type Post } from "@/lib/blogs"
-
-/** Stable across server and client — `toLocaleDateString` is not. */
-const MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-]
-
-function formatDate(iso: string) {
-  const [year, month, day] = iso.split("-")
-  return `${MONTHS[Number(month) - 1]} ${Number(day)}, ${year}`
-}
+import { formatPostDate, POSTS, type Post } from "@/lib/blogs"
 
 export function Blogs() {
   return (
@@ -28,15 +18,26 @@ export function Blogs() {
             />
           </div>
 
-          {/* "Read all posts" removed with /blog — there is no index to send
-              anyone to yet. Restore it alongside the route. */}
+          {/* Restored: /blogs now exists, which is the condition the note here
+              set for bringing this back. */}
+          <Link
+            href="/blogs"
+            className="group inline-flex shrink-0 items-center gap-3 self-start rounded-full border border-line bg-white py-2 pr-2 pl-7 text-sm font-semibold transition-colors duration-300 hover:border-brand-600/30 hover:text-brand-600 lg:self-auto"
+          >
+            Read all posts
+            <span className="grid size-9 place-items-center rounded-full bg-foreground text-background transition-transform duration-300 group-hover:translate-x-0.5">
+              →
+            </span>
+          </Link>
         </div>
 
+        {/* The three latest only — the full list lives on /blogs, and the
+            homepage is a teaser for it rather than a second index. */}
         <div
           data-reveal
           className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3"
         >
-          {POSTS.map((post) => (
+          {POSTS.slice(0, 3).map((post) => (
             <Card key={post.href} post={post} />
           ))}
         </div>
@@ -65,7 +66,7 @@ function Card({ post }: { post: Post }) {
 
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center gap-2 font-mono text-xs text-muted">
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
+          <time dateTime={post.date}>{formatPostDate(post.date)}</time>
           <span aria-hidden="true" className="size-1 rounded-full bg-muted/50" />
           {post.readTime}
         </div>

@@ -1,8 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
-
-type Challenge = { token: string; question: string }
+import { useEffect, useState } from "react"
+import { Recaptcha, RECAPTCHA_ENABLED } from "./recaptcha"
 
 /** How long the thank-you holds before the form returns. */
 const THANK_YOU_MS = 5000
@@ -24,39 +23,40 @@ export function CourseEnquiryForm({
   course: string
   source?: string
 }) {
-  const [challenge, setChallenge] = useState<Challenge | null>(null)
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle")
   const [error, setError] = useState<string | null>(null)
 
-  const loadChallenge = useCallback(async () => {
-    setChallenge(null)
-    try {
-      const res = await fetch("/api/captcha", { cache: "no-store" })
-      if (res.ok) setChallenge(await res.json())
-    } catch {
-      // Leaves the field disabled with its refresh button showing.
-    }
-  }, [])
+  // The token the widget hands back once the box is ticked. Worthless on its
+  // own — the server posts it to Google before accepting anything.
+  const [token, setToken] = useState<string | null>(null)
+  const [resetSignal, setResetSignal] = useState(0)
 
-  useEffect(() => {
-    void loadChallenge()
-  }, [loadChallenge])
+  // A reCAPTCHA token is single-use, so it has to be cleared alongside it.
+  const resetCaptcha = () => {
+    setToken(null)
+    setResetSignal((n) => n + 1)
+  }
 
   // The thank-you is a moment, not a dead end: the form comes back so a
-  // visitor can ask about another course. It remounts empty, and the spent
-  // captcha is replaced — its token cannot be submitted twice.
+  // visitor can ask about another course. It returns empty, with a fresh
+  // checkbox — the spent token cannot be submitted twice.
   useEffect(() => {
     if (status !== "done") return
     const timer = window.setTimeout(() => {
       setStatus("idle")
-      void loadChallenge()
+      setToken(null)
+      setResetSignal((n) => n + 1)
     }, THANK_YOU_MS)
     return () => window.clearTimeout(timer)
-  }, [status, loadChallenge])
+  }, [status])
+
+  /* With no site key configured there is no widget to tick, so the button
+     stays usable and the server decides — it refuses outright in production. */
+  const verified = !RECAPTCHA_ENABLED || Boolean(token)
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!challenge || status === "sending") return
+    if (!verified || status === "sending") return
 
     const data = new FormData(event.currentTarget)
     setStatus("sending")
@@ -75,8 +75,7 @@ export function CourseEnquiryForm({
           course,
           message: data.get("message"),
           source: source ?? `course:${course}`,
-          captchaToken: challenge.token,
-          captchaAnswer: data.get("captcha"),
+          recaptchaToken: token,
         }),
       })
 
@@ -88,7 +87,8 @@ export function CourseEnquiryForm({
       const payload = await res.json().catch(() => ({}))
       setError(payload.error ?? "Something went wrong. Please try again.")
       setStatus("idle")
-      if (payload.captcha) void loadChallenge()
+      // Any rejection burns the token, so the box always has to be re-ticked.
+      resetCaptcha()
     } catch {
       setError("Could not reach the server. Please try again.")
       setStatus("idle")
@@ -172,26 +172,10 @@ export function CourseEnquiryForm({
         />
       </Field>
 
-      <Field
-        label={
-          challenge
-            ? `Security Check: ${challenge.question}`
-            : "Security Check: loading…"
-        }
-        htmlFor="ce-captcha"
-      >
-        <input
-          id="ce-captcha"
-          name="captcha"
-          required
-          disabled={!challenge}
-          inputMode="numeric"
-          autoComplete="off"
-          placeholder="Your answer"
-          aria-invalid={Boolean(error)}
-          className={INPUT}
-        />
-      </Field>
+      <div className="mb-4">
+        <span className="enquiry-label">Security Check</span>
+        <Recaptcha onChange={setToken} resetSignal={resetSignal} />
+      </div>
 
       {error && (
         <p role="alert" className="mt-3 text-xs font-medium text-amber-200">
@@ -201,7 +185,7 @@ export function CourseEnquiryForm({
 
       <button
         type="submit"
-        disabled={!challenge || status === "sending"}
+        disabled={!verified || status === "sending"}
         className="mt-6 w-full rounded-full bg-linear-to-r from-brand-600 to-accent-500 px-6 py-4 text-sm font-bold tracking-wide text-white uppercase shadow-[0_14px_34px_-12px_rgba(37,99,235,0.9)] transition-opacity duration-300 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "sending" ? "Sending…" : "Send Message"}
