@@ -171,6 +171,12 @@ export function Navbar() {
           onLeave={scheduleClose}
         />
 
+        <FeaturedMenu
+          item={NAV_ITEMS.find((i) => i.label === openMenu) ?? null}
+          onEnter={cancelClose}
+          onLeave={scheduleClose}
+        />
+
         <AiMenu
           open={openMenu === "AI"}
           onEnter={cancelClose}
@@ -393,7 +399,10 @@ function DesktopNavLink({
     </Link>
   )
 
-  if (!item.links) return link
+  // Items carrying featured cards open the full-width panel from the nav
+  // instead, exactly as the groups-driven mega menu does — so they take the
+  // same early return rather than growing a dropdown of their own.
+  if (!item.links || item.featured) return link
 
   // Short flat menus hang off the trigger itself; the wrapper stretches to the
   // full bar height so the panel drops from the bottom edge, not the label.
@@ -523,6 +532,109 @@ function MegaMenu({
               →
             </span>
           </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * The two-part dropdown used by About Us and Resources.
+ *
+ * A flat list of three to five links is too thin to fill a mega menu's columns
+ * and too important to bury in a 224px dropdown, so the links become a single
+ * tall category column and the space beside them carries picture-led cards for
+ * the destinations worth showing rather than merely naming.
+ *
+ * Rendered from the nav rather than from the trigger, like MegaMenu, so it
+ * spans the full bar instead of hanging off one label.
+ */
+function FeaturedMenu({
+  item,
+  onEnter,
+  onLeave,
+}: {
+  item: NavItem | null
+  onEnter: () => void
+  onLeave: () => void
+}) {
+  // Both halves are required — one without the other is a different menu.
+  if (!item?.links || !item.featured) return null
+
+  return (
+    <div
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      className="animate-menu-in absolute inset-x-0 top-full hidden px-3 pt-2 xl:block"
+    >
+      <div className="mx-auto max-w-[1240px] overflow-hidden rounded-3xl border border-line/80 bg-white/90 text-foreground shadow-[0_24px_70px_-24px_rgba(15,23,42,0.35)] backdrop-blur-3xl">
+        {/* The category column is capped rather than fractional: it holds a few
+            short words, and letting it take a third of a 1240px panel would
+            strand the labels in whitespace. */}
+        <div className="grid gap-10 p-8 lg:grid-cols-[minmax(180px,240px)_1fr] lg:gap-12">
+          <div className="lg:border-r lg:border-foreground/10 lg:pr-12">
+            <p className="font-mono text-xs tracking-[0.22em] text-muted uppercase">
+              Categories
+            </p>
+
+            <ul className="mt-5 space-y-0.5">
+              {item.links.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="block py-1.5 font-display text-xl leading-snug tracking-tight text-foreground/85 transition-colors duration-300 hover:text-brand-600"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-mono text-xs tracking-[0.22em] text-muted uppercase">
+              Featured
+            </p>
+
+            <ul className="mt-5 grid gap-6 sm:grid-cols-3">
+              {item.featured.map((card) => (
+                <li key={`${card.href}-${card.tag}`}>
+                  <Link
+                    href={card.href}
+                    /* The panel opens on hover, so eager prefetching would fire
+                       three requests every time the pointer crossed the label. */
+                    prefetch={false}
+                    className="group/card block"
+                  >
+                    {/* Decorative: the title beneath is the accessible name, so
+                        alt text here would only repeat it to a screen reader. */}
+                    <span className="relative block aspect-[16/10] overflow-hidden rounded-xl bg-subtle">
+                      <Image
+                        src={card.image}
+                        alt=""
+                        fill
+                        sizes="240px"
+                        className="object-cover transition-transform duration-700 group-hover/card:scale-105"
+                      />
+                    </span>
+
+                    <span className="mt-3 block font-display text-[15px] leading-snug font-bold tracking-tight text-balance transition-colors duration-300 group-hover/card:text-brand-600">
+                      {card.title}
+                    </span>
+
+                    <span className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+                      <span className="rounded-md bg-brand-600/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-brand-700 uppercase">
+                        {card.tag}
+                      </span>
+                      <span className="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">
+                        {card.meta}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

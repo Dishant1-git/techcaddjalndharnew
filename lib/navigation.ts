@@ -19,6 +19,17 @@ export type CourseGroup = {
   items: NavLink[]
 }
 
+/** A picture-led entry in the right half of the featured dropdown. */
+export type FeaturedCard = {
+  title: string
+  href: string
+  image: string
+  /** Tinted pill under the title. */
+  tag: string
+  /** Small caps line beside the tag — a date, a section, a count. */
+  meta: string
+}
+
 export type NavItem = {
   label: string
   href: string
@@ -27,6 +38,9 @@ export type NavItem = {
   /** A flat list opens the compact dropdown instead — too few links to warrant
    *  the full-width mega menu. */
   links?: NavLink[]
+  /** Pairs with `links` to open the wide two-part panel instead of the compact
+   *  dropdown: the links become the category column, these become the cards. */
+  featured?: FeaturedCard[]
   /** Footer link of the mega menu. Defaults to browsing all courses. */
   cta?: NavLink
   /** "ai" renders the highlighted pill and opens the AI panel instead. */
@@ -277,6 +291,7 @@ export const ABOUT_LINKS: NavLink[] = [
   { label: "Mission and Vision", href: "/about/mission-vision" },
 ]
 
+<<<<<<< Updated upstream
 /**
  * Resources — everything around the courses rather than a course itself.
  *
@@ -284,19 +299,101 @@ export const ABOUT_LINKS: NavLink[] = [
  * lives; there are no standalone /blogs, /faq or /reviews pages yet. Gallery
  * and College Partnerships are omitted for the same reason as Our Founder.
  */
+=======
+/*
+  TODO: the three photographs below are the only ones in the repo, so they are
+  reused across both menus. Swap in art of the actual destination when it
+  exists — only these `image` fields need to change.
+*/
+/*
+  Titles and order deliberately mirror ABOUT_LINKS above: the cards are the
+  picture-led version of the same three destinations, not a second set of
+  places to go. Keep the two lists in step — a card whose title does not appear
+  in the column beside it reads as a different link.
+
+  The tag and meta carry what the shared title cannot, so neither simply
+  restates the words directly above it.
+*/
+export const ABOUT_FEATURED: FeaturedCard[] = [
+  {
+    title: "About Techcadd",
+    href: "/about",
+    image: "/assets/images/about/team.jpg",
+    tag: "Story",
+    meta: "Since 2016",
+  },
+  {
+    title: "Mission and Vision",
+    href: "/about/mission-vision",
+    image: "/assets/images/about/mentoring.webp",
+    tag: "Purpose",
+    meta: "Our direction",
+  },
+  {
+    title: "Our Founder",
+    href: "/about/founder",
+    image: "/assets/images/about/lab-demo.webp",
+    tag: "Profile",
+    meta: "Gourav Gupta",
+  },
+]
+
+/** Resources — everything around the courses rather than a course itself. */
+>>>>>>> Stashed changes
 export const RESOURCE_LINKS: NavLink[] = [
   { label: "Blogs", href: "/#blogs" },
   { label: "FAQ", href: "/#faq" },
   { label: "Reviews", href: "/#testimonials" },
 ]
 
+/*
+  Same rule as ABOUT_FEATURED — titles and order mirror RESOURCE_LINKS.
+
+  That column has five entries against three cards, so these are the first
+  three in its order. Add the remaining two here if all five should be
+  pictured; the grid is `sm:grid-cols-3` and would wrap them 3 + 2.
+*/
+export const RESOURCE_FEATURED: FeaturedCard[] = [
+  {
+    title: "Blogs",
+    href: "/blogs",
+    image: "/assets/images/about/lab-demo.webp",
+    tag: "Articles",
+    meta: "Latest",
+  },
+  {
+    title: "Gallery",
+    href: "/gallery",
+    image: "/assets/images/about/team.jpg",
+    tag: "Campus",
+    meta: "Jalandhar",
+  },
+  {
+    title: "FAQ",
+    href: "/faq",
+    image: "/assets/images/about/mentoring.webp",
+    tag: "Answers",
+    meta: "Admissions",
+  },
+]
+
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
+<<<<<<< Updated upstream
   { label: "About Us", href: "/about", links: ABOUT_LINKS },
   /* The pill is a dropdown trigger, but it still has to go somewhere when
      clicked or followed by a keyboard. /ai was never built; the AI course page
      is the real destination its menu is pointing at anyway. */
   { label: "AI", href: "/courses/artificial-intelligence", variant: "ai" },
+=======
+  {
+    label: "About Us",
+    href: "/about",
+    links: ABOUT_LINKS,
+    featured: ABOUT_FEATURED,
+  },
+  { label: "AI", href: "/ai", variant: "ai" },
+>>>>>>> Stashed changes
   { label: "Courses", href: "/courses", groups: COURSE_GROUPS },
   {
     label: "Internship & Training",
@@ -310,7 +407,16 @@ export const NAV_ITEMS: NavItem[] = [
     groups: AFTER_12TH_GROUPS,
     cta: { label: "Browse After 12th courses", href: "/after-12th-courses" },
   },
+<<<<<<< Updated upstream
   { label: "Resources", href: "/#blogs", links: RESOURCE_LINKS },
+=======
+  {
+    label: "Resources",
+    href: "/blogs",
+    links: RESOURCE_LINKS,
+    featured: RESOURCE_FEATURED,
+  },
+>>>>>>> Stashed changes
   { label: "Contact Us", href: "/contact" },
 ]
 
