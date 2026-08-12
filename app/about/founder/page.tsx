@@ -337,51 +337,80 @@ export default function FounderPage() {
                   { "--reveal-delay": `${index * 80}ms` } as React.CSSProperties
                 }
                 /*
-                  Lift on hover, settling back on its own the moment the
-                  pointer leaves — the transition is declared on the resting
-                  state, so nothing latches.
+                  This element carries the reveal and the grid span only. The
+                  card itself is the child below, and the split is load-bearing
+                  for two separate reasons.
 
-                  Three things make it read as smooth rather than as a jump:
-                  the site's own easing curve at the same 0.5s the project
-                  cards use, so the motion matches the rest of the page; a
-                  resting shadow for the hover shadow to interpolate *from*,
-                  since animating out of `none` pops the shadow in at full
-                  strength; and `transform-gpu`, which puts the card on its own
-                  layer so the 8px travel cannot land on a subpixel and shimmer.
+                  Specificity: the scroll reveal ends on
+                  `.reveal-ready [data-reveal].is-visible { transform: none }`,
+                  which is (0,3,0). A Tailwind `hover:-translate-y-2` is
+                  (0,2,0), so putting the lift on this same element loses to the
+                  reveal and the card never moves at all. The child is not a
+                  `[data-reveal]`, so nothing overrides it.
+
+                  Hit area: a element that moves out from under the pointer
+                  stops being hovered, drops back, is hovered again, and
+                  oscillates — the classic lift jitter. `:hover` on this static
+                  wrapper stays true while its descendant travels, because
+                  hit-testing follows the DOM, not the moved box.
                 */
-                className={`group flex transform-gpu flex-col rounded-2xl border border-line bg-subtle p-5 shadow-[0_1px_2px_-1px_rgba(15,23,42,0.06)] transition-[transform,box-shadow,border-color,background-color] ${HOVER_EASE} hover:-translate-y-2 hover:border-brand-600/40 hover:bg-background hover:shadow-[0_24px_50px_-24px_rgba(15,23,42,0.32)] motion-reduce:transform-none motion-reduce:transition-none lg:p-6 ${
+                className={`group ${
                   area.wide ? "lg:col-span-3" : "sm:last:col-span-2 lg:col-span-2"
                 }`}
               >
-                {/* The illustration panel is white against the card's tinted
-                    ground, which is what gives the art an edge to sit on
-                    without needing a second border colour. */}
-                {/* The card and this panel trade places on hover — the card
-                    lightens to white while the panel picks up the brand tint,
-                    so the inversion happens without either one changing its
-                    contrast against the text. */}
+                {/*
+                  `h-full` so cards still stretch to the tallest in the row now
+                  that a wrapper sits between them and the grid.
+
+                  Three things make the hover read as smooth rather than as a
+                  jump: the site's own easing curve at the same 0.5s the project
+                  cards use, so the motion matches the rest of the page; a
+                  resting shadow for the hover shadow to interpolate *from*,
+                  since animating out of `none` pops it in at full strength; and
+                  `transform-gpu`, which puts the card on its own layer so the
+                  8px travel cannot land on a subpixel and shimmer.
+
+                  Nothing here affects layout: `translate` is a transform, so it
+                  cannot reflow its neighbours, and the border is present at the
+                  same width in both states — only its colour changes — so the
+                  box never resizes and no text can shift by a pixel.
+
+                  Reduced motion cancels the *travel* only. Killing the whole
+                  transition there would snap the border, shadow and background
+                  on instantly — the abrupt effect the setting exists to avoid,
+                  not a gentler version of it. A colour fade is not motion.
+                */}
                 <div
-                  className={`grid h-44 place-items-center overflow-hidden rounded-xl border border-line/70 bg-background transition-colors ${HOVER_EASE} group-hover:border-brand-600/25 group-hover:bg-brand-50/60 lg:h-48`}
+                  className={`flex h-full transform-gpu flex-col rounded-2xl border border-line bg-subtle p-5 shadow-[0_1px_2px_-1px_rgba(15,23,42,0.06)] transition-[transform,box-shadow,border-color,background-color] ${HOVER_EASE} group-hover:-translate-y-2 group-hover:border-brand-600/40 group-hover:bg-background group-hover:shadow-[0_24px_50px_-24px_rgba(15,23,42,0.32)] motion-reduce:group-hover:translate-y-0 lg:p-6`}
                 >
-                  {/* Scaled from its own centre rather than the card's, and
-                      clipped by the panel's `overflow-hidden`, so the art grows
-                      into the frame instead of spilling past its corners. */}
+                  {/* The panel is white against the card's tinted ground, which
+                      gives the art an edge to sit on without needing a second
+                      border colour. On hover the two trade places — the card
+                      lightens to white while the panel takes the brand tint —
+                      so neither changes its contrast against the text. */}
                   <div
-                    className={`grid size-full transform-gpu place-items-center transition-transform ${HOVER_EASE} group-hover:scale-[1.06] motion-reduce:transform-none motion-reduce:transition-none`}
+                    className={`grid h-44 place-items-center overflow-hidden rounded-xl border border-line/70 bg-background transition-colors ${HOVER_EASE} group-hover:border-brand-600/25 group-hover:bg-brand-50/60 lg:h-48`}
                   >
-                    <FocusArt name={area.art} />
+                    {/* Scaled from its own centre rather than the card's, and
+                        clipped by the panel's `overflow-hidden`, so the art
+                        grows into the frame instead of past its corners. */}
+                    <div
+                      className={`grid size-full transform-gpu place-items-center transition-transform ${HOVER_EASE} group-hover:scale-[1.06] motion-reduce:transform-none motion-reduce:transition-none`}
+                    >
+                      <FocusArt name={area.art} />
+                    </div>
                   </div>
+
+                  <h4
+                    className={`mt-6 font-display text-lg font-bold tracking-tight text-ink transition-colors ${HOVER_EASE} group-hover:text-brand-600`}
+                  >
+                    {area.title}
+                  </h4>
+
+                  <p className="mt-2.5 text-sm leading-relaxed text-muted">
+                    {area.body}
+                  </p>
                 </div>
-
-                <h4
-                  className={`mt-6 font-display text-lg font-bold tracking-tight text-ink transition-colors ${HOVER_EASE} group-hover:text-brand-600`}
-                >
-                  {area.title}
-                </h4>
-
-                <p className="mt-2.5 text-sm leading-relaxed text-muted">
-                  {area.body}
-                </p>
               </li>
             ))}
           </ul>

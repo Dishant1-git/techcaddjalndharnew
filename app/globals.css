@@ -702,6 +702,68 @@
   filter: blur(0);
 }
 
+/* --- Scroll-driven timeline ---
+   Each milestone carries `data-timeline-item`, and components/timeline-progress
+   sets `data-state` on it as it crosses a band across the middle of the
+   viewport: `upcoming` ahead of the band, `current` inside it, `passed` behind.
+
+   `current` and `passed` both read as reached, so the list fills with brand
+   colour from the top down as you scroll. Nothing latches — the observer keeps
+   reporting in both directions, so scrolling back up returns a milestone to
+   `upcoming` and the cycle runs again.
+
+   Everything is scoped to `.timeline-ready`, the class the component puts on
+   <html> as it mounts. The markup already renders the reached appearance, so
+   these rules only ever describe the *dimmed* state — which means no JavaScript
+   leaves the timeline plain and readable instead of permanently blurred. */
+[data-timeline-item] {
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-ready [data-timeline-item][data-state="upcoming"] {
+  opacity: 0.32;
+  filter: blur(5px);
+  transform: translateY(0.85rem);
+}
+
+/* The item's own transition covers opacity, blur and travel — not the colours
+   of its children, which is why the dot and the year card carry their own. */
+.timeline-dot,
+.timeline-card,
+.timeline-card__era {
+  transition:
+    background-color 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Not yet reached: the dot drops back to the rule colour. `box-shadow` is set
+   outright because that is what Tailwind's `ring-4` compiles to. */
+.timeline-ready [data-timeline-item][data-state="upcoming"] .timeline-dot {
+  background-color: var(--color-line);
+  box-shadow: 0 0 0 4px transparent;
+}
+
+/* Reached: the year card fills with brand colour. */
+.timeline-ready [data-timeline-item][data-state="current"] .timeline-card,
+.timeline-ready [data-timeline-item][data-state="passed"] .timeline-card {
+  background-color: var(--color-brand-600);
+  border-color: var(--color-brand-600);
+  color: #ffffff;
+  box-shadow: 0 14px 30px -14px rgba(37, 99, 235, 0.75);
+}
+
+/* The era strip is `bg-brand-600` at rest; against a card that is now the same
+   colour it would vanish, so it lifts to a translucent white instead. */
+.timeline-ready [data-timeline-item][data-state="current"] .timeline-card__era,
+.timeline-ready [data-timeline-item][data-state="passed"] .timeline-card__era {
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
 /* --- Cursor follower ---
    A ring that trails the native pointer. Positioned by transform from a rAF
    loop, so it never triggers layout. */
@@ -787,6 +849,12 @@
      a pulse rather than a sweep. */
   .skeleton::after {
     animation-duration: 3.2s;
+  }
+
+  /* The timeline's fade and blur are not motion and still carry the meaning —
+     which milestones you have reached — so only the travel is dropped. */
+  .timeline-ready [data-timeline-item][data-state="upcoming"] {
+    transform: none;
   }
 
   /* Scroll reveals resolve instantly rather than being suppressed, so nothing

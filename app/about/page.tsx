@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { HeroVideo } from "@/components/hero-video"
+import { TimelineProgress } from "@/components/timeline-progress"
 import { SITE } from "@/lib/site"
 import { STATS } from "@/lib/stats"
 
@@ -240,6 +241,10 @@ export default function AboutPage() {
         rather than a loss. Under `lg` the panel simply grows with its content.
       */}
       <section className="flex flex-col overflow-hidden bg-background py-20 text-foreground lg:h-screen lg:py-14">
+        {/* Renders nothing — it only watches the milestones below and stamps
+            `data-state` on them, which is what the CSS styles against. */}
+        <TimelineProgress />
+
         <Container className="flex flex-1 flex-col lg:min-h-0">
           <div className="text-center">
             <span className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
@@ -271,31 +276,28 @@ export default function AboutPage() {
                   className="absolute inset-y-0 left-[7px] w-px bg-line sm:left-1/2"
                 />
 
-                <ol className="space-y-7">
+                {/* Roomier than it was: each milestone now lights as it
+                    reaches the middle of the screen, and that only reads as one
+                    at a time if they are far enough apart that two are rarely
+                    in the band together. */}
+                <ol className="space-y-12 lg:space-y-16">
                   {MILESTONES.map((milestone, index) => {
                     const right = index % 2 === 1
 
                     return (
                       <li
                         key={milestone.year}
-                        data-reveal
-                        /* Only the opening few are staggered. Those enter
-                           together when the panel scrolls into view, and firing
-                           them at once looks like a single block rather than a
-                           timeline. Everything after enters one at a time as it
-                           is scrolled to, where a delay would just feel slow. */
-                        style={
-                          index < 4
-                            ? ({
-                                "--reveal-delay": `${index * 90}ms`,
-                              } as React.CSSProperties)
-                            : undefined
-                        }
+                        /* No `data-reveal` here. That is a one-shot that latches
+                           on first sight, which cannot express a state the
+                           timeline needs to take away again — and its
+                           `.is-visible { opacity: 1 }` is (0,3,0), so it would
+                           outrank the dimmed state and pin every milestone lit. */
+                        data-timeline-item
                         className="relative pl-9 sm:grid sm:grid-cols-2 sm:items-center sm:gap-x-12 sm:pl-0"
                       >
                         <span
                           aria-hidden="true"
-                          className="absolute top-1/2 left-1 size-2.5 -translate-y-1/2 rounded-full bg-brand-600 ring-4 ring-brand-600/15 sm:left-1/2 sm:-translate-x-1/2"
+                          className="timeline-dot absolute top-1/2 left-1 size-2.5 -translate-y-1/2 rounded-full bg-brand-600 ring-4 ring-brand-600/15 sm:left-1/2 sm:-translate-x-1/2"
                         />
 
                         {/* Half the column gap, so it meets the card exactly. */}
@@ -316,8 +318,8 @@ export default function AboutPage() {
                               : "sm:col-start-1 sm:flex-row-reverse sm:text-right"
                           }`}
                         >
-                          <div className="w-14 shrink-0 overflow-hidden rounded-xl border border-line bg-background shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)]">
-                            <div className="bg-brand-600 py-0.5 text-center font-mono text-[10px] tracking-widest text-white">
+                          <div className="timeline-card w-14 shrink-0 overflow-hidden rounded-xl border border-line bg-background shadow-[0_10px_30px_-12px_rgba(15,23,42,0.35)]">
+                            <div className="timeline-card__era bg-brand-600 py-0.5 text-center font-mono text-[10px] tracking-widest text-white">
                               20
                             </div>
                             <div className="py-1.5 text-center font-display text-xl leading-none font-bold">
