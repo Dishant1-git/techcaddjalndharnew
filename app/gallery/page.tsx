@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
-import { GalleryWall } from "@/components/gallery-wall"
+import { GalleryMarquee } from "@/components/gallery-marquee"
 import { GALLERY_TILES } from "@/lib/gallery"
 import { SITE } from "@/lib/site"
 
@@ -43,18 +43,31 @@ export default function GalleryPage() {
       </section>
 
       {/*
-        The wall, starting immediately after the hero.
+        Four horizontal lanes, alternating direction.
 
-        No coloured band and no heading strip above it: the photographs now sit
-        at full brightness, so the boundary with the ink hero is obvious on its
-        own and does not need a divider to announce it.
-
-        The height is explicit because DriftWall is `height: 100%` — given an
-        auto-height parent it would collapse to nothing. `min-h` keeps it usable
-        on a short window where 78vh is only a few hundred pixels.
+        The section carries its own vertical padding rather than the lanes
+        doing it: the marquee is full-bleed and its fade mask runs to the
+        viewport edge, so any spacing put inside would be cropped by it.
       */}
-      <section className="h-[78vh] max-h-[900px] min-h-[520px] w-full overflow-hidden">
-        <GalleryWall tiles={GALLERY_TILES} />
+      <section className="py-16 lg:py-24">
+        <Container>
+          <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+            Life at Techcadd
+          </p>
+
+          <h2
+            data-reveal
+            className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
+          >
+            Our Gallery
+          </h2>
+        </Container>
+
+        {/* Outside the Container, so the lanes run the full width of the
+            viewport rather than the 1304px content column. */}
+        <div className="mt-10 lg:mt-14">
+          <GalleryMarquee tiles={GALLERY_TILES} />
+        </div>
       </section>
 
       <Cta />
