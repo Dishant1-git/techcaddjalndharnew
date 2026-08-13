@@ -34,10 +34,11 @@ const FADE_MS = 700
  * navigation never replays it.
  */
 export function Preloader() {
-  const [progress, setProgress] = useState(0)
   const [done, setDone] = useState(false)
   const [removed, setRemoved] = useState(false)
   const ceiling = useRef(HOLD_AT)
+  const bar = useRef<HTMLDivElement>(null)
+  const readout = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -54,7 +55,11 @@ export function Preloader() {
 
     let frame = 0
     let current = 0
+<<<<<<< Updated upstream
     let last = performance.now()
+=======
+    let shown = -1
+>>>>>>> Stashed changes
 
     /*
       Time-based easing, not per-frame.
@@ -85,7 +90,23 @@ export function Preloader() {
         current += (ceiling.current - current) * k
       }
 
-      setProgress(current)
+      /*
+        Written to the nodes rather than held in state.
+
+        This bar animates for as long as the page is still loading — up to
+        MAX_WAIT_MS. A setState per frame re-rendered the whole overlay, the
+        logo <Image> and PanelTexture included, sixty times a second during
+        the exact window the browser is trying to parse, fetch and hydrate
+        everything else. Two direct writes cost nothing and look identical.
+      */
+      bar.current?.style.setProperty("width", `${current}%`)
+
+      // The label only changes 100 times over the whole run, not every frame.
+      const percent = Math.round(current)
+      if (percent !== shown) {
+        shown = percent
+        if (readout.current) readout.current.textContent = `${percent}%`
+      }
 
       if (current >= 100) {
         setDone(true)
@@ -120,8 +141,6 @@ export function Preloader() {
 
   if (removed) return null
 
-  const percent = Math.round(progress)
-
   return (
     <>
       {/*
@@ -134,12 +153,16 @@ export function Preloader() {
         <style>{`.preloader{display:none!important}`}</style>
       </noscript>
 
+      {/* A fixed label rather than one carrying the percentage. This is a live
+          region, so a label that counted 0 → 100 queued a hundred separate
+          announcements at a screen reader for a splash screen that dismisses
+          itself. The number stays on screen for everyone who can see it. */}
       <div
         className="preloader"
         data-done={done}
         role="status"
         aria-live="polite"
-        aria-label={`Loading, ${percent} percent`}
+        aria-label="Loading"
       >
       <PanelTexture />
 
@@ -156,14 +179,21 @@ export function Preloader() {
 
         <div className="mt-8 h-px w-full overflow-hidden bg-white/15">
           <div
+            ref={bar}
             className="h-full bg-linear-to-r from-brand-500 via-brand-400 to-accent-glow transition-[width] duration-200 ease-out"
-            style={{ width: `${progress}%` }}
+            style={{ width: "0%" }}
           />
         </div>
 
         <p className="mt-5 font-mono text-[11px] tracking-[0.22em] text-white/60 uppercase">
           Booting up experience{" "}
-          <span className="text-accent-glow tabular-nums">{percent}%</span>
+          <span
+            ref={readout}
+            aria-hidden="true"
+            className="text-accent-glow tabular-nums"
+          >
+            0%
+          </span>
           </p>
         </div>
       </div>

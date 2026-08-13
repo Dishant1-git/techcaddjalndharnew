@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import { GalleryLightbox } from "./gallery-lightbox"
 import type { GalleryTile } from "@/lib/gallery"
@@ -47,11 +47,19 @@ function toLanes(tiles: GalleryTile[]): Entry[][] {
 
 export function GalleryMarquee({ tiles }: { tiles: GalleryTile[] }) {
   const [openAt, setOpenAt] = useState<number | null>(null)
-  const lanes = toLanes(tiles)
 
-  return (
-    <>
-      {/*
+  /*
+    Held across renders, element tree included.
+
+    The rail and the lightbox share this component, so every step through the
+    carousel — each arrow key, each thumbnail click — set `openAt` and rebuilt
+    all four lanes and their ~64 <Image> cards underneath a full-screen overlay
+    that covers them completely. `setOpenAt` is stable, so with the tiles
+    unchanged React can skip the whole subtree.
+  */
+  const rail = useMemo(
+    () => (
+      /*
         Deliberately not `.marquee-row`.
 
         That class is what globals.css hangs its hover-pause off, and because it
@@ -59,9 +67,9 @@ export function GalleryMarquee({ tiles }: { tiles: GalleryTile[] }) {
         photograph froze the entire gallery. The lanes run continuously instead.
         The testimonial and review rows keep the class, so their pause-to-read
         behaviour is unaffected.
-      */}
+      */
       <div className="space-y-4 lg:space-y-5">
-        {lanes.map((lane, i) => (
+        {toLanes(tiles).map((lane, i) => (
           <Lane
             key={i}
             entries={lane}
@@ -73,6 +81,13 @@ export function GalleryMarquee({ tiles }: { tiles: GalleryTile[] }) {
           />
         ))}
       </div>
+    ),
+    [tiles],
+  )
+
+  return (
+    <>
+      {rail}
 
       <GalleryLightbox
         tiles={tiles}

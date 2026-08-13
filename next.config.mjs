@@ -33,6 +33,20 @@ const isDev = process.env.NODE_ENV !== "production"
 const RECAPTCHA_SCRIPT = "https://www.google.com https://www.gstatic.com https://recaptcha.google.com"
 const RECAPTCHA_FRAME = "https://www.google.com https://recaptcha.google.com"
 
+/**
+ * The course-page walkthrough popup (components/video-dialog.tsx).
+ *
+ * `frame-src` listed only the reCAPTCHA origins, so the player this site
+ * actually embeds was blocked by our own policy — the dialog opened onto an
+ * empty black box on every course page carrying a video.
+ *
+ * The `-nocookie` host is the one the component embeds, and it is the whole
+ * point of using it: no tracking cookie is set unless the visitor presses
+ * play. Only `frame-src` is needed — everything the player itself loads runs
+ * inside the iframe, under YouTube's policy rather than ours.
+ */
+const YOUTUBE_FRAME = "https://www.youtube-nocookie.com"
+
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -47,7 +61,7 @@ const csp = [
   // ws: is the dev server's hot-reload socket.
   `connect-src 'self' ${RECAPTCHA_SCRIPT}${isDev ? " ws: wss:" : ""}`,
   // Without this the widget's iframe falls back to default-src and is blocked.
-  `frame-src 'self' ${RECAPTCHA_FRAME}`,
+  `frame-src 'self' ${RECAPTCHA_FRAME} ${YOUTUBE_FRAME}`,
   "media-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",

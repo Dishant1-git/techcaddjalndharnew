@@ -35,6 +35,19 @@ export function CursorFollower() {
     let y = targetY
     let frame = 0
 
+    /*
+      The loop parks itself once the ring has caught up.
+
+      It used to run for as long as the tab was open, re-writing an identical
+      transform sixty times a second at a pointer that had not moved since —
+      on every page, for every visitor with a mouse. Now a still pointer costs
+      nothing and the next movement wakes it. `frame = 0` is the parked marker:
+      requestAnimationFrame never returns 0, so it can't collide with a real id.
+    */
+    const wake = () => {
+      if (!frame) frame = requestAnimationFrame(tick)
+    }
+
     const onMove = (event: MouseEvent) => {
       targetX = event.clientX
       targetY = event.clientY
@@ -44,6 +57,8 @@ export function CursorFollower() {
       ring.dataset.active = String(Boolean(el?.closest(INTERACTIVE)))
       // Ink panels are too dark for the brand-blue ring to register.
       ring.dataset.invert = String(Boolean(el?.closest("[data-cursor='light']")))
+
+      wake()
     }
 
     const onLeave = () => {
@@ -51,13 +66,25 @@ export function CursorFollower() {
     }
 
     const tick = () => {
-      x += (targetX - x) * EASE
-      y += (targetY - y) * EASE
+      const dx = targetX - x
+      const dy = targetY - y
+
+      // Sub-pixel: snap to the target and stop rather than easing forever
+      // towards a distance the screen cannot show.
+      if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
+        x = targetX
+        y = targetY
+        ring.style.transform = `translate3d(${x}px, ${y}px, 0)`
+        frame = 0
+        return
+      }
+
+      x += dx * EASE
+      y += dy * EASE
       ring.style.transform = `translate3d(${x}px, ${y}px, 0)`
       frame = requestAnimationFrame(tick)
     }
 
-    frame = requestAnimationFrame(tick)
     window.addEventListener("mousemove", onMove, { passive: true })
     document.addEventListener("mouseleave", onLeave)
     window.addEventListener("blur", onLeave)

@@ -1,7 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 /** Wait this long before showing anything — see GRACE note below. */
 const GRACE_MS = 140
@@ -47,17 +47,20 @@ export function NavProgress() {
   // React invokes updaters twice, which would queue every timer twice.
   const stateRef = useRef<State>("idle")
 
-  const clearTimers = () => {
+  // All three only touch refs and the state setter, so they are stable for the
+  // life of the component — which is what lets the effects below depend on them
+  // honestly instead of suppressing the dependency rule.
+  const clearTimers = useCallback(() => {
     timers.current.forEach(clearTimeout)
     timers.current = []
-  }
-  const after = (ms: number, fn: () => void) => {
+  }, [])
+  const after = useCallback((ms: number, fn: () => void) => {
     timers.current.push(setTimeout(fn, ms))
-  }
-  const go = (next: State) => {
+  }, [])
+  const go = useCallback((next: State) => {
     stateRef.current = next
     setState(next)
-  }
+  }, [])
 
   // --- Start: any click that will actually navigate ---------------------
   //
@@ -113,7 +116,7 @@ export function NavProgress() {
       document.removeEventListener("click", onClick, true)
       clearTimers()
     }
-  }, [])
+  }, [after, clearTimers, go])
 
   // --- Finish: the route committed --------------------------------------
   //
@@ -132,8 +135,7 @@ export function NavProgress() {
       go("done")
       after(FADE_MS, () => go("idle"))
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
+  }, [pathname, after, clearTimers, go])
 
   if (state === "idle") return null
 

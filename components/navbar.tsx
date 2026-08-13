@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
 import { Logo } from "./logo"
 import Image from "next/image"
@@ -32,8 +32,15 @@ export function Navbar() {
   }, [])
 
   // Lock body scroll while the full-screen mobile menu is open.
+  //
+  // Only ever written while the menu is actually open. The preloader and the
+  // enquiry popup lock the same one property, and this effect used to run on
+  // mount with the menu closed — writing "" and tearing down whichever of them
+  // was holding the lock. The preloader lost it on every single page load, so
+  // the page scrolled freely behind the splash screen.
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : ""
+    if (!mobileOpen) return
+    document.body.style.overflow = "hidden"
     return () => {
       document.body.style.overflow = ""
     }
@@ -49,6 +56,14 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", onKey)
   }, [])
 
+  /** Shuts every menu and cancels a pending close. */
+  const closeMenus = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setOpenMenu(null)
+    setMobileOpen(false)
+    setMobileSection(null)
+  }, [])
+
   // The navbar lives in the layout, so a client-side navigation never remounts
   // it and every menu stays exactly as it was. Clicking a course inside the
   // mega menu would leave the panel hanging over the new page until the pointer
@@ -56,16 +71,7 @@ export function Navbar() {
   // committed, so the menu disappears with the page it belongs to.
   useEffect(() => {
     closeMenus()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
-  /** Shuts every menu and cancels a pending close. */
-  const closeMenus = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-    setOpenMenu(null)
-    setMobileOpen(false)
-    setMobileSection(null)
-  }
+  }, [pathname, closeMenus])
 
   // A small grace period keeps the mega menu open while the pointer
   // travels from the trigger down into the panel.
