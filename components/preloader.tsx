@@ -55,11 +55,8 @@ export function Preloader() {
 
     let frame = 0
     let current = 0
-<<<<<<< Updated upstream
     let last = performance.now()
-=======
     let shown = -1
->>>>>>> Stashed changes
 
     /*
       Time-based easing, not per-frame.
