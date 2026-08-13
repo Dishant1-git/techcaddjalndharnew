@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { CONTACT } from "@/lib/navigation"
@@ -185,12 +186,14 @@ export default function CollegePartnershipsPage() {
             >
               Call {CONTACT.phone}
             </a>
-            <a
+            {/* `<Link>`, not `<a>`: an anchor to an internal route drops out of
+                the client router and reloads the whole document. */}
+            <Link
               href="/contact"
               className="inline-flex h-14 items-center justify-center rounded-full border border-white/25 bg-white/10 px-8 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-300 hover:border-white/40 hover:bg-white/20"
             >
               Send an enquiry
-            </a>
+            </Link>
           </div>
         </Container>
       </section>

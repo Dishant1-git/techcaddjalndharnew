@@ -1,11 +1,20 @@
 import { Skeleton } from "@/components/skeleton"
 
 /**
- * Route-level skeleton.
+ * Homepage skeleton.
  *
  * App Router streams this in place of the page while a navigation resolves.
- * It mirrors the real homepage rhythm — nav bar, hero, category row, card grid
- * — so the layout does not jump when the content lands.
+ * It mirrors the real homepage rhythm — hero, stats, category row, card grid —
+ * so the layout does not jump when the content lands.
+ *
+ * Scoped to the homepage on purpose, which is why it and page.tsx sit in the
+ * `(home)` route group rather than at the root of app/. A loading.tsx is
+ * inherited by every segment beneath it, so at the root this fired on *every*
+ * navigation: clicking a course replaced the whole viewport with a homepage
+ * skeleton and then swapped in the course, which reads as a full page reload
+ * rather than a transition. The other routes are prerendered and arrive fast;
+ * components/nav-progress covers the gap for them without blanking the page
+ * you are still reading.
  */
 export default function Loading() {
   return (

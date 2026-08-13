@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { FaqAccordion } from "@/components/faq-accordion"
@@ -100,12 +101,14 @@ export default function FaqPage() {
               >
                 Call {CONTACT.phone}
               </a>
-              <a
+              {/* `<Link>`, not `<a>`: an anchor to an internal route drops out
+                  of the client router and reloads the whole document. */}
+              <Link
                 href="/contact"
                 className="inline-flex h-12 items-center justify-center rounded-full border border-line bg-white px-7 text-sm font-semibold text-foreground transition-colors duration-300 hover:border-brand-600/40 hover:text-brand-600"
               >
                 Book a free demo
-              </a>
+              </Link>
             </div>
           </div>
         </Container>
