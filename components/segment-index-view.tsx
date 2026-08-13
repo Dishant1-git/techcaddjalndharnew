@@ -1,8 +1,8 @@
 import { Container } from "./container"
+import { CourseFinder } from "./course-finder"
 import { EnquireButton } from "./enquire-button"
 import { PanelTexture } from "./panel-texture"
-import { PrefetchLink } from "./prefetch-link"
-import { ScrollHeading } from "./scroll-heading"
+import { courseMark } from "@/lib/course-icons"
 import { groupedSegment, type Segment } from "@/lib/course-pages"
 import { groupSlug } from "@/lib/navigation"
 
@@ -41,7 +41,22 @@ export const SEGMENT_INDEX: Record<
 
 export function SegmentIndexView({ segment }: { segment: Segment }) {
   const copy = SEGMENT_INDEX[segment]
-  const groups = groupedSegment(segment)
+
+  /*
+    Marks are resolved here, on the server, and handed down as plain path data.
+    Resolving them inside CourseFinder would drag the whole simple-icons index
+    into the browser bundle to produce about thirty paths.
+  */
+  const groups = groupedSegment(segment).map(([title, entries]) => ({
+    title,
+    id: groupSlug(title),
+    entries: entries.map((entry) => ({
+      slug: entry.slug,
+      segment: entry.segment,
+      label: entry.label,
+      mark: courseMark(entry.label),
+    })),
+  }))
 
   return (
     <article>
@@ -81,55 +96,10 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
         </Container>
       </section>
 
-      {groups.map(([title, entries], index) => (
-        <section
-          key={title}
-          /* The footer's course column deep-links to these. */
-          id={groupSlug(title)}
-          className={`scroll-mt-24 py-16 lg:py-20 ${index % 2 ? "bg-subtle" : ""}`}
-        >
-          <Container>
-            <ScrollHeading
-              lines={[title]}
-              as="h2"
-              className="font-display text-2xl font-bold tracking-tight lg:text-3xl"
-            />
-
-            {/* Up to 35 cards on one index — viewport prefetching them all
-                would fire 35 RSC requests on load, so these warm on hover
-                instead and the click itself stays instant. */}
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {entries.map((entry) => (
-                <PrefetchLink
-                  key={entry.slug}
-                  href={`/${entry.segment}/${entry.slug}`}
-                  className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_24px_50px_-30px_rgba(15,23,42,0.5)]"
-                >
-                  <span>
-                    <span className="block font-display text-base font-bold tracking-tight">
-                      {entry.label}
-                    </span>
-                    <span className="mt-1 block text-xs text-muted">
-                      Jalandhar · Live projects
-                    </span>
-                  </span>
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-600/10 text-brand-600 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
-                    <svg viewBox="0 0 24 24" fill="none" className="size-4" aria-hidden="true">
-                      <path
-                        d="M5 12h14m-7-7 7 7-7 7"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </PrefetchLink>
-              ))}
-            </div>
-          </Container>
-        </section>
-      ))}
+      {/* Search plus the grouped card sections. The cards warm their route on
+          hover rather than on sight — viewport prefetching 35 of them would
+          fire 35 RSC requests on load. */}
+      <CourseFinder groups={groups} />
     </article>
   )
 }

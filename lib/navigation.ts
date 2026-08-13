@@ -327,6 +327,7 @@ export const ABOUT_FEATURED: FeaturedCard[] = [
 /**
  * Resources — everything around the courses rather than a course itself.
  *
+<<<<<<< Updated upstream
  * FAQ and Reviews point at homepage sections because that is where the content
  * actually lives; there are no standalone pages for them yet. Blogs and Gallery
  * each have their own page now, so they point at the real route.
@@ -335,10 +336,15 @@ export const ABOUT_FEATURED: FeaturedCard[] = [
  * section to anchor to, so the entry 404'd from every page in the site. The
  * note it carried offered two ways out — build /college-partnerships or drop
  * the line — and this is the second. Put it back with the page.
+=======
+ * Every entry now has a page of its own, so none of these are homepage anchors
+ * any more and none of them 404.
+>>>>>>> Stashed changes
  */
 export const RESOURCE_LINKS: NavLink[] = [
   { label: "Blogs", href: "/blogs" },
   { label: "Gallery", href: "/gallery" },
+<<<<<<< Updated upstream
   { label: "FAQ", href: "/#faq" },
   { label: "Reviews", href: "/#testimonials" },
 ]
@@ -352,6 +358,20 @@ export const RESOURCE_LINKS: NavLink[] = [
   Where a card and a link share a title, they must share an href too: one
   pointing at /blogs while its neighbour points at /#blogs would send the same
   name to two different places.
+=======
+  { label: "FAQ", href: "/faq" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "College Partnerships", href: "/college-partnerships" },
+]
+
+/*
+  Unlike ABOUT_FEATURED this is a subset rather than a mirror: the column beside
+  it holds five links and the grid is `sm:grid-cols-3`, so three of them get a
+  card. Which three is an editorial choice — all five now have real pages.
+
+  Where a card and a link do share a title, they must share an href too, or the
+  same name in one menu would lead to two different places.
+>>>>>>> Stashed changes
 */
 export const RESOURCE_FEATURED: FeaturedCard[] = [
   {
@@ -365,14 +385,14 @@ export const RESOURCE_FEATURED: FeaturedCard[] = [
   },
   {
     title: "FAQ",
-    href: "/#faq",
+    href: "/faq",
     image: "/assets/images/about/mentoring.webp",
     tag: "Answers",
     meta: "Admissions",
   },
   {
     title: "Reviews",
-    href: "/#testimonials",
+    href: "/reviews",
     image: "/assets/images/about/team.jpg",
     tag: "Students",
     meta: "Alumni",
