@@ -154,13 +154,31 @@ export function EnquiryPopup() {
 
   return (
     <div
-      className="animate-fade-in fixed inset-0 z-90 grid place-items-center overflow-y-auto bg-black/65 p-4 backdrop-blur-sm"
+      /*
+        `flex min-h-full items-center` on an inner wrapper, not
+        `grid place-items-center` on this one.
+
+        Centring an item that is taller than its scroll container puts half the
+        overflow above the scroll origin, where it cannot be reached: on a
+        390×844 screen the dialog measured 1145px tall with its top at -150px,
+        and scrolling to the very top still left it there — so the close button
+        sat off-screen with no way to bring it back. The flex form centres only
+        while the dialog fits and otherwise starts it at the top, which keeps
+        the whole thing scrollable.
+      */
+      className="animate-fade-in fixed inset-0 z-90 overflow-y-auto overscroll-contain bg-black/65 p-4 backdrop-blur-sm"
       onMouseDown={(e) => {
         // Only a click that both starts and ends on the backdrop closes it,
         // so a drag that ends outside the dialog does not dismiss the form.
         if (e.target === e.currentTarget) setOpen(false)
       }}
     >
+      <div
+        className="flex min-h-full items-center justify-center"
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) setOpen(false)
+        }}
+      >
       <div
         ref={dialogRef}
         role="dialog"
@@ -207,7 +225,10 @@ export function EnquiryPopup() {
             where you are to the job you want.
           </p>
 
-          <figure className="mt-7 rounded-2xl border border-white/12 bg-white/5 p-5">
+          {/* The quotation is atmosphere, not information. It costs ~180px of
+              a phone screen ahead of the fields someone opened this to fill
+              in, so it only appears once there is room beside them. */}
+          <figure className="mt-7 hidden rounded-2xl border border-white/12 bg-white/5 p-5 md:block">
             <blockquote className="text-base leading-relaxed">
               &ldquo;AI is the new electricity for modern computing.&rdquo;
             </blockquote>
@@ -314,7 +335,7 @@ export function EnquiryPopup() {
                 required
                 defaultValue=""
                 aria-label="Course of interest"
-                className="w-full appearance-none rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-sm text-white outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                className="w-full appearance-none rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-base text-white outline-none sm:text-sm focus-visible:ring-2 focus-visible:ring-white/70"
               >
                 <option value="" disabled className="text-ink">
                   Select Your Course of Interest*
@@ -351,7 +372,7 @@ export function EnquiryPopup() {
               autoComplete="name"
               placeholder="Full Name*"
               aria-label="Full name"
-              className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-sm text-white outline-none placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
+              className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-base text-white outline-none sm:text-sm placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
             />
 
             {/* `key` on the prefill, not just defaultValue: an uncontrolled
@@ -368,7 +389,7 @@ export function EnquiryPopup() {
               defaultValue={prefillPhone}
               placeholder="Contact Number (10 Digits)*"
               aria-label="Contact number"
-              className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-sm text-white outline-none placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
+              className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-base text-white outline-none sm:text-sm placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
             />
           </div>
 
@@ -422,6 +443,7 @@ export function EnquiryPopup() {
             </>
           )}
         </form>
+      </div>
       </div>
     </div>
   )

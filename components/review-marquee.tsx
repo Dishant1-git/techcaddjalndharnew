@@ -27,7 +27,11 @@ export function ReviewMarquee({ items }: { items: Review[] }) {
   const split = Math.ceil(items.length / 2)
 
   return (
-    <div className="marquee-row mt-12 space-y-6 lg:mt-14 lg:space-y-8">
+    /* Deliberately not `.marquee-row` — the same choice the gallery made.
+       That class exists only to hang the hover-pause off, and it has to sit on
+       the wrapper shared by both lanes, so pointing at any one review froze
+       the whole section. These lanes run continuously. */
+    <div className="mt-12 space-y-6 lg:mt-14 lg:space-y-8">
       <Lane items={items.slice(0, split)} />
       <Lane items={items.slice(split)} reverse />
     </div>

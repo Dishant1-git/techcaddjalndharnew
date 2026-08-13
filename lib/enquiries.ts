@@ -15,6 +15,7 @@ import type { RowDataPacket } from "mysql2/promise"
 export const FORM_TYPES = {
   popup: "Call Request",
   course: "Course Enquiry",
+  contact: "Contact Form",
 } as const
 
 const FORM_LABELS = new Map<string, string>(Object.entries(FORM_TYPES))

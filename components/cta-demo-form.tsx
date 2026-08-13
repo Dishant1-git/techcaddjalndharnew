@@ -43,7 +43,13 @@ export function CtaDemoForm() {
         onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
         placeholder="Your mobile number"
         aria-label="Mobile number"
-        className="h-14 w-full flex-1 rounded-full border border-white/25 bg-white/10 px-6 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/55 focus-visible:border-white/50 focus-visible:ring-2 focus-visible:ring-white/40"
+        /* `sm:flex-1`, not `flex-1`.
+           The row stacks below `sm`, and in a column flex container `flex-1`
+           applies to the height: it set `flex-basis: 0` and collapsed the
+           field to its content, rendering 19px tall next to a 56px button.
+           `h-14` cannot win against that, so the growth only applies once the
+           form is actually a row. */
+        className="h-14 w-full shrink-0 rounded-full border border-white/25 bg-white/10 px-6 text-base text-white outline-none backdrop-blur-md placeholder:text-white/55 focus-visible:border-white/50 focus-visible:ring-2 focus-visible:ring-white/40 sm:flex-1 sm:text-sm"
       />
 
       <button

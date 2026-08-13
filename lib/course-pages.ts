@@ -982,3 +982,22 @@ export function groupedSegment(segment: Segment) {
 export function hrefFor(page: CoursePage) {
   return `/${page.segment}/${page.slug}`
 }
+
+/**
+ * Every course name a visitor may pick, grouped for a <select>'s optgroups.
+ *
+ * The enquiry API validates `course` against COURSE_LABELS and rejects
+ * anything else, so a contact form cannot offer a free-text field here — the
+ * submission would simply bounce. Building the options from the same catalogue
+ * that builds COURSE_LABELS means the two can never disagree.
+ *
+ * Labels rather than slugs, because the label is what is stored on the
+ * enquiry and what a counsellor reads.
+ */
+export function courseOptions(): { group: string; labels: string[] }[] {
+  const groups = new Map<string, string[]>()
+  for (const entry of CATALOGUE) {
+    groups.set(entry.group, [...(groups.get(entry.group) ?? []), entry.label])
+  }
+  return [...groups.entries()].map(([group, labels]) => ({ group, labels }))
+}

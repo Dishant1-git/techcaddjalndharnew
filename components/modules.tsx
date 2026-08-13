@@ -89,20 +89,6 @@ const MODULES: Module[] = [
       />
     ),
   },
-  {
-    step: "06",
-    title: "Lifetime batch access",
-    body: "Re-attend any future batch of the same course free of charge, whenever the syllabus is refreshed.",
-    icon: (
-      <path
-        d="M20 12a8 8 0 1 1-2.7-6M20 4v5h-5"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-  },
 ]
 
 export function Modules() {
@@ -130,8 +116,10 @@ export function Modules() {
           </div>
 
           <p className="max-w-sm text-base leading-relaxed text-white/65">
-            Whichever category and intake you choose, these six come bundled —
-            no upsell, no separate fee.
+            {/* Not "these six" — the count is derived so the copy cannot drift
+                out of step with the list again. */}
+            Whichever category and intake you choose, all {MODULES.length} come
+            bundled — no upsell, no separate fee.
           </p>
         </div>
 

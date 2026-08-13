@@ -10,12 +10,19 @@ export const SITE = {
   url: "https://techcadd.com",
   legalName: "Techcadd Computer Education",
   tagline: "Your Skill & Technology Partner",
-  /** TODO: replace with the verified street address from Google Business Profile. */
-  street: "",
+  /**
+   * Taken from the Google Business Profile listing, so the NAP here matches
+   * the listing character for character. "Techcadd" rather than the listing's
+   * own casing — the brand spelling is fixed everywhere on this site, and
+   * Google's matching is case-insensitive.
+   */
+  street: "2nd Floor, Crystal Plaza, SCS 78, Opposite PIMS Hospital",
   locality: "Jalandhar",
   region: "Punjab",
   postalCode: "144001",
   country: "IN",
+  /** The listing's own pin, not the centre of Jalandhar. */
+  geo: { latitude: 31.3054981, longitude: 75.5933857 },
   phone: "+91 98881 22255",
   email: "info@techcadd.com",
   founded: "2007",
@@ -25,6 +32,25 @@ export const SITE = {
    * changes it on all 50+ course pages.
    */
   promoVideo: "https://www.youtube.com/watch?v=aircAruvnKk",
+
+  /**
+   * What the contact page's map points at.
+   *
+   * `cid` is Google's own identifier for the listing and is what makes the
+   * embed exact: it resolves to one business and cannot drift to a similarly
+   * named place the way a text search can. It is the second half of the
+   * feature id in a Maps URL — `!1s0x391a5bb1521b03bf:0x370912cf8f0f3f7c` —
+   * converted from hex to decimal.
+   *
+   * `query` is the human-readable fallback and is what the "Get directions"
+   * link always uses, because a bare numeric id is a poor thing to show
+   * someone if it ever fails to resolve.
+   */
+  maps: {
+    cid: "3965721629544103804",
+    query:
+      "Techcadd Computer Education, 2nd Floor, Crystal Plaza, SCS 78, Opposite PIMS Hospital, Jalandhar, Punjab 144001",
+  },
   /** Areas the Jalandhar centre actually draws students from. */
   areasServed: [
     "Jalandhar",
@@ -52,9 +78,11 @@ export const SITE = {
 /**
  * Organisation-level structured data, emitted once site-wide.
  *
- * `streetAddress` is omitted rather than invented while the real address is
- * unknown — a wrong address is worse than an absent one, because it creates a
- * NAP conflict Google has to resolve against your Business Profile.
+ * The address is now the verified one from the Business Profile, so it is
+ * emitted in full — including `geo` and `hasMap`, which are what let Google
+ * tie this page to the listing rather than merely to the city. The
+ * `streetAddress` guard is kept: an empty value should still be omitted rather
+ * than published as an empty string.
  */
 export function organisationSchema() {
   return {
@@ -77,6 +105,14 @@ export function organisationSchema() {
       postalCode: SITE.postalCode,
       addressCountry: SITE.country,
     },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: SITE.geo.latitude,
+      longitude: SITE.geo.longitude,
+    },
+    /* Points at the listing itself, which is the strongest single signal
+       connecting this site to that Business Profile. */
+    hasMap: `https://www.google.com/maps?cid=${SITE.maps.cid}`,
     areaServed: SITE.areasServed.map((name) => ({ "@type": "Place", name })),
     sameAs: SITE.socials,
   }

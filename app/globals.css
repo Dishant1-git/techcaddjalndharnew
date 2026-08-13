@@ -252,7 +252,10 @@
   border-radius: 0.75rem;
   background: var(--enquiry-field-fill);
   padding: 0.875rem 1rem;
-  font-size: 0.875rem;
+  /* 16px on phones. Below that, iOS Safari zooms the whole page when a field
+     takes focus, which on a form already filling the screen leaves the reader
+     panning around to find the next input. The design size returns at `sm`. */
+  font-size: 1rem;
   color: #ffffff;
   outline: none;
   transition:
