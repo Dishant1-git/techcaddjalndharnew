@@ -120,9 +120,8 @@ export function Footer() {
           {/* --- Bottom bar --- */}
           <div className="mt-14 flex flex-col gap-6 border-t border-ink/10 pt-6 sm:flex-row sm:items-center sm:justify-between lg:mt-20">
             <p className="text-sm text-muted">
-              © {new Date().getFullYear()} Techcadd. Built in{" "}
-              <span className="font-medium text-ink">Jalandhar</span> &{" "}
-              <span className="font-medium text-ink">Mohali</span>.
+              © {new Date().getFullYear()} techcadd computer education. Built in{" "}
+              <span className="font-medium text-ink">Jalandhar</span>.
             </p>
 
             <div className="flex gap-2">

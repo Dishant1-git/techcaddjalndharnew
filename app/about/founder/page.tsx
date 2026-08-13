@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { HeroVideo } from "@/components/hero-video"
@@ -115,6 +116,56 @@ const FOUNDER_STORY = [
   },
 ]
 
+/*
+  Placeholder portraits.
+
+  Local files, not a remote avatar service: the site's CSP is
+  `img-src 'self' data: blob:` (next.config.mjs), so picsum.photos, pravatar and
+  the rest are blocked outright and would render as broken frames. These are the
+  three photographs that exist in the repo, cycled — the same stand-in that
+  lib/gallery.ts uses, and for the same reason.
+
+  TODO: drop headshots into public/assets/images/team/ and point each member's
+  `photo` at their own file. Set `alt` on the <Image> below to the person's name
+  at the same time — it is empty today precisely because these pictures are not
+  of the people they sit under, and naming them would tell a screen reader
+  something untrue.
+*/
+const PLACEHOLDER_PORTRAITS = [
+  "/assets/images/about/team.jpg",
+  "/assets/images/about/mentoring.webp",
+  "/assets/images/about/lab-demo.webp",
+]
+
+/**
+ * The team, in the order given.
+ *
+ * Names only. A role belongs beside each one, but inventing designations for
+ * real, named colleagues would put claims on the site that nobody has approved —
+ * so the field is left for whoever knows them to fill in rather than guessed at
+ * here. Adding `role` to these entries and rendering it under the name is a
+ * two-line change.
+ */
+const TEAM = [
+  "Gourav Gupta",
+  "Shilpa Gupta",
+  "Asmita Sehgal",
+  "Daljeet Singh",
+  "Amit Sharma",
+  "Harrachneet Kaur",
+  "Alam",
+  "Tanisha",
+  "Sandeep",
+  "Anita",
+  "Shiv",
+  "Aman",
+].map((name, index) => ({
+  name,
+  // Deterministic rather than random: Math.random() here would pick a different
+  // picture on the server than on the client and fail hydration.
+  photo: PLACEHOLDER_PORTRAITS[index % PLACEHOLDER_PORTRAITS.length],
+}))
+
 export default function FounderPage() {
   return (
     <main>
@@ -148,7 +199,7 @@ export default function FounderPage() {
             suppressHydrationWarning
             className="mt-5 font-display text-lg font-medium tracking-tight text-white/75 lg:text-xl"
           >
-            Founder &amp; CEO, techcadd
+            Founder &amp; CEO,techcadd computer education
           </p>
 
           <ul
@@ -223,7 +274,7 @@ export default function FounderPage() {
                   Mr. Gourav Gupta
                 </p>
                 <p className="mt-1 text-sm text-muted">
-                  Founder &amp; CEO, techcadd
+                  Founder &amp; CEO, techcadd computer education
                 </p>
               </div>
             </div>
@@ -633,6 +684,95 @@ export default function FounderPage() {
               technology landscape.
             </p>
           </div>
+        </Container>
+      </section>
+
+      {/*
+        The team.
+
+        Last before the CTA, and on the plain ground: the legacy strip above it
+        is `bg-subtle`, so tinting this one too would run the two together into
+        a single band with no edge between them.
+
+        Circular portraits on a plain grid rather than cards — twelve bordered
+        boxes would out-weigh the five leadership cards above and read as the
+        page's main event, which the founder's story is.
+      */}
+      <section className="py-20 lg:py-28">
+        <Container>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
+              Our Team
+            </p>
+
+            <h2
+              data-reveal
+              suppressHydrationWarning
+              className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
+            >
+              The people behind techcadd
+            </h2>
+
+            <p
+              data-reveal
+              suppressHydrationWarning
+              className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
+            >
+              Trainers, mentors and counsellors who keep the classrooms running
+              and the students moving.
+            </p>
+          </div>
+
+          {/* Six across at `lg` so twelve fill exactly two rows; three and two
+              below that, which divide twelve evenly as well — no row ever ends
+              with a lone portrait stranded against empty space. */}
+          <ul className="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:mt-16 lg:grid-cols-6 lg:gap-x-8">
+            {TEAM.map((member, index) => (
+              <li
+                key={member.name}
+                data-reveal
+                suppressHydrationWarning
+                /* Capped at six steps so the second row starts with the first
+                   again — a straight `index * 60` would leave the last portrait
+                   arriving most of a second after the first. */
+                style={
+                  {
+                    "--reveal-delay": `${(index % 6) * 70}ms`,
+                  } as React.CSSProperties
+                }
+                className="group text-center"
+              >
+                {/* The lift and the ring sit on this inner element, not on the
+                    `[data-reveal]` above: the reveal's own `transform: none`
+                    rule out-specifies a Tailwind translate and would cancel it.
+                    Same split as the leadership cards. */}
+                <div
+                  className={`transform-gpu transition-transform ${HOVER_EASE} group-hover:-translate-y-1.5 motion-reduce:transform-none motion-reduce:transition-none`}
+                >
+                  <span
+                    className={`relative block aspect-square overflow-hidden rounded-full bg-subtle ring-1 ring-line transition-[box-shadow] ${HOVER_EASE} group-hover:ring-2 group-hover:ring-brand-600/40`}
+                  >
+                    {/* alt is empty on purpose — see the note on
+                        PLACEHOLDER_PORTRAITS. The name below is the visible
+                        label, and a screen reader reads it from there. */}
+                    <Image
+                      src={member.photo}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 160px, (min-width: 640px) 30vw, 45vw"
+                      className={`object-cover transition-transform ${HOVER_EASE} group-hover:scale-105 motion-reduce:transform-none`}
+                    />
+                  </span>
+                </div>
+
+                <p
+                  className={`mt-4 font-display text-base font-bold tracking-tight text-ink transition-colors ${HOVER_EASE} group-hover:text-brand-600`}
+                >
+                  {member.name}
+                </p>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
