@@ -2,6 +2,10 @@
 
 import Link from "next/link"
 import { useRef, useState } from "react"
+import { useDeferredVideo } from "./use-deferred-video"
+
+/** The ambient loop behind the hero. */
+const HERO_VIDEO = "/assets/video/bg.mp4"
 import { Container } from "./container"
 
 const FEATURES = [
@@ -49,14 +53,18 @@ const FEATURES = [
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [muted, setMuted] = useState(true)
+  const loadVideo = useDeferredVideo(videoRef)
 
   // The preview button turns the ambient background loop into a watchable clip.
   const togglePreview = () => {
     const video = videoRef.current
     if (!video) return
+    // Someone pressing play has asked for the file, whatever the deferral was
+    // waiting on — so give it a source now if it does not have one yet.
+    if (!video.src) video.src = HERO_VIDEO
     video.muted = !video.muted
     setMuted(video.muted)
-    void video.play()
+    void video.play().catch(() => {})
   }
 
   return (
@@ -65,22 +73,23 @@ export function Hero() {
       className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a0e14] pt-20 text-white"
     >
       {/* --- Background loop --- */}
+      {/* The file is ~5.5 MB, so it is withheld until the page has loaded and
+          the connection looks willing — see useDeferredVideo. `src` on the
+          element rather than a <source> child, because appending a source to a
+          settled video does not start a load. The panel's own `#0a0e14` and
+          the scrims below mean the hero is complete without it. */}
       <video
         ref={videoRef}
+        src={loadVideo ? HERO_VIDEO : undefined}
         autoPlay
         muted
         loop
         playsInline
-        /* "metadata" rather than "auto": the file is ~5.5 MB and the preloader
-           waits on window load, so eager buffering delayed first paint AND the
-           splash dismissing. The loop still starts promptly. */
-        preload="metadata"
+        preload="none"
         aria-hidden="true"
         /* Scaled up so the blur's soft edges never reveal the backdrop. */
         className="pointer-events-none absolute inset-0 h-full w-full scale-105 object-cover blur-[3px]"
-      >
-        <source src="/assets/video/bg.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* Legibility scrim: dark on the left where the copy sits, and a heavier
           floor under the feature cards. */}

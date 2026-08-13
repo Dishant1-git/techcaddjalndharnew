@@ -47,6 +47,10 @@ export function TechTabs({
         </div>
       </div>
 
+      {/* Only the selected panel's contents are rendered — see the matching
+          note in CapabilityTabs. Seven orbits in the document at once, six of
+          them hidden, was the single largest block of markup on the homepage.
+          The wrapper still renders for every tab so `aria-controls` resolves. */}
       {panels.map((panel, i) => (
         <div
           key={i}
@@ -55,7 +59,7 @@ export function TechTabs({
           hidden={i !== active}
           className={i === active ? "animate-fade-in" : undefined}
         >
-          {panel}
+          {i === active && panel}
         </div>
       ))}
     </>

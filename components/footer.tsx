@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Container } from "./container"
+import { PrefetchLink } from "./prefetch-link"
 import { siFacebook, siInstagram, siX, siYoutube } from "simple-icons"
 import {
   CONTACT,
@@ -153,14 +154,17 @@ function FooterCol({ title, links }: { title: string; links: readonly NavLink[] 
         {title}
       </p>
       <ul className="mt-5 space-y-3">
+        {/* Hover-prefetched. The footer is on every page and holds a dozen
+            links; eagerly warming them all meant a stack of RSC payloads
+            downloaded the moment someone scrolled to the bottom. */}
         {links.map((l) => (
           <li key={l.href}>
-            <Link
+            <PrefetchLink
               href={l.href}
               className="text-sm text-muted transition-colors duration-200 hover:text-brand-600"
             >
               {l.label}
-            </Link>
+            </PrefetchLink>
           </li>
         ))}
       </ul>

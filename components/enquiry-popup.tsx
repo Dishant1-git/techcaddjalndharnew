@@ -26,6 +26,8 @@ export function EnquiryPopup() {
   // The token the widget hands back once the box is ticked; single-use, so it
   // is cleared and the widget reset on every rejection.
   const [token, setToken] = useState<string | null>(null)
+  /** Seeded by the CTA's phone field when it opens this popup. */
+  const [prefillPhone, setPrefillPhone] = useState("")
   const [resetSignal, setResetSignal] = useState(0)
 
   const resetCaptcha = useCallback(() => {
@@ -72,9 +74,15 @@ export function EnquiryPopup() {
     }
   }, [show])
 
-  // --- Manual open from the header button ---
+  // --- Manual open from the header button, or the CTA's phone field ---
+  //
+  // The CTA sends the number the reader already typed on `detail.phone`, so
+  // they are not asked for it twice. Plain Events carry no detail, which is
+  // what the header button still dispatches — hence the optional chain.
   useEffect(() => {
-    const onRequest = () => {
+    const onRequest = (e: Event) => {
+      const phone = (e as CustomEvent<{ phone?: string }>).detail?.phone
+      if (phone) setPrefillPhone(phone)
       sessionStorage.setItem(SESSION_KEY, "1")
       show()
     }
@@ -346,13 +354,18 @@ export function EnquiryPopup() {
               className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-sm text-white outline-none placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
             />
 
+            {/* `key` on the prefill, not just defaultValue: an uncontrolled
+                input keeps whatever it had on the first mount, so without this
+                a number typed into the CTA would not appear on a second open. */}
             <input
+              key={prefillPhone}
               name="phone"
               required
               type="tel"
               inputMode="numeric"
               pattern="[0-9]{10}"
               autoComplete="tel"
+              defaultValue={prefillPhone}
               placeholder="Contact Number (10 Digits)*"
               aria-label="Contact number"
               className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-sm text-white outline-none placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"

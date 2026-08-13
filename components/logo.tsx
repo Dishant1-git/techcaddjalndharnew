@@ -1,5 +1,5 @@
 import Image from "next/image"
-import Link from "next/link"
+import { PrefetchLink } from "./prefetch-link"
 
 /** Intrinsic size of the source artwork, used for the aspect ratio. */
 const LOGO_WIDTH = 952
@@ -20,7 +20,10 @@ export function Logo({
   onDark?: boolean
 }) {
   return (
-    <Link href="/" className="block shrink-0" aria-label="Techcadd home">
+    /* Hover-prefetched. The logo sits in the bar on every page and the
+       homepage RSC payload is 117 KB — eagerly fetched from every other page
+       for a link people rarely take. */
+    <PrefetchLink href="/" className="block shrink-0" aria-label="Techcadd home">
       <Image
         src="/assets/icon/tce.png"
         alt="Techcadd — Your Skill & Technology Partner"
@@ -31,6 +34,6 @@ export function Logo({
           compact ? "h-9" : "h-11 lg:h-12"
         } ${onDark ? "brightness-0 invert" : ""}`}
       />
-    </Link>
+    </PrefetchLink>
   )
 }

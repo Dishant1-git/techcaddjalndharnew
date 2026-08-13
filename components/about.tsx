@@ -66,7 +66,7 @@ export function About() {
 
             {/* Formats sit high on the page: it's the first thing a student
                 asks a counsellor. */}
-            <dl data-reveal className="mt-9 grid gap-x-6 gap-y-5 sm:grid-cols-2">
+            <dl data-reveal suppressHydrationWarning className="mt-9 grid gap-x-6 gap-y-5 sm:grid-cols-2">
               {FORMATS.map((f) => (
                 <div
                   key={f.duration}
@@ -171,6 +171,7 @@ export function About() {
 
             <ol
               data-reveal
+              suppressHydrationWarning
               className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8"
             >
               {PATH.map((p) => (

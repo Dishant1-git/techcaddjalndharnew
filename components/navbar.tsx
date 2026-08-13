@@ -352,7 +352,9 @@ function DesktopNavLink({
   // AI is the promoted item: a filled pill with a light running its border.
   if (item.variant === "ai") {
     return (
-      <Link
+      /* Hover-prefetched like the rest of the bar: this pill points at the AI
+         course page, whose payload is 34 KB, and it is on every page. */
+      <PrefetchLink
         href={item.href}
         onMouseEnter={onOpen}
         onFocus={onOpen}
@@ -368,14 +370,18 @@ function DesktopNavLink({
               star falls back to black on the blue pill. */}
           <SparkIcon className="animate-twinkle size-4 fill-white [--twinkle-duration:2.2s]" />
         </span>
-      </Link>
+      </PrefetchLink>
     )
   }
 
   const expandable = Boolean(item.groups || item.links)
 
+  /* Hover-prefetched rather than eager. These seven sit in the bar on every
+     page, and one of them is Home — whose RSC payload is 117 KB, fetched from
+     every other page whether or not anyone was going there. Hovering the item
+     is also what opens its menu, so the warm-up starts on the same gesture. */
   const link = (
-    <Link
+    <PrefetchLink
       href={item.href}
       onMouseEnter={onOpen}
       onFocus={onOpen}
@@ -410,7 +416,7 @@ function DesktopNavLink({
           onDark ? "bg-white" : "bg-foreground"
         } ${open ? "w-full" : "w-0"}`}
       />
-    </Link>
+    </PrefetchLink>
   )
 
   // Items carrying featured cards open the full-width panel from the nav
@@ -715,8 +721,10 @@ function AiMenu({
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            {/* Featured course */}
-            <Link
+            {/* Featured course. Same reason as the column links above: this
+                panel is always in the document, so an eager prefetch here is
+                paid by every visitor. */}
+            <PrefetchLink
               href={AI_MENU.featured.href}
               className="group/f flex flex-col overflow-hidden rounded-2xl border border-white/15 bg-white/5"
             >
@@ -737,14 +745,14 @@ function AiMenu({
                   {AI_MENU.featured.title}
                 </span>
               </span>
-            </Link>
+            </PrefetchLink>
 
             {/* CTA */}
             <div className="flex flex-col justify-between rounded-2xl bg-linear-to-br from-brand-500 via-brand-400 to-accent-400 p-5">
               <p className="text-lg leading-snug font-bold tracking-tight text-white">
                 {AI_MENU.cta.text}
               </p>
-              <Link
+              <PrefetchLink
                 href={AI_MENU.cta.href}
                 className="group/cta mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-300 hover:bg-ink"
               >
@@ -758,7 +766,7 @@ function AiMenu({
                     strokeLinejoin="round"
                   />
                 </svg>
-              </Link>
+              </PrefetchLink>
             </div>
           </div>
           </div>
@@ -822,7 +830,11 @@ function AiColumnBlock({ column }: { column: AiColumn }) {
       <ul className="mt-4 space-y-2.5">
         {column.items.map((item) => (
           <li key={item.href}>
-            <Link
+            {/* The AI panel is kept mounted so it can transition out as well
+                as in, which meant Next treated all eight of these as visible
+                and prefetched every one — ~240 KB of RSC payloads on every
+                page load, for a menu most visitors never open. */}
+            <PrefetchLink
               href={item.href}
               className="group/link inline-flex items-start gap-2 text-sm font-semibold text-white/80 transition-colors duration-200 hover:text-white"
             >
@@ -832,7 +844,7 @@ function AiColumnBlock({ column }: { column: AiColumn }) {
                   Hot
                 </span>
               )}
-            </Link>
+            </PrefetchLink>
           </li>
         ))}
       </ul>

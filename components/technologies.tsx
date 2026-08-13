@@ -54,7 +54,7 @@ export function Technologies() {
           </Link>
         </div>
 
-        <div data-reveal className="mt-14">
+        <div data-reveal suppressHydrationWarning className="mt-14">
           <TechTabs labels={TECH_CATEGORIES.map((c) => c.label)}>
             {TECH_CATEGORIES.map((category) => (
               <Orbit key={category.id} items={category.items} />

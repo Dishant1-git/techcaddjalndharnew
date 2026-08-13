@@ -102,6 +102,30 @@ const nextConfig = {
     return [
       { source: "/:path*", headers: securityHeaders },
       {
+        /*
+          Everything under public/assets — the two hero loops at 5.5 MB and
+          2.3 MB, the photographs, the logo.
+
+          Next serves public/ with `max-age=0`, so every one of those was
+          revalidated on every visit while the hashed build chunks beside them
+          were cached for a year. A returning visitor re-fetched megabytes of
+          video to be told it had not changed.
+
+          Thirty days rather than a year with `immutable`, because these paths
+          are not content-hashed: a cached copy cannot be invalidated by a
+          rebuild, only by changing the filename. `stale-while-revalidate`
+          means a swapped file is picked up in the background on the next
+          visit rather than blocking it.
+        */
+        source: "/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
         // Enquiry traffic is personal data; no shared cache may hold it, and
         // no other origin may read a response even if one is cached locally.
         source: "/api/:path*",

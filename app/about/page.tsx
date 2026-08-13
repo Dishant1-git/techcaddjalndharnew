@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import Link from "next/link"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { HeroVideo } from "@/components/hero-video"
+import { Recognition } from "@/components/recognition"
 import { TimelineProgress } from "@/components/timeline-progress"
 import { SITE } from "@/lib/site"
 import { STATS } from "@/lib/stats"
@@ -85,6 +87,7 @@ export default function AboutPage() {
               sentence on their own, so the line reads at a glance and in full. */}
           <h1
             data-reveal
+            suppressHydrationWarning
             className="mt-7 max-w-4xl font-display text-4xl leading-[1.08] font-bold tracking-tight text-white/40 text-balance sm:text-5xl lg:text-6xl"
           >
             Learn about <span className="text-white">our people,</span> our story
@@ -95,6 +98,7 @@ export default function AboutPage() {
               site, so a claim can never drift between two pages. */}
           <dl
             data-reveal
+            suppressHydrationWarning
             className="mt-14 grid gap-x-8 gap-y-9 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4"
           >
             {STATS.map((stat) => (
@@ -129,6 +133,7 @@ export default function AboutPage() {
 
           <h2
             data-reveal
+            suppressHydrationWarning
             className="mt-4 max-w-4xl font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
           >
             Empowering Skills. Enabling Careers.{" "}
@@ -137,6 +142,7 @@ export default function AboutPage() {
 
           <div
             data-reveal
+            suppressHydrationWarning
             className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[1.2fr_1fr] lg:gap-16"
           >
             {/* All the copy on the left, the photograph alone on the right.
@@ -148,9 +154,14 @@ export default function AboutPage() {
               <div className="space-y-5 text-base leading-relaxed text-muted lg:text-[17px]">
                 <p>
                   Founded in 2016 by{" "}
-                  <strong className="font-semibold text-foreground">
+                  {/* The one place his name appears on this page, so it is the
+                      one that should carry the link to his profile. */}
+                  <Link
+                    href="/about/founder"
+                    className="font-semibold text-foreground underline decoration-brand-600/40 underline-offset-4 transition-colors duration-200 hover:text-brand-600 hover:decoration-brand-600"
+                  >
                     Mr. Gourav Gupta
-                  </strong>
+                  </Link>
                   , techcadd is an IT training and skill-development
                   organization focused on bridging the gap between academic
                   learning and industry requirements. Its approach combines
@@ -206,6 +217,7 @@ export default function AboutPage() {
 
           <h3
             data-reveal
+            suppressHydrationWarning
             className="mt-16 font-display text-2xl font-bold tracking-tight text-ink lg:mt-20 lg:text-3xl"
           >
             What makes techcadd different?
@@ -213,6 +225,7 @@ export default function AboutPage() {
 
           <ul
             data-reveal
+            suppressHydrationWarning
             className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-4"
           >
             {DIFFERENTIATORS.map((item) => (
@@ -252,6 +265,7 @@ export default function AboutPage() {
             </span>
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-3 font-display text-3xl font-bold tracking-tight lg:text-4xl"
             >
               A decade of building careers
@@ -351,6 +365,12 @@ export default function AboutPage() {
           </div>
         </Container>
       </section>
+
+      {/* Moved here from /about/founder: these are the institute's
+          certifications, university engagements and collaborations rather than
+          anything personal to the founder, so they belong on the page about
+          the institute. */}
+      <Recognition />
 
       <Cta />
     </main>

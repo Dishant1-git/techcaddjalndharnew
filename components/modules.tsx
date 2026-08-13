@@ -163,14 +163,11 @@ export function Modules() {
                   className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/30 to-transparent"
                 />
 
-                <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
-                  <span className="grid size-14 shrink-0 place-items-center rounded-2xl border border-white/15 bg-white/10 text-white transition-colors duration-500 group-hover:bg-white group-hover:text-ink">
-                    <svg viewBox="0 0 24 24" fill="none" className="size-6" aria-hidden="true">
-                      {m.icon}
-                    </svg>
-                  </span>
-
-                  <div className="min-w-0 flex-1">
+                {/* Icon to the right of the copy, which also fills the empty
+                    half these wide cards used to carry. `order-first` keeps it
+                    above the text once the row stacks on mobile. */}
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
+                  <div className="order-last min-w-0 flex-1 sm:order-first">
                     <span className="font-mono text-xs text-white/40">
                       {m.step}
                     </span>
@@ -181,6 +178,17 @@ export function Modules() {
                       {m.body}
                     </p>
                   </div>
+
+                  <span className="order-first grid size-16 shrink-0 place-items-center rounded-2xl border border-white/15 bg-white/10 text-white transition-colors duration-500 group-hover:bg-white group-hover:text-ink sm:order-last sm:size-20">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="size-7 sm:size-9"
+                      aria-hidden="true"
+                    >
+                      {m.icon}
+                    </svg>
+                  </span>
                 </div>
               </article>
             </div>

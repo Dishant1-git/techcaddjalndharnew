@@ -115,6 +115,7 @@ export function Categories() {
 
         <div
           data-reveal
+          suppressHydrationWarning
           className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-14 lg:flex lg:h-[34rem] lg:gap-4"
         >
           {COURSE_CATEGORIES.map((category) => (

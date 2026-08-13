@@ -15,6 +15,7 @@ export function Stats() {
       <Container>
         <div
           data-reveal
+          suppressHydrationWarning
           className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-2 lg:py-12"
         >
           {STATS.map((stat) => (

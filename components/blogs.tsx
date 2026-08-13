@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { BlogCarousel } from "./blog-carousel"
 import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
 import { formatPostDate, POSTS, type Post } from "@/lib/blogs"
@@ -31,15 +32,15 @@ export function Blogs() {
           </Link>
         </div>
 
-        {/* The three latest only — the full list lives on /blogs, and the
-            homepage is a teaser for it rather than a second index. */}
-        <div
-          data-reveal
-          className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3"
-        >
-          {POSTS.slice(0, 3).map((post) => (
-            <Card key={post.href} post={post} />
-          ))}
+        {/* Six across a carousel rather than three in a static grid: the rail
+            shows three at a time, so the extra posts cost no vertical space.
+            The full list still lives on /blogs. */}
+        <div data-reveal suppressHydrationWarning className="mt-12 lg:mt-16">
+          <BlogCarousel
+            items={POSTS.slice(0, 6).map((post) => (
+              <Card key={post.href} post={post} />
+            ))}
+          />
         </div>
       </Container>
     </section>
@@ -50,7 +51,7 @@ function Card({ post }: { post: Post }) {
   return (
     /* Static styling while the cards are not clickable — a hover lift on
        something that cannot be opened reads as a broken link. */
-    <article className="relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
+    <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white">
       {/* Gradient stand-in until real cover art exists. */}
       <div
         className={`relative aspect-[16/9] bg-linear-to-br ${post.from} ${post.to}`}

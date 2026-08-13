@@ -26,6 +26,7 @@ export default function GalleryPage() {
 
           <h1
             data-reveal
+            suppressHydrationWarning
             className="mt-7 max-w-3xl font-display text-4xl leading-[1.08] font-bold tracking-tight text-white/40 text-balance sm:text-5xl lg:text-6xl"
           >
             Inside the <span className="text-white">classrooms, labs</span> and{" "}
@@ -34,6 +35,7 @@ export default function GalleryPage() {
 
           <p
             data-reveal
+            suppressHydrationWarning
             className="mt-6 max-w-2xl text-base leading-relaxed text-white/65 lg:text-lg"
           >
             Hover a tile to bring it forward — the wall drifts on its own, and

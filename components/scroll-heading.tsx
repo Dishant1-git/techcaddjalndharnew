@@ -29,7 +29,7 @@ export function ScrollHeading({
   let index = 0
 
   return (
-    <Tag data-reveal-words className={className}>
+    <Tag data-reveal-words suppressHydrationWarning className={className}>
       {lines.map((line, lineIndex) => (
         <span
           key={lineIndex}

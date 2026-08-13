@@ -31,6 +31,7 @@ export default function BlogsPage() {
 
           <h1
             data-reveal
+            suppressHydrationWarning
             className="mt-7 max-w-3xl font-display text-4xl leading-[1.08] font-bold tracking-tight text-white/40 text-balance sm:text-5xl lg:text-6xl"
           >
             Notes from the <span className="text-white">classroom</span> and the{" "}
@@ -39,6 +40,7 @@ export default function BlogsPage() {
 
           <p
             data-reveal
+            suppressHydrationWarning
             className="mt-6 max-w-2xl text-base leading-relaxed text-white/65 lg:text-lg"
           >
             Course guides, hiring trends and career advice, written by the
@@ -75,6 +77,7 @@ export default function BlogsPage() {
                    by design, and a hover lift on the same node would be
                    outranked by the reveal's own `transform: none`. */
                 data-reveal
+                suppressHydrationWarning
                 /* Staggered by column rather than by absolute position: each
                    row enters as a left-to-right cascade, and because the delay
                    resets every third card the last row starts as promptly as

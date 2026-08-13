@@ -7,41 +7,21 @@ import {
 } from "@/lib/testimonials"
 
 /**
- * Cards sit on `/assets/texture.svg` — a generated grain-and-horizon backdrop
- * rather than a bitmap, so it scales cleanly and costs a few KB.
- *
- * The track auto-slides (see TestimonialSlider) and is padded to the same
- * gutter the header uses, which keeps the first card flush with the heading
- * while the rest bleed off the right edge exactly like the reference.
+ * The track is padded to the same gutter the header uses, which keeps the
+ * first card flush with the heading while the rest bleed off the right edge.
  */
 const GUTTER = "px-[max(1rem,calc((100%-1240px)/2))] lg:px-[max(2rem,calc((100%-1240px)/2))]"
 
 export function Testimonials() {
   return (
+    /* Plain white — the texture, the colour blooms under the cards and the
+       white-to-transparent wash over them are all gone. With nothing behind
+       the cards to separate them, they carry their own border and shadow
+       instead of the frosted-glass treatment they had. */
     <section
       id="testimonials"
-      className="relative isolate overflow-hidden bg-subtle py-20 lg:py-28"
+      className="relative overflow-hidden bg-white py-20 lg:py-28"
     >
-      {/* The generated grain-and-horizon backdrop. Kept as its own layer
-          rather than a background on the section, so the wash and colour
-          blooms below can sit between it and the cards. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-20 bg-[url('/assets/texture.svg')] bg-cover bg-center opacity-90"
-      />
-
-      {/* Colour under the glass cards — without it the row reads as grey. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-20 left-[12%] size-[30rem] rounded-full bg-brand-400/25 blur-[120px]" />
-        <div className="absolute right-[8%] bottom-0 size-[26rem] rounded-full bg-accent-400/20 blur-[120px]" />
-      </div>
-
-      {/* Keeps the heading legible wherever the texture lands. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-2/3 bg-linear-to-b from-white/85 to-transparent"
-      />
-
       <div className={GUTTER}>
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -50,8 +30,10 @@ export function Testimonials() {
               className="font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
             />
 
+            {/* The rating now leads with the Google mark: it is a Business
+                Profile score, and saying so is most of its weight. */}
             <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
-              <Meta icon={<StarIcon className="size-4 text-amber-400" />}>
+              <Meta icon={<GoogleIcon className="size-4" />}>
                 {TESTIMONIAL_META.rating}
               </Meta>
               <Divider />
@@ -154,20 +136,29 @@ function Row({
 
 function Card({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <figure className="group relative mr-6 flex w-[19rem] shrink-0 flex-col justify-between overflow-hidden rounded-2xl border border-white/70 bg-white/85 p-6 shadow-[0_24px_50px_-24px_rgba(15,23,42,0.35)] backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/25 hover:shadow-[0_32px_60px_-28px_rgba(37,99,235,0.45)] sm:w-[21rem]">
-      {/* Oversized quote mark, clipped by the card — decoration, not content. */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-6 right-3 font-display text-[7rem] leading-none font-bold text-brand-600/[0.07] select-none"
-      >
-        &rdquo;
-      </span>
-
+    /* Solid white on a white section, so the edge has to come from the border
+       and shadow — the old translucent fill and backdrop-blur had nothing left
+       to work against once the texture went. */
+    <figure className="group relative mr-6 flex w-[19rem] shrink-0 flex-col justify-between overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.4)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_28px_60px_-30px_rgba(37,99,235,0.45)] sm:w-[21rem]">
       <div className="relative">
-        <div className="flex gap-0.5" aria-label="Rated 5 out of 5">
-          {Array.from({ length: 5 }, (_, i) => (
-            <StarIcon key={i} className="size-4 text-amber-400" />
-          ))}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex gap-0.5" aria-label="Rated 5 out of 5">
+            {Array.from({ length: 5 }, (_, i) => (
+              <StarIcon key={i} className="size-4 text-amber-400" />
+            ))}
+          </div>
+
+          {/* Marks the quote as a Google Business Profile review. Replaces the
+              decorative quote glyph that used to sit in this corner. */}
+          <span
+            title="Review from Google"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-subtle px-2.5 py-1"
+          >
+            <GoogleIcon className="size-3.5" />
+            <span className="text-[10px] font-semibold tracking-wide text-muted">
+              Google
+            </span>
+          </span>
         </div>
 
         <blockquote className="mt-5 text-sm leading-relaxed text-foreground/85">
@@ -205,6 +196,36 @@ function Meta({ icon, children }: { icon: React.ReactNode; children: string }) {
 function Divider() {
   return (
     <span aria-hidden="true" className="h-4 w-px bg-foreground/15" />
+  )
+}
+
+/**
+ * The Google "G", in its four brand colours.
+ *
+ * Drawn rather than imported: the CSP pins every asset to 'self', so the mark
+ * cannot be pulled from a Google CDN, and it is small enough that a file would
+ * cost a request for no benefit. Fixed colours, so it takes no className tint.
+ */
+function GoogleIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.86c2.26-2.09 3.56-5.17 3.56-8.87Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.27 14.29a7.2 7.2 0 0 1 0-4.58V6.62H1.29a12 12 0 0 0 0 10.76l3.98-3.09Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.7 0 3.99 2.47 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75Z"
+      />
+    </svg>
   )
 }
 

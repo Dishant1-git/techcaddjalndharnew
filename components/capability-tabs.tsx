@@ -76,6 +76,16 @@ export function CapabilityTabs({
           {blurbs[active]}
         </p>
 
+        {/* Only the selected panel's contents are rendered. All six used to be
+            in the document at once with five of them `hidden`, which put ~70
+            brand SVG paths into the HTML that nobody could see — and, because
+            server-rendered markup is also inlined as flight data, put them
+            there twice.
+
+            The wrapper still renders for every tab so the ids each button's
+            `aria-controls` points at continue to exist. Switching tabs mounts
+            the panel from `children`, which is already in memory, so it is
+            instant and fetches nothing. */}
         {panels.map((panel, i) => (
           <div
             key={i}
@@ -84,7 +94,7 @@ export function CapabilityTabs({
             hidden={i !== active}
             className={i === active ? "animate-fade-in" : undefined}
           >
-            {panel}
+            {i === active && panel}
           </div>
         ))}
       </div>

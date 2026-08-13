@@ -1,5 +1,6 @@
 import { Fragment } from "react"
 import { Container } from "./container"
+import { CtaDemoForm } from "./cta-demo-form"
 import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
 
@@ -47,6 +48,7 @@ export function Cta() {
 
         <div
           data-reveal
+          suppressHydrationWarning
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
           <a
@@ -68,14 +70,13 @@ export function Cta() {
             </span>
           </a>
 
-          {/* Glass rather than the solid white it was: two filled buttons side
-              by side on navy compete, where an outline lets the blue lead. */}
-          <a
-            href="/contact"
-            className="inline-flex h-14 items-center justify-center rounded-full border border-white/25 bg-white/10 px-8 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-300 hover:border-white/40 hover:bg-white/20"
-          >
-            Book a free demo
-          </a>
+        </div>
+
+        {/* The demo request now takes a number here rather than sending people
+            to /contact to find a form. Below the call button, so phoning stays
+            the first option for anyone who would rather just ring. */}
+        <div data-reveal suppressHydrationWarning>
+          <CtaDemoForm />
         </div>
 
         <ul className="mt-10 flex flex-col items-center justify-center gap-3 text-sm text-white/70 sm:flex-row sm:gap-5">

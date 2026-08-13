@@ -11,48 +11,61 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE.url}/about/mission-vision` },
 }
 
+/**
+ * Each carries an icon rather than a position number.
+ *
+ * The circles used to hold 01–05, which read as ranked priorities; these five
+ * are concurrent. An icon keeps the same silhouette on the rail without
+ * asserting an order, and leaving the circle empty would have looked like a
+ * loading state.
+ */
 const MISSION_POINTS = [
   {
     title: "Make Technology Accessible",
     body: "Provide learners with relevant and accessible technology education.",
+    icon: "M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Zm0 0c-2.2 2.2-3.3 5-3.3 8.5s1.1 6.3 3.3 8.5m0-17c2.2 2.2 3.3 5 3.3 8.5s-1.1 6.3-3.3 8.5M4 12h16",
   },
   {
     title: "Prioritize Practical Learning",
     body: "Go beyond theory through projects, hands-on training, and real-world exposure.",
+    icon: "M14.5 4.5a4 4 0 0 0 5 5L10 19a2.8 2.8 0 0 1-4-4l8.5-10.5ZM6.5 15.5l2 2",
   },
   {
     title: "Build Industry-Ready Talent",
     body: "Develop skills that align with evolving industry requirements and employment opportunities.",
+    icon: "M4 8.5h16v11H4v-11Zm4.5 0v-2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2M4 13h16",
   },
   {
     title: "Encourage Continuous Upskilling",
     body: "Help learners adapt to emerging technologies and continuously upgrade their capabilities.",
+    icon: "M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4",
   },
   {
     title: "Expand the Learning Ecosystem",
     body: "Build a wider network through centres and collaborations so advanced technology education reaches more learners.",
+    icon: "M12 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm-6.5 12a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm13 0a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM10.5 7.5 6.8 14m6.7-6.5 3.7 6.5M8 18h8",
   },
 ]
 
 /**
- * The five vision points, each with the position it takes on the wave.
+ * The five vision points, spaced evenly around a circle.
  *
- * `x`/`y` are percentages of the timeline box and are used twice — once to
- * place the node, once to draw the path through it — so the curve and the
- * circles can never drift apart. Odd nodes ride the crest, even ones the
- * trough.
+ * `x`/`y` are percentages of the square stage, precomputed from
+ * `50 + 37·cos(θ)` / `50 + 37·sin(θ)` with θ starting at -90° and stepping 72°,
+ * so the first node sits at twelve o'clock and the rest follow clockwise. They
+ * are literals rather than trigonometry at render time because they never
+ * change and the numbers are easier to reason about written out.
+ *
+ * No ordering is implied — the five are simultaneous commitments, which is why
+ * the numbering the wave version carried has gone.
  */
 const VISION_POINTS = [
-  { x: "10%", y: "34%", crest: true, ring: "border-brand-700", body: "Creating future-ready technology professionals" },
-  { x: "30%", y: "66%", crest: false, ring: "border-brand-600", body: "Promoting practical and industry-oriented education" },
-  { x: "50%", y: "34%", crest: true, ring: "border-brand-500", body: "Encouraging innovation and continuous learning" },
-  { x: "70%", y: "66%", crest: false, ring: "border-accent-500", body: "Supporting India's digital transformation" },
-  { x: "90%", y: "34%", crest: true, ring: "border-accent-400", body: "Building a trusted name in software, services, and technology education" },
+  { x: "50%", y: "13%", ring: "border-brand-700", body: "Creating future-ready technology professionals" },
+  { x: "85%", y: "38.6%", ring: "border-brand-600", body: "Promoting practical and industry-oriented education" },
+  { x: "71.8%", y: "79.9%", ring: "border-brand-500", body: "Encouraging innovation and continuous learning" },
+  { x: "28.2%", y: "79.9%", ring: "border-accent-500", body: "Supporting India's digital transformation" },
+  { x: "15%", y: "38.6%", ring: "border-accent-400", body: "Building a trusted name in software, services, and technology education" },
 ]
-
-/** The same five coordinates as a smooth curve, plus a tail at each end. */
-const WAVE_PATH =
-  "M2,66 C6,66 6,34 10,34 C18,34 22,66 30,66 C38,66 42,34 50,34 C58,34 62,66 70,66 C78,66 82,34 90,34 C94,34 94,66 98,66"
 
 export default function MissionVisionPage() {
   return (
@@ -74,6 +87,7 @@ export default function MissionVisionPage() {
 
           <h1
             data-reveal
+            suppressHydrationWarning
             className="mt-7 max-w-4xl font-display text-4xl leading-[1.08] font-bold tracking-tight text-white/40 text-balance sm:text-5xl lg:text-6xl"
           >
             Where we are <span className="text-white">going,</span> and{" "}
@@ -91,6 +105,7 @@ export default function MissionVisionPage() {
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
             >
               Bridging Education with Industry
@@ -98,6 +113,7 @@ export default function MissionVisionPage() {
 
             <p
               data-reveal
+              suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
             >
               Our mission is to build a strong training ecosystem where learners
@@ -136,12 +152,12 @@ export default function MissionVisionPage() {
 
             {MISSION_POINTS.map((point, index) => {
               const above = index % 2 === 0
-              const number = String(index + 1).padStart(2, "0")
 
               return (
                 <li
                   key={point.title}
                   data-reveal
+                  suppressHydrationWarning
                   /* All five are on screen together, so they are staggered
                      left to right — firing at once would read as one block
                      appearing rather than a sequence being laid down. */
@@ -169,13 +185,26 @@ export default function MissionVisionPage() {
                     />
 
                     <span
-                      className={`grid size-16 shrink-0 place-items-center rounded-full font-display text-xl font-bold text-white lg:size-20 lg:text-2xl ${
+                      className={`grid size-16 shrink-0 place-items-center rounded-full text-white lg:size-20 ${
                         above
                           ? "bg-ink shadow-[0_18px_40px_-16px_rgba(42,44,94,0.9)] ring-6 ring-ink/10"
                           : "bg-brand-600 shadow-[0_18px_40px_-16px_rgba(37,99,235,0.9)] ring-6 ring-brand-600/15"
                       }`}
                     >
-                      {number}
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className="size-7 lg:size-8"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d={point.icon}
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </span>
 
                     <h3 className="font-display text-sm font-bold tracking-tight text-ink lg:text-base">
@@ -223,6 +252,7 @@ export default function MissionVisionPage() {
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
             >
               Building India&apos;s Future-Ready Technology Workforce
@@ -230,6 +260,7 @@ export default function MissionVisionPage() {
 
             <p
               data-reveal
+              suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
             >
               techcadd envisions contributing to an India where skilled
@@ -240,85 +271,79 @@ export default function MissionVisionPage() {
           </div>
 
           {/*
-            Serpentine chain. The curve is one SVG path stretched over the box
-            with `preserveAspectRatio="none"`, and the nodes are placed at the
-            same percentages the path is drawn through — so the circles sit on
-            the line by construction rather than by nudging. `non-scaling-stroke`
-            keeps the ribbon an even thickness despite that stretch.
+            The five arranged around a circle rather than along a wave. A ring
+            carries no start and no end, which is the honest shape for five
+            commitments held at once — the wave read as a sequence, and the
+            numbering that came with it implied an order that does not exist.
 
-            Each item is a zero-height anchor sitting exactly on its point of the
-            curve, with the circle centred on it and the label hung off it. The
-            label always goes on the *outside* of the wave — above a crest,
-            below a trough — because the inside is where the curve is heading
-            next, and text put there is written straight through by the line.
+            Each node is a circle holding its own text, positioned by the
+            precomputed percentages above and pulled back by half its own size
+            so its centre lands on the ring. The dashed circle behind them is
+            drawn at the same 37% radius, so the nodes sit on it by
+            construction.
 
-            Below `lg` the curve is dropped and the five simply stack: a wave
-            across a phone screen would be four circles wide and unreadable.
+            Below `lg` the ring is dropped and the circles wrap: five 12rem
+            circles around a phone screen would leave nothing legible in the
+            middle.
           */}
-          <ol
+          <ul
             data-reveal
-            className="relative mt-14 grid gap-y-10 lg:mt-20 lg:block lg:h-[34rem]"
+            suppressHydrationWarning
+            className="mt-14 flex flex-wrap items-center justify-center gap-8 lg:relative lg:mt-20 lg:block lg:aspect-square lg:h-auto lg:w-full lg:max-w-[46rem] lg:gap-0 lg:mx-auto"
           >
             <svg
               aria-hidden="true"
               viewBox="0 0 100 100"
-              preserveAspectRatio="none"
               className="pointer-events-none absolute inset-0 hidden size-full lg:block"
             >
               <defs>
-                <linearGradient id="vision-wave" x1="0" y1="0" x2="1" y2="0">
+                <linearGradient id="vision-ring" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0%" stopColor="var(--color-brand-700)" />
                   <stop offset="50%" stopColor="var(--color-brand-500)" />
                   <stop offset="100%" stopColor="var(--color-accent-400)" />
                 </linearGradient>
               </defs>
-              <path
-                d={WAVE_PATH}
+              <circle
+                cx="50"
+                cy="50"
+                r="37"
                 fill="none"
-                stroke="url(#vision-wave)"
-                strokeWidth="10"
-                strokeLinecap="round"
+                stroke="url(#vision-ring)"
+                strokeWidth="1.5"
+                strokeDasharray="3 3"
                 vectorEffect="non-scaling-stroke"
               />
             </svg>
 
-            {VISION_POINTS.map((point, index) => (
+            {/* The hub the five point at. Hidden below lg, where the ring is. */}
+            <li
+              aria-hidden="true"
+              className="absolute top-1/2 left-1/2 hidden size-44 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-line bg-subtle text-center lg:grid"
+            >
+              <span>
+                <span className="block font-mono text-[10px] tracking-[0.22em] text-brand-600 uppercase">
+                  Our Vision
+                </span>
+                <span className="mt-2 block font-display text-lg leading-tight font-bold tracking-tight text-ink">
+                  Future-ready
+                  <br />
+                  by 2030
+                </span>
+              </span>
+            </li>
+
+            {VISION_POINTS.map((point) => (
               <li
                 key={point.body}
-                style={
-                  {
-                    "--x": point.x,
-                    "--y": point.y,
-                  } as React.CSSProperties
-                }
-                className="flex flex-col items-center text-center lg:absolute lg:top-[var(--y)] lg:left-[var(--x)] lg:block lg:h-0 lg:w-52 lg:-translate-x-1/2"
+                style={{ "--x": point.x, "--y": point.y } as React.CSSProperties}
+                className={`grid size-44 place-items-center rounded-full border-4 bg-background p-6 text-center shadow-[0_16px_40px_-18px_rgba(15,23,42,0.5)] sm:size-48 lg:absolute lg:top-[var(--y)] lg:left-[var(--x)] lg:size-48 lg:-translate-x-1/2 lg:-translate-y-1/2 ${point.ring}`}
               >
-                <span
-                  className={`grid size-20 shrink-0 place-items-center rounded-full border-6 bg-background font-display text-xl font-bold tracking-tight text-ink shadow-[0_16px_40px_-18px_rgba(15,23,42,0.5)] lg:absolute lg:top-0 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 ${point.ring}`}
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-
-                {/* 3.5rem clears the circle's 2.5rem radius with a rem to
-                    spare, measured from the point on the curve either way. */}
-                <div
-                  className={
-                    point.crest
-                      ? "lg:absolute lg:bottom-14 lg:left-0 lg:w-full"
-                      : "lg:absolute lg:top-14 lg:left-0 lg:w-full"
-                  }
-                >
-                  <span className="mt-4 block font-mono text-[11px] font-medium tracking-[0.18em] text-brand-600 uppercase lg:mt-0">
-                    Vision {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <p className="mt-2 text-sm leading-relaxed text-muted">
-                    {point.body}
-                  </p>
-                </div>
+                <p className="text-[13px] leading-snug font-medium text-ink text-balance">
+                  {point.body}
+                </p>
               </li>
             ))}
-          </ol>
+          </ul>
 
           <p className="mx-auto mt-14 max-w-3xl text-center text-xs leading-relaxed text-muted lg:mt-16">
             The organization&apos;s publicly stated vision is to help make India
@@ -336,6 +361,7 @@ export default function MissionVisionPage() {
 
           <h2
             data-reveal
+            suppressHydrationWarning
             className="mx-auto mt-5 max-w-3xl font-display text-3xl leading-[1.1] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
           >
             From learning technology to creating technology.
@@ -343,6 +369,7 @@ export default function MissionVisionPage() {
 
           <p
             data-reveal
+            suppressHydrationWarning
             className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/70 lg:text-lg"
           >
             techcadd aims to keep evolving with emerging fields such as

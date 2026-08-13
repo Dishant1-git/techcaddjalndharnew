@@ -1,4 +1,5 @@
 import { generateContent } from "./course-content"
+import { COURSE_SPECS } from "./course-specs"
 import {
   AFTER_12TH_GROUPS,
   AI_MENU,
@@ -853,13 +854,89 @@ function stubPage(entry: CatalogueEntry): CoursePage {
     ],
     intro: copy.intro,
     facts: copy.facts,
-    related: CATALOGUE.filter(
-      (e) =>
-        e.group === entry.group &&
-        !(e.segment === entry.segment && e.slug === entry.slug),
-    )
-      .slice(0, 6)
-      .map((e) => `/${e.segment}/${e.slug}`),
+    related: relatedFor(entry),
+  }
+}
+
+/**
+ * The six most closely related courses.
+ *
+ * This used to be "the first six entries in the same nav menu group", which is
+ * catalogue order — so Python listed Java, C & C++ and Kotlin purely because
+ * they sit near it in the menu, while Machine Learning and Data Science, which
+ * share most of their toolchain with it, never appeared.
+ *
+ * Now scored on what the courses actually have in common:
+ *
+ *   +3  a shared career outcome — the strongest signal, since it means the two
+ *       courses compete for or complement the same job
+ *   +2  a shared tool
+ *   +4  the same menu group, which still carries real editorial meaning
+ *
+ * Ties break on label so the order is stable: these pages are prerendered, and
+ * a comparator that leaves ties unresolved can reorder between builds.
+ *
+ * Same segment only. A course page offering an internship format as a "related
+ * course" is answering a different question than the reader asked.
+ */
+function relatedFor(entry: CatalogueEntry): string[] {
+  const lower = (s: string) => s.toLowerCase()
+  const self = COURSE_SPECS[`${entry.segment}/${entry.slug}`]
+  const selfTools = new Set((self?.tools ?? []).map(lower))
+  const selfCareers = new Set((self?.careers ?? []).map(lower))
+
+  return CATALOGUE.filter(
+    (e) =>
+      e.segment === entry.segment &&
+      !(e.segment === entry.segment && e.slug === entry.slug),
+  )
+    .map((e) => {
+      const spec = COURSE_SPECS[`${e.segment}/${e.slug}`]
+      let score = e.group === entry.group ? 4 : 0
+      for (const tool of spec?.tools ?? []) {
+        if (selfTools.has(lower(tool))) score += 2
+      }
+      for (const career of spec?.careers ?? []) {
+        if (selfCareers.has(lower(career))) score += 3
+      }
+      return { entry: e, score }
+    })
+    .sort((a, b) => b.score - a.score || a.entry.label.localeCompare(b.entry.label))
+    .slice(0, 6)
+    .map((x) => `/${x.entry.segment}/${x.entry.slug}`)
+}
+
+/**
+ * Label and one-line description for a related-course card.
+ *
+ * The card used to title itself by de-slugging its own href, which produced
+ * "mern stack" and "c cpp". The catalogue already holds the real label.
+ */
+export function courseCard(href: string): {
+  href: string
+  label: string
+  group: string
+  tagline: string
+} | null {
+  const match = href.match(
+    /^\/(courses|internship-training|after-12th-courses)\/([a-z0-9-]+)$/,
+  )
+  if (!match) return null
+
+  const found = CATALOGUE.find(
+    (e) => e.segment === match[1] && e.slug === match[2],
+  )
+  if (!found) return null
+
+  const spec = COURSE_SPECS[`${found.segment}/${found.slug}`]
+  return {
+    href,
+    label: found.label,
+    group: found.group,
+    // Sentence-cased: the taglines are written to follow "X is …".
+    tagline: spec
+      ? spec.tagline.charAt(0).toUpperCase() + spec.tagline.slice(1)
+      : "Live projects, industry trainers and placement support.",
   }
 }
 

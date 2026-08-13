@@ -25,30 +25,53 @@ export function ModuleTracks({ tracks }: { tracks: ModuleTrack[] }) {
 
   return (
     <>
-      <div
-        role="tablist"
-        aria-label="Course duration"
-        className="mt-10 flex flex-wrap gap-2"
-      >
-        {tracks.map((option, i) => {
-          const selected = i === active
-          return (
-            <button
-              key={option.months}
-              role="tab"
-              type="button"
-              aria-selected={selected}
-              onClick={() => setActive(i)}
-              className={`rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300 ${
-                selected
-                  ? "bg-white text-ink shadow-[0_14px_34px_-14px_rgba(255,255,255,0.5)]"
-                  : "border border-white/20 bg-white/5 text-white/70 hover:bg-white/12 hover:text-white"
-              }`}
-            >
-              {option.label}
-            </button>
-          )
-        })}
+      {/* A select rather than a row of pills.
+          Three buttons read as three separate syllabuses; a single control
+          labelled with the current duration says plainly that one thing is
+          being switched. It is a native <select>, so it comes with keyboard
+          handling, the platform's own picker on mobile, and no open/close
+          state to manage. */}
+      <div className="mt-10">
+        <label
+          htmlFor="module-duration"
+          className="block font-mono text-xs tracking-[0.18em] text-white/50 uppercase"
+        >
+          Choose duration
+        </label>
+
+        <div className="relative mt-3 inline-block">
+          <select
+            id="module-duration"
+            value={active}
+            onChange={(e) => setActive(Number(e.target.value))}
+            /* `appearance-none` drops the platform arrow so the chevron below
+               can sit where the design wants it; the right padding reserves
+               that space. Options need explicit colours — a dark <select> in
+               most browsers still renders its list on the system background. */
+            className="w-full min-w-[15rem] appearance-none rounded-full border border-white/25 bg-white/10 py-3.5 pr-14 pl-6 font-display text-base font-bold tracking-tight text-white backdrop-blur-md transition-colors duration-300 hover:border-white/40 hover:bg-white/15 focus-visible:border-white/60 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
+          >
+            {tracks.map((option, i) => (
+              <option key={option.months} value={i} className="bg-ink text-white">
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 right-5 -translate-y-1/2 text-white/70"
+          >
+            <svg viewBox="0 0 24 24" fill="none" className="size-4">
+              <path
+                d="m6 9 6 6 6-6"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
 
       <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/65 lg:text-base">

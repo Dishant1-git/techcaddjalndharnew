@@ -152,11 +152,10 @@
   animation: orbit-ccw var(--orbit-duration, 40s) linear infinite;
 }
 
-/* Pausing on hover lets people actually read the logos. */
-.orbit-stage:hover .orbit-cw,
-.orbit-stage:hover .orbit-ccw {
-  animation-play-state: paused;
-}
+/* The orbit deliberately does NOT pause on hover. It used to, so that the
+   logos could be read mid-rotation, but the ring is wide enough that the
+   pointer crosses it on the way to anything below and the motion kept
+   stalling for people who were not looking at it. */
 
 @keyframes fade-in {
   from {
@@ -730,6 +729,19 @@
   }
 }
 
+/* --- Carousel rail ---
+   The blog carousel scrolls horizontally on purpose, so the bar underneath it
+   is noise: the arrow buttons and the snap points already say it moves. The
+   element stays a scroll container, so touch and trackpad are unaffected. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* --- Skeletons ---
    A tinted block with a light sweep running across it. The sweep is a
    pseudo-element transform, so it animates on the compositor and costs
@@ -792,7 +804,12 @@
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-.reveal-ready [data-reveal].is-visible {
+/* `[data-revealed]`, set by ScrollReveal, rather than a class: the reveal runs
+   from the layout while a page may still be an un-hydrated Suspense boundary,
+   and writing to `className` there broke hydration. An attribute selector
+   carries the same specificity as a class, so the (0,3,0) weight the timeline
+   on /about is written against is unchanged. */
+.reveal-ready [data-reveal][data-revealed] {
   opacity: 1;
   transform: none;
 }
@@ -821,7 +838,7 @@
   filter: blur(4px);
 }
 
-.reveal-ready [data-reveal-words].is-visible .sh-word {
+.reveal-ready [data-reveal-words][data-revealed] .sh-word {
   opacity: 1;
   transform: none;
   filter: blur(0);

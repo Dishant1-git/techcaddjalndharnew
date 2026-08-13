@@ -91,7 +91,7 @@ export function WhyUs() {
         </div>
 
         {/* --- Differentiators --- */}
-        <div data-reveal className="grid gap-x-12 sm:grid-cols-2">
+        <div data-reveal suppressHydrationWarning className="grid gap-x-12 sm:grid-cols-2">
           <div className="divide-y divide-line">
             {left.map((r) => (
               <Item key={r.title} reason={r} />

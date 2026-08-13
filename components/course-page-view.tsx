@@ -12,7 +12,7 @@ import { RichText } from "./rich-text"
 import { ScrollHeading } from "./scroll-heading"
 import { ToolMesh } from "./tool-mesh"
 import { VideoDialog } from "./video-dialog"
-import { hrefFor, type CoursePage } from "@/lib/course-pages"
+import { courseCard, hrefFor, type CoursePage } from "@/lib/course-pages"
 import { CONTACT } from "@/lib/navigation"
 
 /**
@@ -50,9 +50,14 @@ export function CoursePageView({ page }: { page: CoursePage }) {
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex flex-wrap items-center gap-2 font-mono text-xs text-white/55">
               <li>
-                <Link href="/" className="transition-colors hover:text-white">
+                {/* Hover-prefetched: a breadcrumb crumb is rarely the way out
+                    of a course page, and the homepage payload is 117 KB. */}
+                <PrefetchLink
+                  href="/"
+                  className="transition-colors hover:text-white"
+                >
                   Home
-                </Link>
+                </PrefetchLink>
               </li>
               <li aria-hidden="true">/</li>
               <li>
@@ -110,57 +115,44 @@ export function CoursePageView({ page }: { page: CoursePage }) {
         </Container>
       </section>
 
-      {/* --- 1. Overview, full width --- */}
-      {page.overview && (
+      {/* --- 1. Overview and walkthrough, full width ---
+          The video now lives inside this section, so the section renders if
+          either exists: a page with a video but no overview would otherwise
+          lose the video along with it. */}
+      {(page.overview || page.video) && (
         <Section id="overview">
           <SectionHead eyebrow="Overview" lines={["Course overview"]} />
           {/* One short paragraph, running the full width of the section — no
               column split and no narrow measure to divide it across. It sizes
               up a step because it is the only copy in the block. */}
-          <div className="mt-10 space-y-5">
-            {page.overview.map((para, i) => (
-              <RichText
-                key={i}
-                text={para}
-                exclude={self}
-                className="text-lg leading-relaxed text-muted lg:text-xl"
-              />
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* --- 2. Video walkthrough --- */}
-      {page.video && (
-        <section
-          data-cursor="light"
-          className="relative isolate overflow-hidden bg-ink py-20 text-white lg:py-28"
-        >
-          <PanelTexture variant="aurora" />
-          <Container className="relative">
-            <div className="mx-auto max-w-2xl text-center">
-              <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
-                Watch first
-              </span>
-              <ScrollHeading
-                lines={["See the course", "before you enrol"]}
-                className="mt-6 font-display text-3xl leading-[1.1] font-bold tracking-tight sm:text-4xl lg:text-5xl"
-              />
-              <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-white/65">
-                A short walkthrough of the labs, the trainers and a live batch in
-                session — so you know what you are signing up for.
-              </p>
+          {page.overview && (
+            <div className="mt-10 space-y-5">
+              {page.overview.map((para, i) => (
+                <RichText
+                  key={i}
+                  text={para}
+                  exclude={self}
+                  className="text-lg leading-relaxed text-muted lg:text-xl"
+                />
+              ))}
             </div>
+          )}
 
-            <div className="relative mx-auto mt-12 grid aspect-video max-w-4xl place-items-center overflow-hidden rounded-[1.75rem] border border-white/15 bg-linear-to-br from-brand-700 via-ink to-brand-900">
+          {/* The walkthrough sits directly under the overview rather than in a
+              dark section of its own. It answers the same question the
+              paragraph above just raised — what is this actually like — and a
+              full section between the overview and eligibility pushed the
+              course's own content a screen further down. */}
+          {page.video && (
+            <div className="relative mt-10 grid aspect-video w-full place-items-center overflow-hidden rounded-[1.75rem] border border-line bg-linear-to-br from-brand-700 via-ink to-brand-900">
               <span
                 aria-hidden="true"
                 className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.35),transparent_60%)]"
               />
               <VideoDialog url={page.video.url} title={page.video.title} />
             </div>
-          </Container>
-        </section>
+          )}
+        </Section>
       )}
 
       {/* --- 3. Who can do this --- */}
@@ -262,14 +254,19 @@ export function CoursePageView({ page }: { page: CoursePage }) {
       {page.learn && (
         <Section id="what-you-will-learn" tinted>
           <SectionHead eyebrow="Syllabus" lines={["What you will learn"]} />
+          {/* Full width rather than the `Prose` measure the other sections
+              use. This intro is the longest block of copy on the page and the
+              accordion below it already runs the full width, so capping it at
+              max-w-3xl left the syllabus looking like two different sections.
+              Two columns keep the line length readable at that width. */}
           {page.learn.intro && (
-            <Prose>
+            <div className="mt-8 lg:columns-2 lg:gap-16">
               <RichText
                 text={page.learn.intro}
                 exclude={self}
                 className="text-base leading-relaxed text-muted lg:text-lg"
               />
-            </Prose>
+            </div>
           )}
 
           {/* Collapsed by default so the whole syllabus is scannable in one
@@ -428,9 +425,12 @@ export function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
-      {/* --- 11. Reviews --- */}
+      {/* --- 11. Reviews ---
+          Plain white, matching the homepage testimonials: the grain backdrop
+          and colour blooms this used to sit on are gone. Still `bleed`, so the
+          marquee can run past the container to the viewport edge. */}
       {page.reviews && page.reviews.length > 0 && (
-        <Section id="reviews" textured bleed>
+        <Section id="reviews" bleed>
           <Container>
             <SectionHead
               eyebrow="Student reviews"
@@ -495,26 +495,42 @@ export function CoursePageView({ page }: { page: CoursePage }) {
       {page.related && page.related.length > 0 && (
         <Section id="related">
           <SectionHead eyebrow="Explore more" lines={["Related courses"]} />
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {page.related.map((href) => (
-              <PrefetchLink
-                key={href}
-                href={href}
-                className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-5 transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_24px_50px_-30px_rgba(15,23,42,0.5)]"
-              >
-                <span className="min-w-0">
-                  <span className="block truncate font-display text-base font-bold tracking-tight capitalize">
-                    {href.split("/").pop()?.replace(/-/g, " ")}
+
+          {/* Proper cards rather than the one-line rows these were: the
+              catalogue supplies the real label, and the course's own tagline
+              says why it is worth a look. `courseCard` returns null for an
+              href that is not a catalogued course, so an authored `related`
+              pointing somewhere else drops out instead of rendering blank. */}
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {page.related
+              .map(courseCard)
+              .filter((card) => card !== null)
+              .map((card) => (
+                <PrefetchLink
+                  key={card.href}
+                  href={card.href}
+                  className="group flex flex-col rounded-2xl border border-line bg-white p-6 transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_24px_50px_-30px_rgba(15,23,42,0.5)]"
+                >
+                  <span className="font-mono text-[11px] tracking-[0.16em] text-brand-600 uppercase">
+                    {card.group}
                   </span>
-                  <span className="mt-1 block text-xs text-muted">
-                    Jalandhar · Live projects
+
+                  <span className="mt-3 font-display text-lg font-bold tracking-tight text-balance">
+                    {card.label}
                   </span>
-                </span>
-                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-600/10 text-brand-600 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
-                  <ArrowIcon />
-                </span>
-              </PrefetchLink>
-            ))}
+
+                  <span className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-muted">
+                    {card.tagline}
+                  </span>
+
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-600">
+                    View course
+                    <span className="grid size-7 place-items-center rounded-full bg-brand-600/10 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
+                      <ArrowIcon />
+                    </span>
+                  </span>
+                </PrefetchLink>
+              ))}
           </div>
         </Section>
       )}
@@ -597,33 +613,32 @@ export function CoursePageView({ page }: { page: CoursePage }) {
 /**
  * Section shell.
  *
- * `textured` is the homepage testimonial surface — grain backdrop plus two
- * colour blooms — and it is the only variant whose children may need to bleed
- * past the container, so it renders them full width and leaves the containing
- * to the caller.
+ * `bleed` renders children full width and leaves the containing to the caller,
+ * which the reviews marquee needs so its lanes can run to the viewport edge.
+ *
+ * There was a third surface, `textured` — the old testimonial backdrop of
+ * grain plus two colour blooms — used by that one section. It came out with
+ * the matching treatment on the homepage rather than being left behind as a
+ * variant nothing selects.
  */
 function Section({
   id,
   children,
   tinted = false,
   dark = false,
-  textured = false,
   bleed = false,
 }: {
   id: string
   children: React.ReactNode
   tinted?: boolean
   dark?: boolean
-  textured?: boolean
   bleed?: boolean
 }) {
   const surface = dark
     ? "isolate overflow-hidden bg-ink text-white"
-    : textured
-      ? "isolate overflow-hidden bg-subtle"
-      : tinted
-        ? "bg-subtle"
-        : ""
+    : tinted
+      ? "bg-subtle"
+      : ""
 
   return (
     <section
@@ -632,23 +647,6 @@ function Section({
       className={`relative py-20 lg:py-28 ${surface}`}
     >
       {dark && <PanelTexture variant="aurora" />}
-
-      {textured && (
-        <>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-20 bg-[url('/assets/texture.svg')] bg-cover bg-center opacity-90"
-          />
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-            <div className="absolute -top-20 left-[12%] size-[30rem] rounded-full bg-brand-400/25 blur-[120px]" />
-            <div className="absolute right-[8%] bottom-0 size-[26rem] rounded-full bg-accent-400/20 blur-[120px]" />
-          </div>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-2/3 bg-linear-to-b from-white/85 to-transparent"
-          />
-        </>
-      )}
 
       {bleed ? (
         <div className="relative">{children}</div>
