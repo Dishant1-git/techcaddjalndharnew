@@ -98,9 +98,20 @@ export function Navbar() {
            entries are same-page anchors (/#faq, /#testimonials), where the
            pathname never changes and the panel would hang over the section it
            just scrolled to. Any link click inside the bar closes the menu —
-           capture phase, so it still runs if a child stops propagation. */
+           capture phase, so it still runs if a child stops propagation.
+
+           Deferred by a task, and that is the whole point. Closing here
+           synchronously unmounts the panel — and with it the very anchor being
+           clicked — while the event is still in its capture phase. React's
+           handler for that <Link> then never runs, so preventDefault() is
+           never called and the browser follows the href natively: a full page
+           reload. It was visible on every dropdown that closes (Courses,
+           Internship, After 12th, About) and absent from the AI panel, which
+           stays mounted and toggles by class. Letting the click finish first
+           keeps the navigation client-side. */
         onClickCapture={(e) => {
-          if ((e.target as Element | null)?.closest?.("a")) closeMenus()
+          if (!(e.target as Element | null)?.closest?.("a")) return
+          window.setTimeout(closeMenus, 0)
         }}
         className={`mx-auto transition-all duration-500 ${
           scrolled
