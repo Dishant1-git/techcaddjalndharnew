@@ -327,38 +327,12 @@ export const ABOUT_FEATURED: FeaturedCard[] = [
 /**
  * Resources — everything around the courses rather than a course itself.
  *
-<<<<<<< Updated upstream
- * FAQ and Reviews point at homepage sections because that is where the content
- * actually lives; there are no standalone pages for them yet. Blogs and Gallery
- * each have their own page now, so they point at the real route.
- *
- * College Partnerships is not listed: it has neither a page nor a homepage
- * section to anchor to, so the entry 404'd from every page in the site. The
- * note it carried offered two ways out — build /college-partnerships or drop
- * the line — and this is the second. Put it back with the page.
-=======
  * Every entry now has a page of its own, so none of these are homepage anchors
  * any more and none of them 404.
->>>>>>> Stashed changes
  */
 export const RESOURCE_LINKS: NavLink[] = [
   { label: "Blogs", href: "/blogs" },
   { label: "Gallery", href: "/gallery" },
-<<<<<<< Updated upstream
-  { label: "FAQ", href: "/#faq" },
-  { label: "Reviews", href: "/#testimonials" },
-]
-
-/*
-  Three cards against four links, so unlike ABOUT_FEATURED this is a subset of
-  the column beside it rather than a mirror of it — `sm:grid-cols-3` fits three
-  to a row, and Gallery is the one left to the link list. Give it a card if the
-  grid ever grows.
-
-  Where a card and a link share a title, they must share an href too: one
-  pointing at /blogs while its neighbour points at /#blogs would send the same
-  name to two different places.
-=======
   { label: "FAQ", href: "/faq" },
   { label: "Reviews", href: "/reviews" },
   { label: "College Partnerships", href: "/college-partnerships" },
@@ -371,7 +345,6 @@ export const RESOURCE_LINKS: NavLink[] = [
 
   Where a card and a link do share a title, they must share an href too, or the
   same name in one menu would lead to two different places.
->>>>>>> Stashed changes
 */
 export const RESOURCE_FEATURED: FeaturedCard[] = [
   {

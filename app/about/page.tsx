@@ -1,18 +1,12 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-<<<<<<< Updated upstream
 import Link from "next/link"
-import { Container } from "@/components/container"
-import { Cta } from "@/components/cta"
-import { HeroVideo } from "@/components/hero-video"
-import { Recognition } from "@/components/recognition"
-=======
 import { Fragment } from "react"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { HeroVideo } from "@/components/hero-video"
 import { PanelTexture } from "@/components/panel-texture"
->>>>>>> Stashed changes
+import { Recognition } from "@/components/recognition"
 import { TimelineProgress } from "@/components/timeline-progress"
 import { SITE } from "@/lib/site"
 import { STATS } from "@/lib/stats"
@@ -316,12 +310,8 @@ export default function AboutPage() {
 
           <div
             data-reveal
-<<<<<<< Updated upstream
             suppressHydrationWarning
-            className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[1.2fr_1fr] lg:gap-16"
-=======
             className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16"
->>>>>>> Stashed changes
           >
             <div>
               <div className="space-y-5 text-base leading-relaxed text-muted lg:text-[17px]">
@@ -435,6 +425,7 @@ export default function AboutPage() {
 
               <h2
                 data-reveal
+                suppressHydrationWarning
                 className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
               >
                 A skill-building ecosystem.
@@ -442,6 +433,7 @@ export default function AboutPage() {
 
               <div
                 data-reveal
+                suppressHydrationWarning
                 className="mt-6 space-y-5 text-base leading-relaxed text-white/70 lg:text-[17px]"
               >
                 <p>
@@ -466,7 +458,7 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div data-reveal className="grid gap-5 sm:grid-cols-2">
+            <div data-reveal suppressHydrationWarning className="grid gap-5 sm:grid-cols-2">
               {/* `self-start`, so the grid does not stretch the two to a common
                   row height and flatten the 4:3 the offset below plays
                   against. */}
@@ -488,15 +480,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-<<<<<<< Updated upstream
-          <h3
-            data-reveal
-            suppressHydrationWarning
-            className="mt-16 font-display text-2xl font-bold tracking-tight text-ink lg:mt-20 lg:text-3xl"
-          >
-            What makes techcadd different?
-          </h3>
-=======
       {/* --- 04 · LIGHT — preparing learners ---------------------------- */}
       <section className="py-20 lg:py-28">
         <Container>
@@ -504,10 +487,10 @@ export default function AboutPage() {
             <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
               Why it matters
             </p>
->>>>>>> Stashed changes
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
             >
               Preparing learners for a changing digital world
@@ -515,6 +498,7 @@ export default function AboutPage() {
 
             <div
               data-reveal
+              suppressHydrationWarning
               className="mt-6 space-y-5 text-base leading-relaxed text-muted lg:text-lg"
             >
               <p>
@@ -537,12 +521,8 @@ export default function AboutPage() {
               not read past. */}
           <p
             data-reveal
-<<<<<<< Updated upstream
             suppressHydrationWarning
-            className="mt-8 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-4"
-=======
             className="mx-auto mt-12 max-w-3xl rounded-2xl border border-line bg-subtle px-7 py-6 text-center font-display text-lg leading-relaxed font-medium tracking-tight text-ink text-balance lg:text-xl"
->>>>>>> Stashed changes
           >
             The objective is not simply to teach a technology, but to develop
             the ability to understand problems, build solutions, use technology
@@ -587,6 +567,7 @@ export default function AboutPage() {
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
             >
               Learning for every stage of the career journey
@@ -594,6 +575,7 @@ export default function AboutPage() {
 
             <p
               data-reveal
+              suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-white/70"
             >
               techcadd&apos;s training ecosystem is designed to serve a diverse
@@ -606,6 +588,7 @@ export default function AboutPage() {
               <li
                 key={learner.title}
                 data-reveal
+                suppressHydrationWarning
                 style={
                   { "--reveal-delay": `${index * 80}ms` } as React.CSSProperties
                 }
@@ -641,6 +624,7 @@ export default function AboutPage() {
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.1] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
             >
               Learn <Arrow /> Practice <Arrow /> Build <Arrow /> Grow
@@ -658,6 +642,7 @@ export default function AboutPage() {
                 <li
                   key={step.title}
                   data-reveal
+                  suppressHydrationWarning
                   style={
                     {
                       "--reveal-delay": `${index * 110}ms`,
@@ -683,6 +668,7 @@ export default function AboutPage() {
 
           <p
             data-reveal
+            suppressHydrationWarning
             className="mx-auto mt-14 max-w-3xl text-center text-sm leading-relaxed text-muted lg:mt-16"
           >
             This practical orientation is reflected in techcadd&apos;s publicly
@@ -710,6 +696,7 @@ export default function AboutPage() {
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
             >
               What makes techcadd different?
@@ -718,6 +705,7 @@ export default function AboutPage() {
 
           <ul
             data-reveal
+            suppressHydrationWarning
             className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3"
           >
             {DIFFERENTIATORS.map((item) => (
@@ -748,12 +736,13 @@ export default function AboutPage() {
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
             >
               Building skills across technology domains
             </h2>
 
-            <p data-reveal className="mt-5 text-base leading-relaxed text-muted">
+            <p data-reveal suppressHydrationWarning className="mt-5 text-base leading-relaxed text-muted">
               Whether a learner wants to code an application, analyse data,
               build an AI solution, secure a network, manage cloud
               infrastructure, design a digital experience, create visual content
@@ -767,6 +756,7 @@ export default function AboutPage() {
               <div
                 key={domain.title}
                 data-reveal
+                suppressHydrationWarning
                 style={
                   { "--reveal-delay": `${index * 90}ms` } as React.CSSProperties
                 }
@@ -815,6 +805,7 @@ export default function AboutPage() {
 
             <h2
               data-reveal
+              suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
             >
               Practical. Future-Focused.{" "}
@@ -823,6 +814,7 @@ export default function AboutPage() {
 
             <p
               data-reveal
+              suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-white/70"
             >
               techcadd&apos;s approach is built around three principles.
@@ -834,6 +826,7 @@ export default function AboutPage() {
               <li
                 key={principle.title}
                 data-reveal
+                suppressHydrationWarning
                 style={
                   { "--reveal-delay": `${index * 110}ms` } as React.CSSProperties
                 }
@@ -874,6 +867,7 @@ export default function AboutPage() {
 
               <h2
                 data-reveal
+                suppressHydrationWarning
                 className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl"
               >
                 Connecting education with industry
@@ -881,6 +875,7 @@ export default function AboutPage() {
 
               <div
                 data-reveal
+                suppressHydrationWarning
                 className="mt-6 space-y-5 text-base leading-relaxed text-muted lg:text-[17px]"
               >
                 <p>
@@ -900,6 +895,21 @@ export default function AboutPage() {
           </div>
         </Container>
       </section>
+
+      {/* --- 10b · LIGHT — recognition -----------------------------------
+        Moved here from /about/founder: these are the institute's
+        certifications, university engagements and collaborations rather than
+        anything personal to the founder, so they belong on the page about the
+        institute — and directly under the industry-engagement section, which
+        is what earned them.
+
+        The one place the dark/light alternation gives: this is a light panel
+        following a light panel. It renders untinted against the `subtle`
+        section above it, so the seam still changes tone, and the alternative
+        was pushing it against the belief panel at the end, which cannot go
+        dark.
+      */}
+      <Recognition />
 
       {/* --- 11 · DARK — our journey -------------------------------------
         Alternating timeline. One list with a rail down the middle: each item
@@ -941,6 +951,7 @@ export default function AboutPage() {
 
             <p
               data-reveal
+              suppressHydrationWarning
               className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/65 lg:text-base"
             >
               What began in 2016 has evolved into a technology-focused training
@@ -1049,14 +1060,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-<<<<<<< Updated upstream
-      {/* Moved here from /about/founder: these are the institute's
-          certifications, university engagements and collaborations rather than
-          anything personal to the founder, so they belong on the page about
-          the institute. */}
-      <Recognition />
-
-=======
       {/* --- 12 · LIGHT — our belief, then techcadd today ----------------
         Two closing thoughts in one light panel, shaped differently from each
         other: the belief is editorial — three lines, ruled, with the prose
@@ -1073,7 +1076,7 @@ export default function AboutPage() {
             {/* `<h2>` as a whole, with the lines as spans inside it — three
                 separate headings would claim three subjects where there is
                 one. */}
-            <h2 data-reveal className="font-display tracking-tight text-ink">
+            <h2 data-reveal suppressHydrationWarning className="font-display tracking-tight text-ink">
               {["Technology changes.", "Skills evolve.", "Learning never stops."].map(
                 (line, index) => (
                   <span
@@ -1095,6 +1098,7 @@ export default function AboutPage() {
                 explanation. */}
             <div
               data-reveal
+              suppressHydrationWarning
               className="space-y-5 border-l-2 border-brand-600/30 pl-6 text-base leading-relaxed text-muted lg:mt-6 lg:text-[17px]"
             >
               <p>
@@ -1111,6 +1115,7 @@ export default function AboutPage() {
 
           <div
             data-reveal
+            suppressHydrationWarning
             className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-3xl border border-line bg-background text-center shadow-[0_30px_70px_-40px_rgba(15,23,42,0.4)] lg:mt-20"
           >
             {/* The only fill on the card, and it is a hairline — enough to mark
@@ -1166,7 +1171,6 @@ export default function AboutPage() {
       </section>
 
       {/* --- 13 · DARK — call to action ---------------------------------- */}
->>>>>>> Stashed changes
       <Cta />
     </main>
   )
