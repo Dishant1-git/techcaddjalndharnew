@@ -10,6 +10,16 @@ const HOLD_AT = 92
 /** Never hold the page hostage to a slow asset beyond this. */
 const MAX_WAIT_MS = 4000
 
+/**
+ * Easing time constant, in milliseconds — the bar closes ~63% of the remaining
+ * distance every TAU. Expressed in time rather than frames on purpose: see the
+ * note on the animation loop.
+ */
+const TAU_MS = 180
+
+/** Once `load` has fired there is nothing left to wait for. */
+const FINISH_MS = 320
+
 /** Time the fade-out needs — must match the CSS transition. */
 const FADE_MS = 700
 
@@ -33,7 +43,9 @@ export function Preloader() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     // Nothing to watch if the page is already loaded by the time we hydrate.
+    let releasedAt = 0
     const release = () => {
+      if (!releasedAt) releasedAt = performance.now()
       ceiling.current = 100
     }
     if (document.readyState === "complete") release()
@@ -42,11 +54,36 @@ export function Preloader() {
 
     let frame = 0
     let current = 0
+    let last = performance.now()
 
+    /*
+      Time-based easing, not per-frame.
+
+      This used to close a fixed 6% of the remaining distance on every
+      animation frame, which paced the splash by frame count — and frames are
+      scarcest exactly while the page is hydrating and the splash is up. The
+      result was backwards: the heavier the page, the longer its boot screen.
+      On the homepage `load` fired at 457ms and the overlay stayed until
+      ~7.9s, because the main thread was too busy to hand out frames.
+
+      Driving it from elapsed time makes the duration the same on a fast
+      machine and a slow one, and `FINISH_MS` puts a ceiling on the whole
+      thing: once `load` has fired there is nothing left to wait for, so the
+      bar runs to 100 within a third of a second however the frames land.
+    */
     const tick = () => {
-      // Eases toward the ceiling, so it decelerates instead of marching.
-      current += (ceiling.current - current) * (reduced ? 0.5 : 0.06)
-      if (ceiling.current === 100 && current > 99.4) current = 100
+      const now = performance.now()
+      const dt = Math.min(now - last, 100)
+      last = now
+
+      if (releasedAt) {
+        // Linear run-out from wherever the bar had reached.
+        current += ((100 - current) * dt) / Math.max(FINISH_MS, 1)
+        if (100 - current < 0.5 || now - releasedAt > FINISH_MS) current = 100
+      } else {
+        const k = 1 - Math.exp(-dt / (reduced ? TAU_MS / 2 : TAU_MS))
+        current += (ceiling.current - current) * k
+      }
 
       setProgress(current)
 
