@@ -781,8 +781,12 @@ function AiMenu({
                   className="object-cover transition-transform duration-700 group-hover/f:scale-105"
                 />
               </span>
-              <span className="bg-white p-3.5 text-foreground">
-                <span className="inline-flex rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-bold tracking-wide text-white">
+              {/* `flex-1`: the card stretches to the height of the gradient CTA
+                  beside it, and without this the white block stopped at the
+                  title and left the card's own translucent ground showing as a
+                  band underneath. */}
+              <span className="flex flex-1 flex-col bg-white p-3.5 text-foreground">
+                <span className="inline-flex w-fit rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-bold tracking-wide text-white">
                   {AI_MENU.featured.badge}
                 </span>
                 <span className="mt-2 block text-sm leading-snug font-bold tracking-tight">

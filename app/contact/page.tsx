@@ -4,6 +4,7 @@ import { ContactMap } from "@/components/contact-map"
 import { Container } from "@/components/container"
 import { PanelTexture } from "@/components/panel-texture"
 import { ScrollHeading } from "@/components/scroll-heading"
+import { SupportAssistance } from "@/components/support-assistance"
 import { courseOptions } from "@/lib/course-pages"
 import { SITE } from "@/lib/site"
 
@@ -29,22 +30,35 @@ const HOURS = [
  */
 const MAP_LABEL = SITE.legalName
 
-const REASONS = [
+/*
+  The support desks, and who answers each one.
+
+  TODO: `name`, and the per-desk `phone`, are the two fields that want real
+  values. Both currently fall back to the centre's main line from lib/site.ts,
+  which is correct but not specific — a direct number reaches the right person
+  without a transfer. Put the actual name and extension in here and nothing
+  else needs to change.
+*/
+const SUPPORT_DESKS = [
   {
-    title: "Course counselling",
-    body: "Compare tracks against your degree, stream and the job you actually want. No obligation, and no fee to sit with a counsellor.",
+    id: "student",
+    label: "Student Support",
+    blurb: "Academic guidance & career counselling",
+    icon: "student" as const,
+    name: "Student Desk",
+    phone: SITE.phone,
+    email: SITE.email,
+    location: "Techcadd Jalandhar Campus",
   },
   {
-    title: "Fees and EMI",
-    body: "Ask for the current fee sheet for any course. Instalment options are available on the longer programmes.",
-  },
-  {
-    title: "Batch timings",
-    body: "Weekday, evening and weekend batches run in parallel, plus 1-on-1 training if you want a fully personal schedule. Every class runs for 2 hours — tell us your college or work schedule and we will find the slot that fits.",
-  },
-  {
-    title: "Placement and internships",
-    body: "Questions about the placement cell, hiring partners or the internship letter go straight to the team that runs them.",
+    id: "college",
+    label: "College Support",
+    blurb: "Institution partnerships & collaborations",
+    icon: "college" as const,
+    name: "Partnerships Desk",
+    phone: SITE.phone,
+    email: SITE.email,
+    location: "Techcadd Jalandhar Campus",
   },
 ]
 
@@ -196,34 +210,25 @@ export default function ContactPage() {
           </Container>
         </section>
 
-        {/* --- What people call us about --- */}
+        {/* --- Support & Assistance ---
+            Replaces "What people call us about", which listed reasons to ring
+            without saying who picks up. This answers the harder half: which
+            desk you want, and how to reach it. */}
         <section className="border-t border-line bg-subtle py-20 lg:py-28">
           <Container>
-            <ScrollHeading
-              lines={["What people call us about"]}
-              as="h2"
-              className="max-w-3xl font-display text-3xl leading-[1.05] font-bold tracking-tight lg:text-4xl"
-            />
+            <div className="mx-auto max-w-2xl text-center">
+              <ScrollHeading
+                lines={["Support & Assistance"]}
+                as="h2"
+                className="font-display text-3xl leading-[1.05] font-bold tracking-tight text-brand-600 lg:text-4xl"
+              />
+              <p className="mt-4 text-base leading-relaxed text-muted">
+                Get personalised support for your educational journey.
+              </p>
+            </div>
 
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {REASONS.map((reason, i) => (
-                <div
-                  key={reason.title}
-                  data-reveal
-                  suppressHydrationWarning
-                  style={
-                    { "--reveal-delay": `${i * 80}ms` } as React.CSSProperties
-                  }
-                  className="rounded-2xl border border-line bg-background p-6"
-                >
-                  <h3 className="font-display text-lg font-bold tracking-tight">
-                    {reason.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">
-                    {reason.body}
-                  </p>
-                </div>
-              ))}
+            <div data-reveal suppressHydrationWarning className="mt-12">
+              <SupportAssistance desks={SUPPORT_DESKS} />
             </div>
           </Container>
         </section>
