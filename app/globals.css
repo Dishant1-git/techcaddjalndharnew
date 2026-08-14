@@ -28,6 +28,11 @@
   /* The dark panel navy — darker and cooler than brand-900. */
   --color-ink: #2a2c5e;
 
+  /* The wordmark's own navy, sampled from public/assets/icon/tce.png rather
+     than matched by eye, so the Book Demo button in the navbar is the same
+     colour as the logo sitting at the other end of the bar. */
+  --color-logo: #0c1f6c;
+
   --color-accent-400: #22d3ee;
   --color-accent-500: #0ea5e9;
   --color-accent-glow: #00d4ff;
@@ -259,11 +264,21 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+/*
+  Fallbacks are load-bearing, not tidiness.
+
+  The two custom properties are declared on `.enquiry-form`, but this class is
+  also used by dialogs that are not inside one — the brochure form renders
+  through a portal into <body>. There the variables do not resolve, and
+  `border: 1px solid var(--undefined)` is invalid at computed-value time: the
+  shorthand resets border-style to `none` and the field loses its outline and
+  its fill together, leaving placeholders floating on the panel.
+*/
 .enquiry-input {
   width: 100%;
-  border: 1px solid var(--enquiry-field-border);
+  border: 1px solid var(--enquiry-field-border, rgba(255, 255, 255, 0.22));
   border-radius: 0.75rem;
-  background: var(--enquiry-field-fill);
+  background: var(--enquiry-field-fill, rgba(255, 255, 255, 0.1));
   padding: 0.875rem 1rem;
   /* 16px on phones. Below that, iOS Safari zooms the whole page when a field
      takes focus, which on a form already filling the screen leaves the reader
@@ -287,16 +302,6 @@
 
 .enquiry-input:disabled {
   opacity: 0.6;
-}
-
-/* reCAPTCHA's checkbox widget is an iframe Google renders at a fixed 304px, so
-   it cannot be made responsive by its container — it overflows a narrow dialog
-   and falls short of a wide one. Scaling is the only lever, and the factor is
-   measured in components/recaptcha.tsx, which sets --recaptcha-scale and the
-   matching height on this element. This rule is only the transform. */
-.recaptcha-fit > * {
-  transform: scale(var(--recaptcha-scale, 1));
-  transform-origin: top left;
 }
 
 /* The course field is fixed by the page — it reads as locked, not editable. */
@@ -571,6 +576,61 @@
   display: inline-block;
   transform-origin: 70% 75%;
   animation: wave 2.6s ease-in-out infinite;
+}
+
+/* --- Enquiry confirmation ---
+   Three parts that fire once, in sequence: the badge lands with a small
+   overshoot, the tick draws itself along its own path, and two rings expand
+   out of the badge and fade. The tick is delayed past the badge's landing so
+   it reads as one gesture rather than two things moving at once. */
+@keyframes success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-success-pop {
+  animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Paired with `pathLength="1"` on the path, so the dash length is the whole
+   stroke whatever the actual geometry measures. */
+@keyframes tick-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-tick-draw {
+  stroke-dasharray: 1;
+  animation: tick-draw 0.4s 0.32s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes success-ring {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.62);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+.animate-success-ring {
+  animation: success-ring 1.6s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* --- Twinkling stars --- */
@@ -1018,6 +1078,22 @@
   .animate-twinkle {
     animation: none !important;
     opacity: 0.8 !important;
+  }
+
+  /* The confirmation still has to arrive fully drawn, so these are cancelled
+     into their end state rather than left at the keyframe start — an
+     un-animated tick with `stroke-dashoffset: 1` would be invisible. */
+  .animate-success-pop,
+  .animate-tick-draw {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dasharray: none !important;
+  }
+
+  .animate-success-ring {
+    animation: none !important;
+    opacity: 0 !important;
   }
 
   /* A shimmer is the whole point of a skeleton, so it stays — but slowed to

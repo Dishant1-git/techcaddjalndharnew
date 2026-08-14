@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import { Recaptcha, RECAPTCHA_ENABLED } from "./recaptcha"
+import { Captcha, type CaptchaValue } from "./captcha"
 
 /**
  * "Download Brochure" — opens a lead-capture form and, only on a validated
@@ -32,11 +32,13 @@ export function BrochureButton({ course }: { course: string }) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
-  const [token, setToken] = useState<string | null>(null)
+  const [captcha, setCaptcha] = useState<CaptchaValue | null>(null)
   const [resetSignal, setResetSignal] = useState(0)
 
+  // A solved token is spent server-side, so a rejected submission needs a new
+  // question, not just a cleared answer.
   const resetCaptcha = () => {
-    setToken(null)
+    setCaptcha(null)
     setResetSignal((n) => n + 1)
   }
 
@@ -63,7 +65,9 @@ export function BrochureButton({ course }: { course: string }) {
     }
   }, [open])
 
-  const verified = !RECAPTCHA_ENABLED || Boolean(token)
+  /* Only that a question has loaded and an answer has been typed — whether it
+     is the right answer is the server's call, never this one's. */
+  const verified = Boolean(captcha)
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -84,7 +88,8 @@ export function BrochureButton({ course }: { course: string }) {
           address: data.get("address"),
           course,
           source: `brochure:${course}`,
-          recaptchaToken: token,
+          captchaToken: captcha?.token,
+          captchaAnswer: captcha?.answer,
         }),
       })
 
@@ -259,12 +264,12 @@ export function BrochureButton({ course }: { course: string }) {
                         className="enquiry-input opacity-70"
                       />
 
-                      {/* Sizing lives in the component now — it measures this
-                          column and scales the fixed-width widget to match, so
-                          it neither overflows a narrow dialog nor sits short of
-                          the fields above it. */}
                       <div className="pt-1">
-                        <Recaptcha onChange={setToken} resetSignal={resetSignal} />
+                        <Captcha
+                          onChange={setCaptcha}
+                          resetSignal={resetSignal}
+                          inputClassName="enquiry-input"
+                        />
                       </div>
 
                       {error && (

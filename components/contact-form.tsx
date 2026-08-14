@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Recaptcha, RECAPTCHA_ENABLED } from "./recaptcha"
+import { Captcha, type CaptchaValue } from "./captcha"
 
 /** How long the thank-you holds before the form returns. */
 const THANK_YOU_MS = 6000
@@ -29,7 +29,7 @@ export function ContactForm({
 }) {
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle")
   const [error, setError] = useState<string | null>(null)
-  const [token, setToken] = useState<string | null>(null)
+  const [captcha, setCaptcha] = useState<CaptchaValue | null>(null)
   const [resetSignal, setResetSignal] = useState(0)
 
   // Kept in state so the digits can be filtered as they are typed — people
@@ -37,13 +37,15 @@ export function ContactForm({
   // them without explaining why.
   const [phone, setPhone] = useState("")
 
+  // A solved token is spent server-side, so clearing the answer is not enough
+  // — the component has to fetch a new question.
   const resetCaptcha = () => {
-    setToken(null)
+    setCaptcha(null)
     setResetSignal((n) => n + 1)
   }
 
   // The thank-you is a moment, not a dead end: the form returns so a visitor
-  // can ask about a second course, with a fresh checkbox — the spent token
+  // can ask about a second course, with a fresh question — the spent token
   // cannot be submitted twice.
   useEffect(() => {
     if (status !== "done") return
@@ -54,9 +56,9 @@ export function ContactForm({
     return () => window.clearTimeout(timer)
   }, [status])
 
-  /* With no site key configured there is no widget to tick, so the button
-     stays usable and the server decides — it refuses outright in production. */
-  const verified = !RECAPTCHA_ENABLED || Boolean(token)
+  /* Only that a question has loaded and an answer has been typed — whether it
+     is the right answer is the server's call, never this one's. */
+  const verified = Boolean(captcha)
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -77,7 +79,8 @@ export function ContactForm({
           course: data.get("course"),
           message: data.get("message"),
           source: "contact-page",
-          recaptchaToken: token,
+          captchaToken: captcha?.token,
+          captchaAnswer: captcha?.answer,
         }),
       })
 
@@ -226,7 +229,12 @@ export function ContactForm({
         <span className="mb-1.5 block text-sm font-medium text-foreground">
           Security check
         </span>
-        <Recaptcha onChange={setToken} resetSignal={resetSignal} />
+        <Captcha
+          onChange={setCaptcha}
+          resetSignal={resetSignal}
+          tone="light"
+          inputClassName={INPUT}
+        />
       </div>
 
       {error && (

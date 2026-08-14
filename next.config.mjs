@@ -18,27 +18,25 @@ const isDev = process.env.NODE_ENV !== "production"
  * are static strings, so that second case has no route in today's code.
  */
 /**
- * Google reCAPTCHA hosts.
+ * The embedded location map (components/contact-map.tsx).
  *
- * The only exception to the 'self' rule above, and a deliberate one: the
- * "I'm not a robot" widget is a Google-hosted script inside a Google-hosted
- * iframe, so it cannot run under a policy pinned to this origin. Listed
- * explicitly rather than as a wildcard, and only on the four directives the
- * widget actually needs — an injected script pointing anywhere else still does
- * not execute.
+ * The `output=embed` form of Google Maps needs no API key and loads nothing of
+ * ours, so only `frame-src` is involved — everything inside the frame runs
+ * under Google's policy rather than ours. Listed explicitly rather than as a
+ * wildcard.
  *
- * `recaptcha.google.com` is the alternate origin the widget falls back to in
- * regions where `google.com` is unreachable.
+ * The captcha is our own (lib/captcha.ts, GET /api/captcha): a signed question
+ * rendered as text, no third-party script and no iframe, which is why nothing
+ * here has to be opened up for it.
  */
-const RECAPTCHA_SCRIPT = "https://www.google.com https://www.gstatic.com https://recaptcha.google.com"
-const RECAPTCHA_FRAME = "https://www.google.com https://recaptcha.google.com"
+const MAPS_FRAME = "https://www.google.com"
 
 /**
  * The course-page walkthrough popup (components/video-dialog.tsx).
  *
- * `frame-src` listed only the reCAPTCHA origins, so the player this site
- * actually embeds was blocked by our own policy — the dialog opened onto an
- * empty black box on every course page carrying a video.
+ * `frame-src` once listed only third-party origins the site no longer uses, so
+ * the player it actually embeds was blocked by our own policy — the dialog
+ * opened onto an empty black box on every course page carrying a video.
  *
  * The `-nocookie` host is the one the component embeds, and it is the whole
  * point of using it: no tracking cookie is set unless the visitor presses
@@ -68,14 +66,15 @@ const csp = [
   "frame-ancestors 'none'",
   "form-action 'self'",
   // 'unsafe-eval' is React Fast Refresh in development only.
-  `script-src 'self' 'unsafe-inline' ${RECAPTCHA_SCRIPT}${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: https://www.gstatic.com https://www.google.com ${CMS_ORIGIN}`,
+  `img-src 'self' data: blob: ${CMS_ORIGIN}`,
   "font-src 'self' data:",
-  // ws: is the dev server's hot-reload socket.
-  `connect-src 'self' ${RECAPTCHA_SCRIPT}${isDev ? " ws: wss:" : ""}`,
-  // Without this the widget's iframe falls back to default-src and is blocked.
-  `frame-src 'self' ${RECAPTCHA_FRAME} ${YOUTUBE_FRAME}`,
+  // ws: is the dev server's hot-reload socket. The captcha is fetched from
+  // /api/captcha, which 'self' already covers.
+  `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
+  // Without this the map's iframe falls back to default-src and is blocked.
+  `frame-src 'self' ${MAPS_FRAME} ${YOUTUBE_FRAME}`,
   "media-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",

@@ -49,8 +49,8 @@ export function ContactMap({
         {loaded ? (
           <iframe
             /* The `output=embed` form needs no API key and no cookies until it
-               is actually loaded. www.google.com is already allowed by the
-               CSP's frame-src for reCAPTCHA, so no policy change is needed. */
+               is actually loaded. www.google.com is listed on the CSP's
+               frame-src in next.config.mjs for exactly this frame. */
             src={src}
             title={`Map showing ${label}`}
             loading="lazy"

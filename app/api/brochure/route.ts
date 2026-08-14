@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { CATALOGUE, COURSE_LABELS, getCoursePage } from "@/lib/course-pages"
 import { renderBrochurePdf } from "@/lib/brochure-pdf"
-import { verifyRecaptcha } from "@/lib/recaptcha"
+import { verifyCaptcha } from "@/lib/captcha"
+import { claimCaptcha } from "@/lib/spent-captchas"
 import {
   ensureTable,
   formTypeFor,
@@ -16,7 +17,7 @@ export const dynamic = "force-dynamic"
 
 /**
  * The brochure PDF exists nowhere as a static file — it is built fresh, in
- * this handler, only after the fields below pass validation, reCAPTCHA and
+ * this handler, only after the fields below pass validation, the captcha and
  * the same per-phone/per-IP limits as every other enquiry. There is no
  * companion GET route and no signed link: the only way to receive the bytes
  * is a successful POST here, which is what "protected" means for this
@@ -107,6 +108,22 @@ export async function POST(request: Request) {
 
   if (!body || typeof body !== "object") return bad("Malformed request.")
 
+  // Local computation, so it goes ahead of everything else. Verifying does not
+  // spend the token — the claim below does, once the row is about to be
+  // written — so a mistyped field does not cost the visitor their answer.
+  let solved
+  try {
+    solved = verifyCaptcha(body.captchaToken, body.captchaAnswer)
+  } catch (error) {
+    console.error("[brochure] captcha could not be verified:", error)
+    return bad("Verification is unavailable right now.", {}, 500)
+  }
+
+  if (!solved)
+    return bad("That answer was not right. Please try the new question.", {
+      captcha: true,
+    })
+
   const checked = validate(body)
   if ("error" in checked) return bad(checked.error)
 
@@ -115,21 +132,17 @@ export async function POST(request: Request) {
   const entry = CATALOGUE.find((e) => e.label === checked.fields.course)!
   const coursePage = getCoursePage(entry.segment, entry.slug)!
 
-  let verification
+  // Single-use, or one solved challenge would download brochures for the whole
+  // ten minutes its signature stays valid. Refused on a database error rather
+  // than waved through: an unclaimable token is an unlimited one.
   try {
-    verification = await verifyRecaptcha(body.recaptchaToken, ip)
+    if (!(await claimCaptcha(solved.nonce, solved.expiresAt)))
+      return bad("That question was already used. Please answer the new one.", {
+        captcha: true,
+      })
   } catch (error) {
-    console.error("[brochure] recaptcha could not be verified:", error)
+    console.error("[brochure] captcha could not be claimed:", error)
     return bad("Verification is unavailable right now.", {}, 500)
-  }
-
-  if (!verification.ok) {
-    console.warn("[brochure] recaptcha rejected:", verification.reason)
-    return verification.retry
-      ? bad("That verification expired. Please tick the box again.", {
-          captcha: true,
-        })
-      : bad("We could not verify that request. Please try again later.", {}, 503)
   }
 
   try {

@@ -163,10 +163,14 @@ export function Navbar() {
             <button
               type="button"
               onClick={openEnquiry}
+              /* Over the hero video the button stays white: the logo navy is
+                 as dark as the footage behind it, and a button that has to be
+                 hunted for is not a call to action. Once the bar is a white
+                 pill it carries the wordmark's own colour. */
               className={`inline-flex h-9 items-center justify-center rounded-full px-6 text-sm font-medium transition-all duration-500 ${
                 onDark
                   ? "bg-white text-[#0a0e14] hover:bg-brand-500 hover:text-white"
-                  : "bg-foreground text-background hover:bg-brand-600"
+                  : "bg-logo text-background hover:bg-brand-600"
               }`}
             >
               Book Demo
@@ -338,7 +342,7 @@ export function Navbar() {
                 setMobileOpen(false)
                 openEnquiry()
               }}
-              className="flex h-14 flex-1 items-center justify-center rounded-full bg-foreground text-base font-medium text-background transition-colors hover:bg-brand-600"
+              className="flex h-14 flex-1 items-center justify-center rounded-full bg-logo text-base font-medium text-background transition-colors hover:bg-brand-600"
             >
               Book Demo
             </button>

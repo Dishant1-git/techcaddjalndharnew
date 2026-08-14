@@ -46,6 +46,13 @@ export function Cta() {
           track fits your degree, your schedule and the job you want.
         </p>
 
+        {/* The demo request takes a number here rather than sending people to
+            /contact to find a form. Above the call button: leaving a number is
+            the lower-effort ask, and the number stays one tap away below it. */}
+        <div data-reveal suppressHydrationWarning>
+          <CtaDemoForm />
+        </div>
+
         <div
           data-reveal
           suppressHydrationWarning
@@ -70,13 +77,6 @@ export function Cta() {
             </span>
           </a>
 
-        </div>
-
-        {/* The demo request now takes a number here rather than sending people
-            to /contact to find a form. Below the call button, so phoning stays
-            the first option for anyone who would rather just ring. */}
-        <div data-reveal suppressHydrationWarning>
-          <CtaDemoForm />
         </div>
 
         <ul className="mt-10 flex flex-col items-center justify-center gap-3 text-sm text-white/70 sm:flex-row sm:gap-5">

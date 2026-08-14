@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { COURSE_LABELS } from "@/lib/course-pages"
-import { verifyRecaptcha } from "@/lib/recaptcha"
+import { verifyCaptcha } from "@/lib/captcha"
+import { claimCaptcha } from "@/lib/spent-captchas"
 import {
   ensureTable,
   formTypeFor,
@@ -110,35 +111,52 @@ export async function POST(request: Request) {
   if (!body || typeof body !== "object") return bad("Malformed request.")
 
   /*
-    Fields first, then reCAPTCHA.
+    Captcha before field validation.
 
-    The order is the reverse of the arithmetic captcha's, and deliberately so.
-    That one was pure local computation, so checking it first was free. This one
-    is a network round trip to Google, and a token is single-use — verifying
-    before validating would spend the visitor's tick on a submission that then
-    fails on a mistyped phone number, forcing them to solve it again.
+    It is pure local computation — an HMAC and one addition — so checking it
+    first costs nothing and keeps every later step behind it. Verifying does not
+    yet spend the token: the claim that makes it single-use happens further
+    down, once the submission is actually going to be written, so a mistyped
+    phone number does not cost the visitor the challenge they just solved.
   */
-  const checked = validate(body)
-  if ("error" in checked) return bad(checked.error)
-
-  let verification
+  let solved
   try {
-    verification = await verifyRecaptcha(body.recaptchaToken, ip)
+    solved = verifyCaptcha(body.captchaToken, body.captchaAnswer)
   } catch (error) {
-    // A missing RECAPTCHA_SECRET_KEY throws in production rather than
+    // A missing or too-short CAPTCHA_SECRET throws in production rather than
     // degrading into "no verification".
-    console.error("[enquiry] recaptcha could not be verified:", error)
+    console.error("[enquiry] captcha could not be verified:", error)
     return bad("Verification is unavailable right now.", {}, 500)
   }
 
-  if (!verification.ok) {
-    console.warn("[enquiry] recaptcha rejected:", verification.reason)
-    return verification.retry
-      ? // `captcha: true` tells the form to reset the widget.
-        bad("That verification expired. Please tick the box again.", {
-          captcha: true,
-        })
-      : bad("We could not verify that request. Please try again later.", {}, 503)
+  // `captcha: true` tells the form to fetch a fresh question — a wrong answer
+  // and an expired token are indistinguishable to the visitor, and both are
+  // fixed the same way.
+  if (!solved)
+    return bad("That answer was not right. Please try the new question.", {
+      captcha: true,
+    })
+
+  const checked = validate(body)
+  if ("error" in checked) return bad(checked.error)
+
+  /*
+    Burn the token.
+
+    lib/captcha.ts is stateless, so a signature stays valid for its whole ten
+    minutes — without this, one solved challenge would licence unlimited
+    submissions until it expired. A database error here is refused rather than
+    waved through, for the same reason the secret fails closed: an unclaimable
+    token is an unlimited one.
+  */
+  try {
+    if (!(await claimCaptcha(solved.nonce, solved.expiresAt)))
+      return bad("That question was already used. Please answer the new one.", {
+        captcha: true,
+      })
+  } catch (error) {
+    console.error("[enquiry] captcha could not be claimed:", error)
+    return bad("Verification is unavailable right now.", {}, 500)
   }
 
   // Resolved from a fixed set rather than stored as sent, so the field only
