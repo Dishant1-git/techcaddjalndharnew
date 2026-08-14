@@ -259,11 +259,11 @@ export function BrochureButton({ course }: { course: string }) {
                         className="enquiry-input opacity-70"
                       />
 
-                      {/* Google renders the checkbox at a fixed 304px, which is
-                          wider than the dialog's content box on a small phone
-                          and was the one thing pushing the form off the screen.
-                          `recaptcha-fit` scales it down there and only there. */}
-                      <div className="recaptcha-fit pt-1">
+                      {/* Sizing lives in the component now — it measures this
+                          column and scales the fixed-width widget to match, so
+                          it neither overflows a narrow dialog nor sits short of
+                          the fields above it. */}
+                      <div className="pt-1">
                         <Recaptcha onChange={setToken} resetSignal={resetSignal} />
                       </div>
 

@@ -29,6 +29,31 @@ export const RECAPTCHA_ENABLED = Boolean(SITE_KEY)
 const SCRIPT_ID = "recaptcha-api"
 const SCRIPT_SRC = "https://www.google.com/recaptcha/api.js?render=explicit"
 
+/**
+ * The checkbox widget's intrinsic size, fixed by Google.
+ *
+ * It renders into a cross-origin iframe, so the white box cannot be widened
+ * from the outside — no CSS we write reaches inside it. Scaling the frame is
+ * the only lever, which is why the widget is measured against its container
+ * and transformed rather than simply stretched.
+ */
+const WIDGET_WIDTH = 304
+const WIDGET_HEIGHT = 78
+
+/**
+ * Bounds on that scale.
+ *
+ * The floor keeps the checkbox tappable in a very narrow dialog. The ceiling is
+ * the interesting one: a container is not always the width of the fields in it.
+ * The contact form lays its inputs out two-up, so its column is 550px while an
+ * input in it is 265px — filling that column would leave a captcha twice the
+ * width of the field above it. 1.3 covers the dialogs, whose single-column
+ * fields do span the full width (the brochure dialog needs 384/304 = 1.26), and
+ * stops short of the sizes that only look like mistakes.
+ */
+const MIN_SCALE = 0.55
+const MAX_SCALE = 1.3
+
 type Grecaptcha = {
   ready: (callback: () => void) => void
   render: (element: HTMLElement, options: Record<string, unknown>) => number
@@ -85,6 +110,7 @@ export function Recaptcha({
   className?: string
 }) {
   const hostRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
   const widgetRef = useRef<number | null>(null)
   const [failed, setFailed] = useState(false)
 
@@ -134,6 +160,40 @@ export function Recaptcha({
     onChangeRef.current(null)
   }, [resetSignal])
 
+  /*
+    Sizes the widget to whatever column it was dropped into, so it lines up with
+    the inputs above it instead of sitting 304px wide in a wider form.
+
+    Measured rather than done in CSS because the arithmetic is
+    `container / 304`, and CSS cannot divide a length by a length to get the
+    unitless number `scale()` needs. Observed rather than measured once, so it
+    still fits after a viewport resize or a dialog reflow.
+
+    Only the height is written back, never the width, so this cannot feed its
+    own observer and loop.
+  */
+  useEffect(() => {
+    const wrap = wrapRef.current
+    if (!wrap) return
+
+    const fit = (width: number) => {
+      if (!width) return
+      const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, width / WIDGET_WIDTH))
+      wrap.style.setProperty("--recaptcha-scale", String(scale))
+      // A transform leaves the layout box at its original size, so the row
+      // would otherwise keep reserving an unscaled 78px and leave a gap.
+      wrap.style.height = `${Math.round(WIDGET_HEIGHT * scale)}px`
+    }
+
+    fit(wrap.clientWidth)
+
+    const observer = new ResizeObserver(([entry]) =>
+      fit(entry.contentRect.width),
+    )
+    observer.observe(wrap)
+    return () => observer.disconnect()
+  }, [])
+
   if (!SITE_KEY) {
     return (
       <p className={`text-xs leading-relaxed text-amber-300 ${className}`}>
@@ -152,7 +212,19 @@ export function Recaptcha({
     )
   }
 
-  // Fixed height so the form does not jump when the iframe arrives; the
-  // checkbox widget is 78px tall at its normal size.
-  return <div ref={hostRef} className={`min-h-[78px] ${className}`} />
+  /*
+    Two elements, each with one job: the outer one is the measured box and
+    carries the scale, the inner one is what Google renders into. Reserved at
+    the unscaled height up front so the form does not jump when the iframe
+    arrives — the effect above replaces it with the scaled height on mount.
+  */
+  return (
+    <div
+      ref={wrapRef}
+      style={{ height: WIDGET_HEIGHT }}
+      className={`recaptcha-fit ${className}`}
+    >
+      <div ref={hostRef} />
+    </div>
+  )
 }
