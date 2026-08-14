@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { BrochureButton } from "./brochure-button"
 import { Container } from "./container"
 import { CourseEnquiryForm } from "./course-enquiry-form"
 import { EnquireButton } from "./enquire-button"
@@ -98,6 +99,7 @@ export function CoursePageView({ page }: { page: CoursePage }) {
             >
               Talk to a counsellor
             </Link>
+            <BrochureButton course={page.eyebrow} />
           </div>
 
           <dl className="mt-12 grid gap-x-8 gap-y-6 border-t border-white/15 pt-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -578,7 +580,7 @@ export function CoursePageView({ page }: { page: CoursePage }) {
               <ul className="mt-8 space-y-3">
                 {[
                   "Free counselling and demo class",
-                  "Weekday, evening and weekend batches",
+                  "Weekday, evening, weekend or 1-on-1 — 2-hour classes",
                   "Internship letter and placement support",
                 ].map((point) => (
                   <li

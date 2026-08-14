@@ -4,12 +4,13 @@ import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
 import { CONTACT } from "@/lib/navigation"
 
-/** The four intakes counsellors actually enrol students into. */
+/** The five intakes counsellors actually enrol students into. */
 const FORMATS = [
   { duration: "45 Days", label: "Summer & winter industrial training" },
   { duration: "6 Weeks", label: "University-mandated training" },
   { duration: "6 Months", label: "Industrial training with internship" },
   { duration: "Weekend", label: "Batches for working professionals" },
+  { duration: "1-on-1", label: "Personal mentoring, 2-hour classes" },
 ]
 
 /** The journey a student moves through, start to offer letter. */

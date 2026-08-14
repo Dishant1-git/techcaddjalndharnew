@@ -54,7 +54,8 @@ const REASONS: Reason[] = [
     icon: "batches",
     body: (
       <>
-        45-day, 6-week, 6-month and weekend formats, with fee{" "}
+        45-day, 6-week, 6-month, weekend and 1-on-1 formats — every class runs
+        2 hours — with fee{" "}
         <Inline href="/contact">EMI options</Inline> so cost never decides it.
       </>
     ),

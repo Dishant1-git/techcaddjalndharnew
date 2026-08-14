@@ -57,7 +57,7 @@ function Card({ post }: { post: Post }) {
     <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white">
       {/* Gradient stand-in until real cover art exists. */}
       <div
-        className={`relative aspect-[16/9] bg-linear-to-br ${post.from} ${post.to}`}
+        className={`relative aspect-video bg-linear-to-br ${post.from} ${post.to}`}
       >
         <span
           aria-hidden="true"

@@ -24,10 +24,23 @@ export function ModuleComparison({ syllabus }: { syllabus: Syllabus }) {
         </p>
       )}
 
-      {/* --- What each length certifies --- */}
-      <div className="mt-10 grid gap-4 sm:grid-cols-3">
+      {/* --- What each length certifies ---
+          Shopify's two-stage ladder needs two columns, not three with an
+          empty gap — the class has to be a static literal for Tailwind's
+          scanner to pick it up, so this branches on a fixed string rather
+          than interpolating the column count. */}
+      <div
+        className={`mt-10 grid gap-4 ${
+          stages.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3"
+        }`}
+      >
         {stages.map((stage, i) => (
-          <StageCard key={stage.months} stage={stage} index={i} />
+          <StageCard
+            key={stage.months}
+            stage={stage}
+            index={i}
+            last={i === stages.length - 1}
+          />
         ))}
       </div>
 
@@ -150,10 +163,17 @@ function BandedRows({
   )
 }
 
-function StageCard({ stage, index }: { stage: SyllabusStage; index: number }) {
+function StageCard({
+  stage,
+  last,
+}: {
+  stage: SyllabusStage
+  index: number
+  last: boolean
+}) {
   // The longest track is the one most students are deciding about, so it
-  // carries the filled treatment while the shorter two stay quiet.
-  const lead = index === 2
+  // carries the filled treatment while the shorter ones stay quiet.
+  const lead = last
 
   return (
     <div

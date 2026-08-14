@@ -16,6 +16,7 @@ export const FORM_TYPES = {
   popup: "Call Request",
   course: "Course Enquiry",
   contact: "Contact Form",
+  brochure: "Brochure Download",
 } as const
 
 const FORM_LABELS = new Map<string, string>(Object.entries(FORM_TYPES))
@@ -37,6 +38,9 @@ export type Enquiry = {
   course: string
   /** Free text from the course-page form; the popup does not collect it. */
   message?: string | null
+  /** Only the brochure form collects these; every other row stores NULL. */
+  email?: string | null
+  address?: string | null
   /** Where on the site the form was opened — useful for attribution later. */
   source?: string | null
   ip?: string | null
@@ -55,6 +59,8 @@ const CREATE_TABLE = `
     phone       VARCHAR(20)  NOT NULL,
     course      VARCHAR(120) NOT NULL,
     message     TEXT         NULL,
+    email       VARCHAR(190) NULL,
+    address     VARCHAR(300) NULL,
     source      VARCHAR(255) NULL,
     ip          VARCHAR(45)  NULL,
     user_agent  VARCHAR(255) NULL,
@@ -84,6 +90,10 @@ async function migrate() {
   // came from either form and there is no honest way to tell them apart, so
   // they stay blank instead of all claiming to be call requests.
   await ensureColumn("form_type", "VARCHAR(32) NULL AFTER id")
+  // Only the brochure form collects these; every earlier row and every other
+  // form's row leaves them NULL.
+  await ensureColumn("email", "VARCHAR(190) NULL AFTER message")
+  await ensureColumn("address", "VARCHAR(300) NULL AFTER email")
   await ensureIndex("idx_phone_created", "phone, created_at")
   await ensureIndex("idx_ip_created", "ip, created_at")
 }
@@ -158,14 +168,16 @@ export async function saveEnquiry(enquiry: Enquiry): Promise<number> {
 
   const result = await execute(
     `INSERT INTO enquiries
-       (form_type, name, phone, course, message, source, ip, user_agent)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+       (form_type, name, phone, course, message, email, address, source, ip, user_agent)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       enquiry.formType,
       enquiry.name,
       enquiry.phone,
       enquiry.course,
       enquiry.message ?? null,
+      enquiry.email ?? null,
+      enquiry.address ?? null,
       enquiry.source ?? null,
       enquiry.ip ?? null,
       // The column is capped, and a hostile client controls this header.
