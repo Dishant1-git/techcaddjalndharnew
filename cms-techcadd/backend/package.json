@@ -12,8 +12,8 @@
     "db:migrate": "tsx src/db/migrate.ts",
     "db:seed": "tsx src/db/seed.ts",
     "db:inspect": "tsx src/db/inspect.ts",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "node scripts/prepare-test-db.mjs && vitest run",
+    "test:watch": "node scripts/prepare-test-db.mjs && vitest"
   },
   "dependencies": {
     "argon2": "^0.45.1",

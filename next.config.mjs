@@ -47,6 +47,20 @@ const RECAPTCHA_FRAME = "https://www.google.com https://recaptcha.google.com"
  */
 const YOUTUBE_FRAME = "https://www.youtube-nocookie.com"
 
+/**
+ * The CMS, which serves the images editors upload.
+ *
+ * Derived from the same variable lib/cms.ts reads, so moving the CMS to
+ * another host is one change rather than three. Two things have to know about
+ * it: `img-src` below, or the browser blocks every uploaded photograph under a
+ * policy pinned to 'self', and `images.remotePatterns`, or next/image refuses
+ * the URL before it is ever requested.
+ */
+const CMS_ORIGIN = (process.env.CMS_API_URL ?? "http://localhost:4000/api").replace(
+  /\/api\/?$/,
+  "",
+)
+
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -56,7 +70,7 @@ const csp = [
   // 'unsafe-eval' is React Fast Refresh in development only.
   `script-src 'self' 'unsafe-inline' ${RECAPTCHA_SCRIPT}${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://www.gstatic.com https://www.google.com",
+  `img-src 'self' data: blob: https://www.gstatic.com https://www.google.com ${CMS_ORIGIN}`,
   "font-src 'self' data:",
   // ws: is the dev server's hot-reload socket.
   `connect-src 'self' ${RECAPTCHA_SCRIPT}${isDev ? " ws: wss:" : ""}`,
@@ -111,6 +125,25 @@ const nextConfig = {
 
   /** Announcing the framework and its version only helps someone shopping for a CVE. */
   poweredByHeader: false,
+
+  images: {
+    /*
+      Only the CMS, and only its uploads path.
+
+      next/image fetches whatever `src` it is given and re-serves it from this
+      origin, so an unrestricted pattern turns the optimiser into an open
+      proxy: any URL that reached a component would be fetched by our server
+      and cached under our domain.
+    */
+    remotePatterns: [
+      {
+        protocol: new URL(CMS_ORIGIN).protocol.replace(":", ""),
+        hostname: new URL(CMS_ORIGIN).hostname,
+        ...(new URL(CMS_ORIGIN).port ? { port: new URL(CMS_ORIGIN).port } : {}),
+        pathname: "/uploads/**",
+      },
+    ],
+  },
 
   async headers() {
     return [

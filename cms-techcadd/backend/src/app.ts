@@ -19,6 +19,7 @@ import { galleryRouter } from './modules/gallery/gallery.routes.js'
 import { mediaRouter } from './modules/media/media.routes.js'
 import { UPLOAD_URL_PREFIX, uploadRoot } from './modules/media/storage.js'
 import { pagesRouter } from './modules/pages/pages.routes.js'
+import { publicRouter } from './modules/public/public.routes.js'
 import { redirectsRouter } from './modules/seo/seo.routes.js'
 import { settingsRouter } from './modules/settings/settings.routes.js'
 import { testimonialsRouter } from './modules/testimonials/testimonials.routes.js'
@@ -85,6 +86,9 @@ export function createApp() {
   app.use('/api/gallery', galleryRouter)
   app.use('/api/media', mediaRouter)
   app.use('/api/pages', pagesRouter)
+
+  // No session required — see the note in public.routes.ts.
+  app.use('/api/public', publicRouter)
   app.use('/api/redirects', redirectsRouter)
   app.use('/api/search', searchRouter)
   app.use('/api/settings', settingsRouter)

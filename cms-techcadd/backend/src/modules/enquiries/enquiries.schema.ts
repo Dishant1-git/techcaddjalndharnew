@@ -28,6 +28,11 @@ const base = z.object({
   branchId: optionalId,
   branchName: z.string().max(120),
   source: z.enum(['website', 'walk-in', 'phone', 'referral', 'social']),
+  /** Where this specific submission came from — see migration 011. */
+  formType: z.string().max(32).optional(),
+  sourceUrl: z.string().max(500).optional(),
+  ip: z.string().max(45).optional(),
+  userAgent: z.string().max(255).optional(),
   message: z.string().optional(),
   status: z.enum(['new', 'contacted', 'follow-up', 'converted', 'closed']),
   assigneeId: optionalId,

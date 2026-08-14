@@ -7,6 +7,7 @@ import {
   isRateLimited,
   saveEnquiry,
 } from "@/lib/enquiries"
+import { submitEnquiry } from "@/lib/cms"
 import { rateLimit } from "@/lib/rate-limit"
 import { clientIp, isTrustedOrigin } from "@/lib/request-guard"
 import { clean } from "@/lib/sanitize"
@@ -140,34 +141,61 @@ export async function POST(request: Request) {
       : bad("We could not verify that request. Please try again later.", {}, 503)
   }
 
+  // Resolved from a fixed set rather than stored as sent, so the field only
+  // ever holds one of our own labels.
+  const formType = formTypeFor(body.form)
+  const sourceUrl = clean(body.source).slice(0, 500) || undefined
+  const userAgent = request.headers.get("user-agent") ?? undefined
+
   try {
-    await ensureTable()
-
-    if (await isRateLimited(ip, checked.fields.phone))
-      return bad(
-        "We already have your enquiry. A counsellor will call you shortly.",
-        {},
-        429,
-      )
-
-    await saveEnquiry({
-      ...checked.fields,
-      // Resolved from a fixed set rather than stored as sent, so the column
-      // only ever holds one of our own labels.
-      formType: formTypeFor(body.form),
-      source: clean(body.source).slice(0, 255) || null,
-      ip,
-      userAgent: request.headers.get("user-agent"),
+    // The CMS is the system of record: an enquiry has to appear in the inbox
+    // staff actually work from, with its status, notes and assignment.
+    const result = await submitEnquiry({
+      studentName: checked.fields.name,
+      phone: checked.fields.phone,
+      // The public forms ask for a phone number, not an email.
+      courseName: checked.fields.course,
+      message: checked.fields.message || undefined,
+      formType,
+      sourceUrl,
+      ip: ip ?? undefined,
+      userAgent,
     })
-  } catch (error) {
-    // The message can carry credentials or SQL, so it stays server-side and
-    // the visitor gets something they can act on.
-    console.error("[enquiry] could not be saved:", error)
-    return bad(
-      "We could not record your enquiry. Please call us instead.",
-      {},
-      500,
-    )
+
+    // Not an error: the enquiry reached us, we are simply not filing it twice.
+    if (!result.ok) return bad(result.message, {}, 429)
+  } catch (cmsError) {
+    // The CMS being down must not cost a lead. Record it locally and say so
+    // loudly — these rows need moving across once the CMS is back.
+    console.error("[enquiry] CMS unavailable, falling back to local table:", cmsError)
+
+    try {
+      await ensureTable()
+
+      if (await isRateLimited(ip, checked.fields.phone))
+        return bad(
+          "We already have your enquiry. A counsellor will call you shortly.",
+          {},
+          429,
+        )
+
+      await saveEnquiry({
+        ...checked.fields,
+        formType,
+        source: sourceUrl ?? null,
+        ip,
+        userAgent: userAgent ?? null,
+      })
+    } catch (error) {
+      // The message can carry credentials or SQL, so it stays server-side and
+      // the visitor gets something they can act on.
+      console.error("[enquiry] could not be saved:", error)
+      return bad(
+        "We could not record your enquiry. Please call us instead.",
+        {},
+        500,
+      )
+    }
   }
 
   return NextResponse.json({ ok: true }, { headers: NO_STORE })

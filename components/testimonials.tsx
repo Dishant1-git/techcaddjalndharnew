@@ -1,10 +1,7 @@
 import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
-import {
-  TESTIMONIALS,
-  TESTIMONIAL_META,
-  type Testimonial,
-} from "@/lib/testimonials"
+import { loadTestimonials } from "@/lib/content"
+import { TESTIMONIAL_META, type Testimonial } from "@/lib/testimonials"
 
 /**
  * The track is padded to the same gutter the header uses, which keeps the
@@ -12,7 +9,9 @@ import {
  */
 const GUTTER = "px-[max(1rem,calc((100%-1240px)/2))] lg:px-[max(2rem,calc((100%-1240px)/2))]"
 
-export function Testimonials() {
+export async function Testimonials() {
+  const testimonials = await loadTestimonials()
+
   return (
     /* Plain white — the texture, the colour blooms under the cards and the
        white-to-transparent wash over them are all gone. With nothing behind
@@ -70,9 +69,9 @@ export function Testimonials() {
       {/* Two rows travelling in opposite directions. Splitting the list means
           the same quote never appears on both rows at the same moment. */}
       <div className="marquee-row mt-14 space-y-6 lg:mt-20 lg:space-y-8">
-        <Row items={TESTIMONIALS.slice(0, Math.ceil(TESTIMONIALS.length / 2))} />
+        <Row items={testimonials.slice(0, Math.ceil(testimonials.length / 2))} />
         <Row
-          items={TESTIMONIALS.slice(Math.ceil(TESTIMONIALS.length / 2))}
+          items={testimonials.slice(Math.ceil(testimonials.length / 2))}
           reverse
         />
       </div>
