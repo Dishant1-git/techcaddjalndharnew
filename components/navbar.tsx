@@ -584,8 +584,14 @@ function MegaMenu({
  *
  * A flat list of three to five links is too thin to fill a mega menu's columns
  * and too important to bury in a 224px dropdown, so the links become a single
- * tall category column and the space beside them carries picture-led cards for
- * the destinations worth showing rather than merely naming.
+ * tall column and the space beside them carries picture-led cards for the
+ * destinations worth showing rather than merely naming.
+ *
+ * Neither column is titled. "Categories" and "Featured" were labelling a menu
+ * that has exactly two visible parts — a list of words and a row of pictures —
+ * which no reader needs told apart. The links carry the item's `cta` beneath
+ * them, and both columns centre, so the two halves balance whatever the link
+ * count.
  *
  * Rendered from the nav rather than from the trigger, like MegaMenu, so it
  * spans the full bar instead of hanging off one label.
@@ -613,31 +619,48 @@ function FeaturedMenu({
             short words, and letting it take a third of a 1240px panel would
             strand the labels in whitespace. */}
         <div className="grid gap-10 p-8 lg:grid-cols-[minmax(180px,240px)_1fr] lg:gap-12">
-          <div className="lg:border-r lg:border-foreground/10 lg:pr-12">
-            <p className="font-mono text-xs tracking-[0.22em] text-muted uppercase">
-              Categories
-            </p>
+          {/*
+            Both columns centre their content. They are wildly different
+            heights — a handful of link labels against a row of picture cards —
+            and top-aligning left whichever was shorter trailing off into
+            whitespace. Which one that is flips between the two menus, since
+            About Us carries three links and Resources five, so centring is
+            what makes them balance the same way.
+          */}
+          <div className="flex flex-col justify-center lg:border-r lg:border-foreground/10 lg:pr-12">
+            {/* The links and their closing link are one block: the CTA follows
+                the last label, rather than being pushed to the foot of a column
+                whose height is set by the pictures in the next one. */}
+            <div>
+              <ul className="space-y-0.5">
+                {item.links.map((l) => (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      className="block py-1.5 font-display text-xl leading-snug tracking-tight text-foreground/85 transition-colors duration-300 hover:text-brand-600"
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
 
-            <ul className="mt-5 space-y-0.5">
-              {item.links.map((l) => (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="block py-1.5 font-display text-xl leading-snug tracking-tight text-foreground/85 transition-colors duration-300 hover:text-brand-600"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+              {item.cta && (
+                <Link
+                  href={item.cta.href}
+                  className="group/cta mt-14 inline-flex items-center gap-2 text-sm font-medium text-brand-600"
+                >
+                  {item.cta.label}
+                  <span className="transition-transform duration-300 group-hover/cta:translate-x-1">
+                    →
+                  </span>
+                </Link>
+              )}
+            </div>
           </div>
 
-          <div>
-            <p className="font-mono text-xs tracking-[0.22em] text-muted uppercase">
-              Featured
-            </p>
-
-            <ul className="mt-5 grid gap-6 sm:grid-cols-3">
+          <div className="flex flex-col justify-center">
+            <ul className="grid gap-6 sm:grid-cols-3">
               {item.featured.map((card) => (
                 <li key={`${card.href}-${card.tag}`}>
                   <Link
