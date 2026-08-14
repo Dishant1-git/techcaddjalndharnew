@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { HeroVideo } from "@/components/hero-video"
+import { TeamMarquee, type TeamMember } from "@/components/team-marquee"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
@@ -126,10 +126,10 @@ const FOUNDER_STORY = [
   lib/gallery.ts uses, and for the same reason.
 
   TODO: drop headshots into public/assets/images/team/ and point each member's
-  `photo` at their own file. Set `alt` on the <Image> below to the person's name
-  at the same time — it is empty today precisely because these pictures are not
-  of the people they sit under, and naming them would tell a screen reader
-  something untrue.
+  `photo` at their own file. Set `alt` on the portrait in components/team-marquee.tsx
+  to the person's name at the same time — it is empty today precisely because
+  these pictures are not of the people they sit under, and naming them would
+  tell a screen reader something untrue.
 */
 const PLACEHOLDER_PORTRAITS = [
   "/assets/images/about/team.jpg",
@@ -140,27 +140,30 @@ const PLACEHOLDER_PORTRAITS = [
 /**
  * The team, in the order given.
  *
- * Names only. A role belongs beside each one, but inventing designations for
- * real, named colleagues would put claims on the site that nobody has approved —
- * so the field is left for whoever knows them to fill in rather than guessed at
- * here. Adding `role` to these entries and rendering it under the name is a
- * two-line change.
+ * TODO: only the founder's designation is filled in — it is stated publicly on
+ * this page already. The rest carry the neutral "Team Member", because inventing
+ * titles for real, named colleagues would put claims on the site that nobody has
+ * approved. Add the second tuple entry as the real designations come in; nothing
+ * else needs to change.
  */
-const TEAM = [
-  "Gourav Gupta",
-  "Shilpa Gupta",
-  "Asmita Sehgal",
-  "Daljeet Singh",
-  "Amit Sharma",
-  "Harrachneet Kaur",
-  "Alam",
-  "Tanisha",
-  "Sandeep",
-  "Anita",
-  "Shiv",
-  "Aman",
-].map((name, index) => ({
+const TEAM: TeamMember[] = (
+  [
+    ["Gourav Gupta", "Founder & CEO"],
+    ["Shilpa Gupta"],
+    ["Asmita Sehgal"],
+    ["Daljeet Singh"],
+    ["Amit Sharma"],
+    ["Harrachneet Kaur"],
+    ["Alam"],
+    ["Tanisha"],
+    ["Sandeep"],
+    ["Anita"],
+    ["Shiv"],
+    ["Aman"],
+  ] as const
+).map(([name, role], index) => ({
   name,
+  role: role ?? "Team Member",
   // Deterministic rather than random: Math.random() here would pick a different
   // picture on the server than on the client and fail hydration.
   photo: PLACEHOLDER_PORTRAITS[index % PLACEHOLDER_PORTRAITS.length],
@@ -691,93 +694,70 @@ export default function FounderPage() {
         The team.
 
         Last before the CTA, and on the plain ground: the legacy strip above it
-        is `bg-subtle`, so tinting this one too would run the two together into
-        a single band with no edge between them.
+        is `bg-subtle`, so tinting the *section* too would run the two together
+        into a single band with no edge between them. The tint moves onto an
+        inset rounded panel instead, which gives the seam back and frames the
+        two travelling lanes inside it.
 
-        Circular portraits on a plain grid rather than cards — twelve bordered
-        boxes would out-weigh the five leadership cards above and read as the
-        page's main event, which the founder's story is.
+        The lanes replace the twelve-cell grid: pill cards that bleed off both
+        edges read as a team that carries on past the frame, and they stay two
+        rows tall at every width — the grid went from six across to two and left
+        a six-row wall of portraits on a phone.
       */}
       <section className="py-20 lg:py-28">
         <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
-              Our Team
-            </p>
+          <div className="overflow-hidden rounded-[2rem] border border-line bg-subtle py-14 lg:rounded-[2.5rem] lg:py-20">
+            <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
+              <span className="inline-grid size-12 place-items-center rounded-2xl border border-line bg-background text-brand-600 shadow-[0_10px_28px_-16px_rgba(15,23,42,0.45)]">
+                <TeamIcon />
+              </span>
 
-            <h2
-              data-reveal
-              suppressHydrationWarning
-              className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
-            >
-              The people behind techcadd
-            </h2>
-
-            <p
-              data-reveal
-              suppressHydrationWarning
-              className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
-            >
-              Trainers, mentors and counsellors who keep the classrooms running
-              and the students moving.
-            </p>
-          </div>
-
-          {/* Six across at `lg` so twelve fill exactly two rows; three and two
-              below that, which divide twelve evenly as well — no row ever ends
-              with a lone portrait stranded against empty space. */}
-          <ul className="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:mt-16 lg:grid-cols-6 lg:gap-x-8">
-            {TEAM.map((member, index) => (
-              <li
-                key={member.name}
+              <h2
                 data-reveal
                 suppressHydrationWarning
-                /* Capped at six steps so the second row starts with the first
-                   again — a straight `index * 60` would leave the last portrait
-                   arriving most of a second after the first. */
-                style={
-                  {
-                    "--reveal-delay": `${(index % 6) * 70}ms`,
-                  } as React.CSSProperties
-                }
-                className="group text-center"
+                className="mt-5 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
               >
-                {/* The lift and the ring sit on this inner element, not on the
-                    `[data-reveal]` above: the reveal's own `transform: none`
-                    rule out-specifies a Tailwind translate and would cancel it.
-                    Same split as the leadership cards. */}
-                <div
-                  className={`transform-gpu transition-transform ${HOVER_EASE} group-hover:-translate-y-1.5 motion-reduce:transform-none motion-reduce:transition-none`}
-                >
-                  <span
-                    className={`relative block aspect-square overflow-hidden rounded-full bg-subtle ring-1 ring-line transition-[box-shadow] ${HOVER_EASE} group-hover:ring-2 group-hover:ring-brand-600/40`}
-                  >
-                    {/* alt is empty on purpose — see the note on
-                        PLACEHOLDER_PORTRAITS. The name below is the visible
-                        label, and a screen reader reads it from there. */}
-                    <Image
-                      src={member.photo}
-                      alt=""
-                      fill
-                      sizes="(min-width: 1024px) 160px, (min-width: 640px) 30vw, 45vw"
-                      className={`object-cover transition-transform ${HOVER_EASE} group-hover:scale-105 motion-reduce:transform-none`}
-                    />
-                  </span>
-                </div>
+                Meet Our Team
+              </h2>
 
-                <p
-                  className={`mt-4 font-display text-base font-bold tracking-tight text-ink transition-colors ${HOVER_EASE} group-hover:text-brand-600`}
-                >
-                  {member.name}
-                </p>
-              </li>
-            ))}
-          </ul>
+              <p
+                data-reveal
+                suppressHydrationWarning
+                className="mt-4 text-base leading-relaxed text-muted lg:text-lg"
+              >
+                Trainers, mentors and counsellors who keep the classrooms
+                running and the students moving.
+              </p>
+            </div>
+
+            <TeamMarquee members={TEAM} />
+          </div>
         </Container>
       </section>
 
       <Cta />
     </main>
+  )
+}
+
+/** The badge above “Meet Our Team” — a group of three. */
+function TeamIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="size-5" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.1" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="M7.2 18.2a4.8 4.8 0 0 1 9.6 0"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18.4 9.6a2.3 2.3 0 1 0-1.6-4M21 16.8a3.6 3.6 0 0 0-2.8-3.5M5.6 9.6a2.3 2.3 0 1 1 1.6-4M3 16.8a3.6 3.6 0 0 1 2.8-3.5"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
   )
 }
 

@@ -276,6 +276,24 @@
   opacity: 0.6;
 }
 
+/* reCAPTCHA's checkbox widget is an iframe Google renders at a fixed 304px, so
+   it cannot be made responsive by its container — below roughly a 360px screen
+   it simply overflows the dialog and drags the form off the side. Scaling is the
+   only lever available. The negative margin claws back the gap left underneath,
+   since a transform does not change the element's layout box. */
+.recaptcha-fit > * {
+  transform: scale(var(--recaptcha-scale, 1));
+  transform-origin: top left;
+}
+
+@media (max-width: 24rem) {
+  .recaptcha-fit {
+    --recaptcha-scale: 0.78;
+    /* 78px is the widget's own height — see components/recaptcha.tsx. */
+    margin-bottom: calc(78px * (var(--recaptcha-scale) - 1));
+  }
+}
+
 /* The course field is fixed by the page — it reads as locked, not editable. */
 .enquiry-input[readonly] {
   background: rgba(255, 255, 255, 0.05);

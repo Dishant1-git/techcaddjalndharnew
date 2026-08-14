@@ -23,7 +23,9 @@ export default function Loading() {
           mounted through navigation, so only the page body is ever missing. */}
 
       {/* --- Hero --- */}
-      <div className="flex min-h-screen flex-col justify-between bg-[#0a0e14] pt-32 pb-10 lg:pb-12">
+      {/* `bg-ink` tracks the real hero's panel colour (components/hero.tsx) —
+          if the two drift, the swap from skeleton to hero flashes. */}
+      <div className="flex min-h-screen flex-col justify-between bg-ink pt-32 pb-10 lg:pb-12">
         <div className="mx-auto w-full max-w-[1304px] px-4 lg:px-8">
           <Skeleton dark className="h-7 w-64" rounded="rounded-full" />
 

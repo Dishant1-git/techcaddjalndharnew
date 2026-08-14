@@ -44,16 +44,23 @@ export function HeroVideo({ src }: { src: string }) {
         className="pointer-events-none absolute inset-0 size-full scale-105 object-cover blur-[1px]"
       />
 
-      {/* Legibility scrim, tinted with `ink` rather than black so the hero
-          stays the colour it would be without the video, and deepened at the
-          foot so the section still ends on the flat panel colour. */}
+      {/* Legibility scrim and blue wash in one layer rather than two: a flat
+          `bg-ink/80` plus a separate tint is a second full-screen composite for
+          no reason, and a diagonal gradient across brand navy → ink → brand
+          blue holds the type just as well while giving the panel the gradient.
+          Deepest at the top-left, where the eyebrow and headline sit; lightest
+          at the bottom-right, so the footage still reads through it. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-ink/80"
+        className="pointer-events-none absolute inset-0 bg-linear-to-br from-brand-900/90 via-ink/80 to-brand-700/65"
       />
+
+      {/* Vertical blend only: keeps the top edge under the navbar dark and
+          lands the foot on flat `ink`, so the section meets its neighbour
+          without a seam. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-ink/60 via-transparent to-ink"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-ink/55 via-brand-600/10 to-ink"
       />
     </>
   )

@@ -70,14 +70,17 @@ export function Hero() {
   return (
     <section
       data-cursor="light"
-      className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a0e14] pt-20 text-white"
+      /* `bg-ink`, the same base the /about heroes use — the wash above it ends
+         on flat `ink`, so any other panel colour would show as a seam wherever
+         the gradient thins. */
+      className="relative flex min-h-screen flex-col overflow-hidden bg-ink pt-20 text-white"
     >
       {/* --- Background loop --- */}
       {/* The file is ~5.5 MB, so it is withheld until the page has loaded and
           the connection looks willing — see useDeferredVideo. `src` on the
           element rather than a <source> child, because appending a source to a
-          settled video does not start a load. The panel's own `#0a0e14` and
-          the scrims below mean the hero is complete without it. */}
+          settled video does not start a load. The panel's own `ink` and the
+          scrims below mean the hero is complete without it. */}
       <video
         ref={videoRef}
         src={loadVideo ? HERO_VIDEO : undefined}
@@ -91,10 +94,24 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 h-full w-full scale-105 object-cover blur-[3px]"
       />
 
-      {/* Legibility scrim: dark on the left where the copy sits, and a heavier
-          floor under the feature cards. */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/25" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/55" />
+      {/* --- Brand wash --- */}
+      {/* The same two layers as HeroVideo, deliberately: this hero and the
+          /about cluster's heroes are the only video panels on the site, and
+          they now read as one treatment rather than two near-misses. Brand
+          navy → ink → brand blue on the diagonal, deepest at the top-left
+          where the eyebrow and headline sit, lightest at the bottom-right so
+          the footage still reads through it.
+
+          Kept to two layers, and the legibility scrim is folded into the first
+          rather than stacked on top: each of these is a full-viewport composite
+          over a playing video, and a navy dark enough to carry the wash is dark
+          enough to carry the type. */}
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-brand-900/90 via-ink/80 to-brand-700/65" />
+
+      {/* Vertical pass: holds the top edge dark under the navbar and lands the
+          foot on flat `ink`, which is also the floor the feature cards sit
+          against. */}
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-ink/55 via-brand-600/10 to-ink" />
 
       <div className="relative z-10 flex flex-1 flex-col">
         {/* Same column as every section below, so the hero copy sits on the
@@ -144,7 +161,7 @@ export function Hero() {
                     /* /enquiry was never built; /contact is the page that
                        actually carries the counselling form. */
                     href="/contact"
-                    className="group inline-flex h-13 items-center justify-center rounded-full bg-white px-8 text-base font-medium text-[#0a0e14] transition-colors duration-300 hover:bg-brand-500 hover:text-white"
+                    className="group inline-flex h-13 items-center justify-center rounded-full bg-white px-8 text-base font-medium text-ink transition-colors duration-300 hover:bg-brand-500 hover:text-white"
                   >
                     Start your career
                     <svg
