@@ -2,10 +2,12 @@ import {
   CmsUnavailableError,
   cmsImageUrl,
   getBlogs,
+  getCategories,
   getCourses,
   getFaqs,
   getGalleryAlbums,
   getReviews,
+  getSite,
   getTestimonials,
   type CmsBlog,
   type CmsFaq,
@@ -14,6 +16,8 @@ import {
   type CmsTestimonial,
 } from "./cms"
 import { POSTS, type Post } from "./blogs"
+import { COURSE_CATEGORIES, type CourseCategory } from "./categories"
+import { STATS, type Stat } from "./stats"
 import { FAQS, FAQ_CATEGORIES, HOMEPAGE_FAQS, type Faq } from "./faqs"
 import { COURSE_SPECS, GENERIC_SPEC, type CourseSpec } from "./course-specs"
 import { GALLERY_TILES, type GalleryTile } from "./gallery"
@@ -249,6 +253,93 @@ export function loadReviews(): Promise<GoogleReview[]> {
     REVIEWS,
   )
 }
+
+/* ------------------------------------------------------------------ */
+/* Headline figures                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The numbers on the stats band, from the CMS settings row.
+ *
+ * Only the figure and the label come from the CMS. The orbit duration, the
+ * stagger offset, the zig-zag lift and the ring size are animation timing —
+ * they make the four dots never line up, which is a visual decision nobody
+ * should have to make in a settings form. They are cycled by position instead,
+ * so a fifth figure gets sensible motion for free.
+ */
+export async function loadStats(): Promise<Stat[]> {
+  const presentation = STATS.map(({ duration, offset, lift, size }) => ({
+    duration,
+    offset,
+    lift,
+    size,
+  }))
+
+  return withFallback(
+    "stats",
+    async () => {
+      const { stats } = await getSite()
+      return stats.map((stat, index) => ({
+        value: stat.value,
+        label: stat.label,
+        ...presentation[index % presentation.length]!,
+      }))
+    },
+    STATS,
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Course categories                                                    */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The category cards, from the CMS.
+ *
+ * `href` is derived from the slug rather than stored: a category card links to
+ * the course page of the same name, and a free-text URL field is one typo away
+ * from a dead link on the homepage.
+ *
+ * The gradient pair is presentation and is cycled by position, but a CMS
+ * accent colour wins when one is set — that is a deliberate choice an editor
+ * made, unlike the fallback.
+ */
+export function loadCourseCategories(): Promise<CourseCategory[]> {
+  return withFallback(
+    "categories",
+    async () => {
+      const { items } = await getCategories()
+      return items.map((category, index) => {
+        // Keep the built-in art for a category the site already knows.
+        const known = COURSE_CATEGORIES.find((c) => c.id === category.slug)
+        const { from, to } = known ?? CATEGORY_GRADIENTS[index % CATEGORY_GRADIENTS.length]!
+
+        return {
+          // The id picks the card's line-art. An editor chooses it from the
+          // icon field; the slug is the sensible guess when they have not.
+          id: category.icon || category.slug,
+          label: category.name,
+          blurb: category.description ?? "",
+          href: `/courses/${category.slug}`,
+          image: known?.image,
+          from,
+          to,
+        }
+      })
+    },
+    COURSE_CATEGORIES,
+  )
+}
+
+/** Fallback cover treatments for categories the site has no art for. */
+const CATEGORY_GRADIENTS = [
+  { from: "from-brand-500", to: "to-brand-900" },
+  { from: "from-violet-500", to: "to-brand-800" },
+  { from: "from-accent-400", to: "to-brand-800" },
+  { from: "from-emerald-400", to: "to-brand-900" },
+  { from: "from-rose-400", to: "to-brand-800" },
+  { from: "from-sky-400", to: "to-brand-900" },
+] as const
 
 /* ------------------------------------------------------------------ */
 /* Course page copy                                                     */

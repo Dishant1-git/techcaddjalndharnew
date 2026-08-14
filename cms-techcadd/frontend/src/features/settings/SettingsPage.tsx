@@ -20,7 +20,7 @@ import { Textarea } from '../../components/form/Textarea'
 import { PageHeader } from '../../components/layout/PageHeader'
 import { useConfirm } from '../../hooks/useConfirm'
 import { useToast } from '../../hooks/useToast'
-import type { SiteSettings, User } from '../../types'
+import type { SiteSettings, SiteStat, User } from '../../types'
 import { useSettings, useUpdateSettings } from '../seo/useSeo'
 import { createResourceHooks } from '../shared/createResourceHooks'
 import { SecurityTab } from './SecurityTab'
@@ -110,6 +110,80 @@ function SaveBar({
         </Button>
       )}
       {dirty && <p className="ml-auto text-xs text-slate-500">Unsaved changes</p>}
+    </div>
+  )
+}
+
+/**
+ * The four figures the homepage and about page print.
+ *
+ * A plain list rather than four fixed slots: the count is editorial, and the
+ * site cycles its ring animation by position, so adding a fifth figure is an
+ * editor's decision and needs no code. Rows are edited by index because a stat
+ * has no id — it is two strings on the settings row, not a record.
+ */
+function StatsEditor({
+  stats,
+  onChange,
+}: {
+  stats: SiteStat[]
+  onChange: (stats: SiteStat[]) => void
+}) {
+  const set = (index: number, patch: Partial<SiteStat>) =>
+    onChange(stats.map((stat, i) => (i === index ? { ...stat, ...patch } : stat)))
+
+  return (
+    <div className="rounded-lg border border-slate-200">
+      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+        <div>
+          <p className="text-sm font-medium text-slate-900">Headline figures</p>
+          <p className="text-xs text-slate-500">
+            Shown on the homepage and the about page. Keep the figure short — it renders large.
+          </p>
+        </div>
+        <Button
+          variant="secondary"
+          onClick={() => onChange([...stats, { value: '', label: '' }])}
+          disabled={stats.length >= 8}
+        >
+          <Plus className="size-4" />
+          Add figure
+        </Button>
+      </div>
+
+      {stats.length === 0 ? (
+        <p className="px-4 py-6 text-center text-sm text-slate-500">
+          No figures yet — the site is showing its built-in ones.
+        </p>
+      ) : (
+        <div className="divide-y divide-slate-100">
+          {stats.map((stat, index) => (
+            <div key={index} className="flex items-end gap-3 px-4 py-3">
+              <FormField label="Figure" className="w-32 shrink-0">
+                <Input
+                  value={stat.value}
+                  onChange={(event) => set(index, { value: event.target.value })}
+                  placeholder="15k+"
+                />
+              </FormField>
+              <FormField label="Label" className="flex-1">
+                <Input
+                  value={stat.label}
+                  onChange={(event) => set(index, { label: event.target.value })}
+                  placeholder="Students Trained"
+                />
+              </FormField>
+              <Button
+                variant="ghost"
+                aria-label={`Remove ${stat.label || 'figure'}`}
+                onClick={() => onChange(stats.filter((_, i) => i !== index))}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -212,6 +286,13 @@ function GeneralTab({ settings }: { settings: SiteSettings }) {
             placeholder="https://techcadd.com"
           />
         </FormField>
+
+        <div className="lg:col-span-2">
+          <StatsEditor
+            stats={draft.stats}
+            onChange={(stats) => setDraft({ ...draft, stats })}
+          />
+        </div>
       </CardBody>
 
       <SaveBar

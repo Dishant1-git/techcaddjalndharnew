@@ -3,7 +3,8 @@ import Link from "next/link"
 import { Container } from "./container"
 import { PanelTexture } from "./panel-texture"
 import { ScrollHeading } from "./scroll-heading"
-import { COURSE_CATEGORIES, type CourseCategory } from "@/lib/categories"
+import { type CourseCategory } from "@/lib/categories"
+import { loadCourseCategories } from "@/lib/content"
 
 /**
  * Course categories — a row of tall covers that expand under the pointer.
@@ -70,7 +71,9 @@ const ICONS: Record<string, React.ReactNode> = {
   ),
 }
 
-export function Categories() {
+export async function Categories() {
+  const categories = await loadCourseCategories()
+
   return (
     <section
       id="categories"
@@ -118,7 +121,7 @@ export function Categories() {
           suppressHydrationWarning
           className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:mt-14 lg:flex lg:h-[34rem] lg:gap-4"
         >
-          {COURSE_CATEGORIES.map((category) => (
+          {categories.map((category) => (
             <Card key={category.id} category={category} />
           ))}
         </div>

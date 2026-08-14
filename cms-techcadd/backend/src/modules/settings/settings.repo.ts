@@ -33,6 +33,7 @@ function toSettings(row: Row, profile: Profile): unknown {
     contactEmail: row.contact_email ?? undefined,
     contactPhone: row.contact_phone ?? undefined,
     address: row.address ?? undefined,
+    stats: parseJson<{ value: string; label: string }[]>(row.stats, []),
     social: parseJson(row.social, {}),
     robotsTxt: row.robots_txt,
     notifications: {
@@ -127,6 +128,13 @@ export async function update(patch: SettingsPatch, profile: Profile): Promise<un
   if (patch.favicon !== undefined) {
     assignments.push('favicon_id = ?')
     params.push(patch.favicon?.id ?? null)
+  }
+
+  // Replaced, not merged: the card sends the rows it has, and merging a list
+  // by key would resurrect a row the editor just deleted.
+  if (patch.stats !== undefined) {
+    assignments.push('stats = ?')
+    params.push(JSON.stringify(patch.stats))
   }
 
   for (const [column, value] of [

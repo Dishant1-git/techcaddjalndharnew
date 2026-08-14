@@ -147,6 +147,28 @@ export interface CmsReview {
   order: number
 }
 
+export interface CmsCategory {
+  id: string
+  name: string
+  slug: string
+  description?: string
+  /** Key into the site's icon set; unknown values fall back to a generic mark. */
+  icon?: string
+  accentColor?: string
+  order: number
+}
+
+/** Site-wide facts, from the settings row. */
+export interface CmsSite {
+  siteName: string
+  tagline?: string
+  contactEmail?: string
+  contactPhone?: string
+  address?: string
+  stats: { value: string; label: string }[]
+  social: Record<string, string | undefined>
+}
+
 interface ListResponse<T> {
   items: T[]
   total: number
@@ -176,6 +198,11 @@ export const getReviews = (limit = 50) =>
 
 export const getCourses = (limit = 50) =>
   cmsFetch<ListResponse<CmsCourse>>(`/public/courses?limit=${limit}`)
+
+export const getCategories = (limit = 50) =>
+  cmsFetch<ListResponse<CmsCategory>>(`/public/categories?limit=${limit}`)
+
+export const getSite = () => cmsFetch<CmsSite>("/public/site")
 
 /* ------------------------------------------------------------------ */
 /* Writes                                                              */

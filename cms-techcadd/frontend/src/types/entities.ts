@@ -335,6 +335,17 @@ export interface Integrations {
   recaptchaSecret?: string
 }
 
+/**
+ * One headline figure, e.g. "15k+" / "Students Trained".
+ *
+ * The value is a string because the site prints "15k+" and "98%" — the suffix
+ * carries as much meaning as the digits, and a number field would lose it.
+ */
+export interface SiteStat {
+  value: string
+  label: string
+}
+
 export interface SiteSettings {
   siteName: string
   tagline?: string
@@ -343,6 +354,8 @@ export interface SiteSettings {
   contactEmail?: string
   contactPhone?: string
   address?: string
+  /** The headline figures the homepage and about page print. */
+  stats: SiteStat[]
   social: SocialLinks
   /** Edited from the SEO module. */
   robotsTxt: string
