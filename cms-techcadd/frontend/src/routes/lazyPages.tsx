@@ -45,3 +45,8 @@ export const ResetPasswordPage = lazy(() => import('../features/auth/ResetPasswo
 export function Lazy({ children }: { children: ReactNode }) {
   return <Suspense fallback={<SkeletonTable />}>{children}</Suspense>
 }
+
+export const FaqsListPage = lazy(() => import('../features/faqs/FaqsListPage'))
+export const FaqFormPage = lazy(() => import('../features/faqs/FaqFormPage'))
+export const ReviewsListPage = lazy(() => import('../features/reviews/ReviewsListPage'))
+export const ReviewFormPage = lazy(() => import('../features/reviews/ReviewFormPage'))

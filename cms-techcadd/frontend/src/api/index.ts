@@ -18,6 +18,8 @@ export { mediaApi } from './resources/media'
 export { pagesApi } from './resources/pages'
 export { redirectsApi } from './resources/redirects'
 export { testimonialsApi } from './resources/testimonials'
+export { faqsApi } from './resources/faqs'
+export { reviewsApi } from './resources/reviews'
 export { usersApi } from './resources/users'
 export { settingsApi } from './resources/settings'
 

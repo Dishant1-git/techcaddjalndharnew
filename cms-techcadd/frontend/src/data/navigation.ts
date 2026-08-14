@@ -11,6 +11,8 @@ import {
   Search,
   Settings,
   Images,
+  CircleHelp,
+  Star,
   Users,
   Mail,
 } from 'lucide-react'
@@ -36,6 +38,7 @@ export const navSections: NavSection[] = [
       { id: 'pages', label: 'Pages', path: '/pages', icon: FileText },
       { id: 'banners', label: 'Banners', path: '/banners', icon: GalleryVerticalEnd },
       { id: 'blogs', label: 'Blogs', path: '/blogs', icon: Newspaper },
+      { id: 'faqs', label: 'FAQ', path: '/faqs', icon: CircleHelp },
     ],
   },
   {
@@ -46,6 +49,7 @@ export const navSections: NavSection[] = [
       { id: 'branches', label: 'Branches', path: '/branches', icon: Building2 },
       { id: 'testimonials', label: 'Testimonials', path: '/testimonials', icon: MessageSquareQuote },
       { id: 'gallery', label: 'Gallery', path: '/gallery', icon: Image },
+      { id: 'reviews', label: 'Reviews', path: '/reviews', icon: Star },
     ],
   },
   {

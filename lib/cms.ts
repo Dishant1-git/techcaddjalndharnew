@@ -108,6 +108,13 @@ export interface CmsCourse {
   id: string
   title: string
   slug: string
+  /** With the slug, the key the site looks a course page up by. */
+  segment: 'courses' | 'internship-training' | 'after-12th-courses'
+  tagline?: string
+  demand?: string
+  careers: string[]
+  tools: string[]
+  salary?: string
   shortDescription: string
   description: string
   duration: string
@@ -118,6 +125,26 @@ export interface CmsCourse {
   thumbnail?: CmsMedia
   highlights: string[]
   updatedAt: string
+}
+
+export interface CmsFaq {
+  id: string
+  question: string
+  answer: string
+  category: string
+  order: number
+  featured: boolean
+}
+
+export interface CmsReview {
+  id: string
+  authorName: string
+  rating: number
+  quote: string
+  reviewedOn?: string
+  courseName?: string
+  source: 'google' | 'website' | 'walk-in'
+  order: number
 }
 
 interface ListResponse<T> {
@@ -140,6 +167,12 @@ export const getTestimonials = (limit = 50) =>
 
 export const getGalleryAlbums = (limit = 50) =>
   cmsFetch<ListResponse<CmsGalleryAlbum>>(`/public/gallery?limit=${limit}`)
+
+export const getFaqs = (limit = 100) =>
+  cmsFetch<ListResponse<CmsFaq>>(`/public/faqs?limit=${limit}`)
+
+export const getReviews = (limit = 50) =>
+  cmsFetch<ListResponse<CmsReview>>(`/public/reviews?limit=${limit}`)
 
 export const getCourses = (limit = 50) =>
   cmsFetch<ListResponse<CmsCourse>>(`/public/courses?limit=${limit}`)

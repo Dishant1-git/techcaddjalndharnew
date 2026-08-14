@@ -31,6 +31,12 @@ export const courseSchema = z
       .min(1, 'Slug is required.')
       .regex(/^[a-z0-9-]+$/, 'Use lowercase letters, numbers and hyphens only.'),
     categoryId: z.string().optional(),
+    segment: z.enum(['courses', 'internship-training', 'after-12th-courses']),
+    tagline: z.string().max(300).optional(),
+    demand: z.string().optional(),
+    careers: z.array(z.string()),
+    tools: z.array(z.string()),
+    salary: z.string().max(120).optional(),
     shortDescription: z
       .string()
       .min(1, 'A short description is required.')
@@ -70,6 +76,12 @@ export function emptyCourse(): CourseFormValues {
     title: '',
     slug: '',
     categoryId: undefined,
+    segment: 'courses',
+    tagline: '',
+    demand: '',
+    careers: [],
+    tools: [],
+    salary: '',
     shortDescription: '',
     description: '',
     duration: '',

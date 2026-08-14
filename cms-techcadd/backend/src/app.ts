@@ -15,12 +15,14 @@ import { coursesRouter } from './modules/courses/courses.routes.js'
 import { dashboardRouter, searchRouter } from './modules/dashboard/dashboard.routes.js'
 import { enquiriesRouter } from './modules/enquiries/enquiries.routes.js'
 import { facultyRouter } from './modules/faculty/faculty.routes.js'
+import { faqsRouter } from './modules/faqs/faqs.routes.js'
 import { galleryRouter } from './modules/gallery/gallery.routes.js'
 import { mediaRouter } from './modules/media/media.routes.js'
 import { UPLOAD_URL_PREFIX, uploadRoot } from './modules/media/storage.js'
 import { pagesRouter } from './modules/pages/pages.routes.js'
 import { publicRouter } from './modules/public/public.routes.js'
 import { redirectsRouter } from './modules/seo/seo.routes.js'
+import { reviewsRouter } from './modules/reviews/reviews.routes.js'
 import { settingsRouter } from './modules/settings/settings.routes.js'
 import { testimonialsRouter } from './modules/testimonials/testimonials.routes.js'
 import { usersRouter } from './modules/users/users.routes.js'
@@ -83,6 +85,7 @@ export function createApp() {
   app.use('/api/dashboard', dashboardRouter)
   app.use('/api/enquiries', enquiriesRouter)
   app.use('/api/faculty', facultyRouter)
+  app.use('/api/faqs', faqsRouter)
   app.use('/api/gallery', galleryRouter)
   app.use('/api/media', mediaRouter)
   app.use('/api/pages', pagesRouter)
@@ -90,6 +93,7 @@ export function createApp() {
   // No session required — see the note in public.routes.ts.
   app.use('/api/public', publicRouter)
   app.use('/api/redirects', redirectsRouter)
+  app.use('/api/reviews', reviewsRouter)
   app.use('/api/search', searchRouter)
   app.use('/api/settings', settingsRouter)
   app.use('/api/testimonials', testimonialsRouter)

@@ -7,8 +7,10 @@ import { query, queryOne, type Row } from '../../db/pool.js'
 import * as blogsRepo from '../blogs/blogs.repo.js'
 import * as coursesRepo from '../courses/courses.repo.js'
 import * as enquiriesRepo from '../enquiries/enquiries.repo.js'
+import * as faqsRepo from '../faqs/faqs.repo.js'
 import * as galleryRepo from '../gallery/gallery.repo.js'
 import * as pagesRepo from '../pages/pages.repo.js'
+import * as reviewsRepo from '../reviews/reviews.repo.js'
 import * as testimonialsRepo from '../testimonials/testimonials.repo.js'
 
 /**
@@ -100,6 +102,22 @@ publicRouter.get(
   '/gallery',
   asyncHandler(async (req, res) => {
     const result = await galleryRepo.list(listParams(limitFrom(req.query.limit, 50)))
+    res.json({ items: result.items, total: result.total })
+  }),
+)
+
+publicRouter.get(
+  '/faqs',
+  asyncHandler(async (req, res) => {
+    const result = await faqsRepo.list(listParams(limitFrom(req.query.limit, 100)))
+    res.json({ items: result.items, total: result.total })
+  }),
+)
+
+publicRouter.get(
+  '/reviews',
+  asyncHandler(async (req, res) => {
+    const result = await reviewsRepo.list(listParams(limitFrom(req.query.limit, 50)))
     res.json({ items: result.items, total: result.total })
   }),
 )

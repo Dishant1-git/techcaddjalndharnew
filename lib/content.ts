@@ -2,14 +2,22 @@ import {
   CmsUnavailableError,
   cmsImageUrl,
   getBlogs,
+  getCourses,
+  getFaqs,
   getGalleryAlbums,
+  getReviews,
   getTestimonials,
   type CmsBlog,
+  type CmsFaq,
   type CmsGalleryAlbum,
+  type CmsReview,
   type CmsTestimonial,
 } from "./cms"
 import { POSTS, type Post } from "./blogs"
+import { FAQS, FAQ_CATEGORIES, HOMEPAGE_FAQS, type Faq } from "./faqs"
+import { COURSE_SPECS, GENERIC_SPEC, type CourseSpec } from "./course-specs"
 import { GALLERY_TILES, type GalleryTile } from "./gallery"
+import { REVIEWS, type GoogleReview } from "./reviews"
 import { TESTIMONIALS, type Testimonial } from "./testimonials"
 
 /**
@@ -153,4 +161,134 @@ export function loadGalleryTiles(): Promise<GalleryTile[]> {
     async () => toTiles((await getGalleryAlbums()).items),
     GALLERY_TILES,
   )
+}
+
+/* ------------------------------------------------------------------ */
+/* FAQs                                                                 */
+/* ------------------------------------------------------------------ */
+
+function toFaq(faq: CmsFaq): Faq {
+  return {
+    question: faq.question,
+    answer: faq.answer,
+    // The CMS stores a free-text category so a new section needs no migration.
+    // The site's union type is narrower, so widen at the boundary rather than
+    // dropping a question whose category is simply newer than this file.
+    category: faq.category as Faq['category'],
+  }
+}
+
+export function loadFaqs(): Promise<Faq[]> {
+  return withFallback('faqs', async () => (await getFaqs()).items.map(toFaq), FAQS)
+}
+
+/**
+ * The sections the FAQ page renders, in order.
+ *
+ * Derived from the questions rather than fixed, so adding a category in the
+ * CMS is enough to make the section appear.
+ */
+export async function loadFaqCategories(): Promise<string[]> {
+  const faqs = await loadFaqs()
+  const seen = new Set<string>()
+  const order: string[] = []
+
+  // Keep the built-in order for categories we already know, then append any
+  // new ones in the order they first appear.
+  for (const known of FAQ_CATEGORIES) if (faqs.some((f) => f.category === known)) order.push(known)
+  for (const faq of faqs) {
+    if (order.includes(faq.category) || seen.has(faq.category)) continue
+    seen.add(faq.category)
+    order.push(faq.category)
+  }
+
+  return order
+}
+
+/** The homepage shows a short selection, chosen in the CMS by the featured flag. */
+export function loadHomepageFaqs(): Promise<Faq[]> {
+  return withFallback(
+    'homepage faqs',
+    async () => {
+      const { items } = await getFaqs()
+      const featured = items.filter((faq) => faq.featured)
+      return (featured.length > 0 ? featured : items).slice(0, 6).map(toFaq)
+    },
+    HOMEPAGE_FAQS,
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Reviews                                                              */
+/* ------------------------------------------------------------------ */
+
+function toReview(review: CmsReview): GoogleReview {
+  return {
+    name: review.authorName,
+    initials: initialsOf(review.authorName),
+    rating: review.rating,
+    date: review.reviewedOn ?? "",
+    quote: review.quote,
+    course: review.courseName ?? "",
+    source: "google",
+  }
+}
+
+/**
+ * Only reviews left on Google.
+ *
+ * The card carries the Google mark, which tells a visitor something specific
+ * about where the review came from. A walk-in comment rendered with that badge
+ * would be a small lie, so the others are filtered out rather than relabelled.
+ */
+export function loadReviews(): Promise<GoogleReview[]> {
+  return withFallback(
+    "reviews",
+    async () =>
+      (await getReviews()).items.filter((review) => review.source === "google").map(toReview),
+    REVIEWS,
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Course page copy                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The specs each course page is generated from, with the CMS taking priority.
+ *
+ * Merged over the checked-in specs rather than replacing them: a course whose
+ * copy has not been entered in the CMS yet keeps the page it has today, and a
+ * course the CMS knows about but this file does not still gets one. Only the
+ * fields an editor actually filled in are taken, so a half-completed record
+ * cannot blank a tagline that was already written.
+ */
+export async function loadCourseSpecs(): Promise<Record<string, CourseSpec>> {
+  try {
+    const { items } = await getCourses(100)
+    const merged: Record<string, CourseSpec> = { ...COURSE_SPECS }
+
+    for (const course of items) {
+      const key = `${course.segment}/${course.slug}`
+      const existing = merged[key] ?? GENERIC_SPEC
+
+      merged[key] = {
+        tagline: course.tagline || existing.tagline,
+        demand: course.demand || existing.demand,
+        careers: course.careers.length > 0 ? course.careers : existing.careers,
+        topics: course.highlights.length > 0 ? course.highlights : existing.topics,
+        tools: course.tools.length > 0 ? course.tools : existing.tools,
+        salary: course.salary || existing.salary,
+      }
+    }
+
+    return merged
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn('[content] course specs: using built-in content —', error.message)
+    } else {
+      console.error('[content] course specs failed:', error)
+    }
+    return COURSE_SPECS
+  }
 }

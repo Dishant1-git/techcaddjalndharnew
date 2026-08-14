@@ -138,7 +138,7 @@ function Card({ testimonial }: { testimonial: Testimonial }) {
     /* Solid white on a white section, so the edge has to come from the border
        and shadow — the old translucent fill and backdrop-blur had nothing left
        to work against once the texture went. */
-    <figure className="group relative mr-6 flex w-[19rem] shrink-0 flex-col justify-between overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.4)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_28px_60px_-30px_rgba(37,99,235,0.45)] sm:w-[21rem]">
+    <figure className="group relative mr-6 flex w-76 shrink-0 flex-col justify-between overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.4)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_28px_60px_-30px_rgba(37,99,235,0.45)] sm:w-84">
       <div className="relative">
         <div className="flex items-center justify-between gap-3">
           <div className="flex gap-0.5" aria-label="Rated 5 out of 5">

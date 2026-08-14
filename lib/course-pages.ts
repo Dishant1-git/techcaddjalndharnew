@@ -1,5 +1,5 @@
 import { generateContent } from "./course-content"
-import { COURSE_SPECS } from "./course-specs"
+import { COURSE_SPECS, type CourseSpec } from "./course-specs"
 import {
   AFTER_12TH_GROUPS,
   AI_MENU,
@@ -2794,7 +2794,7 @@ const SEGMENT_COPY: Record<
 }
 
 /** A page for a catalogued slug that has no authored content yet. */
-function stubPage(entry: CatalogueEntry): CoursePage {
+function stubPage(entry: CatalogueEntry, specs: Record<string, CourseSpec> = COURSE_SPECS): CoursePage {
   const copy = SEGMENT_COPY[entry.segment]
   const h1 = copy.heading(entry.label)
 
@@ -2812,7 +2812,7 @@ function stubPage(entry: CatalogueEntry): CoursePage {
     ],
     intro: copy.intro,
     facts: copy.facts,
-    related: relatedFor(entry),
+    related: relatedFor(entry, specs),
   }
 }
 
@@ -2837,9 +2837,9 @@ function stubPage(entry: CatalogueEntry): CoursePage {
  * Same segment only. A course page offering an internship format as a "related
  * course" is answering a different question than the reader asked.
  */
-function relatedFor(entry: CatalogueEntry): string[] {
+function relatedFor(entry: CatalogueEntry, specs: Record<string, CourseSpec> = COURSE_SPECS): string[] {
   const lower = (s: string) => s.toLowerCase()
-  const self = COURSE_SPECS[`${entry.segment}/${entry.slug}`]
+  const self = specs[`${entry.segment}/${entry.slug}`]
   const selfTools = new Set((self?.tools ?? []).map(lower))
   const selfCareers = new Set((self?.careers ?? []).map(lower))
 
@@ -2849,7 +2849,7 @@ function relatedFor(entry: CatalogueEntry): string[] {
       !(e.segment === entry.segment && e.slug === entry.slug),
   )
     .map((e) => {
-      const spec = COURSE_SPECS[`${e.segment}/${e.slug}`]
+      const spec = specs[`${e.segment}/${e.slug}`]
       let score = e.group === entry.group ? 4 : 0
       for (const tool of spec?.tools ?? []) {
         if (selfTools.has(lower(tool))) score += 2
@@ -2905,11 +2905,16 @@ function defined<T extends object>(value: T): Partial<T> {
   ) as Partial<T>
 }
 
-export function getCoursePage(segment: Segment, slug: string) {
+export function getCoursePage(
+  segment: Segment,
+  slug: string,
+  /** The CMS's merged specs, when the caller has them. */
+  specs: Record<string, CourseSpec> = COURSE_SPECS,
+) {
   const entry = CATALOGUE.find((e) => e.segment === segment && e.slug === slug)
   if (!entry) return undefined
 
-  const generated = generateContent(stubPage(entry), `${segment}/${slug}`)
+  const generated = generateContent(stubPage(entry, specs), `${segment}/${slug}`, specs)
 
   // Generated content is the floor, hand-authored copy the override. Layering
   // this way means a page authored before a section existed still gets that

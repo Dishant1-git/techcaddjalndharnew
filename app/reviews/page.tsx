@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
-import { REVIEWS, REVIEW_META, type GoogleReview } from "@/lib/reviews"
+import { loadReviews } from "@/lib/content"
+import { REVIEW_META, type GoogleReview } from "@/lib/reviews"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE.url}/reviews` },
 }
 
-export default function ReviewsPage() {
+export default async function ReviewsPage() {
+  const reviews = await loadReviews()
+
   return (
     <main>
       <section
@@ -70,7 +73,7 @@ export default function ReviewsPage() {
               Recent reviews
             </p>
             <p className="font-mono text-xs text-muted">
-              {REVIEWS.length} shown
+              {reviews.length} shown
             </p>
           </div>
 
@@ -79,7 +82,7 @@ export default function ReviewsPage() {
               its tallest card. `break-inside` is what stops a card being split
               across a column boundary. */}
           <div className="mt-8 gap-6 lg:mt-10 lg:columns-3 sm:columns-2">
-            {REVIEWS.map((review) => (
+            {reviews.map((review) => (
               <ReviewCard key={review.name} review={review} />
             ))}
           </div>

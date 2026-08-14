@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { CoursePageView } from "@/components/course-page-view"
 import { SegmentIndexView, SEGMENT_INDEX } from "@/components/segment-index-view"
+import { loadCourseSpecs } from "./content"
 import { getCoursePage, hrefFor, pagesInSegment, type Segment } from "./course-pages"
 import { jsonLd } from "./json-ld"
 
@@ -17,8 +18,8 @@ export function paramsFor(segment: Segment) {
   return pagesInSegment(segment).map((page) => ({ slug: page.slug }))
 }
 
-export function metadataFor(segment: Segment, slug: string): Metadata {
-  const page = getCoursePage(segment, slug)
+export async function metadataFor(segment: Segment, slug: string): Promise<Metadata> {
+  const page = getCoursePage(segment, slug, await loadCourseSpecs())
   if (!page) return {}
 
   const url = `${SITE}${hrefFor(page)}`
@@ -81,14 +82,14 @@ export function SegmentIndexRoute({ segment }: { segment: Segment }) {
   )
 }
 
-export function CourseRoute({
+export async function CourseRoute({
   segment,
   slug,
 }: {
   segment: Segment
   slug: string
 }) {
-  const page = getCoursePage(segment, slug)
+  const page = getCoursePage(segment, slug, await loadCourseSpecs())
   if (!page) notFound()
 
   const url = `${SITE}${hrefFor(page)}`

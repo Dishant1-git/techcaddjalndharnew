@@ -184,6 +184,61 @@ export default function CourseFormPage() {
           </Card>
 
           <Card flush>
+            <CardHeader
+              title="Course page copy"
+              subtitle="What the public course page is built from — the rest of the page is generated around these"
+            />
+            <CardBody className="space-y-5">
+              <FormField
+                label="Tagline"
+                description="One line: what this course actually is."
+                error={errors.tagline?.message}
+              >
+                <Input
+                  {...register('tagline')}
+                  placeholder="the language behind almost every AI and backend job advertised today"
+                />
+              </FormField>
+
+              <FormField
+                label="Who hires for it"
+                description="One sentence on demand in the local market."
+                error={errors.demand?.message}
+              >
+                <Textarea {...register('demand')} rows={3} />
+              </FormField>
+
+              <FormField label="Careers" description="Job titles this course leads to.">
+                <Controller
+                  control={control}
+                  name="careers"
+                  render={({ field }) => (
+                    <TagInput value={field.value} onChange={field.onChange} maxTags={12} />
+                  )}
+                />
+              </FormField>
+
+              <FormField label="Tools" description="Software and frameworks taught.">
+                <Controller
+                  control={control}
+                  name="tools"
+                  render={({ field }) => (
+                    <TagInput value={field.value} onChange={field.onChange} maxTags={20} />
+                  )}
+                />
+              </FormField>
+
+              <FormField
+                label="Salary band"
+                description="A realistic fresher range for the region."
+                error={errors.salary?.message}
+              >
+                <Input {...register('salary')} placeholder="₹2.4–4.2 LPA" />
+              </FormField>
+            </CardBody>
+          </Card>
+
+          <Card flush>
             <CardHeader title="Syllabus" subtitle="Drag to reorder; each module can list its topics" />
             <CardBody>
               <Controller
@@ -288,6 +343,20 @@ export default function CourseFormPage() {
             <CardBody className="space-y-5">
               <FormField label="Status">
                 <Select {...register('status')} options={STATUS_OPTIONS} />
+              </FormField>
+
+              <FormField
+                label="Section"
+                description="Which part of the site this course appears under."
+              >
+                <Select
+                  {...register('segment')}
+                  options={[
+                    { value: 'courses', label: 'Courses' },
+                    { value: 'internship-training', label: 'Internship training' },
+                    { value: 'after-12th-courses', label: 'After 12th' },
+                  ]}
+                />
               </FormField>
 
               <FormField label="Delivery mode">

@@ -56,11 +56,19 @@ export const courseSchema = z
       .min(1, 'Slug is required.')
       .regex(/^[a-z0-9-]+$/, 'Use lowercase letters, numbers and hyphens only.'),
     categoryId: optionalId,
+    /** Which part of the site this course belongs to — see migration 013. */
+    segment: z.enum(['courses', 'internship-training', 'after-12th-courses']).default('courses'),
     shortDescription: z
       .string()
       .min(1, 'A short description is required.')
       .max(200, 'Keep this under 200 characters.'),
     description: z.string().default(''),
+    // The copy the public course page is generated from.
+    tagline: z.string().max(300).optional(),
+    demand: z.string().optional(),
+    careers: z.array(z.string()).default([]),
+    tools: z.array(z.string()).default([]),
+    salary: z.string().max(120).optional(),
     duration: z.string().min(1, 'Duration is required.'),
     fee: z.number('Fee is required.').min(0, 'Fee cannot be negative.'),
     discountedFee: z.number().min(0, 'Discounted fee cannot be negative.').optional(),

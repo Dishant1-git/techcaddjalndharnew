@@ -301,8 +301,14 @@ function buildFaqs(
 export function generateContent(
   page: CoursePage,
   path: string,
+  /**
+   * Defaults to the checked-in specs, so every existing caller is unchanged.
+   * The website passes the CMS's merged set instead, which is what lets a
+   * course's copy be edited without a deploy.
+   */
+  specs: Record<string, CourseSpec> = COURSE_SPECS,
 ): CoursePage {
-  const spec = COURSE_SPECS[path] ?? GENERIC_SPEC
+  const spec = specs[path] ?? GENERIC_SPEC
   const name = page.eyebrow
   const seed = path
   const timeline = timelineFor(page)
