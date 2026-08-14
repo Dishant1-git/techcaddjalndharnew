@@ -40,7 +40,7 @@ const REASONS = [
   },
   {
     title: "Batch timings",
-    body: "Weekday, evening and weekend batches run in parallel. Tell us your college or work schedule and we will find the slot that fits.",
+    body: "Weekday, evening and weekend batches run in parallel, plus 1-on-1 training if you want a fully personal schedule. Every class runs for 2 hours — tell us your college or work schedule and we will find the slot that fits.",
   },
   {
     title: "Placement and internships",

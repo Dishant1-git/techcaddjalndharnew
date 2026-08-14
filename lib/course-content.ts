@@ -4,7 +4,6 @@ import type {
   CoursePage,
   Faq,
   LearnModule,
-  ModuleTrack,
   Outcome,
   Project,
   Review,
@@ -33,7 +32,7 @@ const LOCAL_AREAS =
  */
 const OVERVIEW_CLOSE: Record<Segment, string> = {
   courses:
-    "Choose 3, 6 or 9 months — every stage ends in a portfolio deliverable.",
+    "Every module ends in a portfolio deliverable you can show in an interview.",
   "internship-training":
     "Every stage ends in a portfolio deliverable, and you finish with a documented internship letter.",
   "after-12th-courses":
@@ -83,93 +82,85 @@ function buildReviews(courseName: string, seed: string): Review[] {
 }
 
 /**
- * The three enrolment lengths, each a real superset of the one before it.
- *
- * A student comparing 3 against 9 months should be able to see exactly what
- * the extra six months buys, so the shorter tracks are prefixes rather than
- * differently-worded versions of the same thing.
+ * Internship & Training runs one fixed duration per page — 45-days and
+ * 6-months are different pages, not a choice on the same one — so there is
+ * nothing to compare against. What each page needs instead is its own
+ * modules laid out along the calendar it actually promises: weeks for a
+ * short course, months for a long one.
  */
-function buildTracks(spec: CourseSpec, name: string): ModuleTrack[] {
-  const t = spec.topics
+const TRAINING_TIMELINES: Record<string, string[]> = {
+  "45-days": ["Weeks 1 – 2", "Weeks 3 – 4", "Weeks 5 – 6"],
+  "6-weeks": ["Weeks 1 – 2", "Weeks 3 – 4", "Weeks 5 – 6"],
+  "industrial-training": ["Weeks 1 – 2", "Weeks 3 – 4", "Weeks 5 – 6"],
+  "4-months": ["Month 1", "Month 2", "Month 3", "Month 4"],
+  "6-months": ["Months 1 – 2", "Months 3 – 4", "Months 5 – 6"],
+  "internship-programme": [
+    "Phase 1 — Foundations",
+    "Phase 2 — Live Client Work",
+    "Phase 3 — Evaluation & Handover",
+  ],
+}
 
-  const foundations: LearnModule = { title: "Foundations", points: t.slice(0, 3) }
-  const core: LearnModule = { title: "Core Skills", points: t.slice(3, 6) }
-  const applied: LearnModule = {
-    title: "Applied Work",
-    points: [...t.slice(6, 8), "Industry standards and code review"],
-  }
-  const liveProject: LearnModule = {
-    title: "Live Client Project",
-    points: [
-      "A brief drawn from Techcadd's own delivery work",
-      "Built under a trainer's supervision",
-      "Reviewed, corrected and shipped",
-    ],
-  }
-  const placement: LearnModule = {
-    title: "Placement Preparation",
-    points: [
-      "Portfolio build and CV review",
-      "Aptitude drills and mock interviews",
-      "Drives with our hiring partner network",
-    ],
-  }
+/** After 12th: the five "1 Year Certificate" slugs get a longer timeline than the "6 Month Certificate" ones. */
+const AFTER_12TH_ONE_YEAR = new Set([
+  "generative-ai",
+  "cloud-computing-devops",
+  "ai-data-science",
+  "machine-learning-deep-learning",
+  "cybersecurity-ethical-hacking",
+])
 
-  return [
-    {
-      months: 3,
-      label: "3 Months",
-      summary: `The core of ${name}, finished with a guided project you can show an employer.`,
-      modules: [
-        foundations,
-        core,
-        {
-          title: "Guided Project",
-          points: [
-            "A first build, scoped so you can finish it",
-            "Daily lab time and code review",
-            "An interview-ready walkthrough of your work",
-          ],
-        },
-      ],
-    },
-    {
-      months: 6,
-      label: "6 Months",
-      summary:
-        "Everything above, plus applied work on a live client account and a documented internship.",
-      modules: [foundations, core, applied, liveProject, placement],
-    },
-    {
-      months: 9,
-      label: "9 Months",
-      summary:
-        "The full track — specialisation, a longer internship and repeated placement drives until you are placed.",
-      modules: [
-        foundations,
-        core,
-        applied,
-        {
-          title: "Specialisation",
-          points: [
-            `Advanced ${name.toLowerCase()} topics chosen with your trainer`,
-            "Performance, scale and production concerns",
-            "Current tooling as the industry adopts it",
-          ],
-        },
-        liveProject,
-        {
-          title: "Extended Internship",
-          points: [
-            "Ongoing work on real client delivery",
-            "A documented internship letter",
-            "A reference from the team you worked with",
-          ],
-        },
-        placement,
-      ],
-    },
-  ]
+/** The duration named in the first FAQ, kept in step with the timeline above it. */
+const DURATION_LABEL: Record<string, string> = {
+  "internship-training/45-days": "45 days",
+  "internship-training/6-weeks": "6 weeks",
+  "internship-training/industrial-training": "6 weeks",
+  "internship-training/4-months": "4 months",
+  "internship-training/6-months": "6 months",
+  "internship-training/internship-programme":
+    "a flexible internship period agreed with the team you join",
+}
+
+/** The week/month/phase timeline a page's modules should follow, or null for the plain "courses" structure. */
+function timelineFor(page: CoursePage): string[] | null {
+  if (page.segment === "internship-training") {
+    return TRAINING_TIMELINES[page.slug] ?? ["Weeks 1 – 2", "Weeks 3 – 4", "Final Weeks"]
+  }
+  if (page.segment === "after-12th-courses") {
+    return AFTER_12TH_ONE_YEAR.has(page.slug)
+      ? ["Months 1 – 3", "Months 4 – 6", "Months 7 – 9", "Months 10 – 12"]
+      : ["Months 1 – 2", "Months 3 – 4", "Months 5 – 6"]
+  }
+  return null
+}
+
+/** One line naming the duration, for the first FAQ. */
+function durationPhraseFor(page: CoursePage, path: string): string {
+  if (page.segment === "courses") return "3 to 6 months depending on the track you choose"
+  return (
+    DURATION_LABEL[path] ?? (page.segment === "after-12th-courses" ? "6 months" : "one fixed duration")
+  )
+}
+
+/**
+ * Spreads the spec's topics across a real timeline instead of the generic
+ * Foundations / Core Skills / Applied Work split — a 4-month internship page
+ * and a 45-day one should not read as the same four modules with the dates
+ * changed underneath them.
+ */
+function buildTimelineModules(spec: CourseSpec, periods: string[]): LearnModule[] {
+  const topics = spec.topics.filter(Boolean)
+  const size = Math.max(1, Math.ceil(topics.length / periods.length))
+
+  return periods.map((label, i) => {
+    const isLast = i === periods.length - 1
+    const slice = topics.slice(i * size, i * size + size)
+    const base = slice.length ? slice : ["Guided practice, review and doubt-clearing sessions"]
+    return {
+      title: label,
+      points: isLast ? [...base, "Live project work and placement preparation"] : base,
+    }
+  })
 }
 
 /** Four deliverables, phrased from the course's own topics. */
@@ -249,13 +240,19 @@ function buildModules(spec: CourseSpec): LearnModule[] {
   return modules
 }
 
-function buildFaqs(name: string, h1: string, spec: CourseSpec, segment: Segment): Faq[] {
+function buildFaqs(
+  name: string,
+  h1: string,
+  spec: CourseSpec,
+  segment: Segment,
+  durationPhrase: string,
+): Faq[] {
   const after12 = segment === "after-12th-courses"
 
   return [
     {
       q: `What is the duration of the ${name} course in Jalandhar?`,
-      a: `Techcadd runs ${name} over 3 to 6 months depending on the track you choose. Weekday, evening and weekend batches cover the same syllabus, with weekend batches taking longer in calendar time. Ask a counsellor which schedule fits your college or work timings.`,
+      a: `Techcadd runs ${name} over ${durationPhrase}. Weekday, evening and weekend batches cover the same syllabus, and 1-on-1 training is available if you would rather set your own pace — every class runs for 2 hours, whichever format you choose.`,
     },
     {
       q: `What is the fee for the ${name} course in Jalandhar?`,
@@ -295,7 +292,7 @@ function buildFaqs(name: string, h1: string, spec: CourseSpec, segment: Segment)
     },
     {
       q: `Are weekend and evening batches available?`,
-      a: `Yes. Techcadd Jalandhar runs weekday, evening and weekend batches in parallel so working professionals and college students can both attend. Book a free demo class to see the lab and meet the trainer before enrolling.`,
+      a: `Yes. Techcadd Jalandhar runs weekday, evening and weekend batches in parallel so working professionals and college students can both attend, and 1-on-1 training is available for a fully personal schedule. Every class — batch or 1-on-1 — runs for 2 hours; book a free demo class to see the lab and meet the trainer before enrolling.`,
     },
   ]
 }
@@ -308,6 +305,8 @@ export function generateContent(
   const spec = COURSE_SPECS[path] ?? GENERIC_SPEC
   const name = page.eyebrow
   const seed = path
+  const timeline = timelineFor(page)
+  const durationPhrase = durationPhraseFor(page, path)
 
   return {
     ...page,
@@ -369,7 +368,7 @@ export function generateContent(
       /* Moved down from the overview when that was cut to one paragraph — the
          local-area names are worth keeping on the page for search, just not in
          the first block a reader meets. */
-      `Students reach the Jalandhar centre from ${LOCAL_AREAS}. Whether you have just finished 12th, are completing a degree at a local college, or are switching from a non-technical job, the course starts at zero — which is why weekday, evening and weekend timings all exist rather than a single fixed slot.`,
+      `Students reach the Jalandhar centre from ${LOCAL_AREAS}. Whether you have just finished 12th, are completing a degree at a local college, or are switching from a non-technical job, the course starts at zero — which is why weekday, evening, weekend and 1-on-1 timings all exist rather than a single fixed slot, with every class running two hours.`,
     ],
 
     whyTechcadd: {
@@ -403,8 +402,10 @@ export function generateContent(
     },
 
     learn: {
-      intro: `The syllabus is arranged so every module produces an asset rather than a set of notes. You will cover ${spec.topics.slice(0, 5).join(", ").toLowerCase()}, and finish with a live project built on ${spec.tools.slice(0, 3).join(", ")}. Modules run in the order a real project runs — foundations first, then the core skills, then applied work under supervision, then the portfolio and interview preparation that turn all of it into an offer letter.`,
-      modules: buildModules(spec),
+      intro: timeline
+        ? `The programme is broken down by the ${page.segment === "internship-training" ? "weeks and months" : "months"} you actually spend on it rather than a generic module list. Early time goes on ${spec.topics.slice(0, 3).join(", ").toLowerCase()}, the middle stretch moves into ${spec.topics.slice(3, 6).join(", ").toLowerCase()}, and the final stretch is live client work, a documented internship letter and placement preparation.`
+        : `The syllabus is arranged so every module produces an asset rather than a set of notes. You will cover ${spec.topics.slice(0, 5).join(", ").toLowerCase()}, and finish with a live project built on ${spec.tools.slice(0, 3).join(", ")}. Modules run in the order a real project runs — foundations first, then the core skills, then applied work under supervision, then the portfolio and interview preparation that turn all of it into an offer letter.`,
+      modules: timeline ? buildTimelineModules(spec, timeline) : buildModules(spec),
       tools: spec.tools,
     },
 
@@ -412,10 +413,14 @@ export function generateContent(
       url: SITE.promoVideo,
       title: `Inside the ${name} course at Techcadd Jalandhar`,
     },
-    tracks: buildTracks(spec, name),
+    /* No generated `tracks` — a duration-comparison stack only makes sense
+       where a student is genuinely choosing between enrolment lengths on the
+       same page (Digital Marketing, Shopify), and those are hand-authored
+       with a real `syllabus`. Every other page now shows one clean modules
+       list, matching /courses/social-media-marketing. */
     projects: buildProjects(spec, name),
     outcomes: buildOutcomes(spec, name),
     reviews: buildReviews(name, seed),
-    faqs: buildFaqs(name, page.h1, spec, page.segment),
+    faqs: buildFaqs(name, page.h1, spec, page.segment, durationPhrase),
   }
 }
