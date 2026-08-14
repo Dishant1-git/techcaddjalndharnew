@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google"
+import { Inter } from "next/font/google"
 import { CursorFollower } from "@/components/cursor-follower"
 import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
@@ -12,23 +12,21 @@ import { jsonLd } from "@/lib/json-ld"
 import { organisationSchema, SITE } from "@/lib/site"
 import "./globals.css"
 
+/*
+  The site's only webfont — body, headings and label text all resolve here.
+  No weight list, so this is the variable file and every weight the design asks
+  for (400 through 700) comes out of it.
+
+  Space Grotesk (`--font-display`) and JetBrains Mono (`--font-mono`) both used
+  to load alongside it and were dropped when those roles moved onto Inter:
+  nothing referenced them any more, and a font that downloads but never paints
+  costs every visitor a request for nothing. To bring either back, add its
+  loader here, put its variable back on <html>, and repoint the matching token
+  in app/globals.css.
+*/
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
-})
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  weight: ["400", "500"],
   display: "swap",
 })
 
@@ -77,7 +75,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      className={inter.variable}
     >
       <body>
         {/* Organisation identity, emitted once for the whole site. */}

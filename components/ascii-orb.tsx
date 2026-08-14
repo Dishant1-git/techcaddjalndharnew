@@ -56,12 +56,15 @@ export function AsciiOrb({ className = "" }: { className?: string }) {
 
     const pts = sphere()
 
-    const monoVar = getComputedStyle(document.documentElement)
-      .getPropertyValue("--font-jetbrains-mono")
-      .trim()
-    const fontFamily = monoVar
-      ? `${monoVar}, ui-monospace, monospace`
-      : "ui-monospace, SFMono-Regular, Menlo, monospace"
+    /*
+      The one thing on the site that must NOT follow the site font. Every cell
+      here is placed on a fixed character grid, so a proportional face — Inter,
+      which `--font-mono` now resolves to — would leave the columns ragged and
+      the sphere would stop reading as a sphere. It asks the platform for a real
+      monospace directly rather than going through the theme token, which is
+      also why dropping the JetBrains Mono webfont did not affect it.
+    */
+    const fontFamily = "ui-monospace, SFMono-Regular, Menlo, monospace"
 
     let w = 0
     let h = 0

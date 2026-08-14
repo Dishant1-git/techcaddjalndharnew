@@ -32,9 +32,22 @@
   --color-accent-500: #0ea5e9;
   --color-accent-glow: #00d4ff;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space-grotesk), var(--font-inter), sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  /*
+    One family for the entire site. `var(--font-inter)` is what next/font emits
+    in app/layout.tsx and expands to exactly `'Inter', 'Inter Fallback'` — the
+    webfont, then the metric-matched local stack Next generates so a swap does
+    not reflow. That second entry is itself the fallback, which is why no
+    ui-sans-serif / system-ui tail is needed behind it.
+
+    All three tokens are kept rather than collapsed into one. `font-display` is
+    on several hundred headings and `font-mono` on ~80 eyebrow labels, so these
+    are the one-line lever for giving either role its own family again later —
+    the previous Space Grotesk (display) and JetBrains Mono (mono) went out this
+    way, and their loaders in app/layout.tsx went with them.
+  */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+  --font-mono: var(--font-inter);
 }
 @layer base {
   * {
