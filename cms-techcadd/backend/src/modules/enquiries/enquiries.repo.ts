@@ -43,6 +43,8 @@ function toEnquiry(row: Row, notes: unknown[]): unknown {
     branchId: row.branch_id ?? undefined,
     branchName: row.branch_name,
     source: row.source,
+    formType: row.form_type ?? undefined,
+    sourceUrl: row.source_url ?? undefined,
     message: row.message ?? undefined,
     status: row.status,
     assigneeId: row.assignee_id ?? undefined,
@@ -155,7 +157,7 @@ async function writeNotes(
 }
 
 const COLUMNS = `student_name, phone, email, course_id, course_name, branch_id, branch_name,
-  source, message, status, assignee_id, follow_up_date`
+  source, form_type, source_url, ip, user_agent, message, status, assignee_id, follow_up_date`
 
 function values(input: EnquiryInput): unknown[] {
   return [
@@ -167,6 +169,10 @@ function values(input: EnquiryInput): unknown[] {
     input.branchId || null,
     input.branchName,
     input.source,
+    input.formType || null,
+    input.sourceUrl || null,
+    input.ip || null,
+    input.userAgent || null,
     input.message || null,
     input.status,
     input.assigneeId || null,

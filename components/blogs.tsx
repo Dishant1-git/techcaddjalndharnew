@@ -2,9 +2,12 @@ import Link from "next/link"
 import { BlogCarousel } from "./blog-carousel"
 import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
-import { formatPostDate, POSTS, type Post } from "@/lib/blogs"
+import { formatPostDate, type Post } from "@/lib/blogs"
+import { loadPosts } from "@/lib/content"
 
-export function Blogs() {
+export async function Blogs() {
+  const posts = await loadPosts()
+
   return (
     <section id="blogs" className="py-20 lg:py-28">
       <Container>
@@ -37,7 +40,7 @@ export function Blogs() {
             The full list still lives on /blogs. */}
         <div data-reveal suppressHydrationWarning className="mt-12 lg:mt-16">
           <BlogCarousel
-            items={POSTS.slice(0, 6).map((post) => (
+            items={posts.slice(0, 6).map((post) => (
               <Card key={post.href} post={post} />
             ))}
           />

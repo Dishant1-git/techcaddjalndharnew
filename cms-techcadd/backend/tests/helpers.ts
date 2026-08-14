@@ -6,6 +6,24 @@ import { createApp } from '../src/app.js'
 import { pool } from '../src/db/pool.js'
 
 /**
+ * These tests truncate tables. Refuse to touch a database that is not obviously
+ * a test one.
+ *
+ * Not a hypothetical: run against the development database, this suite deletes
+ * whatever content is being worked on — twice it has removed published records
+ * mid-task. `npm test` sets DB_NAME itself; this is the guard for every other
+ * way the suite might be started.
+ */
+const databaseName = process.env.DB_NAME ?? ''
+if (!/_test$/.test(databaseName)) {
+  throw new Error(
+    `Refusing to run: DB_NAME is "${databaseName}", which does not end in "_test".\n` +
+      'These tests empty tables. Run them with `npm test`, which points them at a\n' +
+      'throwaway database, or set DB_NAME yourself to one ending in _test.',
+  )
+}
+
+/**
  * The tests drive a real server against the real database.
  *
  * Not mocks: every bug this suite was written from — an id too long for its

@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
-import { formatPostDate, POSTS, type Post } from "@/lib/blogs"
+import { formatPostDate, type Post } from "@/lib/blogs"
+import { loadPosts } from "@/lib/content"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE.url}/blogs` },
 }
 
-export default function BlogsPage() {
+export default async function BlogsPage() {
+  const posts = await loadPosts()
+
   return (
     <main>
       {/*
@@ -58,7 +61,7 @@ export default function BlogsPage() {
             {/* Reads off the list rather than being typed in, so it cannot go
                 stale when a post is added. */}
             <p className="font-mono text-xs text-muted">
-              {POSTS.length} articles
+              {posts.length} articles
             </p>
           </div>
 
@@ -67,7 +70,7 @@ export default function BlogsPage() {
               footer to the bottom, so the meta lines stay on a common baseline
               however long the titles run. */}
           <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3">
-            {POSTS.map((post, index) => (
+            {posts.map((post, index) => (
               <li
                 key={post.href}
                 /* The site-wide scroll reveal: ScrollReveal in the layout adds

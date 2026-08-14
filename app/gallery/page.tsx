@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { GalleryMarquee } from "@/components/gallery-marquee"
-import { GALLERY_TILES } from "@/lib/gallery"
+import { loadGalleryTiles } from "@/lib/content"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE.url}/gallery` },
 }
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const tiles = await loadGalleryTiles()
+
   return (
     <main>
       <section
@@ -68,7 +70,7 @@ export default function GalleryPage() {
         {/* Outside the Container, so the lanes run the full width of the
             viewport rather than the 1304px content column. */}
         <div className="mt-10 lg:mt-14">
-          <GalleryMarquee tiles={GALLERY_TILES} />
+          <GalleryMarquee tiles={tiles} />
         </div>
       </section>
 
