@@ -1,12 +1,15 @@
 export type Post = {
   title: string
   excerpt: string
-  /**
-   * Where the post will live. Nothing renders this as a link today — the posts
-   * have no bodies and there is no /blogs/[slug] route — so it currently serves
-   * only as a stable key. The cards start linking once the posts are real.
-   */
+  /** Where the post lives, and a stable key for the card. */
   href: string
+  /**
+   * Whether there is an article behind the card.
+   *
+   * Posts written in the CMS have a body and a page; the teasers below do not,
+   * so a card built from one must not link — it would be a 404 on every click.
+   */
+  hasArticle?: boolean
   category: string
   /** ISO date — formatted at render time so the markup stays locale-agnostic. */
   date: string

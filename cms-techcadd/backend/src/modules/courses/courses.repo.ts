@@ -38,6 +38,12 @@ function toCourse(row: Row, children: Children): unknown {
     title: row.title,
     slug: row.slug,
     categoryId: row.category_id ?? undefined,
+    segment: row.segment ?? 'courses',
+    tagline: row.tagline ?? undefined,
+    demand: row.demand ?? undefined,
+    careers: (row.careers as string[] | null) ?? [],
+    tools: (row.tools as string[] | null) ?? [],
+    salary: row.salary ?? undefined,
     shortDescription: row.short_description,
     description: row.description,
     duration: row.duration,
@@ -233,7 +239,8 @@ async function writeChildren(
   }
 }
 
-const COLUMNS = `title, slug, category_id, short_description, description, duration, fee,
+const COLUMNS = `title, slug, segment, category_id, short_description, tagline, demand,
+  careers, tools, salary, description, duration, fee,
   discounted_fee, level, mode, thumbnail_id, eligibility, certification, featured, status,
   meta_title, meta_description, meta_keywords, og_image_id, canonical_url`
 
@@ -241,8 +248,14 @@ function columnValues(input: CourseInput): unknown[] {
   return [
     input.title,
     input.slug,
+    input.segment,
     input.categoryId || null,
     input.shortDescription,
+    input.tagline || null,
+    input.demand || null,
+    JSON.stringify(input.careers ?? []),
+    JSON.stringify(input.tools ?? []),
+    input.salary || null,
     input.description,
     input.duration,
     input.fee,

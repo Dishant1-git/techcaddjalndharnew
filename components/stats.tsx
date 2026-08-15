@@ -1,5 +1,6 @@
 import { Container } from "./container"
-import { STATS, type Stat } from "@/lib/stats"
+import { type Stat } from "@/lib/stats"
+import { loadStats } from "@/lib/content"
 
 /**
  * Four thin brand rings, each with a dot travelling its circumference.
@@ -9,7 +10,9 @@ import { STATS, type Stat } from "@/lib/stats"
  * the same trick the technology orbit uses. Durations and negative delays come
  * from the data so no two dots are ever in phase.
  */
-export function Stats() {
+export async function Stats() {
+  const stats = await loadStats()
+
   return (
     <section id="stats" className="py-20 lg:py-28">
       <Container>
@@ -18,7 +21,7 @@ export function Stats() {
           suppressHydrationWarning
           className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-2 lg:py-12"
         >
-          {STATS.map((stat) => (
+          {stats.map((stat) => (
             <Ring key={stat.label} stat={stat} />
           ))}
         </div>

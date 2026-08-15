@@ -2,9 +2,11 @@ import { Container } from "./container"
 import { FaqAccordion } from "./faq-accordion"
 import { ScrollHeading } from "./scroll-heading"
 import Link from "next/link"
-import { HOMEPAGE_FAQS } from "@/lib/faqs"
+import { loadHomepageFaqs } from "@/lib/content"
 
-export function Faq() {
+export async function Faq() {
+  const faqs = await loadHomepageFaqs()
+
   return (
     <section id="faq" className="py-20 lg:py-28">
       <Container>
@@ -21,7 +23,7 @@ export function Faq() {
         </div>
 
         {/* The six most-asked. The rest live on /faq, grouped by topic. */}
-        <FaqAccordion items={HOMEPAGE_FAQS} columns={2} className="mt-12 lg:mt-16" />
+        <FaqAccordion items={faqs} columns={2} className="mt-12 lg:mt-16" />
 
         <Link
           href="/faq"

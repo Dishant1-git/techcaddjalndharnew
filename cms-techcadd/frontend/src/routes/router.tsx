@@ -35,6 +35,10 @@ import {
   SeoPage,
   SettingsPage,
   TestimonialFormPage,
+  FaqsListPage,
+  FaqFormPage,
+  ReviewsListPage,
+  ReviewFormPage,
   TestimonialsListPage,
 } from './lazyPages'
 
@@ -94,6 +98,8 @@ export const router = createBrowserRouter([
       ...crudRoutes('branches', <BranchesListPage />, <BranchFormPage />),
       ...crudRoutes('testimonials', <TestimonialsListPage />, <TestimonialFormPage />),
       ...crudRoutes('gallery', <GalleryListPage />, <AlbumFormPage />),
+      ...crudRoutes('faqs', <FaqsListPage />, <FaqFormPage />),
+      ...crudRoutes('reviews', <ReviewsListPage />, <ReviewFormPage />),
 
       // Enquiries arrive from the public site — no create/edit page, the
       // detail drawer handles everything editable.

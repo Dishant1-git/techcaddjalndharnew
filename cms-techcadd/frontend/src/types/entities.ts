@@ -53,11 +53,21 @@ export interface SyllabusModule {
   hours?: number
 }
 
+export type CourseSegment = 'courses' | 'internship-training' | 'after-12th-courses'
+
 export interface Course extends BaseEntity {
   title: string
   slug: string
+  /** Which part of the site the course belongs to; with the slug, its page key. */
+  segment: CourseSegment
   categoryId?: string
   shortDescription: string
+  /** The copy the public course page is generated from — see migration 013. */
+  tagline?: string
+  demand?: string
+  careers: string[]
+  tools: string[]
+  salary?: string
   description: string
   duration: string
   fee: number
@@ -325,6 +335,17 @@ export interface Integrations {
   recaptchaSecret?: string
 }
 
+/**
+ * One headline figure, e.g. "15k+" / "Students Trained".
+ *
+ * The value is a string because the site prints "15k+" and "98%" — the suffix
+ * carries as much meaning as the digits, and a number field would lose it.
+ */
+export interface SiteStat {
+  value: string
+  label: string
+}
+
 export interface SiteSettings {
   siteName: string
   tagline?: string
@@ -333,6 +354,8 @@ export interface SiteSettings {
   contactEmail?: string
   contactPhone?: string
   address?: string
+  /** The headline figures the homepage and about page print. */
+  stats: SiteStat[]
   social: SocialLinks
   /** Edited from the SEO module. */
   robotsTxt: string
@@ -340,4 +363,39 @@ export interface SiteSettings {
   integrations: Integrations
   /** Stands in for the signed-in user until auth lands. */
   profile: { name: string; email: string }
+}
+
+/* ------------------------------------------------------------------ */
+/* FAQs                                                                 */
+/* ------------------------------------------------------------------ */
+
+export interface Faq extends BaseEntity {
+  question: string
+  answer: string
+  /** Free text: the site groups by whatever categories exist. */
+  category: string
+  order: number
+  /** The homepage shows a short selection rather than every question. */
+  featured: boolean
+  status: ContentStatus
+}
+
+/* ------------------------------------------------------------------ */
+/* Reviews                                                              */
+/* ------------------------------------------------------------------ */
+
+/** Only reviews genuinely left on Google may carry 'google' — the card shows the Google mark. */
+export type ReviewSource = 'google' | 'website' | 'walk-in'
+
+export interface Review extends BaseEntity {
+  authorName: string
+  /** Whole stars, 1–5. */
+  rating: number
+  quote: string
+  /** Month precision, as displayed — "March 2026". */
+  reviewedOn?: string
+  courseName?: string
+  source: ReviewSource
+  order: number
+  status: ContentStatus
 }

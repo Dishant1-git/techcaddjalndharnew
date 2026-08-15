@@ -1,5 +1,5 @@
 import { generateContent } from "./course-content"
-import { COURSE_SPECS } from "./course-specs"
+import { COURSE_SPECS, type CourseSpec } from "./course-specs"
 import {
   AFTER_12TH_GROUPS,
   AI_MENU,
@@ -2752,7 +2752,7 @@ export const COURSE_PAGES: CoursePage[] = [
  * above still render — with a hero, facts and siblings — instead of 404ing
  * while their copy is being written.
  */
-type CatalogueEntry = {
+export type CatalogueEntry = {
   segment: Segment
   slug: string
   label: string
@@ -2935,7 +2935,7 @@ const HERO_IMAGES: Record<string, HeroImage> = {
 }
 
 /** A page for a catalogued slug that has no authored content yet. */
-function stubPage(entry: CatalogueEntry): CoursePage {
+function stubPage(entry: CatalogueEntry, specs: Record<string, CourseSpec> = COURSE_SPECS): CoursePage {
   const copy = SEGMENT_COPY[entry.segment]
   const h1 = copy.heading(entry.label)
 
@@ -2954,7 +2954,7 @@ function stubPage(entry: CatalogueEntry): CoursePage {
     ],
     intro: copy.intro,
     facts: copy.facts,
-    related: relatedFor(entry),
+    related: relatedFor(entry, specs),
   }
 }
 
@@ -2979,9 +2979,9 @@ function stubPage(entry: CatalogueEntry): CoursePage {
  * Same segment only. A course page offering an internship format as a "related
  * course" is answering a different question than the reader asked.
  */
-function relatedFor(entry: CatalogueEntry): string[] {
+function relatedFor(entry: CatalogueEntry, specs: Record<string, CourseSpec> = COURSE_SPECS): string[] {
   const lower = (s: string) => s.toLowerCase()
-  const self = COURSE_SPECS[`${entry.segment}/${entry.slug}`]
+  const self = specs[`${entry.segment}/${entry.slug}`]
   const selfTools = new Set((self?.tools ?? []).map(lower))
   const selfCareers = new Set((self?.careers ?? []).map(lower))
 
@@ -2991,7 +2991,7 @@ function relatedFor(entry: CatalogueEntry): string[] {
       !(e.segment === entry.segment && e.slug === entry.slug),
   )
     .map((e) => {
-      const spec = COURSE_SPECS[`${e.segment}/${e.slug}`]
+      const spec = specs[`${e.segment}/${e.slug}`]
       let score = e.group === entry.group ? 4 : 0
       for (const tool of spec?.tools ?? []) {
         if (selfTools.has(lower(tool))) score += 2
@@ -3047,11 +3047,26 @@ function defined<T extends object>(value: T): Partial<T> {
   ) as Partial<T>
 }
 
-export function getCoursePage(segment: Segment, slug: string) {
-  const entry = CATALOGUE.find((e) => e.segment === segment && e.slug === slug)
+export function getCoursePage(
+  segment: Segment,
+  slug: string,
+  /** The CMS's merged specs, when the caller has them. */
+  specs: Record<string, CourseSpec> = COURSE_SPECS,
+  /**
+   * Courses that exist in the CMS but not in the navigation.
+   *
+   * The built-in catalogue is derived from the menus, which is what stops a nav
+   * link ever pointing at a missing page. A course added in the CMS has no menu
+   * entry yet, so it arrives here instead — same shape, lower precedence, so it
+   * can never shadow an authored page.
+   */
+  extra: CatalogueEntry[] = [],
+) {
+  const matches = (e: CatalogueEntry) => e.segment === segment && e.slug === slug
+  const entry = CATALOGUE.find(matches) ?? extra.find(matches)
   if (!entry) return undefined
 
-  const generated = generateContent(stubPage(entry), `${segment}/${slug}`)
+  const generated = generateContent(stubPage(entry, specs), `${segment}/${slug}`, specs)
 
   // Generated content is the floor, hand-authored copy the override. Layering
   // this way means a page authored before a section existed still gets that
@@ -3069,10 +3084,25 @@ export function pagesInSegment(segment: Segment): CoursePage[] {
   )
 }
 
+/**
+ * Every slug a segment should render, the built-in catalogue plus the CMS.
+ *
+ * Separate from `pagesInSegment` because `generateStaticParams` needs slugs
+ * only, and generating a full page for each one just to read `.slug` off it is
+ * a lot of work to throw away.
+ */
+export function slugsInSegment(segment: Segment, extra: CatalogueEntry[] = []): string[] {
+  const slugs = new Set<string>()
+  for (const entry of [...CATALOGUE, ...extra]) {
+    if (entry.segment === segment) slugs.add(entry.slug)
+  }
+  return [...slugs]
+}
+
 /** Catalogue for a segment, grouped as the navigation groups it. */
-export function groupedSegment(segment: Segment) {
+export function groupedSegment(segment: Segment, extra: CatalogueEntry[] = []) {
   const groups = new Map<string, CatalogueEntry[]>()
-  for (const entry of CATALOGUE) {
+  for (const entry of [...CATALOGUE, ...extra]) {
     if (entry.segment !== segment) continue
     groups.set(entry.group, [...(groups.get(entry.group) ?? []), entry])
   }

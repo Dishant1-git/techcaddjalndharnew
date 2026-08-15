@@ -32,6 +32,17 @@ const integrations = z.object({
 })
 
 /**
+ * A headline figure, e.g. "15+" / "Years of Excellence".
+ *
+ * The value is a string, not a number: the site prints "15k+" and "98%", and
+ * the suffix carries as much meaning as the digits.
+ */
+const stat = z.object({
+  value: z.string().min(1, 'Enter a figure.').max(20, 'Keep figures short — they render large.'),
+  label: z.string().min(1, 'Enter a label.').max(60, 'Keep labels under 60 characters.'),
+})
+
+/**
  * Everything is optional: this is a settings page where each card saves on its
  * own, so a request carries only the section that changed.
  *
@@ -46,6 +57,9 @@ export const settingsPatchSchema = z.object({
   contactEmail: z.union([z.email('Enter a valid email address.'), z.literal('')]).optional(),
   contactPhone: z.string().max(30).optional(),
   address: z.string().optional(),
+  // A list, so it is replaced wholesale rather than merged — otherwise a
+  // deleted row would come back on the next save.
+  stats: z.array(stat).max(8, 'Eight figures is already more than the row can show.').optional(),
   social: social.partial().optional(),
   robotsTxt: z.string().max(10_000, 'That robots.txt is unusually long.').optional(),
   notifications: notifications.partial().optional(),

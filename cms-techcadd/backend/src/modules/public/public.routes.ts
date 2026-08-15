@@ -5,10 +5,13 @@ import { z } from 'zod'
 import { asyncHandler, notFound } from '../../http/errors.js'
 import { query, queryOne, type Row } from '../../db/pool.js'
 import * as blogsRepo from '../blogs/blogs.repo.js'
+import * as categoriesRepo from '../categories/categories.repo.js'
 import * as coursesRepo from '../courses/courses.repo.js'
 import * as enquiriesRepo from '../enquiries/enquiries.repo.js'
+import * as faqsRepo from '../faqs/faqs.repo.js'
 import * as galleryRepo from '../gallery/gallery.repo.js'
 import * as pagesRepo from '../pages/pages.repo.js'
+import * as reviewsRepo from '../reviews/reviews.repo.js'
 import * as testimonialsRepo from '../testimonials/testimonials.repo.js'
 
 /**
@@ -101,6 +104,66 @@ publicRouter.get(
   asyncHandler(async (req, res) => {
     const result = await galleryRepo.list(listParams(limitFrom(req.query.limit, 50)))
     res.json({ items: result.items, total: result.total })
+  }),
+)
+
+publicRouter.get(
+  '/faqs',
+  asyncHandler(async (req, res) => {
+    const result = await faqsRepo.list(listParams(limitFrom(req.query.limit, 100)))
+    res.json({ items: result.items, total: result.total })
+  }),
+)
+
+publicRouter.get(
+  '/reviews',
+  asyncHandler(async (req, res) => {
+    const result = await reviewsRepo.list(listParams(limitFrom(req.query.limit, 50)))
+    res.json({ items: result.items, total: result.total })
+  }),
+)
+
+publicRouter.get(
+  '/categories',
+  asyncHandler(async (req, res) => {
+    const result = await categoriesRepo.list(listParams(limitFrom(req.query.limit, 50)))
+    res.json({ items: result.items, total: result.total })
+  }),
+)
+
+/**
+ * Site-wide facts the marketing pages print.
+ *
+ * A hand-picked subset of the settings row, not the row itself: it also holds
+ * the reCAPTCHA secret and the notification preferences, and this endpoint has
+ * no session behind it.
+ */
+publicRouter.get(
+  '/site',
+  asyncHandler(async (_req, res) => {
+    const row = await queryOne<Row>(
+      'SELECT site_name, tagline, contact_email, contact_phone, address, stats, social FROM settings WHERE id = 1 LIMIT 1',
+    )
+
+    const json = <T,>(value: unknown, fallback: T): T => {
+      if (value === null || value === undefined) return fallback
+      if (typeof value !== 'string') return value as T
+      try {
+        return JSON.parse(value) as T
+      } catch {
+        return fallback
+      }
+    }
+
+    res.json({
+      siteName: row?.site_name ?? '',
+      tagline: row?.tagline ?? undefined,
+      contactEmail: row?.contact_email ?? undefined,
+      contactPhone: row?.contact_phone ?? undefined,
+      address: row?.address ?? undefined,
+      stats: json<{ value: string; label: string }[]>(row?.stats, []),
+      social: json<Record<string, string>>(row?.social, {}),
+    })
   }),
 )
 

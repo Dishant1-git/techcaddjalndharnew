@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
 import { CATALOGUE, COURSE_PAGES } from "@/lib/course-pages"
+import { loadCourseCatalogue } from "@/lib/content"
 import { SITE } from "@/lib/site"
 
 /**
@@ -9,7 +10,7 @@ import { SITE } from "@/lib/site"
  * Pages with authored copy get a higher priority than the stubs, which is the
  * honest signal: they are the ones worth crawling first.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
   const authored = new Set(
@@ -46,7 +47,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             ? 0.6
             : 0.8,
     })),
-    ...CATALOGUE.map((entry) => {
+    // Courses added in the CMS are real pages, so they belong in the sitemap.
+    ...[...CATALOGUE, ...(await loadCourseCatalogue())].map((entry) => {
       const path = `/${entry.segment}/${entry.slug}`
       return {
         url: `${SITE.url}${path}`,

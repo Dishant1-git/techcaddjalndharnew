@@ -9,7 +9,7 @@ import { PanelTexture } from "@/components/panel-texture"
 import { Recognition } from "@/components/recognition"
 import { TimelineProgress } from "@/components/timeline-progress"
 import { SITE } from "@/lib/site"
-import { STATS } from "@/lib/stats"
+import { loadStats } from "@/lib/content"
 
 export const metadata: Metadata = {
   title: "About Techcadd — Our Story, Values and Journey",
@@ -231,7 +231,9 @@ const MILESTONES: Milestone[] = [
   { year: "2026", title: "Today and beyond", body: "New labs, new tracks, and the same rule: you learn it by building it." },
 ]
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const stats = await loadStats()
+
   return (
     <main>
       {/* --- 01 · DARK — hero ------------------------------------------- */}
@@ -269,7 +271,7 @@ export default function AboutPage() {
             suppressHydrationWarning
             className="mt-14 grid gap-x-8 gap-y-9 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4"
           >
-            {STATS.map((stat) => (
+            {stats.map((stat) => (
               <div
                 key={stat.label}
                 className="relative flex flex-col-reverse pl-5"

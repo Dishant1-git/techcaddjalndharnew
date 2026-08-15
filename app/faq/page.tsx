@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { FaqAccordion } from "@/components/faq-accordion"
-import { FAQ_CATEGORIES, FAQS } from "@/lib/faqs"
+import { loadFaqCategories, loadFaqs } from "@/lib/content"
 import { CONTACT } from "@/lib/navigation"
 import { SITE } from "@/lib/site"
 
@@ -14,7 +14,9 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE.url}/faq` },
 }
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const [faqs, categories] = await Promise.all([loadFaqs(), loadFaqCategories()])
+
   return (
     <main>
       <section
@@ -53,8 +55,8 @@ export default function FaqPage() {
       <section className="py-16 lg:py-24">
         <Container>
           <div className="space-y-14 lg:space-y-20">
-            {FAQ_CATEGORIES.map((category) => {
-              const items = FAQS.filter((faq) => faq.category === category)
+            {categories.map((category) => {
+              const items = faqs.filter((faq) => faq.category === category)
               // A category with nothing in it renders nothing, so the page
               // cannot show an empty heading if the data is edited later.
               if (!items.length) return null

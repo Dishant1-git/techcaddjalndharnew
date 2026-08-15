@@ -44,6 +44,7 @@ function defaultSettings(): SiteSettings {
     contactEmail: '',
     contactPhone: '',
     address: '',
+    stats: [],
     social: {},
     robotsTxt: 'User-agent: *\nAllow: /\n\nSitemap: https://techcadd.com/sitemap.xml',
     notifications: { newEnquiryEmail: true, dailyEnquiryDigest: false, contentPublished: false },
