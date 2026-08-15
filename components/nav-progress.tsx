@@ -148,10 +148,6 @@ export function NavProgress() {
       aria-label="Loading page"
     >
       <span className="nav-progress__bar" />
-      <span className="nav-progress__pill">
-        <span className="nav-progress__spinner" aria-hidden="true" />
-        Loading
-      </span>
     </div>
   )
 }

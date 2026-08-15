@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Recaptcha, RECAPTCHA_ENABLED } from "./recaptcha"
+import { Captcha, type CaptchaValue } from "./captcha"
 
 /** How long the thank-you holds before the form returns. */
 const THANK_YOU_MS = 5000
@@ -26,33 +26,34 @@ export function CourseEnquiryForm({
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle")
   const [error, setError] = useState<string | null>(null)
 
-  // The token the widget hands back once the box is ticked. Worthless on its
-  // own — the server posts it to Google before accepting anything.
-  const [token, setToken] = useState<string | null>(null)
+  // The signed challenge and the answer typed against it. Worthless on their
+  // own — the server re-derives the sum and checks the signature.
+  const [captcha, setCaptcha] = useState<CaptchaValue | null>(null)
   const [resetSignal, setResetSignal] = useState(0)
 
-  // A reCAPTCHA token is single-use, so it has to be cleared alongside it.
+  // A solved token is spent server-side, so a rejected submission needs a new
+  // question, not just a cleared answer.
   const resetCaptcha = () => {
-    setToken(null)
+    setCaptcha(null)
     setResetSignal((n) => n + 1)
   }
 
   // The thank-you is a moment, not a dead end: the form comes back so a
   // visitor can ask about another course. It returns empty, with a fresh
-  // checkbox — the spent token cannot be submitted twice.
+  // question — the spent token cannot be submitted twice.
   useEffect(() => {
     if (status !== "done") return
     const timer = window.setTimeout(() => {
       setStatus("idle")
-      setToken(null)
+      setCaptcha(null)
       setResetSignal((n) => n + 1)
     }, THANK_YOU_MS)
     return () => window.clearTimeout(timer)
   }, [status])
 
-  /* With no site key configured there is no widget to tick, so the button
-     stays usable and the server decides — it refuses outright in production. */
-  const verified = !RECAPTCHA_ENABLED || Boolean(token)
+  /* Only that a question has loaded and an answer has been typed — whether it
+     is the right answer is the server's call, never this one's. */
+  const verified = Boolean(captcha)
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -75,7 +76,8 @@ export function CourseEnquiryForm({
           course,
           message: data.get("message"),
           source: source ?? `course:${course}`,
-          recaptchaToken: token,
+          captchaToken: captcha?.token,
+          captchaAnswer: captcha?.answer,
         }),
       })
 
@@ -174,7 +176,11 @@ export function CourseEnquiryForm({
 
       <div className="mb-4">
         <span className="enquiry-label">Security Check</span>
-        <Recaptcha onChange={setToken} resetSignal={resetSignal} />
+        <Captcha
+          onChange={setCaptcha}
+          resetSignal={resetSignal}
+          inputClassName={INPUT}
+        />
       </div>
 
       {error && (

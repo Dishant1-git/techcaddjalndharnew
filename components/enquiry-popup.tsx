@@ -1,7 +1,8 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Recaptcha, RECAPTCHA_ENABLED } from "./recaptcha"
+import { Captcha, type CaptchaValue } from "./captcha"
+import { GoogleMark } from "./google-mark"
 import { COURSE_GROUPS, CONTACT } from "@/lib/navigation"
 
 /** Fires the popup from anywhere — the header button dispatches this. */
@@ -16,6 +17,15 @@ const SCROLL_TRIGGER_PX = 200
 /** Marks the auto-open as spent, so it never nags twice in one session. */
 const SESSION_KEY = "techcadd:enquiry-seen"
 
+/**
+ * Shared by the text fields and the captcha's answer box, so the security
+ * check reads as another field in the form rather than something bolted on.
+ * `text-base` below `sm` is deliberate: iOS zooms the page on focus for
+ * anything under 16px, and a zoomed dialog cannot be scrolled back.
+ */
+const POPUP_INPUT =
+  "w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-base text-white outline-none sm:text-sm placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
+
 export function EnquiryPopup() {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,15 +33,23 @@ export function EnquiryPopup() {
   const dialogRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
 
-  // The token the widget hands back once the box is ticked; single-use, so it
-  // is cleared and the widget reset on every rejection.
-  const [token, setToken] = useState<string | null>(null)
+  // The signed challenge and the answer typed against it; the token is
+  // single-use, so a new question is fetched on every rejection.
+  const [captcha, setCaptcha] = useState<CaptchaValue | null>(null)
   /** Seeded by the CTA's phone field when it opens this popup. */
   const [prefillPhone, setPrefillPhone] = useState("")
   const [resetSignal, setResetSignal] = useState(0)
 
+  /* Kept from the accepted submission so the confirmation can name the person
+     and read the number back to them — the form is unmounted by then, so the
+     fields themselves are gone. */
+  const [submitted, setSubmitted] = useState<{ name: string; phone: string }>({
+    name: "",
+    phone: "",
+  })
+
   const resetCaptcha = useCallback(() => {
-    setToken(null)
+    setCaptcha(null)
     setResetSignal((n) => n + 1)
   }, [])
 
@@ -109,9 +127,17 @@ export function EnquiryPopup() {
 
   if (!open) return null
 
-  /* With no site key configured there is no widget to tick, so the button
-     stays usable and the server decides — it refuses outright in production. */
-  const verified = !RECAPTCHA_ENABLED || Boolean(token)
+  /* Only that a question has loaded and an answer has been typed — whether it
+     is the right answer is the server's call, never this one's. */
+  const verified = Boolean(captcha)
+
+  const done = status === "done"
+  const firstName = submitted.name.trim().split(/\s+/)[0] ?? ""
+  /* Grouped the way the site prints its own number, so the read-back looks
+     like a phone number rather than the ten digits that were typed. */
+  const submittedPhone = /^\d{10}$/.test(submitted.phone)
+    ? `+91 ${submitted.phone.slice(0, 5)} ${submitted.phone.slice(5)}`
+    : submitted.phone
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -132,11 +158,16 @@ export function EnquiryPopup() {
           name: data.get("name"),
           phone: data.get("phone"),
           source: window.location.pathname,
-          recaptchaToken: token,
+          captchaToken: captcha?.token,
+          captchaAnswer: captcha?.answer,
         }),
       })
 
       if (res.ok) {
+        setSubmitted({
+          name: String(data.get("name") ?? ""),
+          phone: String(data.get("phone") ?? ""),
+        })
         setStatus("done")
         return
       }
@@ -185,7 +216,12 @@ export function EnquiryPopup() {
         aria-modal="true"
         aria-labelledby="enquiry-title"
         data-cursor="light"
-        className="animate-menu-in relative grid w-full max-w-4xl overflow-hidden rounded-[1.75rem] text-white shadow-[0_50px_120px_-30px_rgba(0,0,0,0.9)] md:grid-cols-2"
+        /* The confirmation drops the two-column layout: the pitch was there to
+           talk someone into filling the form in, and once they have it is just
+           something standing between them and the answer. */
+        className={`animate-menu-in relative grid w-full overflow-hidden rounded-[1.75rem] text-white shadow-[0_50px_120px_-30px_rgba(0,0,0,0.9)] ${
+          done ? "max-w-lg" : "max-w-4xl md:grid-cols-2"
+        }`}
       >
         <button
           ref={closeRef}
@@ -204,6 +240,98 @@ export function EnquiryPopup() {
           </svg>
         </button>
 
+        {done ? (
+          /* --- Confirmation --- */
+          <div
+            role="status"
+            className="relative isolate overflow-hidden bg-ink px-7 py-14 text-center sm:px-10 sm:py-16"
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-28 left-1/2 -z-10 size-96 -translate-x-1/2 rounded-full bg-brand-600/40 blur-[110px]"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-24 -bottom-32 -z-10 size-80 rounded-full bg-violet-600/30 blur-[110px]"
+            />
+
+            <div className="relative mx-auto grid size-24 place-items-center">
+              {/* Behind the badge, so a ring sweeping past never dims the tick. */}
+              <span
+                aria-hidden="true"
+                className="animate-success-ring absolute inset-0 -z-10 rounded-full border-2 border-lime-300/70"
+              />
+              <span
+                aria-hidden="true"
+                className="animate-success-ring absolute inset-0 -z-10 rounded-full border-2 border-lime-300/40 [animation-delay:0.75s]"
+              />
+              <span className="animate-success-pop grid size-16 place-items-center rounded-full bg-lime-400 text-ink shadow-[0_0_50px_-6px_rgba(163,230,53,0.85)]">
+                <svg viewBox="0 0 24 24" fill="none" className="size-8" aria-hidden="true">
+                  <path
+                    className="animate-tick-draw"
+                    pathLength={1}
+                    d="m6 12.5 4 4 8-9"
+                    stroke="currentColor"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
+
+            <p className="mt-8 text-[11px] font-bold tracking-[0.22em] text-accent-400 uppercase">
+              Enquiry received
+            </p>
+
+            <h2
+              id="enquiry-title"
+              className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl"
+            >
+              {firstName ? `You're in, ${firstName}.` : "You're in."}
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-white/70">
+              Your enquiry is on a counsellor&apos;s desk. We&apos;ll call you
+              {submittedPhone ? " on " : " "}
+              {submittedPhone && (
+                <span className="font-semibold text-white">
+                  {submittedPhone}
+                </span>
+              )}{" "}
+              soon — usually within 5 minutes during working hours.
+            </p>
+
+            <p className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-white/70">
+              {/* `motion-safe:` so the pulse is dropped by the same preference
+                  that cancels the rest of this panel's motion. */}
+              <span className="relative flex size-2" aria-hidden="true">
+                <span className="absolute inline-flex size-full rounded-full bg-lime-400/70 motion-safe:animate-ping" />
+                <span className="relative inline-flex size-2 rounded-full bg-lime-400" />
+              </span>
+              Counsellors are online now
+            </p>
+
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="w-full rounded-full bg-white px-8 py-3.5 text-sm font-bold text-ink transition-colors duration-300 hover:bg-brand-50 sm:w-auto"
+              >
+                Back to the site
+              </button>
+              {/* Impatience is a good sign on an enquiry — the number is right
+                  here rather than one more page away. */}
+              <a
+                href={CONTACT.phoneHref}
+                className="w-full rounded-full border border-white/30 px-8 py-3.5 text-sm font-semibold text-white transition-colors duration-300 hover:bg-white/10 sm:w-auto"
+              >
+                Or call {CONTACT.phone}
+              </a>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* --- Pitch --- */}
         <div className="relative isolate bg-ink p-7 sm:p-9">
           <div
@@ -257,7 +385,7 @@ export function EnquiryPopup() {
 
           <div className="mt-7 flex items-center justify-between gap-4 rounded-2xl bg-white/90 px-5 py-4 text-ink">
             <span className="flex items-center gap-2.5">
-              <GoogleMark />
+              <GoogleMark className="size-5 shrink-0" />
               <span className="inline-flex items-center gap-1.5 text-sm font-bold">
                 Google Verified
                 <VerifiedBadge />
@@ -294,36 +422,6 @@ export function EnquiryPopup() {
           onSubmit={onSubmit}
           className="bg-linear-to-br from-brand-700 via-brand-600 to-violet-700 p-7 sm:p-9"
         >
-          {status === "done" ? (
-            <div className="flex h-full flex-col justify-center py-12 text-center">
-              <span className="mx-auto grid size-14 place-items-center rounded-full bg-lime-400 text-ink">
-                <svg viewBox="0 0 24 24" fill="none" className="size-7" aria-hidden="true">
-                  <path
-                    d="m6 12.5 4 4 8-9"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-              <p className="mt-5 font-display text-2xl font-bold tracking-tight">
-                Thank you!
-              </p>
-              <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-white/80">
-                Your enquiry is in. A counsellor will call you within 5 minutes
-                during working hours.
-              </p>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="mx-auto mt-7 rounded-full bg-white px-7 py-3 text-sm font-bold text-ink transition-colors duration-300 hover:bg-brand-50"
-              >
-                Close
-              </button>
-            </div>
-          ) : (
-            <>
           <p className="pr-10 text-base font-bold sm:text-lg">
             Tell us your goal. We&apos;ll code it into reality.
           </p>
@@ -372,7 +470,7 @@ export function EnquiryPopup() {
               autoComplete="name"
               placeholder="Full Name*"
               aria-label="Full name"
-              className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-base text-white outline-none sm:text-sm placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
+              className={POPUP_INPUT}
             />
 
             {/* `key` on the prefill, not just defaultValue: an uncontrolled
@@ -389,13 +487,17 @@ export function EnquiryPopup() {
               defaultValue={prefillPhone}
               placeholder="Contact Number (10 Digits)*"
               aria-label="Contact number"
-              className="w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-base text-white outline-none sm:text-sm placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
+              className={POPUP_INPUT}
             />
           </div>
 
           <div className="mt-5">
-            <p className="mb-2 text-sm font-medium">Security verification</p>
-            <Recaptcha onChange={setToken} resetSignal={resetSignal} />
+            <Captcha
+              onChange={setCaptcha}
+              resetSignal={resetSignal}
+              label="Security verification"
+              inputClassName={POPUP_INPUT}
+            />
           </div>
 
           {error && (
@@ -440,40 +542,12 @@ export function EnquiryPopup() {
               />
             </svg>
           </button>
-            </>
-          )}
         </form>
+          </>
+        )}
       </div>
       </div>
     </div>
-  )
-}
-
-/**
- * Google's four-colour "G". Drawn inline rather than pulled from simple-icons,
- * which distributes it as a single monochrome path — a one-colour G reads as a
- * generic letter and loses the recognition the badge depends on.
- */
-function GoogleMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-5 shrink-0" aria-hidden="true">
-      <path
-        fill="#4285F4"
-        d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.86c2.26-2.09 3.56-5.17 3.56-8.87Z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24Z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M5.27 14.29a7.2 7.2 0 0 1 0-4.58V6.62H1.29A11.99 11.99 0 0 0 0 12c0 1.94.46 3.77 1.29 5.38l3.98-3.09Z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.7 0 3.99 2.47 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75Z"
-      />
-    </svg>
   )
 }
 

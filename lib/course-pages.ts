@@ -118,6 +118,30 @@ export type CoursePage = {
 }
 
 /**
+ * The two audience groups every course page closes with.
+ *
+ * The first four are written per course, because who they speak to differs —
+ * a Shopify page addresses exporters, an SEO page addresses agency owners.
+ * These two are identical wherever they appear, and deliberately so: the
+ * claims in them are course-independent (every page promises a portfolio, a
+ * documented internship letter and weekly trainer review), so writing six
+ * variations would be six chances to drift.
+ *
+ * They also complete the row. The grid is three across, and four cards left
+ * two dead cells under the second row on every course page.
+ */
+export const COMMON_AUDIENCE: { title: string; body: string }[] = [
+  {
+    title: "Career restarters",
+    body: "A gap on the CV counts for less than work you can point at. The course starts at zero and finishes with a portfolio and a documented internship letter, which is what an interviewer asks about after a break.",
+  },
+  {
+    title: "Self-taught learners",
+    body: "If free videos left you with notes but nothing built, what changes here is a trainer who reviews what you produced this week and a deadline attached to every module.",
+  },
+]
+
+/**
  * Keyword → destination for in-content internal linking.
  *
  * Ordered longest-first at match time so "digital marketing" wins over
@@ -214,6 +238,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Business owners and freelancers",
           body: "Owners take this course to stop outsourcing spend they cannot judge and start running their own Meta and Google accounts. Freelancers and agency founders take the 9-month Expert track specifically for the client-commercial skills — audits, proposals, quotations and GST invoicing — that let them bill clients beyond Punjab.",
         },
+        ...COMMON_AUDIENCE,
       ],
     },
 
@@ -791,6 +816,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Business owners and freelancers",
           body: "Shop owners, coaching-centre operators and clinic owners across Jalandhar are paying agencies monthly for a site they cannot edit themselves. This course teaches you to build, rank and maintain it in-house — including WooCommerce with Indian payments, GST tax classes and courier integration.",
         },
+        ...COMMON_AUDIENCE,
       ],
     },
 
@@ -1197,6 +1223,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Business owners and freelancers",
           body: "A module covers Google Business Profile and the map pack — the highest-converting SEO service in the Indian market, and one you can deliver for a client without ever touching their website.",
         },
+        ...COMMON_AUDIENCE,
       ],
     },
 
@@ -1581,6 +1608,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Business owners and freelancers",
           body: "Coaching institutes, immigration consultancies, clinics and showrooms across Jalandhar are spending monthly on Google Ads without a negative keyword list or verified conversion tracking. This course teaches you to run that account properly, in-house or as a retainer.",
         },
+        ...COMMON_AUDIENCE,
       ],
     },
 
@@ -1918,6 +1946,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Business owners, creators and freelancers",
           body: "Salons, gyms, restaurants, clinics and coaching centres across Jalandhar are all posting inconsistently and boosting posts without tracking. This course replaces both habits with a content system and a properly structured ad account you run yourself.",
         },
+        ...COMMON_AUDIENCE,
       ],
     },
 
@@ -2321,6 +2350,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Business owners, traders and exporters",
           body: "Manufacturers and retailers being asked for a direct-to-consumer channel build it in-house here — Shopify with Razorpay, cash on delivery, GST settings and courier integration, plus the Meta and Google advertising that fills it.",
         },
+        ...COMMON_AUDIENCE,
       ],
     },
 

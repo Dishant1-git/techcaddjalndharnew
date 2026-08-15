@@ -14,7 +14,8 @@ Everything a stranger can reach:
 | Surface | What it does | Controls in front of it |
 | --- | --- | --- |
 | `GET /api/captcha` | Mints a signed arithmetic challenge | Per-IP rate limit, `no-store` |
-| `POST /api/enquiry` | Writes one row to `enquiries` | Origin check → per-IP rate limit → body cap → HMAC captcha → field validation → per-phone/per-IP DB limits → single-use token claim |
+| `POST /api/enquiry` | Writes one row to `enquiries` | Origin check → per-IP rate limit → body cap → HMAC captcha → field validation → single-use token claim → per-phone/per-IP DB limits |
+| `POST /api/brochure` | Writes one row to `enquiries`, returns a generated PDF | The same chain, in the same order — there is no static brochure file and no GET route, so a successful POST is the only way to receive the bytes |
 | Static pages | Prerendered HTML | CSP and the header set below |
 
 There is no login, no cookie, no session, no upload and no user-generated
@@ -43,8 +44,8 @@ there is no session to ride — it stops a third-party page filling your table
 using its own visitors' browsers.
 
 **Rate limiting ahead of the database** — `lib/rate-limit.ts`
-Both routes are capped per address before any parsing or SQL: 30 challenges and
-12 enquiry attempts per 10 minutes. The captcha alone never stopped a determined
+Every route is capped per address before any parsing or SQL: 30 challenges, 12
+enquiry attempts and 10 brochure requests per 10 minutes. The captcha alone never stopped a determined
 bot — solving `4 + 7` is free — it only made each attempt cost a round trip. The
 existing per-phone (3/day) and per-IP (5/hour) database limits still apply
 behind this.

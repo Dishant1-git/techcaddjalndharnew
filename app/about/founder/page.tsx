@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { HeroVideo } from "@/components/hero-video"
-import { TeamMarquee, type TeamMember } from "@/components/team-marquee"
+import { TeamGrid, type TeamMember } from "@/components/team-grid"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
@@ -126,7 +126,7 @@ const FOUNDER_STORY = [
   lib/gallery.ts uses, and for the same reason.
 
   TODO: drop headshots into public/assets/images/team/ and point each member's
-  `photo` at their own file. Set `alt` on the portrait in components/team-marquee.tsx
+  `photo` at their own file. Set `alt` on the portrait in components/team-grid.tsx
   to the person's name at the same time — it is empty today precisely because
   these pictures are not of the people they sit under, and naming them would
   tell a screen reader something untrue.
@@ -691,47 +691,39 @@ export default function FounderPage() {
       </section>
 
       {/*
-        The team.
+        The team, last before the CTA and on the plain ground.
 
-        Last before the CTA, and on the plain ground: the legacy strip above it
-        is `bg-subtle`, so tinting the *section* too would run the two together
-        into a single band with no edge between them. The tint moves onto an
-        inset rounded panel instead, which gives the seam back and frames the
-        two travelling lanes inside it.
-
-        The lanes replace the twelve-cell grid: pill cards that bleed off both
-        edges read as a team that carries on past the frame, and they stay two
-        rows tall at every width — the grid went from six across to two and left
-        a six-row wall of portraits on a phone.
+        The tinted inset panel that used to frame this is gone with the
+        travelling lanes it was built for. A grid needs no frame — the cards
+        are their own edges — and on the plain ground they align with the
+        container gutter like every other section's content.
       */}
       <section className="py-20 lg:py-28">
         <Container>
-          <div className="overflow-hidden rounded-[2rem] border border-line bg-subtle py-14 lg:rounded-[2.5rem] lg:py-20">
-            <div className="mx-auto max-w-3xl px-6 text-center sm:px-10">
-              <span className="inline-grid size-12 place-items-center rounded-2xl border border-line bg-background text-brand-600 shadow-[0_10px_28px_-16px_rgba(15,23,42,0.45)]">
-                <TeamIcon />
-              </span>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-grid size-12 place-items-center rounded-2xl border border-line bg-background text-brand-600 shadow-[0_10px_28px_-16px_rgba(15,23,42,0.45)]">
+              <TeamIcon />
+            </span>
 
-              <h2
-                data-reveal
-                suppressHydrationWarning
-                className="mt-5 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
-              >
-                Meet Our Team
-              </h2>
+            <h2
+              data-reveal
+              suppressHydrationWarning
+              className="mt-5 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
+            >
+              Meet Our Team
+            </h2>
 
-              <p
-                data-reveal
-                suppressHydrationWarning
-                className="mt-4 text-base leading-relaxed text-muted lg:text-lg"
-              >
-                Trainers, mentors and counsellors who keep the classrooms
-                running and the students moving.
-              </p>
-            </div>
-
-            <TeamMarquee members={TEAM} />
+            <p
+              data-reveal
+              suppressHydrationWarning
+              className="mt-4 text-base leading-relaxed text-muted lg:text-lg"
+            >
+              Trainers, mentors and counsellors who keep the classrooms running
+              and the students moving.
+            </p>
           </div>
+
+          <TeamGrid members={TEAM} />
         </Container>
       </section>
 

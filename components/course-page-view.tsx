@@ -205,13 +205,24 @@ export function CoursePageView({ page }: { page: CoursePage }) {
             eyebrow="The case for it"
             lines={["Why this programme", "is worth your year"]}
           />
-          <div className="mt-10 grid gap-x-16 gap-y-5 lg:grid-cols-2">
+          {/*
+            Multi-column flow, not a two-column grid.
+
+            The grid placed paragraphs row by row, so with an odd count the
+            last cell was empty and one column ran a paragraph longer than the
+            other — the two columns ended at visibly different heights. CSS
+            columns balance by height instead, and the text reads down one
+            column and up the next, which is the order these paragraphs were
+            written in. `break-inside-avoid` keeps a paragraph from being split
+            across the fold.
+          */}
+          <div className="mt-10 lg:columns-2 lg:gap-x-16">
             {page.whyProgram.map((para, i) => (
               <RichText
                 key={i}
                 text={para}
                 exclude={self}
-                className="text-base leading-relaxed text-muted lg:text-lg"
+                className="mb-5 break-inside-avoid text-base leading-relaxed text-muted last:mb-0 lg:text-lg"
               />
             ))}
           </div>
@@ -349,11 +360,10 @@ export function CoursePageView({ page }: { page: CoursePage }) {
           Styling lives in globals.css under "HANDS-ON PROJECTS SECTION"; the
           markup below carries only layout and those class names. */}
       {page.projects && page.projects.length > 0 && (
-        <Section id="projects" dark>
+        <Section id="projects">
           <SectionHead
             eyebrow="Portfolio"
             lines={["Hands-on projects", "you will ship"]}
-            dark
           />
 
           {/* Bento: two stacked on the left, two full-height beside them.

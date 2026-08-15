@@ -353,16 +353,18 @@ export default function MissionVisionPage() {
         </Container>
       </section>
 
-      <section data-cursor="light" className="bg-ink py-20 text-white lg:py-28">
+      {/* The lightest of the page's surfaces, which also gives the dark CTA
+          below it a clean edge to start against. */}
+      <section className="bg-subtle py-20 lg:py-28">
         <Container className="text-center">
-          <p className="font-mono text-xs tracking-[0.22em] text-accent-400 uppercase">
+          <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
             Our Future
           </p>
 
           <h2
             data-reveal
             suppressHydrationWarning
-            className="mx-auto mt-5 max-w-3xl font-display text-3xl leading-[1.1] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
+            className="mx-auto mt-5 max-w-3xl font-display text-3xl leading-[1.1] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
           >
             From learning technology to creating technology.
           </h2>
@@ -370,7 +372,7 @@ export default function MissionVisionPage() {
           <p
             data-reveal
             suppressHydrationWarning
-            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/70 lg:text-lg"
+            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted lg:text-lg"
           >
             techcadd aims to keep evolving with emerging fields such as
             Artificial Intelligence, Cloud Computing, Cyber Security, Data

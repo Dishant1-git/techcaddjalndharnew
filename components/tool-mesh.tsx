@@ -152,31 +152,47 @@ function Node({
           "--spin-duration": "5s",
           "--spin-delay": `${-index * 0.55}s`,
           "--spin-from": "#22d3ee",
-          "--spin-to": "#ffffff",
+          /* Was white, which vanished against the white face below. */
+          "--spin-to": "#2563eb",
         } as React.CSSProperties
       }
     >
-      <div className="spin-border__face flex flex-col items-center gap-2 rounded-[0.7rem] bg-[#161b34] px-3 py-3 text-center">
-      {icon?.path ? (
-        <svg
-          viewBox="0 0 24 24"
-          className="size-5 shrink-0"
-          fill={`#${icon.hex}`}
-          role="img"
-          aria-label={name}
-        >
-          <path d={icon.path} />
-        </svg>
-      ) : (
-        <span
-          aria-hidden="true"
-          className="grid size-5 shrink-0 place-items-center rounded bg-white/10 font-display text-[0.6rem] font-bold text-white"
-        >
-          {icon?.mono ?? toolInitials(name)}
-        </span>
-      )}
+      {/*
+        A white face, not the old near-black one.
 
-        <span className="text-[0.7rem] leading-tight font-medium text-white/85">
+        Brand marks are drawn for light ground: half of these — OpenAI, Claude,
+        Anthropic, Next.js, GitHub, Notion — are near-black by definition, so on
+        a dark card they were invisible rather than subtle. Inverting the card
+        is the only fix that works for every logo at once, and it is how every
+        vendor's own press kit expects the mark to be placed.
+      */}
+      <div className="spin-border__face flex flex-col items-center gap-2 rounded-[0.7rem] bg-white px-3 py-3 text-center">
+        {icon?.path ? (
+          <svg
+            viewBox="0 0 24 24"
+            className="size-5 shrink-0"
+            fill={`#${icon.hex}`}
+            role="img"
+            aria-label={name}
+          >
+            <path d={icon.path} />
+          </svg>
+        ) : (
+          /* Lettered chip for brands that ship no reusable mark. Tinted with
+             the brand's own colour so it still reads as that product. */
+          <span
+            aria-hidden="true"
+            className="grid size-5 shrink-0 place-items-center rounded font-display text-[0.6rem] font-bold"
+            style={{
+              color: `#${icon?.hex ?? "1B1F3B"}`,
+              backgroundColor: `#${icon?.hex ?? "1B1F3B"}1a`,
+            }}
+          >
+            {icon?.mono ?? toolInitials(name)}
+          </span>
+        )}
+
+        <span className="text-[0.7rem] leading-tight font-medium text-ink">
           {name}
         </span>
       </div>

@@ -1,5 +1,6 @@
 import { COURSE_SPECS, GENERIC_SPEC, type CourseSpec } from "./course-specs"
 import { SITE } from "./site"
+import { COMMON_AUDIENCE } from "./course-pages"
 import type {
   CoursePage,
   Faq,
@@ -345,7 +346,7 @@ export function generateContent(
     ],
 
     whoCanDo: {
-      intro: `The ${name} course is built for people at four different starting points, and the batch is deliberately mixed. What matters far more than your background is turning up consistently and finishing what each module asks you to build.`,
+      intro: `The ${name} course is built for people at six different starting points, and the batch is deliberately mixed. What matters far more than your background is turning up consistently and finishing what each module asks you to build.`,
       groups: [
         {
           title: "Students after 12th",
@@ -363,6 +364,7 @@ export function generateContent(
           title: "Business owners and freelancers",
           body: `Owners take this course to stop outsourcing work they cannot judge. Freelancers take it to bill clients beyond Punjab — location does not limit remote work in this field.`,
         },
+        ...COMMON_AUDIENCE,
       ],
     },
 

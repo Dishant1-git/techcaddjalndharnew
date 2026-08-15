@@ -1,3 +1,4 @@
+import { GoogleBadge } from "./google-mark"
 import type { Review } from "@/lib/course-pages"
 
 /**
@@ -69,18 +70,18 @@ function Card({ review }: { review: Review }) {
        card against the grain-and-bloom backdrop the section used to carry;
        on plain white it was invisible apart from its shadow. */
     <figure className="group relative mr-6 flex w-[19rem] shrink-0 flex-col justify-between overflow-hidden rounded-2xl border border-line bg-white p-6 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.4)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-[0_28px_60px_-30px_rgba(37,99,235,0.45)] sm:w-[21rem]">
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-6 right-3 font-display text-[7rem] leading-none font-bold text-brand-600/[0.07] select-none"
-      >
-        &rdquo;
-      </span>
-
       <div className="relative">
-        <div className="flex gap-0.5" aria-label="Rated 5 out of 5">
-          {Array.from({ length: 5 }, (_, i) => (
-            <StarIcon key={i} />
-          ))}
+        {/* Stars and source on one line, replacing the oversized decorative
+            quote glyph that used to fill this corner — the same swap the
+            homepage card made, so the two read as one treatment. */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex gap-0.5" aria-label="Rated 5 out of 5">
+            {Array.from({ length: 5 }, (_, i) => (
+              <StarIcon key={i} />
+            ))}
+          </div>
+
+          <GoogleBadge />
         </div>
 
         <blockquote className="mt-5 text-sm leading-relaxed text-foreground/85">

@@ -41,7 +41,8 @@ export type NavItem = {
   /** Pairs with `links` to open the wide two-part panel instead of the compact
    *  dropdown: the links become the category column, these become the cards. */
   featured?: FeaturedCard[]
-  /** Footer link of the mega menu. Defaults to browsing all courses. */
+  /** Footer link of the mega menu, or the closing link under a two-part
+   *  panel's column. Defaults to browsing all courses in the mega menu. */
   cta?: NavLink
   /** "ai" renders the highlighted pill and opens the AI panel instead. */
   variant?: "ai"
@@ -379,6 +380,7 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/about",
     links: ABOUT_LINKS,
     featured: ABOUT_FEATURED,
+    cta: { label: "Talk to a counsellor", href: "/contact" },
   },
   /* The pill is a dropdown trigger, but it still has to go somewhere when
      clicked or followed by a keyboard. /ai was never built; the AI course page
@@ -405,6 +407,7 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/blogs",
     links: RESOURCE_LINKS,
     featured: RESOURCE_FEATURED,
+    cta: { label: "Ask us a question", href: "/contact" },
   },
   { label: "Contact Us", href: "/contact" },
 ]
