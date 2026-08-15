@@ -46,6 +46,16 @@ const schema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
   MAIL_FROM: z.string().default('TechCADD CMS <no-reply@techcadd.com>'),
+
+  /**
+   * Where to tell the website that content changed.
+   *
+   * Both optional: without them the CMS runs exactly as before and the site
+   * picks changes up when its own cache expires. Set them and a publish shows
+   * on the site straight away instead of waiting out that window.
+   */
+  SITE_REVALIDATE_URL: z.string().optional(),
+  REVALIDATE_SECRET: z.string().optional(),
 })
 
 const parsed = schema.safeParse(process.env)

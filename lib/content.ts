@@ -1,3 +1,4 @@
+import { cache } from "react"
 import {
   CmsUnavailableError,
   cmsImageUrl,
@@ -20,6 +21,7 @@ import { COURSE_CATEGORIES, type CourseCategory } from "./categories"
 import { STATS, type Stat } from "./stats"
 import { FAQS, FAQ_CATEGORIES, HOMEPAGE_FAQS, type Faq } from "./faqs"
 import { COURSE_SPECS, GENERIC_SPEC, type CourseSpec } from "./course-specs"
+import { CATALOGUE, COURSE_LABELS, type CatalogueEntry } from "./course-pages"
 import { GALLERY_TILES, type GalleryTile } from "./gallery"
 import { REVIEWS, type GoogleReview } from "./reviews"
 import { TESTIMONIALS, type Testimonial } from "./testimonials"
@@ -109,18 +111,20 @@ function toPost(blog: CmsBlog, index: number): Post {
     date: (blog.publishDate ?? blog.updatedAt).slice(0, 10),
     readTime: readingTime(blog.body ?? ""),
     image: cmsImageUrl(blog.coverImage?.url) ?? fallbackImage(index),
+    // A CMS post has a body, so /blogs/<slug> renders it.
+    hasArticle: true,
     from,
     to,
   }
 }
 
-export function loadPosts(): Promise<Post[]> {
+export const loadPosts = cache(function loadPosts(): Promise<Post[]> {
   return withFallback(
     "blogs",
     async () => (await getBlogs()).items.map(toPost),
     POSTS,
   )
-}
+})
 
 function toTestimonial(item: CmsTestimonial, index: number): Testimonial {
   const { from, to } = gradient(index)
@@ -135,7 +139,7 @@ function toTestimonial(item: CmsTestimonial, index: number): Testimonial {
   }
 }
 
-export function loadTestimonials(): Promise<Testimonial[]> {
+export const loadTestimonials = cache(function loadTestimonials(): Promise<Testimonial[]> {
   return withFallback(
     "testimonials",
     async () => {
@@ -147,7 +151,7 @@ export function loadTestimonials(): Promise<Testimonial[]> {
     },
     TESTIMONIALS,
   )
-}
+})
 
 /** Albums are flattened: the marquee shows photographs, not albums. */
 function toTiles(albums: CmsGalleryAlbum[]): GalleryTile[] {
@@ -159,13 +163,13 @@ function toTiles(albums: CmsGalleryAlbum[]): GalleryTile[] {
   ).filter((tile) => tile.image !== "")
 }
 
-export function loadGalleryTiles(): Promise<GalleryTile[]> {
+export const loadGalleryTiles = cache(function loadGalleryTiles(): Promise<GalleryTile[]> {
   return withFallback(
     "gallery",
     async () => toTiles((await getGalleryAlbums()).items),
     GALLERY_TILES,
   )
-}
+})
 
 /* ------------------------------------------------------------------ */
 /* FAQs                                                                 */
@@ -182,9 +186,9 @@ function toFaq(faq: CmsFaq): Faq {
   }
 }
 
-export function loadFaqs(): Promise<Faq[]> {
+export const loadFaqs = cache(function loadFaqs(): Promise<Faq[]> {
   return withFallback('faqs', async () => (await getFaqs()).items.map(toFaq), FAQS)
-}
+})
 
 /**
  * The sections the FAQ page renders, in order.
@@ -192,7 +196,7 @@ export function loadFaqs(): Promise<Faq[]> {
  * Derived from the questions rather than fixed, so adding a category in the
  * CMS is enough to make the section appear.
  */
-export async function loadFaqCategories(): Promise<string[]> {
+export const loadFaqCategories = cache(async function loadFaqCategories(): Promise<string[]> {
   const faqs = await loadFaqs()
   const seen = new Set<string>()
   const order: string[] = []
@@ -207,10 +211,10 @@ export async function loadFaqCategories(): Promise<string[]> {
   }
 
   return order
-}
+})
 
 /** The homepage shows a short selection, chosen in the CMS by the featured flag. */
-export function loadHomepageFaqs(): Promise<Faq[]> {
+export const loadHomepageFaqs = cache(function loadHomepageFaqs(): Promise<Faq[]> {
   return withFallback(
     'homepage faqs',
     async () => {
@@ -220,7 +224,7 @@ export function loadHomepageFaqs(): Promise<Faq[]> {
     },
     HOMEPAGE_FAQS,
   )
-}
+})
 
 /* ------------------------------------------------------------------ */
 /* Reviews                                                              */
@@ -245,14 +249,14 @@ function toReview(review: CmsReview): GoogleReview {
  * about where the review came from. A walk-in comment rendered with that badge
  * would be a small lie, so the others are filtered out rather than relabelled.
  */
-export function loadReviews(): Promise<GoogleReview[]> {
+export const loadReviews = cache(function loadReviews(): Promise<GoogleReview[]> {
   return withFallback(
     "reviews",
     async () =>
       (await getReviews()).items.filter((review) => review.source === "google").map(toReview),
     REVIEWS,
   )
-}
+})
 
 /* ------------------------------------------------------------------ */
 /* Headline figures                                                     */
@@ -267,7 +271,7 @@ export function loadReviews(): Promise<GoogleReview[]> {
  * should have to make in a settings form. They are cycled by position instead,
  * so a fifth figure gets sensible motion for free.
  */
-export async function loadStats(): Promise<Stat[]> {
+export const loadStats = cache(async function loadStats(): Promise<Stat[]> {
   const presentation = STATS.map(({ duration, offset, lift, size }) => ({
     duration,
     offset,
@@ -287,7 +291,7 @@ export async function loadStats(): Promise<Stat[]> {
     },
     STATS,
   )
-}
+})
 
 /* ------------------------------------------------------------------ */
 /* Course categories                                                    */
@@ -304,7 +308,7 @@ export async function loadStats(): Promise<Stat[]> {
  * accent colour wins when one is set — that is a deliberate choice an editor
  * made, unlike the fallback.
  */
-export function loadCourseCategories(): Promise<CourseCategory[]> {
+export const loadCourseCategories = cache(function loadCourseCategories(): Promise<CourseCategory[]> {
   return withFallback(
     "categories",
     async () => {
@@ -329,7 +333,7 @@ export function loadCourseCategories(): Promise<CourseCategory[]> {
     },
     COURSE_CATEGORIES,
   )
-}
+})
 
 /** Fallback cover treatments for categories the site has no art for. */
 const CATEGORY_GRADIENTS = [
@@ -346,6 +350,63 @@ const CATEGORY_GRADIENTS = [
 /* ------------------------------------------------------------------ */
 
 /**
+ * Courses that exist in the CMS but not in the site's navigation.
+ *
+ * Without this a course created in the CMS has no page at all: the built-in
+ * catalogue is derived from the menus, so a course nobody has added a menu link
+ * for is invisible to the router and 404s. These entries give it a route, a
+ * listing card and a sitemap line; editing the menus is still how it gets into
+ * the dropdown.
+ */
+export const loadCourseCatalogue = cache(async function loadCourseCatalogue(): Promise<CatalogueEntry[]> {
+  try {
+    const { items } = await getCourses(100)
+
+    return items
+      // An authored page always wins. The built-in entry carries the menu
+      // group it belongs to, which the CMS does not know about.
+      .filter(
+        (course) =>
+          !CATALOGUE.some((e) => e.segment === course.segment && e.slug === course.slug),
+      )
+      .map((course) => ({
+        segment: course.segment,
+        slug: course.slug,
+        label: course.title,
+        group: "More courses",
+      }))
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn("[content] course catalogue: using built-in content —", error.message)
+    } else {
+      console.error("[content] course catalogue failed:", error)
+    }
+    return []
+  }
+})
+
+/**
+ * Whether a course name may be submitted on an enquiry or brochure form.
+ *
+ * The built-in set is derived from the navigation; a course added in the CMS is
+ * not in it, so without this check its own enquiry form would be rejected by
+ * the API that the page itself points at.
+ */
+export const isKnownCourseLabel = cache(async function isKnownCourseLabel(label: string): Promise<boolean> {
+  if (COURSE_LABELS.has(label)) return true
+
+  try {
+    const { items } = await getCourses(100)
+    return items.some((course) => course.title === label)
+  } catch {
+    // The CMS being down must not start rejecting enquiries for built-in
+    // courses — those already returned true above — so fail closed only for
+    // the names we genuinely cannot confirm.
+    return false
+  }
+})
+
+/**
  * The specs each course page is generated from, with the CMS taking priority.
  *
  * Merged over the checked-in specs rather than replacing them: a course whose
@@ -354,7 +415,7 @@ const CATEGORY_GRADIENTS = [
  * fields an editor actually filled in are taken, so a half-completed record
  * cannot blank a tagline that was already written.
  */
-export async function loadCourseSpecs(): Promise<Record<string, CourseSpec>> {
+export const loadCourseSpecs = cache(async function loadCourseSpecs(): Promise<Record<string, CourseSpec>> {
   try {
     const { items } = await getCourses(100)
     const merged: Record<string, CourseSpec> = { ...COURSE_SPECS }
@@ -382,4 +443,4 @@ export async function loadCourseSpecs(): Promise<Record<string, CourseSpec>> {
     }
     return COURSE_SPECS
   }
-}
+})

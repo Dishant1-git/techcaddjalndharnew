@@ -141,7 +141,7 @@ export function Hero() {
                   <span className="block text-white">
                     In AI &amp; Software
                     <span
-                      className="mx-3 inline-flex h-[0.78em] w-[1.5em] translate-y-[0.08em] items-center justify-center rounded-[0.28em] bg-gradient-to-br from-brand-400 via-brand-600 to-accent-500 align-middle font-mono text-[0.34em] font-bold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.9)]"
+                      className="mx-3 inline-flex h-[0.78em] w-[1.5em] translate-y-[0.08em] items-center justify-center rounded-[0.28em] bg-linear-to-br from-brand-400 via-brand-600 to-accent-500 align-middle font-mono text-[0.34em] font-bold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.9)]"
                       aria-hidden="true"
                     >
                       &lt;/&gt;
@@ -201,7 +201,7 @@ export function Hero() {
                   {muted ? (
                     <svg
                       viewBox="0 0 24 24"
-                      className="size-3.5 translate-x-[1px] fill-white"
+                      className="size-3.5 translate-x-px fill-white"
                       aria-hidden="true"
                     >
                       <path d="M8 5.5v13l11-6.5-11-6.5Z" />
@@ -216,7 +216,7 @@ export function Hero() {
                     </svg>
                   )}
                 </button>
-                <div className="max-w-[190px]">
+                <div className="max-w-47.5">
                   <p className="text-sm font-medium text-white">See Preview</p>
                   <p className="mt-1 text-xs leading-relaxed text-white/70">
                     A quick look inside the labs, the mentors and a live batch in

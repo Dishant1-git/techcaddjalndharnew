@@ -2705,7 +2705,7 @@ export const COURSE_PAGES: CoursePage[] = [
  * above still render — with a hero, facts and siblings — instead of 404ing
  * while their copy is being written.
  */
-type CatalogueEntry = {
+export type CatalogueEntry = {
   segment: Segment
   slug: string
   label: string
@@ -2910,8 +2910,18 @@ export function getCoursePage(
   slug: string,
   /** The CMS's merged specs, when the caller has them. */
   specs: Record<string, CourseSpec> = COURSE_SPECS,
+  /**
+   * Courses that exist in the CMS but not in the navigation.
+   *
+   * The built-in catalogue is derived from the menus, which is what stops a nav
+   * link ever pointing at a missing page. A course added in the CMS has no menu
+   * entry yet, so it arrives here instead — same shape, lower precedence, so it
+   * can never shadow an authored page.
+   */
+  extra: CatalogueEntry[] = [],
 ) {
-  const entry = CATALOGUE.find((e) => e.segment === segment && e.slug === slug)
+  const matches = (e: CatalogueEntry) => e.segment === segment && e.slug === slug
+  const entry = CATALOGUE.find(matches) ?? extra.find(matches)
   if (!entry) return undefined
 
   const generated = generateContent(stubPage(entry, specs), `${segment}/${slug}`, specs)
@@ -2932,10 +2942,25 @@ export function pagesInSegment(segment: Segment): CoursePage[] {
   )
 }
 
+/**
+ * Every slug a segment should render, the built-in catalogue plus the CMS.
+ *
+ * Separate from `pagesInSegment` because `generateStaticParams` needs slugs
+ * only, and generating a full page for each one just to read `.slug` off it is
+ * a lot of work to throw away.
+ */
+export function slugsInSegment(segment: Segment, extra: CatalogueEntry[] = []): string[] {
+  const slugs = new Set<string>()
+  for (const entry of [...CATALOGUE, ...extra]) {
+    if (entry.segment === segment) slugs.add(entry.slug)
+  }
+  return [...slugs]
+}
+
 /** Catalogue for a segment, grouped as the navigation groups it. */
-export function groupedSegment(segment: Segment) {
+export function groupedSegment(segment: Segment, extra: CatalogueEntry[] = []) {
   const groups = new Map<string, CatalogueEntry[]>()
-  for (const entry of CATALOGUE) {
+  for (const entry of [...CATALOGUE, ...extra]) {
     if (entry.segment !== segment) continue
     groups.set(entry.group, [...(groups.get(entry.group) ?? []), entry])
   }

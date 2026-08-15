@@ -3,7 +3,7 @@ import { CourseFinder } from "./course-finder"
 import { EnquireButton } from "./enquire-button"
 import { PanelTexture } from "./panel-texture"
 import { courseMark } from "@/lib/course-icons"
-import { groupedSegment, type Segment } from "@/lib/course-pages"
+import { groupedSegment, type CatalogueEntry, type Segment } from "@/lib/course-pages"
 import { groupSlug } from "@/lib/navigation"
 
 export const SEGMENT_INDEX: Record<
@@ -39,7 +39,14 @@ export const SEGMENT_INDEX: Record<
   },
 }
 
-export function SegmentIndexView({ segment }: { segment: Segment }) {
+export function SegmentIndexView({
+  segment,
+  /** Courses that exist only in the CMS — see loadCourseCatalogue. */
+  extra = [],
+}: {
+  segment: Segment
+  extra?: CatalogueEntry[]
+}) {
   const copy = SEGMENT_INDEX[segment]
 
   /*
@@ -47,7 +54,7 @@ export function SegmentIndexView({ segment }: { segment: Segment }) {
     Resolving them inside CourseFinder would drag the whole simple-icons index
     into the browser bundle to produce about thirty paths.
   */
-  const groups = groupedSegment(segment).map(([title, entries]) => ({
+  const groups = groupedSegment(segment, extra).map(([title, entries]) => ({
     title,
     id: groupSlug(title),
     entries: entries.map((entry) => ({

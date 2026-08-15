@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { COURSE_LABELS } from "@/lib/course-pages"
+
 import { verifyRecaptcha } from "@/lib/recaptcha"
 import {
   ensureTable,
@@ -8,6 +8,7 @@ import {
   saveEnquiry,
 } from "@/lib/enquiries"
 import { submitEnquiry } from "@/lib/cms"
+import { isKnownCourseLabel } from "@/lib/content"
 import { rateLimit } from "@/lib/rate-limit"
 import { clientIp, isTrustedOrigin } from "@/lib/request-guard"
 import { clean } from "@/lib/sanitize"
@@ -38,9 +39,9 @@ type Fields = {
 }
 
 /** Rejects the obvious junk before anything downstream sees it. */
-function validate(
+async function validate(
   body: Record<string, unknown>,
-): { error: string } | { fields: Fields } {
+): Promise<{ error: string } | { fields: Fields }> {
   const name = clean(body.name)
   const phone = clean(body.phone)
   const course = clean(body.course)
@@ -54,7 +55,10 @@ function validate(
   // The course-page form locks this field in the UI, but the lock is only
   // real once the server refuses anything outside the catalogue.
   if (!course) return { error: "Please choose a course." }
-  if (!COURSE_LABELS.has(course))
+  // Checked against the CMS as well as the built-in menus: a course created in
+  // the CMS renders its own enquiry form, and validating against the menus
+  // alone would have that form rejected by the API it posts to.
+  if (!(await isKnownCourseLabel(course)))
     return { error: "That course is not one we run." }
 
   if (message.length > MAX_MESSAGE)
@@ -118,7 +122,7 @@ export async function POST(request: Request) {
     before validating would spend the visitor's tick on a submission that then
     fails on a mistyped phone number, forcing them to solve it again.
   */
-  const checked = validate(body)
+  const checked = await validate(body)
   if ("error" in checked) return bad(checked.error)
 
   let verification

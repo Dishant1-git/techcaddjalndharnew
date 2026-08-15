@@ -7,8 +7,25 @@
  */
 const BASE = (process.env.CMS_API_URL ?? "http://localhost:4000/api").replace(/\/$/, "")
 
-/** How long a content response may be reused before it is fetched again. */
-const CONTENT_TTL_SECONDS = Number(process.env.CMS_CACHE_SECONDS ?? 60)
+/**
+ * How long a content response may be reused before it is fetched again.
+ *
+ * Zero in development: the whole point of running the CMS locally is to see an
+ * edit immediately, and waiting out a cache window reads as the site being
+ * broken. In production the cache is what keeps a marketing page off the
+ * database on every request — and `/api/revalidate` clears it the moment
+ * something is published, so the window is a backstop rather than the
+ * mechanism.
+ */
+const CONTENT_TTL_SECONDS =
+  process.env.CMS_CACHE_SECONDS !== undefined
+    ? Number(process.env.CMS_CACHE_SECONDS)
+    : process.env.NODE_ENV === "production"
+      ? 300
+      : 0
+
+/** Lets `/api/revalidate` drop every cached CMS response in one call. */
+export const CMS_CACHE_TAG = "cms"
 
 /** A slow CMS should degrade the page, not hold the request open. */
 const TIMEOUT_MS = Number(process.env.CMS_TIMEOUT_MS ?? 4000)
@@ -39,10 +56,11 @@ async function cmsFetch<T>(path: string, options: FetchOptions = {}): Promise<T>
       headers: body === undefined ? undefined : { "content-type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,
-      // A POST is never cached; a GET is revalidated on Next's schedule.
+      // A POST is never cached; a GET is revalidated on Next's schedule and
+      // tagged so a publish can drop the lot without waiting for it.
       ...(method === "POST" || revalidate === 0
         ? { cache: "no-store" as const }
-        : { next: { revalidate } }),
+        : { next: { revalidate, tags: [CMS_CACHE_TAG] } }),
     })
 
     if (!response.ok) {
@@ -158,6 +176,28 @@ export interface CmsCategory {
   order: number
 }
 
+/** A standalone page written in the CMS — policies, notices, landing copy. */
+export interface CmsPage {
+  id: string
+  title: string
+  slug: string
+  template: string
+  content: string
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+    keywords?: string[]
+    canonicalUrl?: string
+  }
+}
+
+export interface CmsRedirect {
+  from_path: string
+  to_path: string
+  /** 301 or 302. */
+  type: number
+}
+
 /** Site-wide facts, from the settings row. */
 export interface CmsSite {
   siteName: string
@@ -198,6 +238,12 @@ export const getReviews = (limit = 50) =>
 
 export const getCourses = (limit = 50) =>
   cmsFetch<ListResponse<CmsCourse>>(`/public/courses?limit=${limit}`)
+
+export const getPage = (slug: string) =>
+  cmsFetch<CmsPage>(`/public/pages/${encodeURIComponent(slug)}`)
+
+export const getRedirects = () =>
+  cmsFetch<ListResponse<CmsRedirect>>("/public/redirects", { revalidate: 300 })
 
 export const getCategories = (limit = 50) =>
   cmsFetch<ListResponse<CmsCategory>>(`/public/categories?limit=${limit}`)

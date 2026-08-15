@@ -5,6 +5,7 @@ import helmet from 'helmet'
 
 import { config } from './config.js'
 import { errorHandler } from './http/errors.js'
+import { revalidateSite } from './http/revalidate.js'
 import { attachUser } from './middleware/auth.js'
 import { authRouter } from './modules/auth/auth.routes.js'
 import { bannersRouter } from './modules/banners/banners.routes.js'
@@ -71,6 +72,10 @@ export function createApp() {
 
   // Resolves req.user when a session cookie is present; never rejects.
   app.use(attachUser)
+
+  // Pings the website's cache after a successful content change. Runs after
+  // the response, so it can neither slow a save nor fail one.
+  app.use(revalidateSite)
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok', env: config.NODE_ENV })

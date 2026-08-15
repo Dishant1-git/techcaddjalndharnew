@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { CoursePageView } from "@/components/course-page-view"
 import { SegmentIndexView, SEGMENT_INDEX } from "@/components/segment-index-view"
-import { loadCourseSpecs } from "./content"
-import { getCoursePage, hrefFor, pagesInSegment, type Segment } from "./course-pages"
+import { loadCourseCatalogue, loadCourseSpecs } from "./content"
+import { getCoursePage, hrefFor, slugsInSegment, type Segment } from "./course-pages"
 import { jsonLd } from "./json-ld"
 
 /**
@@ -14,12 +14,17 @@ import { jsonLd } from "./json-ld"
 
 const SITE = "https://techcadd.com"
 
-export function paramsFor(segment: Segment) {
-  return pagesInSegment(segment).map((page) => ({ slug: page.slug }))
+export async function paramsFor(segment: Segment) {
+  return slugsInSegment(segment, await loadCourseCatalogue()).map((slug) => ({ slug }))
 }
 
 export async function metadataFor(segment: Segment, slug: string): Promise<Metadata> {
-  const page = getCoursePage(segment, slug, await loadCourseSpecs())
+  const page = getCoursePage(
+    segment,
+    slug,
+    await loadCourseSpecs(),
+    await loadCourseCatalogue(),
+  )
   if (!page) return {}
 
   const url = `${SITE}${hrefFor(page)}`
@@ -57,7 +62,7 @@ export function indexMetadataFor(segment: Segment): Metadata {
   }
 }
 
-export function SegmentIndexRoute({ segment }: { segment: Segment }) {
+export async function SegmentIndexRoute({ segment }: { segment: Segment }) {
   const copy = SEGMENT_INDEX[segment]
 
   const schema = {
@@ -76,7 +81,7 @@ export function SegmentIndexRoute({ segment }: { segment: Segment }) {
         dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
       />
       <main>
-        <SegmentIndexView segment={segment} />
+        <SegmentIndexView segment={segment} extra={await loadCourseCatalogue()} />
       </main>
     </>
   )
@@ -89,7 +94,12 @@ export async function CourseRoute({
   segment: Segment
   slug: string
 }) {
-  const page = getCoursePage(segment, slug, await loadCourseSpecs())
+  const page = getCoursePage(
+    segment,
+    slug,
+    await loadCourseSpecs(),
+    await loadCourseCatalogue(),
+  )
   if (!page) notFound()
 
   const url = `${SITE}${hrefFor(page)}`

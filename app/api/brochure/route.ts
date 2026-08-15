@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
-import { CATALOGUE, COURSE_LABELS, getCoursePage } from "@/lib/course-pages"
+import { CATALOGUE, getCoursePage } from "@/lib/course-pages"
+import { isKnownCourseLabel, loadCourseCatalogue, loadCourseSpecs } from "@/lib/content"
 import { renderBrochurePdf } from "@/lib/brochure-pdf"
 import { verifyRecaptcha } from "@/lib/recaptcha"
 import {
@@ -41,9 +42,9 @@ type Fields = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-function validate(
+async function validate(
   body: Record<string, unknown>,
-): { error: string } | { fields: Fields } {
+): Promise<{ error: string } | { fields: Fields }> {
   const name = clean(body.name)
   const email = clean(body.email)
   const phone = clean(body.phone)
@@ -60,7 +61,8 @@ function validate(
   // The form locks this field to whichever course page it was opened from,
   // but that lock is only real once the server refuses anything else.
   if (!course) return { error: "Please choose a course." }
-  if (!COURSE_LABELS.has(course))
+  // The CMS as well as the built-in menus — see the note in the enquiry route.
+  if (!(await isKnownCourseLabel(course)))
     return { error: "That course is not one we run." }
 
   if (address.length < 5 || address.length > 300)
@@ -107,13 +109,23 @@ export async function POST(request: Request) {
 
   if (!body || typeof body !== "object") return bad("Malformed request.")
 
-  const checked = validate(body)
+  const checked = await validate(body)
   if ("error" in checked) return bad(checked.error)
 
-  // Resolved from the same catalogue the course field was checked against —
-  // COURSE_LABELS.has(course) already guarantees this find succeeds.
-  const entry = CATALOGUE.find((e) => e.label === checked.fields.course)!
-  const coursePage = getCoursePage(entry.segment, entry.slug)!
+  // Resolved from the same two catalogues the course field was checked
+  // against, in the same order, so the lookup cannot disagree with the check.
+  const extra = await loadCourseCatalogue()
+  const byLabel = (e: { label: string }) => e.label === checked.fields.course
+  const entry = CATALOGUE.find(byLabel) ?? extra.find(byLabel)
+  if (!entry) return bad("That course is not one we run.")
+
+  const coursePage = getCoursePage(
+    entry.segment,
+    entry.slug,
+    await loadCourseSpecs(),
+    extra,
+  )
+  if (!coursePage) return bad("That course is not one we run.")
 
   let verification
   try {

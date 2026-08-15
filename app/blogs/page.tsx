@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import Link from "next/link"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { formatPostDate, type Post } from "@/lib/blogs"
@@ -107,14 +108,13 @@ export default async function BlogsPage() {
 /**
  * Cover photograph above, copy below.
  *
- * Deliberately not a link, and with no "Read article" affordance: POSTS holds
- * teasers only — there are no article bodies and no /blogs/[slug] route behind
- * them, so linking would send every card to a 404. Wrap the title in a Link to
- * `post.href` the moment the posts themselves exist.
+ * The title links only when there is an article behind it. Posts written in
+ * the CMS have a body and a page; the checked-in teasers in lib/blogs.ts do
+ * not, and linking one would be a 404 on every click.
  */
 function PostCard({ post, priority }: { post: Post; priority?: boolean }) {
   return (
-    <article className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-white">
+    <article className="relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-white transition-colors hover:border-brand-300">
       <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-subtle">
         {/* Decorative: the title below carries the meaning, so alt text here
             would only repeat it. */}
@@ -143,7 +143,15 @@ function PostCard({ post, priority }: { post: Post; priority?: boolean }) {
         </div>
 
         <h2 className="mt-3 font-display text-lg leading-snug font-bold tracking-tight text-balance">
-          {post.title}
+          {post.hasArticle ? (
+            /* Stretched over the whole card, so the click target is the card
+               rather than the two lines of the heading. */
+            <Link href={post.href} className="after:absolute after:inset-0 hover:text-brand-600">
+              {post.title}
+            </Link>
+          ) : (
+            post.title
+          )}
         </h2>
 
         {/* `flex-1` pushes nothing below it, but it is what makes every card in
