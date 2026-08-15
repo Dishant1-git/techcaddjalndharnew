@@ -78,6 +78,18 @@ export type Project = { title: string; body: string; tags: string[] }
 /** Career-outcome questions, rendered in the same accordion as the FAQs. */
 export type Outcome = { q: string; a: string }
 
+/**
+ * Transparent hero artwork. Intrinsic dimensions are carried with the src so
+ * the hero reserves the right box before the image loads — a course hero is
+ * above the fold, and a late-arriving illustration would shift the H1.
+ */
+export type HeroImage = {
+  src: string
+  alt: string
+  width: number
+  height: number
+}
+
 export type CoursePage = {
   slug: string
   segment: Segment
@@ -91,6 +103,11 @@ export type CoursePage = {
   /** Lead paragraph in the hero. */
   intro: string
   facts: Fact[]
+  /**
+   * Cut-out artwork beside the hero copy. Optional and rare — most pages have
+   * no illustration, and the hero stays full-width text without one.
+   */
+  heroImage?: HeroImage
 
   // --- Sections, authored in stages ---
   /** YouTube URL for the walkthrough popup. */
@@ -2823,12 +2840,107 @@ const SEGMENT_COPY: Record<
   },
 }
 
+/**
+ * Hero artwork, keyed by `segment/slug`.
+ *
+ * Keyed rather than authored inline on the page entry because most of these
+ * slugs — Python among them — have no entry in COURSE_PAGES at all: their copy
+ * is generated. A slug missing from this map simply gets the text-only hero.
+ */
+const HERO_IMAGES: Record<string, HeroImage> = {
+  "courses/python": {
+    src: "/assets/images/courses/python-hero.webp",
+    alt: "The Python logo wired to the tools the course covers — APIs, databases, cloud services, automation and testing",
+    width: 1468,
+    height: 828,
+  },
+  "courses/java": {
+    src: "/assets/images/courses/java-hero.webp",
+    alt: "The Java logo on a lit podium beside a laptop running a Hello World class, with the course's core topics — OOPs, collections, multithreading and exception handling",
+    width: 1307,
+    height: 896,
+  },
+  "courses/agentic-ai": {
+    src: "/assets/images/courses/agentic-ai-hero.webp",
+    alt: "A neon agent workflow graph branching from Start through a condition and two actions",
+    width: 1600,
+    height: 900,
+  },
+  "courses/c-cpp": {
+    src: "/assets/images/courses/c-cpp-hero.webp",
+    alt: "C and C++ logos on a lit podium beside a laptop compiling a Hello World program, with the course's topics — console applications, DSA, OOPs, file handling and system programming",
+    width: 1409,
+    height: 937,
+  },
+  "courses/kotlin": {
+    src: "/assets/images/courses/kotlin-hero.webp",
+    alt: "The Kotlin logo on a lit podium beside a phone running an Android app and a laptop with a Hello World function, with the course's topics — Android development, OOPs, coroutines and Jetpack",
+    width: 1473,
+    height: 949,
+  },
+  "courses/mern-stack": {
+    src: "/assets/images/courses/mern-stack-hero.webp",
+    alt: "A MERN stack workspace — a laptop running a React app beside its dashboard and a phone build, ringed by the MongoDB, Express, React and Node.js logos",
+    width: 1496,
+    height: 1011,
+  },
+  "courses/mean-stack": {
+    src: "/assets/images/courses/mean-stack-hero.webp",
+    alt: "A MEAN stack workspace — a laptop running an Angular app beside its dashboard and a phone build, ringed by the MongoDB, Express, Angular and Node.js logos",
+    width: 1524,
+    height: 1024,
+  },
+  "courses/web-designing": {
+    src: "/assets/images/courses/web-designing-hero.webp",
+    alt: "A web design desk — a laptop showing a landing page beside its markup, a wireframing window, a drawing tablet and books on HTML & CSS, JavaScript, Bootstrap and Tailwind",
+    width: 1509,
+    height: 1004,
+  },
+  "courses/web-development": {
+    src: "/assets/images/courses/web-development-hero.webp",
+    alt: "A web development desk — a monitor showing code beside the site it builds, a laptop running React, and a phone preview, ringed by the HTML, CSS, JavaScript, React and Node.js logos",
+    width: 1536,
+    height: 1024,
+  },
+  "courses/php-full-stack": {
+    src: "/assets/images/courses/php-full-stack-hero.webp",
+    alt: "A PHP full-stack workspace — a laptop showing index.php beside the site it renders, ringed by the PHP, MySQL, Apache, HTML, CSS and JavaScript logos",
+    width: 1536,
+    height: 1009,
+  },
+  "courses/artificial-intelligence": {
+    src: "/assets/images/courses/artificial-intelligence-hero.webp",
+    alt: "An AI core on a circuit board, wired out to the fields the course covers — speech, chatbots, neural networks, computer vision, robotics and analytics",
+    width: 1587,
+    height: 800,
+  },
+  "courses/data-analytics": {
+    src: "/assets/images/courses/data-analytics-hero.webp",
+    alt: "A data analytics hub ringed by cards for collection, cleaning, processing, exploratory analysis, visualization and insights, over the collect–clean–process–analyze–insight pipeline",
+    width: 1264,
+    height: 839,
+  },
+  "courses/data-science": {
+    src: "/assets/images/courses/data-science-hero.webp",
+    alt: "A data science globe on a lit podium, ringed by panels for data collection, visualization, machine learning and predictive analytics, over the collect–clean–process–analyze–insight pipeline",
+    width: 1363,
+    height: 874,
+  },
+  "courses/generative-ai": {
+    src: "/assets/images/courses/generative-ai-hero.webp",
+    alt: "A hand reaching for a glowing ChatGPT tile between two other generative AI model tiles",
+    width: 1536,
+    height: 1024,
+  },
+}
+
 /** A page for a catalogued slug that has no authored content yet. */
 function stubPage(entry: CatalogueEntry): CoursePage {
   const copy = SEGMENT_COPY[entry.segment]
   const h1 = copy.heading(entry.label)
 
   return {
+    heroImage: HERO_IMAGES[`${entry.segment}/${entry.slug}`],
     slug: entry.slug,
     segment: entry.segment,
     eyebrow: entry.label,

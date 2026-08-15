@@ -4,6 +4,7 @@ import { Container } from "./container"
 import { CourseEnquiryForm } from "./course-enquiry-form"
 import { EnquireButton } from "./enquire-button"
 import { FaqAccordion } from "./faq-accordion"
+import { HeroArt } from "./hero-art"
 import { ModuleComparison } from "./module-comparison"
 import { ModuleTracks } from "./module-tracks"
 import { ReviewMarquee } from "./review-marquee"
@@ -74,32 +75,47 @@ export function CoursePageView({ page }: { page: CoursePage }) {
             </ol>
           </nav>
 
-          <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
-            {page.eyebrow}
-          </span>
-
-          <h1 className="mt-6 max-w-4xl font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-6xl">
-            {page.h1}
-          </h1>
-
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70 lg:text-lg">
-            {page.intro}
-          </p>
-
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <EnquireButton className="group inline-flex items-center gap-3 rounded-full bg-white py-2 pr-2 pl-7 text-sm font-semibold text-ink transition-colors duration-300 hover:bg-brand-50">
-              Book a free demo class
-              <span className="grid size-8 place-items-center rounded-full bg-brand-600 text-white transition-transform duration-300 group-hover:translate-x-0.5">
-                <ArrowIcon />
+          {/* Two columns only where there is artwork to fill the second one.
+              Without a `heroImage` the copy keeps the full container width it
+              has always had, rather than sitting in a column beside a gap. */}
+          <div
+            className={
+              page.heroImage
+                ? "grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-14"
+                : undefined
+            }
+          >
+            <div>
+              <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-md">
+                {page.eyebrow}
               </span>
-            </EnquireButton>
-            <Link
-              href="/contact"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 bg-white/5 px-7 text-sm font-medium backdrop-blur-md transition-colors duration-300 hover:bg-white/15"
-            >
-              Talk to a counsellor
-            </Link>
-            <BrochureButton course={page.eyebrow} />
+
+              <h1 className="mt-6 max-w-4xl font-display text-4xl leading-[1.05] font-bold tracking-tight text-balance lg:text-6xl">
+                {page.h1}
+              </h1>
+
+              <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70 lg:text-lg">
+                {page.intro}
+              </p>
+
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <EnquireButton className="group inline-flex items-center gap-3 rounded-full bg-white py-2 pr-2 pl-7 text-sm font-semibold text-ink transition-colors duration-300 hover:bg-brand-50">
+                  Book a free demo class
+                  <span className="grid size-8 place-items-center rounded-full bg-brand-600 text-white transition-transform duration-300 group-hover:translate-x-0.5">
+                    <ArrowIcon />
+                  </span>
+                </EnquireButton>
+                <Link
+                  href="/contact"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 bg-white/5 px-7 text-sm font-medium backdrop-blur-md transition-colors duration-300 hover:bg-white/15"
+                >
+                  Talk to a counsellor
+                </Link>
+                <BrochureButton course={page.eyebrow} />
+              </div>
+            </div>
+
+            {page.heroImage && <HeroArt image={page.heroImage} />}
           </div>
 
           <dl className="mt-12 grid gap-x-8 gap-y-6 border-t border-white/15 pt-8 sm:grid-cols-2 lg:grid-cols-4">
