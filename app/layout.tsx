@@ -9,6 +9,7 @@ import { NavProgress } from "@/components/nav-progress"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollToTop } from "@/components/scroll-to-top"
+import { SiteChrome } from "@/components/site-chrome"
 import { jsonLd } from "@/lib/json-ld"
 import { organisationSchema, SITE } from "@/lib/site"
 import "./globals.css"
@@ -102,7 +103,6 @@ export default function RootLayout({
             __html: `document.documentElement.classList.add("reveal-ready");if("scrollRestoration" in history)history.scrollRestoration="manual"`,
           }}
         />
-        <Preloader />
         {/* Covers the gap between a link click and the new route committing —
             after which the per-segment loading.tsx skeletons take over. */}
         <NavProgress />
@@ -113,15 +113,25 @@ export default function RootLayout({
           client-side navigation re-sent the whole nav — six menus, ~60 links —
           and the footer in the RSC payload, then remounted them. In the layout
           they render once and persist, so a navigation only ships the page.
+
+          SiteChrome drops the lot on /admin, which is an internal tool rather
+          than a page of the site: a marketing navbar, an enquiry popup and a
+          brand preloader all belong to the public visit, not to someone
+          reading the enquiries those forms produced.
         */}
-        <Navbar />
+        <SiteChrome>
+          <Preloader />
+          <Navbar />
+        </SiteChrome>
         {children}
-        <Footer />
-        <EnquiryPopup />
-        <CookieConsent />
-        <ScrollToTop />
-        <ScrollReveal />
-        <CursorFollower />
+        <SiteChrome>
+          <Footer />
+          <EnquiryPopup />
+          <CookieConsent />
+          <ScrollToTop />
+          <ScrollReveal />
+          <CursorFollower />
+        </SiteChrome>
       </body>
     </html>
   )

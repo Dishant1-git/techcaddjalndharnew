@@ -8,7 +8,10 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         // API routes carry no content and would only waste crawl budget.
-        disallow: ["/api/"],
+        // /admin is private; the pages there also send `noindex` themselves,
+        // because a disallow only asks politely and does not stop a URL that
+        // was linked from somewhere else being listed.
+        disallow: ["/api/", "/admin"],
       },
     ],
     sitemap: `${SITE.url}/sitemap.xml`,
