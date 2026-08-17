@@ -15,8 +15,15 @@ import { config } from '../config.js'
  * one cache window, which is where things stood before this existed.
  */
 
-/** Longer than this and the site is in no state to be revalidated anyway. */
-const TIMEOUT_MS = 3000
+/**
+ * Longer than this and the site is in no state to be revalidated anyway.
+ *
+ * Generous because this call costs nothing to wait on — it happens after the
+ * editor's save has already returned. A development server compiling the route
+ * for the first time routinely takes several seconds, and aborting produced a
+ * scary-looking log line for something that was about to succeed.
+ */
+const TIMEOUT_MS = Number(process.env.REVALIDATE_TIMEOUT_MS ?? 15000)
 
 /** Coalesces the burst a multi-step save produces into one call. */
 const DEBOUNCE_MS = 400
@@ -41,13 +48,22 @@ function schedule() {
       signal: controller.signal,
     })
       .then((response) => {
-        if (!response.ok) {
+        if (response.status === 404) {
+          // Almost always the URL rather than the site: a 404 means something
+          // answered, just not this endpoint.
+          console.warn(
+            `[revalidate] no endpoint at ${SITE_REVALIDATE_URL} — check SITE_REVALIDATE_URL points at the website's port.`,
+          )
+        } else if (!response.ok) {
           console.warn(`[revalidate] site responded ${response.status}`)
         }
       })
       .catch((error: unknown) => {
-        // Worth a line in the log, but not worth failing anything over.
-        console.warn('[revalidate] could not reach the site:', error)
+        // Worth a line in the log, but not worth failing anything over: the
+        // save succeeded, and the site will pick the change up when its own
+        // cache expires.
+        const reason = error instanceof Error ? error.message : String(error)
+        console.warn(`[revalidate] could not reach the site (${reason}) — it will refresh on its own.`)
       })
       .finally(() => clearTimeout(timer))
   }, DEBOUNCE_MS)
