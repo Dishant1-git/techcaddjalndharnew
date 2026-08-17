@@ -1,4 +1,5 @@
 import { GoogleBadge } from "./google-mark"
+import { MarqueeScrollPause } from "./marquee-scroll-pause"
 import type { Review } from "@/lib/course-pages"
 
 /**
@@ -31,11 +32,13 @@ export function ReviewMarquee({ items }: { items: Review[] }) {
     /* Deliberately not `.marquee-row` — the same choice the gallery made.
        That class exists only to hang the hover-pause off, and it has to sit on
        the wrapper shared by both lanes, so pointing at any one review froze
-       the whole section. These lanes run continuously. */
-    <div className="mt-12 space-y-6 lg:mt-14 lg:space-y-8">
+       the whole section. These lanes run continuously — except while the page
+       is being scrolled, via MarqueeScrollPause, which pauses both lanes
+       together and has no per-card trigger to worry about. */
+    <MarqueeScrollPause className="mt-12 space-y-6 lg:mt-14 lg:space-y-8">
       <Lane items={items.slice(0, split)} />
       <Lane items={items.slice(split)} reverse />
-    </div>
+    </MarqueeScrollPause>
   )
 }
 

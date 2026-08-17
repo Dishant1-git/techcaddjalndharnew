@@ -166,11 +166,13 @@ export function Navbar() {
               /* Over the hero video the button stays white: the logo navy is
                  as dark as the footage behind it, and a button that has to be
                  hunted for is not a call to action. Once the bar is a white
-                 pill it carries the wordmark's own colour. */
+                 pill, it switches to the same blue gradient as the AI pill
+                 rather than the flat logo colour — one accent for the two
+                 things on the bar worth a second look. */
               className={`inline-flex h-9 items-center justify-center rounded-full px-6 text-sm font-medium transition-all duration-500 ${
                 onDark
                   ? "bg-white text-[#0a0e14] hover:bg-brand-500 hover:text-white"
-                  : "bg-logo text-background hover:bg-brand-600"
+                  : "bg-linear-to-r from-brand-700 via-brand-600 to-brand-500 text-white hover:from-brand-600 hover:to-brand-500"
               }`}
             >
               Book Demo
@@ -764,7 +766,13 @@ function AiMenu({
             </div>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+          {/* -mr-3: without it, the CTA card sits 32px (the panel's own p-8)
+              from the right edge while only 20px (gap-5) separates it from
+              the featured card beside it — a wider gap on the outside than
+              between the two cards themselves. Pulling the whole cluster in
+              by the 12px difference makes both gaps read as 20px, without
+              touching either card's own size. */}
+          <div className="-mr-3 grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             {/* Featured course. Same reason as the column links above: this
                 panel is always in the document, so an eager prefetch here is
                 paid by every visitor. */}

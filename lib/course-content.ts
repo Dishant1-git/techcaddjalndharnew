@@ -368,6 +368,17 @@ export function generateContent(
       ],
     },
 
+    /* Sits directly under "the case for it" below, so its two lines have to
+       say something that paragraph hasn't already — the supervision claim and
+       the salary figure both appear there too, just not in this phrasing. */
+    casePitch: {
+      headline: `${name} Is Powering the Next Generation of Industry Leaders`,
+      bullets: [
+        "Live client work from week one, supervised by a trainer — not slides, not simulations.",
+        `${spec.careers[0]} roles in Punjab start around ${spec.salary} a month for a fresher with a working portfolio.`,
+      ],
+    },
+
     whyProgram: [
       `${spec.demand} That gap is the whole argument for this course: there is local demand, there are budgets, and there are very few trained people to hand the work to.`,
       `What separates this from a playlist of tutorials is supervision on real work. From the second half of the course you build on live client projects with a trainer beside you, make decisions that have consequences, and correct them the following week. That loop is the skill. No employer in Jalandhar or Mohali will take your word for it without work they can inspect.`,

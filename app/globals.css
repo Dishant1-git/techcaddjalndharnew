@@ -535,6 +535,16 @@
   animation-play-state: paused;
 }
 
+/* Toggled by <MarqueeScrollPause> (components/marquee-scroll-pause.tsx) while
+   the page itself is being scrolled. Separate from `.marquee-row`'s hover
+   rule above so it applies equally to review-marquee.tsx's lanes, which
+   deliberately skip `.marquee-row` to avoid a single hovered card freezing
+   both of them — scroll-pause has no such per-card trigger to worry about. */
+.marquee-scroll-pause.is-scrolling .marquee-left,
+.marquee-scroll-pause.is-scrolling .marquee-right {
+  animation-play-state: paused;
+}
+
 /* Dissolves the cards into the background at both edges, so the row reads as
    continuous rather than being guillotined by the viewport. */
 .marquee-fade {

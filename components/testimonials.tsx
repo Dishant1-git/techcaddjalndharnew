@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { GoogleBadge, GoogleMark } from "./google-mark"
+import { MarqueeScrollPause } from "./marquee-scroll-pause"
 import { ScrollHeading } from "./scroll-heading"
 import { loadTestimonials } from "@/lib/content"
 import { TESTIMONIAL_META, type Testimonial } from "@/lib/testimonials"
@@ -69,13 +70,13 @@ export async function Testimonials() {
 
       {/* Two rows travelling in opposite directions. Splitting the list means
           the same quote never appears on both rows at the same moment. */}
-      <div className="marquee-row mt-14 space-y-6 lg:mt-20 lg:space-y-8">
+      <MarqueeScrollPause className="marquee-row mt-14 space-y-6 lg:mt-20 lg:space-y-8">
         <Row items={testimonials.slice(0, Math.ceil(testimonials.length / 2))} />
         <Row
           items={testimonials.slice(Math.ceil(testimonials.length / 2))}
           reverse
         />
-      </div>
+      </MarqueeScrollPause>
     </section>
   )
 }

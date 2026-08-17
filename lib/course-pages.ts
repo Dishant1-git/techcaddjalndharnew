@@ -73,6 +73,9 @@ export type Syllabus = {
   note?: string
 }
 
+/** The dark promo banner sitting under "eligibility" and "the case for it". */
+export type CasePitch = { headline: string; bullets: [string, string] }
+
 export type Project = { title: string; body: string; tags: string[] }
 
 /** Career-outcome questions, rendered in the same accordion as the FAQs. */
@@ -125,6 +128,7 @@ export type CoursePage = {
   overview?: string[]
   whoCanDo?: { intro?: string; groups?: { title: string; body: string }[] }
   whyProgram?: string[]
+  casePitch?: CasePitch
   whyTechcadd?: { intro?: string; points?: { title: string; body: string }[] }
   learn?: { intro?: string; modules?: LearnModule[]; tools?: string[] }
   reviews?: Review[]

@@ -245,6 +245,41 @@ export function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      {/* --- 4b. The case-pitch banner ---
+          Sits under both eligibility and "the case for it", as the one line
+          a reader takes with them before the syllabus. The gradient runs
+          through `logo` — the wordmark's own navy — rather than the flat
+          `bg-ink` every other dark section on this page carries, so this one
+          doesn't read as the same panel repeated three sections later. */}
+      {page.casePitch && (
+        <section
+          data-cursor="light"
+          className="relative isolate overflow-hidden bg-linear-to-br from-logo via-ink to-brand-900 py-20 text-white lg:py-24"
+        >
+          <PanelTexture variant="aurora" />
+          <Container className="relative">
+            <SectionHead dark eyebrow="Why now" lines={[page.casePitch.headline]} />
+
+            <ul className="mt-8 flex max-w-xl flex-col gap-3">
+              {page.casePitch.bullets.map((bullet) => (
+                <li
+                  key={bullet}
+                  className="flex items-start gap-3 text-sm leading-relaxed text-white/80 lg:text-base"
+                >
+                  <CheckIcon className="mt-0.5 size-5 shrink-0 text-accent-400" />
+                  {bullet}
+                </li>
+              ))}
+            </ul>
+
+            <EnquireButton className="mt-9 inline-flex h-12 items-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-300 hover:bg-white/20">
+              Talk to a Course Advisor
+              <ArrowIcon />
+            </EnquireButton>
+          </Container>
+        </section>
+      )}
+
       {/* --- 5. Modules, by duration ---
           Two presentations of the same question. A course with an authored
           `syllabus` gets the comparison table; everything else keeps the
@@ -715,6 +750,20 @@ function SectionHead({
 
 function Prose({ children }: { children: React.ReactNode }) {
   return <div className="mt-8 max-w-3xl space-y-5">{children}</div>
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="m5 12.5 4.5 4.5L19 7.5"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
 }
 
 function PhoneIcon() {
