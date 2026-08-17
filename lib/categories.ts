@@ -19,7 +19,7 @@ export const COURSE_CATEGORIES: CourseCategory[] = [
     label: "Artificial Intelligence",
     blurb: "Models, agents and RAG systems built for production.",
     href: "/courses/artificial-intelligence",
-    image: "/assets/images/categories/ai.png",
+    image: "/assets/images/categories/image.png",
     from: "from-brand-500",
     to: "to-brand-900",
   },
