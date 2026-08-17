@@ -2924,6 +2924,12 @@ const HERO_IMAGES: Record<string, HeroImage> = {
     width: 1264,
     height: 839,
   },
+  "courses/data-science": {
+    src: "/assets/images/courses/data-science.png",
+    alt: "A data science desk — a laptop running Python analysis beside its dashboard of trend charts, model accuracy and a confusion matrix, ringed by the Python, pandas, NumPy, scikit-learn, TensorFlow and Power BI logos and books on machine learning, data analysis, statistics and deep learning",
+    width: 798,
+    height: 532,
+  },
   "courses/generative-ai": {
     src: "/assets/images/courses/generative-ai-hero.webp",
     alt: "A hand reaching for a glowing ChatGPT tile between two other generative AI model tiles",

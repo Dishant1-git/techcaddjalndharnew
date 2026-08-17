@@ -169,6 +169,16 @@ const TEAM: TeamMember[] = (
   photo: PLACEHOLDER_PORTRAITS[index % PLACEHOLDER_PORTRAITS.length],
 }))
 
+/*
+  "Meet Our Team" is hidden for now, at the client's request.
+
+  A flag rather than commented-out JSX: the section below carries block comments
+  of its own, which cannot be nested inside another one, and gating it here
+  keeps TEAM, TeamGrid and TeamIcon in use so nothing else has to be touched.
+  Flip to `true` to bring the section back.
+*/
+const SHOW_TEAM = false
+
 export default function FounderPage() {
   return (
     <main>
@@ -698,34 +708,36 @@ export default function FounderPage() {
         are their own edges — and on the plain ground they align with the
         container gutter like every other section's content.
       */}
-      <section className="py-20 lg:py-28">
-        <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-grid size-12 place-items-center rounded-2xl border border-line bg-background text-brand-600 shadow-[0_10px_28px_-16px_rgba(15,23,42,0.45)]">
-              <TeamIcon />
-            </span>
+      {SHOW_TEAM && (
+        <section className="py-20 lg:py-28">
+          <Container>
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="inline-grid size-12 place-items-center rounded-2xl border border-line bg-background text-brand-600 shadow-[0_10px_28px_-16px_rgba(15,23,42,0.45)]">
+                <TeamIcon />
+              </span>
 
-            <h2
-              data-reveal
-              suppressHydrationWarning
-              className="mt-5 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
-            >
-              Meet Our Team
-            </h2>
+              <h2
+                data-reveal
+                suppressHydrationWarning
+                className="mt-5 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
+              >
+                Meet Our Team
+              </h2>
 
-            <p
-              data-reveal
-              suppressHydrationWarning
-              className="mt-4 text-base leading-relaxed text-muted lg:text-lg"
-            >
-              Trainers, mentors and counsellors who keep the classrooms running
-              and the students moving.
-            </p>
-          </div>
+              <p
+                data-reveal
+                suppressHydrationWarning
+                className="mt-4 text-base leading-relaxed text-muted lg:text-lg"
+              >
+                Trainers, mentors and counsellors who keep the classrooms
+                running and the students moving.
+              </p>
+            </div>
 
-          <TeamGrid members={TEAM} />
-        </Container>
-      </section>
+            <TeamGrid members={TEAM} />
+          </Container>
+        </section>
+      )}
 
       <Cta />
     </main>
