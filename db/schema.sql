@@ -40,6 +40,31 @@ CREATE TABLE IF NOT EXISTS enquiries (
 -- ALTER TABLE enquiries ADD COLUMN email     VARCHAR(190) NULL AFTER message;
 -- ALTER TABLE enquiries ADD COLUMN address   VARCHAR(300) NULL AFTER email;
 
+-- Clearing test enquiries so ids start at 1 again.
+--
+-- DELETE never moves the AUTO_INCREMENT counter, and InnoDB persists it across
+-- a restart, so emptying the table by hand leaves the next row at 11 rather
+-- than 1. That is MySQL working as intended: an id that has been handed out
+-- once should not be handed out again. Either of these resets it.
+--
+--   TRUNCATE TABLE enquiries;
+--
+-- or, when you want the DELETE's WHERE clause or its rollback:
+--
+--   DELETE FROM enquiries;
+--   ALTER TABLE enquiries AUTO_INCREMENT = 1;
+--
+-- TRUNCATE is the one to reach for. It drops and recreates the table rather
+-- than deleting row by row, so it is far faster and resets the counter as part
+-- of the same statement. It is also DDL: it commits immediately and cannot be
+-- rolled back, which is exactly why it belongs on a development database and
+-- not on live enquiry data.
+--
+-- DEVELOPMENT ONLY. Never reset the counter on a table that has had real
+-- enquiries in it. Ids are what a counsellor quotes and what the CSV export
+-- carries, and reusing one silently re-points every earlier reference at a
+-- different student.
+
 -- Spent captcha nonces (lib/spent-captchas.ts). Rows live only until the
 -- token they represent would have expired on its own.
 CREATE TABLE IF NOT EXISTS spent_captchas (

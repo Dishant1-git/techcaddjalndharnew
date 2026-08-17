@@ -14,10 +14,10 @@ const ASSURANCES = [
 /**
  * Closing call to action.
  *
- * The email field is a plain GET form pointing at /contact, so a submission
- * carries the address through as a query param and the counselling form picks
- * it up. Nothing here pretends to be a signup endpoint, and it works without
- * JavaScript.
+ * The phone field is CtaDemoForm. It posts nowhere itself: submitting opens
+ * the enquiry popup with the number already filled in, and that popup owns the
+ * captcha, the validation and the /api/enquiry call that writes the row. The
+ * enquiry is filed as "Book Demo" so it is separable from the header button's.
  */
 export function Cta() {
   return (

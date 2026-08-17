@@ -192,8 +192,8 @@ export interface CmsPage {
 }
 
 export interface CmsRedirect {
-  from_path: string
-  to_path: string
+  from: string
+  to: string
   /** 301 or 302. */
   type: number
 }

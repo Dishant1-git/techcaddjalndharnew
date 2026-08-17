@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 import { CATALOGUE, COURSE_PAGES } from "@/lib/course-pages"
-import { loadCourseCatalogue } from "@/lib/content"
+import { loadCourseCatalogue, loadPosts } from "@/lib/content"
 import { SITE } from "@/lib/site"
 
 /**
@@ -33,7 +33,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/about/founder",
     "/blogs",
     "/gallery",
+    "/reviews",
+    "/faq",
   ]
+
+  /* Articles written in the CMS.
+     Each has a real page at /blogs/<slug>, but nothing links to one except the
+     index, so without this an article is crawlable only by following that
+     listing — and undeclared to every crawler that reads the sitemap first.
+     The teasers in lib/blogs.ts are filtered out by `hasArticle`: they have no
+     page, and listing a 404 in a sitemap is worse than omitting it. */
+  const posts = (await loadPosts()).filter((post) => post.hasArticle)
 
   return [
     ...staticRoutes.map((path) => ({
@@ -57,5 +67,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: authored.has(path) ? 0.9 : 0.5,
       }
     }),
+    ...posts.map((post) => ({
+      url: `${SITE.url}${post.href}`,
+      // The post's own date, not `now` — an article that has not been touched
+      // in six months should say so rather than claim to be fresh on every
+      // build.
+      lastModified: new Date(post.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ]
 }

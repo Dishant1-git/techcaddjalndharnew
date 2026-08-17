@@ -110,9 +110,6 @@ export async function POST(request: Request) {
 
   if (!body || typeof body !== "object") return bad("Malformed request.")
 
-<<<<<<< HEAD
-  const checked = await validate(body)
-=======
   // Local computation, so it goes ahead of everything else. Verifying does not
   // spend the token — the claim below does, once the row is about to be
   // written — so a mistyped field does not cost the visitor their answer.
@@ -129,8 +126,8 @@ export async function POST(request: Request) {
       captcha: true,
     })
 
-  const checked = validate(body)
->>>>>>> 7839a117e907c99d362e7c0858b0188400ec503a
+  // Awaited: the course check consults the CMS catalogue as well as the menus.
+  const checked = await validate(body)
   if ("error" in checked) return bad(checked.error)
 
   // Resolved from the same two catalogues the course field was checked

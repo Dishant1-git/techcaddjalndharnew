@@ -1,13 +1,9 @@
 import type { Metadata } from "next"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
-<<<<<<< HEAD
+import { GoogleBadge, GoogleMark } from "@/components/google-mark"
 import { loadReviews } from "@/lib/content"
 import { REVIEW_META, type GoogleReview } from "@/lib/reviews"
-=======
-import { GoogleBadge, GoogleMark } from "@/components/google-mark"
-import { REVIEWS, REVIEW_META, type GoogleReview } from "@/lib/reviews"
->>>>>>> 7839a117e907c99d362e7c0858b0188400ec503a
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {

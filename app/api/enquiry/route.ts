@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server"
-<<<<<<< HEAD
-
-import { verifyRecaptcha } from "@/lib/recaptcha"
-=======
-import { COURSE_LABELS } from "@/lib/course-pages"
 import { verifyCaptcha } from "@/lib/captcha"
 import { claimCaptcha } from "@/lib/spent-captchas"
->>>>>>> 7839a117e907c99d362e7c0858b0188400ec503a
 import {
   ensureTable,
   formTypeFor,
@@ -128,14 +122,7 @@ export async function POST(request: Request) {
     down, once the submission is actually going to be written, so a mistyped
     phone number does not cost the visitor the challenge they just solved.
   */
-<<<<<<< HEAD
-  const checked = await validate(body)
-  if ("error" in checked) return bad(checked.error)
-
-  let verification
-=======
   let solved
->>>>>>> 7839a117e907c99d362e7c0858b0188400ec503a
   try {
     solved = verifyCaptcha(body.captchaToken, body.captchaAnswer)
   } catch (error) {
@@ -153,7 +140,8 @@ export async function POST(request: Request) {
       captcha: true,
     })
 
-  const checked = validate(body)
+  // Awaited: the course check consults the CMS catalogue as well as the menus.
+  const checked = await validate(body)
   if ("error" in checked) return bad(checked.error)
 
   /*

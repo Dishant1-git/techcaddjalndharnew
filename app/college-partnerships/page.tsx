@@ -157,22 +157,29 @@ export default function CollegePartnershipsPage() {
         statement on a live site. This block invites the enquiry instead, and the
         roster goes in once the agreements are confirmed.
       */}
-      <section data-cursor="light" className="bg-ink py-20 text-white lg:py-28">
+      {/* The same `subtle` panel the "What we run" band uses. Light rather than
+          ink because the closing <Cta /> directly below is ink: two dark blocks
+          in a row read as one long section, and the button pair here loses the
+          separation that makes it the second ask rather than part of the last
+          one. `data-cursor="light"` is gone with the dark background — it
+          inverts the cursor ring, which on a pale panel leaves the washed-out
+          disc instead of the dark one. */}
+      <section className="bg-subtle py-20 lg:py-28">
         <Container className="text-center">
-          <p className="font-mono text-xs tracking-[0.22em] text-accent-400 uppercase">
+          <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
             Partner with us
           </p>
 
           <h2
             data-reveal
-            className="mx-auto mt-5 max-w-3xl font-display text-3xl leading-[1.1] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
+            className="mx-auto mt-5 max-w-3xl font-display text-3xl leading-[1.1] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
           >
             Tell us what your students need next.
           </h2>
 
           <p
             data-reveal
-            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/70 lg:text-lg"
+            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted lg:text-lg"
           >
             Send us your department, student numbers and the semester you are
             planning for, and we will come back with a written proposal — scope,
@@ -182,7 +189,10 @@ export default function CollegePartnershipsPage() {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
               href={CONTACT.phoneHref}
-              className="inline-flex h-14 items-center justify-center rounded-full bg-brand-600 px-8 text-sm font-semibold text-white shadow-[0_20px_45px_-18px_rgba(37,99,235,0.9)] transition-colors duration-300 hover:bg-brand-700"
+              /* The blue drop-glow the ink version carried is dropped with it.
+                 It was there to lift the button off a dark panel; over `subtle`
+                 it only muddies the edge. */
+              className="inline-flex h-14 items-center justify-center rounded-full bg-brand-600 px-8 text-sm font-semibold text-white transition-colors duration-300 hover:bg-brand-700"
             >
               Call {CONTACT.phone}
             </a>
@@ -190,7 +200,10 @@ export default function CollegePartnershipsPage() {
                 the client router and reloads the whole document. */}
             <Link
               href="/contact"
-              className="inline-flex h-14 items-center justify-center rounded-full border border-white/25 bg-white/10 px-8 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-300 hover:border-white/40 hover:bg-white/20"
+              /* White on `subtle` rather than the translucent white-on-ink fill,
+                 which over a pale panel is invisible. Matches the secondary
+                 button on /faq. */
+              className="inline-flex h-14 items-center justify-center rounded-full border border-line bg-white px-8 text-sm font-semibold text-foreground transition-colors duration-300 hover:border-brand-600/40 hover:text-brand-600"
             >
               Send an enquiry
             </Link>

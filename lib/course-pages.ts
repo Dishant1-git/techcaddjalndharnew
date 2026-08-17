@@ -2924,17 +2924,29 @@ const HERO_IMAGES: Record<string, HeroImage> = {
     width: 1264,
     height: 839,
   },
-  "courses/data-science": {
-    src: "/assets/images/courses/data-science-hero.webp",
-    alt: "A data science globe on a lit podium, ringed by panels for data collection, visualization, machine learning and predictive analytics, over the collect–clean–process–analyze–insight pipeline",
-    width: 1363,
-    height: 874,
-  },
   "courses/generative-ai": {
     src: "/assets/images/courses/generative-ai-hero.webp",
     alt: "A hand reaching for a glowing ChatGPT tile between two other generative AI model tiles",
     width: 1536,
     height: 1024,
+  },
+  "courses/cybersecurity": {
+    src: "/assets/images/courses/cyber-security.png",
+    alt: "A digital hand holding a locked shield inside a ring of the assets the course protects — Wi-Fi networks, laptops, databases, wallets and online shopping",
+    width: 945,
+    height: 532,
+  },
+  "courses/shopify": {
+    src: "/assets/images/courses/shopify.png",
+    alt: "A Shopify storefront running on a monitor and a phone beside the Shopify logo and wordmark, with a padlock and a speed dial for store security and performance",
+    width: 798,
+    height: 532,
+  },
+  "courses/linux": {
+    src: "/assets/images/courses/linux.png",
+    alt: "Tux, the Linux penguin, sitting on a chrome and gold Linux badge",
+    width: 945,
+    height: 532,
   },
 }
 

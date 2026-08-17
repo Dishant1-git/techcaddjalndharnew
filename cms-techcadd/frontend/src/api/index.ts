@@ -1,10 +1,11 @@
 /**
  * The swap point.
  *
- * Every resource below is currently backed by the localStorage mock in
- * `./mock`. When a real backend lands, re-implement these exports against
- * `./client` — nothing outside this directory needs to change, because the
- * `Resource<T>` contract in `./types` stays the same.
+ * Every resource below is backed by the Express API through `./http/resource`,
+ * which builds the five `Resource<T>` methods from a base path. Nothing outside
+ * this directory knows where the data comes from — the contract in `./types` is
+ * what the features are written against, which is why the cut over from the
+ * localStorage mock in `./mock` touched only these files.
  */
 export { bannersApi } from './resources/banners'
 export { blogsApi } from './resources/blogs'

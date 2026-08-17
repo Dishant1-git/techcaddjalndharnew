@@ -230,12 +230,33 @@ export const loadHomepageFaqs = cache(function loadHomepageFaqs(): Promise<Faq[]
 /* Reviews                                                              */
 /* ------------------------------------------------------------------ */
 
+/**
+ * "2026-07-15" -> "July 2026".
+ *
+ * The CMS stores a DATE, but a review card shows month precision — printing the
+ * raw `2026-07-15` next to the hand-written "July 2026" of the built-in
+ * reviews would make the same list look like two different lists. Anything the
+ * expected shape does not match is passed through, so a CMS that one day stores
+ * a display string still renders it.
+ */
+const REVIEW_MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+]
+
+function formatReviewDate(value: string | undefined): string {
+  if (!value) return ""
+  const match = /^(\d{4})-(\d{2})/.exec(value)
+  if (!match) return value
+  return `${REVIEW_MONTHS[Number(match[2]) - 1] ?? ""} ${match[1]}`.trim()
+}
+
 function toReview(review: CmsReview): GoogleReview {
   return {
     name: review.authorName,
     initials: initialsOf(review.authorName),
     rating: review.rating,
-    date: review.reviewedOn ?? "",
+    date: formatReviewDate(review.reviewedOn),
     quote: review.quote,
     course: review.courseName ?? "",
     source: "google",

@@ -8,6 +8,16 @@ import { COURSE_GROUPS, CONTACT } from "@/lib/navigation"
 /** Fires the popup from anywhere — the header button dispatches this. */
 export const ENQUIRY_EVENT = "techcadd:enquiry"
 
+/**
+ * Which form sent the visitor here, tagging the row's `form_type`.
+ *
+ * The popup collects the same fields whoever opened it, so without this every
+ * enquiry it files looks like it came from the header button. Keys must exist
+ * in FORM_TYPES (lib/enquiries.ts) — the server maps them to the stored label
+ * and falls back to "Call Request" for anything it does not recognise.
+ */
+export type EnquiryOrigin = "popup" | "demo"
+
 /** Seconds on the page before the popup offers itself. */
 const AUTO_OPEN_MS = 30_000
 
@@ -38,6 +48,8 @@ export function EnquiryPopup() {
   const [captcha, setCaptcha] = useState<CaptchaValue | null>(null)
   /** Seeded by the CTA's phone field when it opens this popup. */
   const [prefillPhone, setPrefillPhone] = useState("")
+  /** Reset on every open, so a later auto-open is never mislabelled as a demo. */
+  const [origin, setOrigin] = useState<EnquiryOrigin>("popup")
   const [resetSignal, setResetSignal] = useState(0)
 
   /* Kept from the accepted submission so the confirmation can name the person
@@ -53,7 +65,8 @@ export function EnquiryPopup() {
     setResetSignal((n) => n + 1)
   }, [])
 
-  const show = useCallback(() => {
+  const show = useCallback((from: EnquiryOrigin = "popup") => {
+    setOrigin(from)
     setError(null)
     setStatus("idle")
     setOpen(true)
@@ -95,14 +108,16 @@ export function EnquiryPopup() {
   // --- Manual open from the header button, or the CTA's phone field ---
   //
   // The CTA sends the number the reader already typed on `detail.phone`, so
-  // they are not asked for it twice. Plain Events carry no detail, which is
-  // what the header button still dispatches — hence the optional chain.
+  // they are not asked for it twice, and `detail.form` so the row it ends up
+  // writing says which form started it. Plain Events carry no detail, which is
+  // what the header button still dispatches — hence the optional chains, and
+  // why the origin falls back to "popup" rather than trusting what arrives.
   useEffect(() => {
     const onRequest = (e: Event) => {
-      const phone = (e as CustomEvent<{ phone?: string }>).detail?.phone
-      if (phone) setPrefillPhone(phone)
+      const detail = (e as CustomEvent<{ phone?: string; form?: string }>).detail
+      if (detail?.phone) setPrefillPhone(detail.phone)
       sessionStorage.setItem(SESSION_KEY, "1")
-      show()
+      show(detail?.form === "demo" ? "demo" : "popup")
     }
     window.addEventListener(ENQUIRY_EVENT, onRequest)
     return () => window.removeEventListener(ENQUIRY_EVENT, onRequest)
@@ -153,7 +168,7 @@ export function EnquiryPopup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           // Tags the row's form_type; the server maps the key to its label.
-          form: "popup",
+          form: origin,
           course: data.get("course"),
           name: data.get("name"),
           phone: data.get("phone"),

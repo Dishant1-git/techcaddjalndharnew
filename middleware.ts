@@ -37,12 +37,12 @@ async function fetchRedirects(): Promise<Redirect[]> {
     if (!response.ok) return []
 
     const payload = (await response.json()) as {
-      items?: { from_path: string; to_path: string; type: number }[]
+      items?: { from: string; to: string; type: number }[]
     }
 
     return (payload.items ?? []).map((row) => ({
-      from: row.from_path,
-      to: row.to_path,
+      from: row.from,
+      to: row.to,
       permanent: row.type === 301,
     }))
   } catch {

@@ -11,6 +11,10 @@ import { ENQUIRY_EVENT } from "./enquiry-popup"
  * call — duplicating that here would mean a second captcha flow to keep in
  * step with the first. The reader types their number once and the popup opens
  * with it filled in.
+ *
+ * A row still reaches the `enquiries` table on the other side of that popup;
+ * `form: "demo"` is what tags it as having started here rather than at the
+ * header button, so the two are separable in the dashboard.
  */
 export function CtaDemoForm() {
   const [phone, setPhone] = useState("")
@@ -20,7 +24,7 @@ export function CtaDemoForm() {
       onSubmit={(e) => {
         e.preventDefault()
         window.dispatchEvent(
-          new CustomEvent(ENQUIRY_EVENT, { detail: { phone } }),
+          new CustomEvent(ENQUIRY_EVENT, { detail: { phone, form: "demo" } }),
         )
       }}
       className="mx-auto mt-10 flex w-full max-w-lg flex-col gap-3 sm:flex-row"
