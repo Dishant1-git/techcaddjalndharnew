@@ -142,7 +142,29 @@ export interface CmsCourse {
   mode: string
   thumbnail?: CmsMedia
   highlights: string[]
+  /**
+   * The category chosen in the CMS.
+   *
+   * The name, not just the id: it is what the site groups a course under, and
+   * resolving an id to a label would mean a second request for a string the
+   * server already had.
+   */
+  categoryName?: string
+  categorySlug?: string
   updatedAt: string
+}
+
+/** A promotional banner that is live right now — the CMS applies the schedule. */
+export interface CmsBanner {
+  id: string
+  title: string
+  altText: string
+  linkUrl?: string
+  ctaText?: string
+  placement: 'home-hero' | 'course-page' | 'sidebar' | 'popup'
+  order: number
+  desktopImage?: { url: string; width?: number; height?: number }
+  mobileImage?: { url: string; width?: number; height?: number }
 }
 
 export interface CmsFaq {
@@ -249,6 +271,9 @@ export const getCategories = (limit = 50) =>
   cmsFetch<ListResponse<CmsCategory>>(`/public/categories?limit=${limit}`)
 
 export const getSite = () => cmsFetch<CmsSite>("/public/site")
+
+export const getBanners = (placement: CmsBanner["placement"]) =>
+  cmsFetch<ListResponse<CmsBanner>>(`/public/banners?placement=${placement}`)
 
 /* ------------------------------------------------------------------ */
 /* Writes                                                              */

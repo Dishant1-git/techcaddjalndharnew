@@ -8,8 +8,10 @@ import {
   getFaqs,
   getGalleryAlbums,
   getReviews,
+  getBanners,
   getSite,
   getTestimonials,
+  type CmsBanner,
   type CmsBlog,
   type CmsFaq,
   type CmsGalleryAlbum,
@@ -280,6 +282,32 @@ export const loadReviews = cache(function loadReviews(): Promise<GoogleReview[]>
 })
 
 /* ------------------------------------------------------------------ */
+/* Banners                                                              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Promotional banners for one slot.
+ *
+ * No fallback, deliberately: there is no built-in banner to fall back to, and
+ * an empty list is the correct answer when nothing is scheduled. A CMS outage
+ * therefore hides the promo rather than breaking the page around it.
+ */
+export const loadBanners = cache(async function loadBanners(
+  placement: CmsBanner["placement"],
+): Promise<CmsBanner[]> {
+  try {
+    return (await getBanners(placement)).items
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn(`[content] banners (${placement}): none shown —`, error.message)
+    } else {
+      console.error("[content] banners failed:", error)
+    }
+    return []
+  }
+})
+
+/* ------------------------------------------------------------------ */
 /* Headline figures                                                     */
 /* ------------------------------------------------------------------ */
 
@@ -394,7 +422,10 @@ export const loadCourseCatalogue = cache(async function loadCourseCatalogue(): P
         segment: course.segment,
         slug: course.slug,
         label: course.title,
-        group: "More courses",
+        // The category chosen in the CMS is the group the site files it under,
+        // so the two agree. Without a category there is nothing to group by,
+        // and a neutral heading beats inventing one.
+        group: course.categoryName ?? "More courses",
       }))
   } catch (error) {
     if (error instanceof CmsUnavailableError) {

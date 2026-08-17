@@ -38,6 +38,11 @@ function toCourse(row: Row, children: Children): unknown {
     title: row.title,
     slug: row.slug,
     categoryId: row.category_id ?? undefined,
+    // The name as well as the id: the website groups courses by category, and
+    // making it fetch the category list separately to resolve a label is a
+    // round trip for something the join already has.
+    categoryName: row.category_name ?? undefined,
+    categorySlug: row.category_slug ?? undefined,
     segment: row.segment ?? 'courses',
     tagline: row.tagline ?? undefined,
     demand: row.demand ?? undefined,
@@ -139,9 +144,11 @@ async function loadChildren(ids: string[]): Promise<Map<string, Children>> {
 }
 
 const SELECT_COURSE = `
-  SELECT c.*, m.url AS thumbnail_url, m.alt AS thumbnail_alt
+  SELECT c.*, m.url AS thumbnail_url, m.alt AS thumbnail_alt,
+         cat.name AS category_name, cat.slug AS category_slug
     FROM courses c
     LEFT JOIN media m ON m.id = c.thumbnail_id
+    LEFT JOIN categories cat ON cat.id = c.category_id
 `
 
 export async function list(params: ListParams): Promise<ListResult<unknown>> {

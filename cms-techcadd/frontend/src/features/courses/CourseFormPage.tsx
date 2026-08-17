@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { ApiError } from '../../api'
 import type { CourseCreate } from '../../api/resources/courses'
+import { AppearsOn } from '../../components/common/AppearsOn'
 import { Button } from '../../components/common/Button'
 import { Card, CardBody, CardHeader } from '../../components/common/Card'
 import { Alert } from '../../components/feedback/Alert'
@@ -58,6 +59,7 @@ export default function CourseFormPage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     setError,
     formState: { errors, isDirty, isSubmitting },
   } = form
@@ -77,6 +79,40 @@ export default function CourseFormPage() {
   const shortDescription = useWatch({ control, name: 'shortDescription' })
 
   const saving = create.isPending || update.isPending
+
+
+  // Feeds the "where this appears" note — it shows the live URL, which moves
+
+  // with the slug as it is typed.
+
+  const watched = useWatch({ control }) as Record<string, unknown>
+
+
+  /**
+
+   * Publishes and saves in one action.
+
+   *
+
+   * Setting the status select and then pressing Save is two steps that read as
+
+   * one, and the step people miss is the first.
+
+   */
+
+  const publish =
+
+    watched.status === 'published'
+
+      ? undefined
+
+      : () => {
+
+          setValue('status', 'published', { shouldDirty: true })
+
+          void handleSubmit(onSubmit)()
+
+        }
 
   async function onSubmit(values: CourseFormValues) {
     try {
@@ -131,6 +167,8 @@ export default function CourseFormPage() {
         title={isEdit ? 'Edit Course' : 'Add Course'}
         breadcrumb={[{ label: 'Courses', to: '/courses' }, { label: isEdit ? 'Edit' : 'New' }]}
       />
+
+      <AppearsOn module="courses" record={watched} saved={isEdit} />
 
       {Object.keys(errors).length > 0 && (
         <Alert tone="error" title="This course could not be saved">
@@ -439,6 +477,7 @@ export default function CourseFormPage() {
       </div>
 
       <FormFooter
+        onPublish={publish}
         cancelTo="/courses"
         submitLabel={isEdit ? 'Save changes' : 'Create course'}
         saving={saving}

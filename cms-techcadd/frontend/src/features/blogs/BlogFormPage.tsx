@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { ApiError } from '../../api'
+import { AppearsOn } from '../../components/common/AppearsOn'
 import { Button } from '../../components/common/Button'
 import { Card, CardBody, CardHeader } from '../../components/common/Card'
 import { Alert } from '../../components/feedback/Alert'
@@ -43,6 +44,7 @@ export default function BlogFormPage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     setError,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<BlogFormValues>({
@@ -61,6 +63,24 @@ export default function BlogFormPage() {
   const excerpt = useWatch({ control, name: 'excerpt' })
   const body = useWatch({ control, name: 'body' })
   const saving = create.isPending || update.isPending
+
+  // Feeds the "where this appears" note — it shows the live URL, which moves
+  // with the slug as it is typed.
+  const watched = useWatch({ control }) as Record<string, unknown>
+
+  /**
+   * Publishes and saves in one action.
+   *
+   * Setting the status select and then pressing Save is two steps that read as
+   * one, and the step people miss is the first.
+   */
+  const publish =
+    watched.status === 'published'
+      ? undefined
+      : () => {
+          setValue('status', 'published', { shouldDirty: true })
+          void handleSubmit(onSubmit)()
+        }
 
   const categoryOptions = (categories.data?.items ?? []).map((category) => ({
     value: category.id,
@@ -119,6 +139,8 @@ export default function BlogFormPage() {
         title={isEdit ? 'Edit Article' : 'Add Article'}
         breadcrumb={[{ label: 'Blogs', to: '/blogs' }, { label: isEdit ? 'Edit' : 'New' }]}
       />
+
+      <AppearsOn module="blogs" record={watched} saved={isEdit} />
 
       {Object.keys(errors).length > 0 && (
         <Alert tone="error" title="This article could not be saved">
@@ -259,6 +281,7 @@ export default function BlogFormPage() {
       </div>
 
       <FormFooter
+        onPublish={publish}
         cancelTo="/blogs"
         submitLabel={isEdit ? 'Save changes' : 'Create article'}
         saving={saving}

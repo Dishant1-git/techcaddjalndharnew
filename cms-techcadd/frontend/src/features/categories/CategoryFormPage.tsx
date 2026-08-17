@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { ApiError } from '../../api'
+import { AppearsOn } from '../../components/common/AppearsOn'
 import { Button } from '../../components/common/Button'
 import { Card, CardBody, CardHeader } from '../../components/common/Card'
 import { Alert } from '../../components/feedback/Alert'
@@ -37,6 +38,7 @@ export default function CategoryFormPage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     setError,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<CategoryFormValues>({
@@ -52,6 +54,24 @@ export default function CategoryFormPage() {
   const blocker = useUnsavedChanges(isDirty && !isSubmitting)
   const name = useWatch({ control, name: 'name' })
   const saving = create.isPending || update.isPending
+
+  // Feeds the "where this appears" note — it shows the live URL, which moves
+  // with the slug as it is typed.
+  const watched = useWatch({ control }) as Record<string, unknown>
+
+  /**
+   * Publishes and saves in one action.
+   *
+   * Setting the status select and then pressing Save is two steps that read as
+   * one, and the step people miss is the first.
+   */
+  const publish =
+    watched.status === 'published'
+      ? undefined
+      : () => {
+          setValue('status', 'published', { shouldDirty: true })
+          void handleSubmit(onSubmit)()
+        }
 
   // Nesting is capped at two levels, and a category can never parent itself.
   const parentOptions = (siblings.data?.items ?? [])
@@ -110,6 +130,8 @@ export default function CategoryFormPage() {
         title={isEdit ? 'Edit Category' : 'Add Category'}
         breadcrumb={[{ label: 'Categories', to: '/categories' }, { label: isEdit ? 'Edit' : 'New' }]}
       />
+
+      <AppearsOn module="categories" record={watched} saved={isEdit} />
 
       {Object.keys(errors).length > 0 && (
         <Alert tone="error" title="This category could not be saved">
@@ -199,6 +221,7 @@ export default function CategoryFormPage() {
       </Card>
 
       <FormFooter
+        onPublish={publish}
         cancelTo="/categories"
         submitLabel={isEdit ? 'Save changes' : 'Create category'}
         saving={saving}

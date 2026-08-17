@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ExternalLink, FileText, Lock, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
 
 import { ApiError } from '../../api'
+import { SITE_URL } from '../../config/siteMap'
 import { ContentStatusBadge } from '../../components/common/Badge'
 import { Button } from '../../components/common/Button'
 import { Card } from '../../components/common/Card'
@@ -208,7 +209,7 @@ export default function PagesListPage() {
               </DropdownItem>
               <DropdownItem
                 icon={ExternalLink}
-                onSelect={() => window.open(`/${page.slug}`, '_blank', 'noopener')}
+                onSelect={() => window.open(`${SITE_URL}/${page.slug}`, '_blank', 'noopener')}
               >
                 Preview
               </DropdownItem>

@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash2 } from 'lucide-react'
 
 import { ApiError } from '../../api'
+import { AppearsOn } from '../../components/common/AppearsOn'
 import { Button } from '../../components/common/Button'
 import { Card, CardBody, CardHeader } from '../../components/common/Card'
 import { Alert } from '../../components/feedback/Alert'
@@ -38,6 +39,7 @@ export default function BranchFormPage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     setError,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<BranchFormValues>({
@@ -52,6 +54,24 @@ export default function BranchFormPage() {
 
   const blocker = useUnsavedChanges(isDirty && !isSubmitting)
   const saving = create.isPending || update.isPending
+
+  // Feeds the "where this appears" note — it shows the live URL, which moves
+  // with the slug as it is typed.
+  const watched = useWatch({ control }) as Record<string, unknown>
+
+  /**
+   * Publishes and saves in one action.
+   *
+   * Setting the status select and then pressing Save is two steps that read as
+   * one, and the step people miss is the first.
+   */
+  const publish =
+    watched.status === 'published'
+      ? undefined
+      : () => {
+          setValue('status', 'published', { shouldDirty: true })
+          void handleSubmit(onSubmit)()
+        }
 
   const managerOptions = (faculty.data?.items ?? []).map((member) => ({
     value: member.id,
@@ -110,6 +130,8 @@ export default function BranchFormPage() {
         title={isEdit ? 'Edit Branch' : 'Add Branch'}
         breadcrumb={[{ label: 'Branches', to: '/branches' }, { label: isEdit ? 'Edit' : 'New' }]}
       />
+
+      <AppearsOn module="branches" record={watched} saved={isEdit} />
 
       {Object.keys(errors).length > 0 && (
         <Alert tone="error" title="This branch could not be saved">
@@ -326,6 +348,7 @@ export default function BranchFormPage() {
       </div>
 
       <FormFooter
+        onPublish={publish}
         cancelTo="/branches"
         submitLabel={isEdit ? 'Save changes' : 'Add branch'}
         saving={saving}

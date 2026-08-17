@@ -16,6 +16,15 @@ interface FormFooterProps {
   blocker: Blocker
   /** Noun used in the discard dialog, e.g. "course". */
   entityLabel: string
+  /**
+   * Publishes as well as saving.
+   *
+   * Given only when the record is not published yet. Setting a select to
+   * "Published" and then pressing Save is two steps that look like one, and the
+   * step people miss is the first — so the action that puts something live is
+   * its own button rather than a state to remember to change.
+   */
+  onPublish?: () => void
 }
 
 /**
@@ -29,6 +38,7 @@ export function FormFooter({
   dirty,
   blocker,
   entityLabel,
+  onPublish,
 }: FormFooterProps) {
   const { collapsed } = useSidebar()
 
@@ -43,7 +53,13 @@ export function FormFooter({
         )}
       >
         <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-end gap-2">
-          {dirty && <p className="mr-auto text-xs text-slate-500">Unsaved changes</p>}
+          {saving ? (
+            <p className="mr-auto text-xs text-slate-500">
+              Saving — the website updates a few seconds later.
+            </p>
+          ) : (
+            dirty && <p className="mr-auto text-xs text-slate-500">Unsaved changes</p>
+          )}
 
           <Link to={cancelTo}>
             <Button variant="secondary" type="button" disabled={saving}>
@@ -51,10 +67,19 @@ export function FormFooter({
             </Button>
           </Link>
 
-          <Button type="submit" disabled={saving}>
-            {saving && <Spinner />}
+          {/* Always the submit button — Publish sits beside it as an extra,
+              so pressing Enter in a field still does the ordinary thing. */}
+          <Button type="submit" variant={onPublish ? 'secondary' : undefined} disabled={saving}>
+            {saving && !onPublish && <Spinner />}
             {submitLabel}
           </Button>
+
+          {onPublish && (
+            <Button type="button" disabled={saving} onClick={onPublish}>
+              {saving && <Spinner />}
+              Publish
+            </Button>
+          )}
         </div>
       </div>
 

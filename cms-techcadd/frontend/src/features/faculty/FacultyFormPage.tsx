@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { ApiError } from '../../api'
+import { AppearsOn } from '../../components/common/AppearsOn'
 import { Button } from '../../components/common/Button'
 import { Card, CardBody, CardHeader } from '../../components/common/Card'
 import { Alert } from '../../components/feedback/Alert'
@@ -39,6 +40,7 @@ export default function FacultyFormPage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     setError,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<FacultyFormValues>({
@@ -53,6 +55,24 @@ export default function FacultyFormPage() {
 
   const blocker = useUnsavedChanges(isDirty && !isSubmitting)
   const saving = create.isPending || update.isPending
+
+  // Feeds the "where this appears" note — it shows the live URL, which moves
+  // with the slug as it is typed.
+  const watched = useWatch({ control }) as Record<string, unknown>
+
+  /**
+   * Publishes and saves in one action.
+   *
+   * Setting the status select and then pressing Save is two steps that read as
+   * one, and the step people miss is the first.
+   */
+  const publish =
+    watched.status === 'published'
+      ? undefined
+      : () => {
+          setValue('status', 'published', { shouldDirty: true })
+          void handleSubmit(onSubmit)()
+        }
 
   const branchOptions = (branches.data?.items ?? []).map((branch) => ({
     value: branch.id,
@@ -111,6 +131,8 @@ export default function FacultyFormPage() {
         title={isEdit ? 'Edit Trainer' : 'Add Trainer'}
         breadcrumb={[{ label: 'Faculty', to: '/faculty' }, { label: isEdit ? 'Edit' : 'New' }]}
       />
+
+      <AppearsOn module="faculty" record={watched} saved={isEdit} />
 
       {Object.keys(errors).length > 0 && (
         <Alert tone="error" title="This profile could not be saved">
@@ -251,6 +273,7 @@ export default function FacultyFormPage() {
       </div>
 
       <FormFooter
+        onPublish={publish}
         cancelTo="/faculty"
         submitLabel={isEdit ? 'Save changes' : 'Add trainer'}
         saving={saving}

@@ -123,6 +123,55 @@ publicRouter.get(
   }),
 )
 
+/**
+ * Promotional banners that are live right now.
+ *
+ * The schedule is applied here rather than on the website: a banner whose run
+ * has ended is not "content the site chose not to show", it is content that
+ * should not leave the CMS at all. Doing it in one place also means the site
+ * cannot cache a banner past its end date.
+ */
+publicRouter.get(
+  '/banners',
+  asyncHandler(async (req, res) => {
+    const placement = typeof req.query.placement === 'string' ? req.query.placement : null
+
+    const rows = await query<Row>(
+      `SELECT b.id, b.title, b.alt_text, b.link_url, b.cta_text, b.placement, b.sort_order,
+              d.url AS desktop_url, d.width AS desktop_width, d.height AS desktop_height,
+              m.url AS mobile_url,  m.width AS mobile_width,  m.height AS mobile_height
+         FROM banners b
+         LEFT JOIN media d ON d.id = b.desktop_image_id
+         LEFT JOIN media m ON m.id = b.mobile_image_id
+        WHERE b.status = 'published'
+          AND (b.starts_at IS NULL OR b.starts_at <= CURDATE())
+          AND (b.ends_at   IS NULL OR b.ends_at   >= CURDATE())
+          ${placement ? 'AND b.placement = ?' : ''}
+        ORDER BY b.sort_order ASC, b.created_at DESC`,
+      placement ? [placement] : [],
+    )
+
+    res.json({
+      items: rows.map((row) => ({
+        id: row.id,
+        title: row.title,
+        altText: row.alt_text,
+        linkUrl: row.link_url ?? undefined,
+        ctaText: row.cta_text ?? undefined,
+        placement: row.placement,
+        order: row.sort_order,
+        desktopImage: row.desktop_url
+          ? { url: row.desktop_url, width: row.desktop_width, height: row.desktop_height }
+          : undefined,
+        mobileImage: row.mobile_url
+          ? { url: row.mobile_url, width: row.mobile_width, height: row.mobile_height }
+          : undefined,
+      })),
+      total: rows.length,
+    })
+  }),
+)
+
 publicRouter.get(
   '/categories',
   asyncHandler(async (req, res) => {
