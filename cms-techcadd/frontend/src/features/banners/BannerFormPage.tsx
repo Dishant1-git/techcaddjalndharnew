@@ -171,7 +171,10 @@ export default function BannerFormPage() {
           <Card flush>
             <CardHeader title="Images" subtitle="A separate mobile crop keeps text readable on phones" />
             <CardBody className="grid gap-5 sm:grid-cols-2">
-              <FormField label="Desktop image">
+              <FormField
+                label="Desktop image"
+                description="Wide artwork, around 1600 × 500. The slot is a 16:5 strip and anything taller is cropped to fit, so keep text away from the top and bottom edges."
+              >
                 <Controller
                   control={control}
                   name="desktopImage"
@@ -181,7 +184,10 @@ export default function BannerFormPage() {
                 />
               </FormField>
 
-              <FormField label="Mobile image">
+              <FormField
+                label="Mobile image"
+                description="Optional. A squarer crop for phones, around 900 × 600 — the desktop artwork is used when this is empty."
+              >
                 <Controller
                   control={control}
                   name="mobileImage"
