@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { BlogCarousel } from "./blog-carousel"
 import { Container } from "./container"
@@ -52,16 +53,26 @@ export async function Blogs() {
 
 function Card({ post }: { post: Post }) {
   return (
-    /* Static styling while the cards are not clickable — a hover lift on
-       something that cannot be opened reads as a broken link. */
-    <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white">
-      {/* Gradient stand-in until real cover art exists. */}
+    /* The hover lift is only offered when the card opens something — on a
+       teaser with no article behind it, it would read as a broken link. */
+    <article
+      className={`relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white${
+        post.hasArticle ? " transition-colors hover:border-brand-300" : ""
+      }`}
+    >
+      {/* The cover photograph, with the gradient behind it as the backdrop for
+          anything that has not loaded — a post whose cover has not been set in
+          the CMS still gets one of the repository photographs from loadPosts,
+          so this is rarely bare. */}
       <div
-        className={`relative aspect-video bg-linear-to-br ${post.from} ${post.to}`}
+        className={`relative aspect-video overflow-hidden bg-linear-to-br ${post.from} ${post.to}`}
       >
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.45),transparent_55%)]"
+        <Image
+          src={post.image}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          className="object-cover"
         />
         <span className="absolute bottom-3 left-3 rounded-full border border-white/25 bg-black/30 px-3 py-1 font-mono text-[10px] tracking-[0.14em] text-white uppercase backdrop-blur-md">
           {post.category}
@@ -75,12 +86,19 @@ function Card({ post }: { post: Post }) {
           {post.readTime}
         </div>
 
-        {/* Not a link, and no "Read article" affordance: POSTS holds teasers
-            only — there are no article bodies and no /blog route behind them,
-            so every one of these pointed at a 404. Wrap the title in a Link to
-            post.href again the moment the posts themselves exist. */}
+        {/* Linked only when there is an article behind it. Posts written in the
+            CMS have a body and a page; the checked-in teasers do not, and
+            linking one would be a 404 on every click. */}
         <h3 className="mt-3 font-display text-lg leading-snug font-bold tracking-tight text-balance">
-          {post.title}
+          {post.hasArticle ? (
+            /* Stretched over the card, so the whole tile is the click target
+               rather than two lines of heading. */
+            <Link href={post.href} className="after:absolute after:inset-0 hover:text-brand-600">
+              {post.title}
+            </Link>
+          ) : (
+            post.title
+          )}
         </h3>
 
         <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">
