@@ -32,7 +32,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/about/mission-vision",
     "/about/founder",
     "/blogs",
-    "/gallery",
+    /* The gallery page is parked (app/_gallery), so it has no URL to declare —
+       listing a 404 in a sitemap is worse than omitting it. Uncomment along
+       with the folder rename and the nav entry in lib/navigation.ts. */
+    // "/gallery",
     "/reviews",
     "/faq",
   ]

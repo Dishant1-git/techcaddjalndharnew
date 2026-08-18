@@ -1,3 +1,13 @@
+/*
+  Off the site for now, at the client's request.
+
+  The folder is `_gallery` rather than `gallery`: App Router treats an
+  underscore-prefixed folder as private and never routes it, so /gallery 404s
+  while every line below stays intact. To bring the page back, rename the
+  folder to `gallery` and restore the two commented-out lines that pointed at
+  it — the nav entry in lib/navigation.ts and the sitemap path in
+  app/sitemap.ts.
+*/
 import type { Metadata } from "next"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"

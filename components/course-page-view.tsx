@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { BrochureButton } from "./brochure-button"
+// Commented out with its only use below — an unused import fails the lint.
+// import { BrochureButton } from "./brochure-button"
 import { Container } from "./container"
 import { CourseEnquiryForm } from "./course-enquiry-form"
 import { EnquireButton } from "./enquire-button"
@@ -111,7 +112,9 @@ export function CoursePageView({ page }: { page: CoursePage }) {
                 >
                   Talk to a counsellor
                 </Link>
-                <BrochureButton course={page.eyebrow} />
+                {/* Temporarily hidden. Restore this line and the import above
+                    to bring the brochure download back. */}
+                {/* <BrochureButton course={page.eyebrow} /> */}
               </div>
             </div>
 
