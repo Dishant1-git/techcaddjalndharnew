@@ -99,6 +99,10 @@ async function migrate() {
   // form's row leaves them NULL.
   await ensureColumn("email", "VARCHAR(190) NULL AFTER message")
   await ensureColumn("address", "VARCHAR(300) NULL AFTER email")
+  // When this row reached the CMS. NULL means it has not, which is what makes
+  // the backlog drainable rather than leaving it stranded here.
+  await ensureColumn("forwarded_at", "DATETIME NULL")
+  await ensureIndex("idx_forwarded", "forwarded_at")
   await ensureIndex("idx_phone_created", "phone, created_at")
   await ensureIndex("idx_ip_created", "ip, created_at")
 }
@@ -195,3 +199,65 @@ export async function saveEnquiry(enquiry: Enquiry): Promise<number> {
 
 /** Exposed so the route can run its limit checks against a ready table. */
 export { ensureTable }
+
+/**
+ * Moves locally-held enquiries into the CMS.
+ *
+ * The local table is an outage net, not a second inbox. A row written while the
+ * CMS was unreachable is invisible to the staff who work the CMS queue, and
+ * "check both places" is not a process anyone follows — so the backlog is
+ * drained on the next successful submission rather than left for someone to
+ * notice.
+ *
+ * Rows are marked forwarded only once the CMS has taken them, so a failure
+ * halfway through simply leaves the rest for next time. A duplicate reaching
+ * the CMS is refused by its own rules and still counts as delivered.
+ */
+export async function forwardPendingEnquiries(limit = 25): Promise<number> {
+  await ensureTable()
+
+  const rows = await query<RowDataPacket>(
+    `SELECT id, form_type, name, phone, course, message, email, source, ip, user_agent
+       FROM enquiries
+      WHERE forwarded_at IS NULL
+      ORDER BY created_at ASC
+      LIMIT ?`,
+    [limit],
+  )
+  if (rows.length === 0) return 0
+
+  // Imported here rather than at the top: lib/cms pulls in fetch plumbing that
+  // this module has no other use for, and the common path never runs this.
+  const { submitEnquiry } = await import("./cms")
+
+  let moved = 0
+  for (const row of rows) {
+    try {
+      const result = await submitEnquiry({
+        studentName: String(row.name),
+        phone: String(row.phone),
+        email: row.email ? String(row.email) : undefined,
+        courseName: String(row.course),
+        message: row.message ? String(row.message) : undefined,
+        formType: row.form_type ? String(row.form_type) : undefined,
+        sourceUrl: row.source ? String(row.source) : undefined,
+        ip: row.ip ? String(row.ip) : undefined,
+        userAgent: row.user_agent ? String(row.user_agent) : undefined,
+      })
+
+      // A refusal for being a duplicate means the CMS already has it, which is
+      // the outcome this is for. Anything else leaves the row for next time.
+      if (!result.ok && !result.duplicate) continue
+
+      await execute("UPDATE enquiries SET forwarded_at = NOW() WHERE id = ?", [row.id])
+      moved += 1
+    } catch {
+      // The CMS is still down. Stop rather than hammer it — the next
+      // submission will try again.
+      break
+    }
+  }
+
+  if (moved > 0) console.info(`[enquiry] forwarded ${moved} held enquiry(s) to the CMS`)
+  return moved
+}

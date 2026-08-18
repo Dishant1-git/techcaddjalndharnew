@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server"
 import { CATALOGUE, getCoursePage } from "@/lib/course-pages"
-import { isKnownCourseLabel, loadCourseCatalogue, loadCourseSpecs } from "@/lib/content"
+import {
+  isKnownCourseLabel,
+  loadContact,
+  loadCourseCatalogue,
+  loadCourseSpecs,
+} from "@/lib/content"
 import { renderBrochurePdf } from "@/lib/brochure-pdf"
 import { verifyCaptcha } from "@/lib/captcha"
 import { claimCaptcha } from "@/lib/spent-captchas"
 import {
   ensureTable,
   formTypeFor,
+  forwardPendingEnquiries,
   isRateLimited,
   saveEnquiry,
 } from "@/lib/enquiries"
@@ -179,6 +185,13 @@ export async function POST(request: Request) {
       ip,
       userAgent: request.headers.get("user-agent"),
     })
+
+    // A brochure download is a lead, and leads are worked in the CMS. This
+    // route writes locally first because the PDF must not depend on the CMS
+    // being up, so the row is pushed across straight afterwards.
+    void forwardPendingEnquiries().catch((error: unknown) => {
+      console.error("[brochure] could not forward the enquiry to the CMS:", error)
+    })
   } catch (error) {
     console.error("[brochure] enquiry could not be saved:", error)
     return bad(
@@ -190,7 +203,7 @@ export async function POST(request: Request) {
 
   let pdf: Buffer
   try {
-    pdf = await renderBrochurePdf(coursePage)
+    pdf = await renderBrochurePdf(coursePage, await loadContact())
   } catch (error) {
     // The lead is already saved at this point, so a counsellor still has it
     // even though the download itself failed — worth logging loudly.

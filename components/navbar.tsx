@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { Contact } from "@/lib/content"
 import { usePathname } from "next/navigation"
 import { Logo } from "./logo"
 import Image from "next/image"
@@ -9,14 +10,13 @@ import { PrefetchLink } from "./prefetch-link"
 import { ENQUIRY_EVENT } from "./enquiry-popup"
 import {
   AI_MENU,
-  CONTACT,
   NAV_ITEMS,
   QUICK_LINKS,
   type AiColumn,
   type NavItem,
 } from "@/lib/navigation"
 
-export function Navbar() {
+export function Navbar({ contact }: { contact: Contact }) {
   const [scrolled, setScrolled] = useState(false)
   const [openMenu, setOpenMenu] = useState<string | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -333,7 +333,7 @@ export function Navbar() {
 
           <div className="mt-6 flex gap-4">
             <a
-              href={CONTACT.phoneHref}
+              href={contact.phoneHref}
               className="flex h-14 flex-1 items-center justify-center rounded-full border border-foreground/20 text-base font-medium transition-colors hover:bg-foreground/5"
             >
               Call us

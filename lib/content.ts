@@ -27,6 +27,7 @@ import { CATALOGUE, COURSE_LABELS, type CatalogueEntry } from "./course-pages"
 import { GALLERY_TILES, type GalleryTile } from "./gallery"
 import { REVIEWS, type GoogleReview } from "./reviews"
 import { TESTIMONIALS, type Testimonial } from "./testimonials"
+import { SITE } from "./site"
 
 /**
  * Content, from the CMS when it has any and from the checked-in constants when
@@ -282,6 +283,77 @@ export const loadReviews = cache(function loadReviews(): Promise<GoogleReview[]>
 })
 
 /* ------------------------------------------------------------------ */
+/* Contact details                                                      */
+/* ------------------------------------------------------------------ */
+
+/** The parts of SITE an office can change without a developer. */
+export interface Contact {
+  phone: string
+  email: string
+  street: string
+  locality: string
+  region: string
+  postalCode: string
+  /** Ready-made hrefs, so no caller has to strip spaces from a number. */
+  phoneHref: string
+  emailHref: string
+}
+
+/** tel: wants digits and a plus, not the spacing a human reads. */
+const withHrefs = (c: Omit<Contact, "phoneHref" | "emailHref">): Contact => ({
+  ...c,
+  phoneHref: `tel:${c.phone.replace(/[^d+]/g, "")}`,
+  emailHref: `mailto:${c.email}`,
+})
+
+/**
+ * Contact details, from the CMS settings row where they have been filled in.
+ *
+ * These appear on the contact page, in the privacy notice, in the brochure PDF
+ * and in the organisation schema — the NAP that has to match the Google
+ * Business Profile character for character. That is exactly why it is one
+ * loader rather than four reads: changing the number in the CMS has to move all
+ * of them together, or the listing and the site start disagreeing.
+ *
+ * The CMS stores the address as a single block; the schema needs it split. A
+ * value is therefore only taken when it can be parsed into the parts, and
+ * otherwise the verified constant stands.
+ */
+export const loadContact = cache(async function loadContact(): Promise<Contact> {
+  const fallback: Contact = withHrefs({
+    phone: SITE.phone,
+    email: SITE.email,
+    street: SITE.street,
+    locality: SITE.locality,
+    region: SITE.region,
+    postalCode: SITE.postalCode,
+  })
+
+  try {
+    const site = await getSite()
+
+    return withHrefs({
+      phone: site.contactPhone?.trim() || fallback.phone,
+      email: site.contactEmail?.trim() || fallback.email,
+      // Street only. Locality, region and postcode stay on the constant: they
+      // are the parts Google matches most strictly, and a free-text box is the
+      // wrong shape to hold them reliably.
+      street: site.address?.trim() || fallback.street,
+      locality: fallback.locality,
+      region: fallback.region,
+      postalCode: fallback.postalCode,
+    })
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn("[content] contact details: using built-in values —", error.message)
+    } else {
+      console.error("[content] contact details failed:", error)
+    }
+    return fallback
+  }
+})
+
+/* ------------------------------------------------------------------ */
 /* Banners                                                              */
 /* ------------------------------------------------------------------ */
 
@@ -398,6 +470,36 @@ const CATEGORY_GRADIENTS = [
 /* Course page copy                                                     */
 /* ------------------------------------------------------------------ */
 
+/** The CMS stores a key; the page prints a phrase. */
+const MODE_LABELS: Record<string, string> = {
+  online: "Online",
+  offline: "Classroom",
+  hybrid: "Classroom & Online",
+}
+
+const LEVEL_LABELS: Record<string, string> = {
+  beginner: "Beginner",
+  intermediate: "Intermediate",
+  advanced: "Advanced",
+}
+
+/**
+ * The fee as a visitor should read it.
+ *
+ * Zero counts as "not priced" rather than "free": the field starts at 0 on a
+ * new course, and a page announcing a free course because nobody filled the box
+ * in is a worse error than showing no price. A discount prints as the price
+ * being charged with the old one in brackets, since the strip is one line.
+ */
+function feeLabel(course: { fee: number; discountedFee?: number }): string | undefined {
+  if (!course.fee || course.fee <= 0) return undefined
+
+  const money = (value: number) => `₹${value.toLocaleString("en-IN")}`
+  return course.discountedFee && course.discountedFee < course.fee
+    ? `${money(course.discountedFee)} (was ${money(course.fee)})`
+    : money(course.fee)
+}
+
 /**
  * Courses that exist in the CMS but not in the site's navigation.
  *
@@ -483,6 +585,12 @@ export const loadCourseSpecs = cache(async function loadCourseSpecs(): Promise<R
         topics: course.highlights.length > 0 ? course.highlights : existing.topics,
         tools: course.tools.length > 0 ? course.tools : existing.tools,
         salary: course.salary || existing.salary,
+        // The facts strip. Absent unless the CMS has a value, so a course
+        // nobody has priced keeps the segment's generic wording.
+        duration: course.duration || undefined,
+        mode: MODE_LABELS[course.mode] ?? undefined,
+        level: LEVEL_LABELS[course.level] ?? undefined,
+        fee: feeLabel(course),
       }
     }
 

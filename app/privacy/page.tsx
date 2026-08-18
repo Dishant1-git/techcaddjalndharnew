@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Container } from "@/components/container"
 import { PanelTexture } from "@/components/panel-texture"
 import { SITE } from "@/lib/site"
+import { loadContact } from "@/lib/content"
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -77,7 +78,9 @@ const SECTIONS = [
   },
 ]
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const contact = await loadContact()
+
   return (
     <main>
       <section
@@ -130,21 +133,21 @@ export default function PrivacyPage() {
               <p className="mt-3 text-base leading-relaxed text-muted">
                 {SITE.legalName}
                 <br />
-                {SITE.street}, {SITE.locality}, {SITE.region} {SITE.postalCode}
+                {contact.street}, {contact.locality}, {contact.region} {contact.postalCode}
               </p>
               <p className="mt-3 text-base leading-relaxed text-muted">
                 <a
-                  href={`mailto:${SITE.email}`}
+                  href={`mailto:${contact.email}`}
                   className="font-medium text-brand-600 underline underline-offset-2"
                 >
-                  {SITE.email}
+                  {contact.email}
                 </a>
                 {" · "}
                 <a
-                  href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
                   className="font-medium text-brand-600 underline underline-offset-2"
                 >
-                  {SITE.phone}
+                  {contact.phone}
                 </a>
               </p>
             </div>

@@ -1,8 +1,9 @@
 import Image from "next/image"
+import { loadContact } from "@/lib/content"
 import { Container } from "./container"
 import Link from "next/link"
 import { ScrollHeading } from "./scroll-heading"
-import { CONTACT } from "@/lib/navigation"
+
 
 /** The four intakes counsellors actually enrol students into. */
 const FORMATS = [
@@ -36,7 +37,9 @@ const PATH = [
   },
 ]
 
-export function About() {
+export async function About() {
+  const contact = await loadContact()
+
   return (
     /* overflow-hidden clips the decorative glow, which would otherwise push the
        page wider than the viewport on small screens. */
@@ -102,12 +105,12 @@ export function About() {
               </Link>
 
               <a
-                href={CONTACT.phoneHref}
+                href={contact.phoneHref}
                 className="text-sm font-medium transition-colors duration-200 hover:text-brand-600"
               >
                 Talk to a counsellor
                 <span className="mt-0.5 block font-mono text-xs text-muted">
-                  {CONTACT.phone}
+                  {contact.phone}
                 </span>
               </a>
             </div>

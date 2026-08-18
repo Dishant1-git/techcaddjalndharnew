@@ -1,6 +1,7 @@
 import PDFDocument from "pdfkit"
 import type { CoursePage } from "./course-pages"
 import { SITE } from "./site"
+import type { Contact } from "./content"
 
 /**
  * Renders a course's own page content into a PDF brochure.
@@ -20,7 +21,16 @@ const LINE = "#e2e4ef"
 
 const MARGIN = 56
 
-export async function renderBrochurePdf(page: CoursePage): Promise<Buffer> {
+export async function renderBrochurePdf(
+  page: CoursePage,
+  /**
+   * Contact details for the footer. Passed rather than read so the brochure
+   * carries the same number as the site — a PDF a student keeps for weeks is
+   * the worst place for a stale one.
+   */
+  contact?: Contact,
+): Promise<Buffer> {
+
   const doc = new PDFDocument({
     size: "A4",
     margins: { top: MARGIN, bottom: 72, left: MARGIN, right: MARGIN },
@@ -52,7 +62,7 @@ export async function renderBrochurePdf(page: CoursePage): Promise<Buffer> {
 
   if (page.faqs?.length) faqSection(doc, page.faqs.slice(0, 6))
 
-  contactBlock(doc)
+  contactBlock(doc, contact ?? SITE)
 
   doc.end()
   return finished
@@ -208,7 +218,10 @@ function faqSection(doc: PDFKit.PDFDocument, faqs: { q: string; a: string }[]) {
   }
 }
 
-function contactBlock(doc: PDFKit.PDFDocument) {
+function contactBlock(
+  doc: PDFKit.PDFDocument,
+  nap: Pick<Contact, "phone" | "email" | "street" | "locality" | "region" | "postalCode">,
+) {
   ensureSpace(doc, 90)
   rule(doc)
   doc.moveDown(0.6)
@@ -218,10 +231,10 @@ function contactBlock(doc: PDFKit.PDFDocument) {
     .font("Helvetica")
     .fontSize(10)
     .text(
-      `${SITE.legalName}, ${SITE.street}, ${SITE.locality}, ${SITE.region} ${SITE.postalCode}`,
+      `${SITE.legalName}, ${nap.street}, ${nap.locality}, ${nap.region} ${nap.postalCode}`,
       { lineGap: 3 },
     )
-  doc.text(`Phone: ${SITE.phone}   ·   Email: ${SITE.email}   ·   ${SITE.url}`, {
+  doc.text(`Phone: ${nap.phone}   ·   Email: ${nap.email}   ·   ${SITE.url}`, {
     lineGap: 3,
   })
   doc.moveDown(0.6)

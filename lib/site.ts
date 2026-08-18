@@ -84,7 +84,24 @@ export const SITE = {
  * `streetAddress` guard is kept: an empty value should still be omitted rather
  * than published as an empty string.
  */
-export function organisationSchema() {
+/**
+ * The organisation's structured data.
+ *
+ * Takes the contact details rather than reading them, so the schema, the
+ * contact page and the brochure print the same NAP — they must not disagree,
+ * or the Business Profile match weakens. Defaults to the constants, so a caller
+ * with nothing to pass behaves exactly as before.
+ */
+export function organisationSchema(contact?: {
+  phone: string
+  email: string
+  street: string
+  locality: string
+  region: string
+  postalCode: string
+}) {
+  const nap = contact ?? SITE
+
   return {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
@@ -95,14 +112,14 @@ export function organisationSchema() {
     logo: `${SITE.url}/assets/icon/tce.png`,
     foundingDate: SITE.founded,
     slogan: SITE.tagline,
-    telephone: SITE.phone,
-    email: SITE.email,
+    telephone: nap.phone,
+    email: nap.email,
     address: {
       "@type": "PostalAddress",
-      ...(SITE.street ? { streetAddress: SITE.street } : {}),
-      addressLocality: SITE.locality,
-      addressRegion: SITE.region,
-      postalCode: SITE.postalCode,
+      ...(nap.street ? { streetAddress: nap.street } : {}),
+      addressLocality: nap.locality,
+      addressRegion: nap.region,
+      postalCode: nap.postalCode,
       addressCountry: SITE.country,
     },
     geo: {

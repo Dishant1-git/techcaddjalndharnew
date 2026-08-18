@@ -1,9 +1,10 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { Contact } from "@/lib/content"
 import { Captcha, type CaptchaValue } from "./captcha"
 import { GoogleMark } from "./google-mark"
-import { COURSE_GROUPS, CONTACT } from "@/lib/navigation"
+import { COURSE_GROUPS } from "@/lib/navigation"
 
 /** Fires the popup from anywhere — the header button dispatches this. */
 export const ENQUIRY_EVENT = "techcadd:enquiry"
@@ -36,7 +37,7 @@ const SESSION_KEY = "techcadd:enquiry-seen"
 const POPUP_INPUT =
   "w-full rounded-xl border border-white/25 bg-white/10 px-5 py-4 text-base text-white outline-none sm:text-sm placeholder:text-white/60 focus-visible:ring-2 focus-visible:ring-white/70"
 
-export function EnquiryPopup() {
+export function EnquiryPopup({ contact }: { contact: Contact }) {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle")
@@ -338,10 +339,10 @@ export function EnquiryPopup() {
               {/* Impatience is a good sign on an enquiry — the number is right
                   here rather than one more page away. */}
               <a
-                href={CONTACT.phoneHref}
+                href={contact.phoneHref}
                 className="w-full rounded-full border border-white/30 px-8 py-3.5 text-sm font-semibold text-white transition-colors duration-300 hover:bg-white/10 sm:w-auto"
               >
-                Or call {CONTACT.phone}
+                Or call {contact.phone}
               </a>
             </div>
           </div>
@@ -423,10 +424,10 @@ export function EnquiryPopup() {
           <p className="mt-6 text-xs leading-relaxed text-white/55">
             You can also share your requirements at{" "}
             <a
-              href={CONTACT.emailHref}
+              href={contact.emailHref}
               className="font-medium text-white underline underline-offset-2"
             >
-              {CONTACT.email}
+              {contact.email}
             </a>
             , and our team will get back to you right away.
           </p>

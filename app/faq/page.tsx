@@ -3,8 +3,8 @@ import Link from "next/link"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
 import { FaqAccordion } from "@/components/faq-accordion"
-import { loadFaqCategories, loadFaqs } from "@/lib/content"
-import { CONTACT } from "@/lib/navigation"
+import { loadContact, loadFaqCategories, loadFaqs } from "@/lib/content"
+
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
@@ -15,6 +15,8 @@ export const metadata: Metadata = {
 }
 
 export default async function FaqPage() {
+  const contact = await loadContact()
+
   const [faqs, categories] = await Promise.all([loadFaqs(), loadFaqCategories()])
 
   return (
@@ -98,10 +100,10 @@ export default async function FaqPage() {
 
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a
-                href={CONTACT.phoneHref}
+                href={contact.phoneHref}
                 className="inline-flex h-12 items-center justify-center rounded-full bg-brand-600 px-7 text-sm font-semibold text-white transition-colors duration-300 hover:bg-brand-700"
               >
-                Call {CONTACT.phone}
+                Call {contact.phone}
               </a>
               {/* `<Link>`, not `<a>`: an anchor to an internal route drops out
                   of the client router and reloads the whole document. */}

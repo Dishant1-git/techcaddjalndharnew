@@ -1,7 +1,8 @@
 import Link from "next/link"
+import { loadContact } from "@/lib/content"
 import { Container } from "./container"
 import { ScrollHeading } from "./scroll-heading"
-import { CONTACT } from "@/lib/navigation"
+
 
 /**
  * Why us — an oversized statement on the left, a divided 2x2 matrix of
@@ -62,7 +63,9 @@ const REASONS: Reason[] = [
   },
 ]
 
-export function WhyUs() {
+export async function WhyUs() {
+  const contact = await loadContact()
+
   const [left, right] = [REASONS.slice(0, 2), REASONS.slice(2)]
 
   return (
@@ -86,7 +89,7 @@ export function WhyUs() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-            <Cta href={CONTACT.phoneHref}>Call Now</Cta>
+            <Cta href={contact.phoneHref}>Call Now</Cta>
             <Cta href="/contact">Book a Free Demo</Cta>
           </div>
         </div>

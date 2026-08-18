@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { loadContact } from "@/lib/content"
 // Commented out with its only use below — an unused import fails the lint.
 // import { BrochureButton } from "./brochure-button"
 import { Container } from "./container"
@@ -16,7 +17,6 @@ import { ScrollHeading } from "./scroll-heading"
 import { ToolMesh } from "./tool-mesh"
 import { VideoDialog } from "./video-dialog"
 import { courseCard, hrefFor, type CoursePage } from "@/lib/course-pages"
-import { CONTACT } from "@/lib/navigation"
 
 /**
  * Explicit placement for the first four cards: two stacked in column one, two
@@ -37,7 +37,9 @@ const PROJECT_PLACEMENT = [
  * "Overview" is complete rather than half-broken — later stages light up as
  * they land in the registry.
  */
-export function CoursePageView({ page }: { page: CoursePage }) {
+export async function CoursePageView({ page }: { page: CoursePage }) {
+  const contact = await loadContact()
+
   const self = hrefFor(page)
 
   return (
@@ -542,11 +544,11 @@ export function CoursePageView({ page }: { page: CoursePage }) {
 
               <div className="flex flex-wrap items-center gap-3">
                 <a
-                  href={CONTACT.phoneHref}
+                  href={contact.phoneHref}
                   className="inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 text-sm font-bold text-ink transition-colors duration-300 hover:bg-brand-50"
                 >
                   <PhoneIcon />
-                  {CONTACT.phone}
+                  {contact.phone}
                 </a>
                 <EnquireButton className="inline-flex h-12 items-center rounded-full border border-white/40 px-6 text-sm font-semibold text-white transition-colors duration-300 hover:bg-white/15">
                   Book a free demo

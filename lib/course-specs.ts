@@ -17,6 +17,18 @@ export type CourseSpec = {
   tools: string[]
   /** Realistic fresher band in the Jalandhar / Mohali market. */
   salary: string
+  /**
+   * The facts strip, when the CMS has been given them.
+   *
+   * Optional and absent from every checked-in spec below: these are the fields
+   * an office actually revises — a fee rises, a batch length changes — and they
+   * belong to the record rather than to this file. When unset the page keeps
+   * the segment's generic facts, which is what it showed before.
+   */
+  duration?: string
+  mode?: string
+  fee?: string
+  level?: string
 }
 
 export const COURSE_SPECS: Record<string, CourseSpec> = {

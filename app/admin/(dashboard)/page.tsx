@@ -91,6 +91,25 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-6">
+      {/*
+        This page reads the website's own table, which is only a safety net: an
+        enquiry lands here solely when the CMS could not be reached, and is
+        forwarded on as soon as it can be. The CMS is where staff work the
+        queue, with status, notes and assignment — so this says so rather than
+        presenting itself as a second inbox to remember to check.
+      */}
+      <section className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <h2 className="text-sm font-semibold text-amber-900">
+          The CMS is where enquiries are worked
+        </h2>
+        <p className="mt-1 text-sm leading-relaxed text-amber-800">
+          Enquiries go straight to the CMS inbox, where they carry a status, notes and an
+          assignee. Anything below was held here because the CMS was briefly unreachable, and
+          is forwarded automatically once it is back — so this page should normally be a
+          historical record rather than a queue.
+        </p>
+      </section>
+
       {/* Site-wide totals. These deliberately ignore the filters below — they
           are the standing picture the page opens with, and a number that moved
           because of a search box is not a total. */}

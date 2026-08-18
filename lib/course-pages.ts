@@ -2957,6 +2957,36 @@ const HERO_IMAGES: Record<string, HeroImage> = {
 }
 
 /** A page for a catalogued slug that has no authored content yet. */
+/**
+ * The facts strip, with anything entered in the CMS taking precedence.
+ *
+ * Replaced by label rather than appended, so filling in a duration corrects the
+ * segment's generic one instead of contradicting it two rows below. Labels the
+ * CMS has nothing to say about — Eligibility, Includes — are left as they are,
+ * which is why this merges rather than substitutes the whole strip.
+ */
+function factsFor(entry: CatalogueEntry, base: Fact[], spec?: CourseSpec): Fact[] {
+  if (!spec) return base
+
+  const overrides: Fact[] = []
+  if (spec.duration) overrides.push({ label: 'Duration', value: spec.duration })
+  if (spec.mode) overrides.push({ label: 'Mode', value: spec.mode })
+  if (spec.fee) overrides.push({ label: 'Fee', value: spec.fee })
+  if (spec.level) overrides.push({ label: 'Level', value: spec.level })
+  if (overrides.length === 0) return base
+
+  const replaced = base.map((fact) => overrides.find((o) => o.label === fact.label) ?? fact)
+  const added = overrides.filter((o) => !base.some((fact) => fact.label === o.label))
+
+  // Four is what the strip is laid out for, so something has to give. What
+  // gives is the generic copy: a fee somebody typed into the CMS beats
+  // "Eligibility: 12th Pass Onward", which is the same on every page.
+  const kept = replaced.filter((fact) => overrides.some((o) => o.label === fact.label))
+  const generic = replaced.filter((fact) => !overrides.some((o) => o.label === fact.label))
+
+  return [...kept, ...added, ...generic].slice(0, 4)
+}
+
 function stubPage(entry: CatalogueEntry, specs: Record<string, CourseSpec> = COURSE_SPECS): CoursePage {
   const copy = SEGMENT_COPY[entry.segment]
   const h1 = copy.heading(entry.label)
@@ -2975,7 +3005,7 @@ function stubPage(entry: CatalogueEntry, specs: Record<string, CourseSpec> = COU
       `${entry.label.toLowerCase()} institute jalandhar`,
     ],
     intro: copy.intro,
-    facts: copy.facts,
+    facts: factsFor(entry, copy.facts, specs[`${entry.segment}/${entry.slug}`]),
     related: relatedFor(entry, specs),
   }
 }

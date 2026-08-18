@@ -1,10 +1,10 @@
 import Image from "next/image"
+import { loadContact } from "@/lib/content"
 import Link from "next/link"
 import { Container } from "./container"
 import { PrefetchLink } from "./prefetch-link"
 import { siFacebook, siInstagram, siX, siYoutube } from "simple-icons"
 import {
-  CONTACT,
   COURSE_GROUPS,
   groupSlug,
   NAV_ITEMS,
@@ -36,7 +36,9 @@ const COMPANY_LINKS: NavLink[] = NAV_ITEMS.filter(
   (i) => i.href !== "/" && !i.groups,
 ).map(({ label, href }) => ({ label, href }))
 
-export function Footer() {
+export async function Footer() {
+  const contact = await loadContact()
+
   return (
     /* Flat surface by design — the blue wash belongs to the CTA directly
        above, so the footer stays quiet and doesn't compete with it. */
@@ -98,17 +100,17 @@ export function Footer() {
               </p>
 
               <a
-                href={CONTACT.emailHref}
+                href={contact.emailHref}
                 className="mt-7 inline-flex h-12 items-center rounded-full bg-ink px-7 text-sm font-semibold tracking-wide text-white shadow-[0_14px_34px_-14px_rgba(42,44,94,0.9)] transition-colors duration-300 hover:bg-brand-600"
               >
-                {CONTACT.email}
+                {contact.email}
               </a>
 
               <a
-                href={CONTACT.phoneHref}
+                href={contact.phoneHref}
                 className="mt-4 block font-mono text-sm text-muted transition-colors hover:text-brand-600"
               >
-                {CONTACT.phone}
+                {contact.phone}
               </a>
             </div>
 

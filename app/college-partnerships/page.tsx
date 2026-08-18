@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
+import { loadContact } from "@/lib/content"
 import Link from "next/link"
 import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
-import { CONTACT } from "@/lib/navigation"
+
 import { OFFERINGS, PARTNERSHIP_STATS, PROCESS, type Offering } from "@/lib/partnerships"
 import { SITE } from "@/lib/site"
 
@@ -13,7 +14,9 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE.url}/college-partnerships` },
 }
 
-export default function CollegePartnershipsPage() {
+export default async function CollegePartnershipsPage() {
+  const contact = await loadContact()
+
   return (
     <main>
       <section
@@ -188,13 +191,13 @@ export default function CollegePartnershipsPage() {
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
-              href={CONTACT.phoneHref}
+              href={contact.phoneHref}
               /* The blue drop-glow the ink version carried is dropped with it.
                  It was there to lift the button off a dark panel; over `subtle`
                  it only muddies the edge. */
               className="inline-flex h-14 items-center justify-center rounded-full bg-brand-600 px-8 text-sm font-semibold text-white transition-colors duration-300 hover:bg-brand-700"
             >
-              Call {CONTACT.phone}
+              Call {contact.phone}
             </a>
             {/* `<Link>`, not `<a>`: an anchor to an internal route drops out of
                 the client router and reloads the whole document. */}

@@ -1,8 +1,9 @@
 import { Fragment } from "react"
+import { loadContact } from "@/lib/content"
 import { Container } from "./container"
 import { CtaDemoForm } from "./cta-demo-form"
 import { ScrollHeading } from "./scroll-heading"
-import { CONTACT } from "@/lib/navigation"
+
 
 /** Reassurances under the form — the objections counsellors hear most. */
 const ASSURANCES = [
@@ -19,7 +20,9 @@ const ASSURANCES = [
  * captcha, the validation and the /api/enquiry call that writes the row. The
  * enquiry is filed as "Book Demo" so it is separable from the header button's.
  */
-export function Cta() {
+export async function Cta() {
+  const contact = await loadContact()
+
   return (
     <section
       id="cta"
@@ -59,7 +62,7 @@ export function Cta() {
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
           <a
-            href={CONTACT.phoneHref}
+            href={contact.phoneHref}
             className="group inline-flex items-center gap-3 rounded-full bg-brand-600 py-3 pr-8 pl-3 text-white shadow-[0_20px_45px_-18px_rgba(37,99,235,0.9)] transition-colors duration-300 hover:bg-brand-700"
           >
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white/20">
@@ -72,7 +75,7 @@ export function Cta() {
                 Call now
               </span>
               <span className="block font-display text-lg font-bold tracking-tight">
-                {CONTACT.phone}
+                {contact.phone}
               </span>
             </span>
           </a>

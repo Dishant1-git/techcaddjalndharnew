@@ -3,6 +3,7 @@ import { verifyCaptcha } from "@/lib/captcha"
 import { claimCaptcha } from "@/lib/spent-captchas"
 import {
   ensureTable,
+  forwardPendingEnquiries,
   formTypeFor,
   isRateLimited,
   saveEnquiry,
@@ -186,6 +187,13 @@ export async function POST(request: Request) {
 
     // Not an error: the enquiry reached us, we are simply not filing it twice.
     if (!result.ok) return bad(result.message, {}, 429)
+
+    // The CMS is clearly up, so this is the moment to clear anything held
+    // locally from an earlier outage. Deliberately not awaited: the visitor
+    // should not wait on somebody else's backlog.
+    void forwardPendingEnquiries().catch((error: unknown) => {
+      console.error("[enquiry] could not forward held enquiries:", error)
+    })
   } catch (cmsError) {
     // The CMS being down must not cost a lead. Record it locally and say so
     // loudly — these rows need moving across once the CMS is back.

@@ -333,9 +333,7 @@ export const ABOUT_FEATURED: FeaturedCard[] = [
  */
 export const RESOURCE_LINKS: NavLink[] = [
   { label: "Blogs", href: "/blogs" },
-  /* Hidden for now — the page itself is parked at app/_gallery, so this link
-     would 404. Uncomment when the folder goes back to app/gallery. */
-  // { label: "Gallery", href: "/gallery" },
+  { label: "Gallery", href: "/gallery" },
   { label: "FAQ", href: "/faq" },
   { label: "Reviews", href: "/reviews" },
   { label: "College Partnerships", href: "/college-partnerships" },

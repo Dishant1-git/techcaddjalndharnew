@@ -12,6 +12,7 @@ import { ScrollToTop } from "@/components/scroll-to-top"
 import { SiteChrome } from "@/components/site-chrome"
 import { jsonLd } from "@/lib/json-ld"
 import { organisationSchema, SITE } from "@/lib/site"
+import { loadContact } from "@/lib/content"
 import "./globals.css"
 
 /*
@@ -64,9 +65,14 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Loaded once here and handed down: the schema, the navbar's call button and
+  // the popup must all print the same number, and Navbar and EnquiryPopup are
+  // client components that cannot fetch it themselves.
+  const contact = await loadContact()
+
   return (
     /*
       suppressHydrationWarning is required, not cosmetic: the inline script
@@ -83,7 +89,7 @@ export default function RootLayout({
         {/* Organisation identity, emitted once for the whole site. */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLd(organisationSchema()) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(organisationSchema(contact)) }}
         />
 
         {/* Arms the reveal styles during HTML parsing, before anything paints.
@@ -121,12 +127,12 @@ export default function RootLayout({
         */}
         <SiteChrome>
           <Preloader />
-          <Navbar />
+          <Navbar contact={contact} />
         </SiteChrome>
         {children}
         <SiteChrome>
           <Footer />
-          <EnquiryPopup />
+          <EnquiryPopup contact={contact} />
           <CookieConsent />
           <ScrollToTop />
           <ScrollReveal />

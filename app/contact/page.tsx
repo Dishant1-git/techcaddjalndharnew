@@ -5,12 +5,21 @@ import { PanelTexture } from "@/components/panel-texture"
 import { ScrollHeading } from "@/components/scroll-heading"
 import { SupportAssistance } from "@/components/support-assistance"
 import { SITE } from "@/lib/site"
+import { loadContact, type Contact } from "@/lib/content"
 
-export const metadata: Metadata = {
-  title: "Contact Techcadd Jalandhar — Batches, Fees & Free Demo Class",
-  description:
-    "Talk to a Techcadd counsellor in Jalandhar about course fees, batch timings and placement support. Call +91 98881 22255 or book a free demo class.",
-  alternates: { canonical: `${SITE.url}/contact` },
+/**
+ * Built rather than declared, so the number in the search snippet is the one
+ * the CMS holds. A stale number here is worse than most: it is what someone
+ * dials straight from the results page, without ever opening the site.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const { phone } = await loadContact()
+
+  return {
+    title: "Contact Techcadd Jalandhar — Batches, Fees & Free Demo Class",
+    description: `Talk to a Techcadd counsellor in Jalandhar about course fees, batch timings and placement support. Call ${phone} or book a free demo class.`,
+    alternates: { canonical: `${SITE.url}/contact` },
+  }
 }
 
 /*
@@ -22,15 +31,15 @@ export const metadata: Metadata = {
   without a transfer. Put the actual name and extension in here and nothing
   else needs to change.
 */
-const SUPPORT_DESKS = [
+const supportDesks = (contact: Contact) => [
   {
     id: "student",
     label: "Student Support",
     blurb: "Academic guidance & career counselling",
     icon: "student" as const,
     name: "Student Desk",
-    phone: SITE.phone,
-    email: SITE.email,
+    phone: contact.phone,
+    email: contact.email,
     location: "Techcadd Jalandhar Campus",
   },
   {
@@ -39,13 +48,16 @@ const SUPPORT_DESKS = [
     blurb: "Institution partnerships & collaborations",
     icon: "college" as const,
     name: "Partnerships Desk",
-    phone: SITE.phone,
-    email: SITE.email,
+    phone: contact.phone,
+    email: contact.email,
     location: "Techcadd Jalandhar Campus",
   },
 ]
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const contact = await loadContact()
+  const SUPPORT_DESKS = supportDesks(contact)
+
   return (
     <>
       <main>
@@ -92,10 +104,10 @@ export default function ContactPage() {
               </EnquireButton>
 
               <a
-                href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+                href={`tel:${contact.phone.replace(/\s/g, "")}`}
                 className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 bg-white/5 px-7 text-sm font-medium backdrop-blur-md transition-colors duration-300 hover:bg-white/15"
               >
-                Call {SITE.phone}
+                Call {contact.phone}
               </a>
             </div>
           </Container>

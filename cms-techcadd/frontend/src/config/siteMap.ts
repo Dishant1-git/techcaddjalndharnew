@@ -74,7 +74,7 @@ export const SITE_MAP: Record<string, Placement> = {
     where: 'The testimonials carousel on the homepage. Featured ones are shown first.',
   },
   gallery: {
-    where: 'The /gallery page and the photo marquee on the homepage.',
+    where: 'The /gallery page, as a photo wall grouped by album.',
   },
   banners: {
     where:
