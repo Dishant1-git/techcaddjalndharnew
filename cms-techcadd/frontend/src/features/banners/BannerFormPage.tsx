@@ -19,7 +19,13 @@ import { PageHeader } from '../../components/layout/PageHeader'
 import { useToast } from '../../hooks/useToast'
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges'
 import { STATUS_OPTIONS } from '../courses/courseSchema'
-import { bannerSchema, emptyBanner, PLACEMENT_OPTIONS, type BannerFormValues } from './bannerSchema'
+import {
+  bannerSchema,
+  emptyBanner,
+  LIVE_PLACEMENTS,
+  PLACEMENT_OPTIONS,
+  type BannerFormValues,
+} from './bannerSchema'
 import { bannerHooks } from './useBanners'
 
 export default function BannerFormPage() {
@@ -56,6 +62,11 @@ export default function BannerFormPage() {
   // Feeds the "where this appears" note — it shows the live URL, which moves
   // with the slug as it is typed.
   const watched = useWatch({ control }) as Record<string, unknown>
+
+  // Compared as ISO strings — both sides are yyyy-mm-dd, so this needs no Date.
+  const today = new Date().toISOString().slice(0, 10)
+  const startsLater = typeof watched.startsAt === 'string' && watched.startsAt > today
+  const endedAlready = typeof watched.endsAt === 'string' && watched.endsAt !== '' && watched.endsAt < today
 
   /**
    * Publishes and saves in one action.
@@ -125,6 +136,29 @@ export default function BannerFormPage() {
       />
 
       <AppearsOn module="banners" record={watched} saved={isEdit} />
+
+      {/* The two ways a correctly-filled banner still shows nowhere. Both are
+          answerable from the form's own values, so neither should require
+          finding out from the live site. */}
+      {!LIVE_PLACEMENTS.has(String(watched.placement)) && (
+        <Alert tone="warning" title="This placement is not built yet">
+          The website only renders banners placed in the <strong>Home hero</strong> slot today.
+          A banner here will be saved and kept, but nothing will show it.
+        </Alert>
+      )}
+
+      {startsLater && (
+        <Alert tone="info" title={`Scheduled for ${String(watched.startsAt)}`}>
+          This banner will not appear on the website until that date, even once published.
+        </Alert>
+      )}
+
+      {endedAlready && (
+        <Alert tone="warning" title={`Ended on ${String(watched.endsAt)}`}>
+          Its run has finished, so it is no longer shown. Clear or extend the end date to bring
+          it back.
+        </Alert>
+      )}
 
       {Object.keys(errors).length > 0 && (
         <Alert tone="error" title="This banner could not be saved">

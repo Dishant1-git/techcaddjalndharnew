@@ -25,6 +25,16 @@ export const bannerSchema = z
     status: z.enum(['published', 'draft', 'review']),
   })
   .superRefine((values, ctx) => {
+    // A banner is artwork. Without either image the website has nothing to
+    // render, so it saves happily and then never appears — the failure mode
+    // that looks exactly like the save not having worked.
+    if (!values.desktopImage && !values.mobileImage) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['desktopImage'],
+        message: 'Add an image — a banner with no artwork cannot be shown.',
+      })
+    }
     if (values.startsAt && values.endsAt && values.endsAt < values.startsAt) {
       ctx.addIssue({
         code: 'custom',
@@ -60,12 +70,22 @@ export function emptyBanner(order = 0): BannerFormValues {
   }
 }
 
+/**
+ * Where a banner can be placed, and whether the website renders it yet.
+ *
+ * Only the homepage slot is built. Offering the others without saying so lets
+ * an editor publish a banner that is correct in every visible respect and still
+ * appears nowhere, with nothing to explain why.
+ */
 export const PLACEMENT_OPTIONS = [
-  { value: 'home-hero', label: 'Home hero' },
-  { value: 'course-page', label: 'Course page' },
-  { value: 'sidebar', label: 'Sidebar' },
-  { value: 'popup', label: 'Popup' },
+  { value: 'home-hero', label: 'Home hero — shown on the website' },
+  { value: 'course-page', label: 'Course page — not built yet' },
+  { value: 'sidebar', label: 'Sidebar — not built yet' },
+  { value: 'popup', label: 'Popup — not built yet' },
 ]
+
+/** Placements the website actually renders today. */
+export const LIVE_PLACEMENTS = new Set(['home-hero'])
 
 export type ScheduleState = 'live' | 'scheduled' | 'expired' | 'inactive'
 

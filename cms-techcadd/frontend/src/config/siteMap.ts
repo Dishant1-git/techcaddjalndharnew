@@ -78,7 +78,7 @@ export const SITE_MAP: Record<string, Placement> = {
   },
   banners: {
     where:
-      'The homepage, directly under the hero, for the "home-hero" placement. Only banners inside their start and end dates are shown.',
+      'The homepage, directly under the hero — but only for the "Home hero" placement, which is the only one the website renders today. A banner also needs artwork, and needs today to fall inside its start and end dates.',
   },
   settings: {
     where:
