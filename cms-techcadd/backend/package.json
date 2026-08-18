@@ -16,7 +16,7 @@
     "test:watch": "node scripts/prepare-test-db.mjs && vitest"
   },
   "dependencies": {
-    "argon2": "^0.45.1",
+    "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

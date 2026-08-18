@@ -54,6 +54,24 @@ export default async function FaqPage() {
       */}
       <section className="py-16 lg:py-24">
         <Container>
+          {/* Nothing in the CMS.
+
+              The questions come from it and have no checked-in stand-ins, so an
+              empty CMS means no accordions. The "Still not sure?" panel below
+              stays either way — with nothing above it, it stops being a
+              footnote and becomes the answer to the page. */}
+          {faqs.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-line bg-subtle/50 px-6 py-16 text-center">
+              <p className="font-display text-xl font-bold tracking-tight">
+                No questions published yet.
+              </p>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
+                Nothing here yet — but the centre answers all of this on the
+                phone, and there is no charge for asking.
+              </p>
+            </div>
+          )}
+
           <div className="space-y-14 lg:space-y-20">
             {categories.map((category) => {
               const items = faqs.filter((faq) => faq.category === category)
