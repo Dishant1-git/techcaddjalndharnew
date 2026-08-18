@@ -29,6 +29,10 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY package.json ./
 
+# tsc only compiles .ts files — the .sql migration files never reach dist/ on
+# their own, but src/db/migrate.ts looks for them next to itself at runtime.
+COPY --from=builder /app/src/db/migrations ./dist/db/migrations
+
 # Mount a persistent volume here in Coolify, or uploaded media is lost on redeploy.
 RUN mkdir -p /app/uploads
 
