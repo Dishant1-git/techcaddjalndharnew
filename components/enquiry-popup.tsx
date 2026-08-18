@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { Contact } from "@/lib/content"
+import { PROMO_OPEN_ATTR } from "./promo-popup"
 import { Captcha, type CaptchaValue } from "./captcha"
 import { GoogleMark } from "./google-mark"
 import { COURSE_GROUPS } from "@/lib/navigation"
@@ -83,6 +84,14 @@ export function EnquiryPopup({ contact }: { contact: Contact }) {
 
     const fire = () => {
       if (!scrolled || !elapsed) return
+      // A promotional overlay may already be up. Two modals would trap focus
+      // against each other, so wait rather than spend the one auto-open on a
+      // moment nobody can act on — the visitor is still here, and the next
+      // scroll or the retry below will catch them.
+      if (document.documentElement.hasAttribute(PROMO_OPEN_ATTR)) {
+        window.setTimeout(fire, 2000)
+        return
+      }
       sessionStorage.setItem(SESSION_KEY, "1")
       show()
     }
