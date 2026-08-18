@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Forced LF: these run inside Linux containers (MySQL init scripts), and a
+# CRLF line ending makes bash fail with "$'\r': command not found".
+*.sh text eol=lf

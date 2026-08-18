@@ -1,0 +1,91 @@
+name: techcadd-stack
+
+# One stack, four containers: the website, the CMS API, the CMS admin panel,
+# and the MySQL server they all share. Deploy this whole file as a single
+# Coolify "Docker Compose" resource — see SERVER.md.
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # Read by db/init/01-init.sh on first boot only (when the data volume
+      # is empty) to create both databases and their users.
+      CMS_DB_PASSWORD: ${CMS_DB_PASSWORD}
+      SITE_DB_PASSWORD: ${SITE_DB_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  cms-api:
+    build:
+      context: ./cms-techcadd/backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      CORS_ORIGIN: https://cms.${APP_DOMAIN}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: techcadd_cms
+      DB_PASSWORD: ${CMS_DB_PASSWORD}
+      DB_NAME: techcadd_cms
+      COOKIE_SECRET: ${COOKIE_SECRET}
+      SITE_REVALIDATE_URL: https://${APP_DOMAIN}/api/revalidate
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+    volumes:
+      # Uploaded media survives redeploys/rebuilds only because it lives in
+      # this named volume instead of the container's own filesystem.
+      - cms-uploads:/app/uploads
+
+  cms-admin:
+    build:
+      context: ./cms-techcadd/frontend
+      args:
+        # Vite bakes this into the JS bundle at build time — it cannot be
+        # changed later by an env var on the running container.
+        VITE_API_URL: https://cms-api.${APP_DOMAIN}/api
+    restart: unless-stopped
+    depends_on:
+      - cms-api
+
+  website:
+    build:
+      context: .
+      args:
+        # next.config.mjs reads this while `next build` runs, to fix the
+        # image-optimizer's allowed host and the CSP img-src.
+        CMS_API_URL: https://cms-api.${APP_DOMAIN}/api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      cms-api:
+        condition: service_started
+    environment:
+      CMS_API_URL: https://cms-api.${APP_DOMAIN}/api
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: techcadd_site
+      DB_PASSWORD: ${SITE_DB_PASSWORD}
+      DB_NAME: TechcaddJal
+      DB_SSL: "false"
+      # Simple/automatic setup: the app creates its own tables on first use.
+      # See docs/security.md for the locked-down alternative.
+      DB_AUTO_MIGRATE: "true"
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      CAPTCHA_SECRET: ${CAPTCHA_SECRET}
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET}
+
+volumes:
+  mysql-data:
+  cms-uploads:
