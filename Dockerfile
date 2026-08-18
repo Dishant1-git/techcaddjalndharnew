@@ -15,6 +15,11 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Baked into the build: next.config.mjs reads this to set images.remotePatterns
+# and the CSP img-src, both fixed at build time, not read again at runtime.
+ARG CMS_API_URL
+ENV CMS_API_URL=$CMS_API_URL
+
 RUN npm run build
 
 
