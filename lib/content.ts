@@ -16,24 +16,31 @@ import {
   type CmsReview,
   type CmsTestimonial,
 } from "./cms"
-import { POSTS, type Post } from "./blogs"
+import { type Post } from "./blogs"
 import { COURSE_CATEGORIES, type CourseCategory } from "./categories"
 import { STATS, type Stat } from "./stats"
-import { FAQS, FAQ_CATEGORIES, HOMEPAGE_FAQS, type Faq } from "./faqs"
+import { FAQ_CATEGORIES, type Faq } from "./faqs"
 import { COURSE_SPECS, GENERIC_SPEC, type CourseSpec } from "./course-specs"
 import { CATALOGUE, COURSE_LABELS, type CatalogueEntry } from "./course-pages"
 import { GALLERY_TILES, type GalleryTile } from "./gallery"
-import { REVIEWS, type GoogleReview } from "./reviews"
+import { type GoogleReview } from "./reviews"
 import { TESTIMONIALS, type Testimonial } from "./testimonials"
 
 /**
  * Content, from the CMS when it has any and from the checked-in constants when
  * it does not.
  *
- * The fallback is the point. Publishing is gradual — the CMS starts empty and
- * fills up one section at a time — and the site must not show an empty blog
- * page the moment it is wired up, nor go blank if the CMS is unreachable
- * during a deploy. Every loader here answers with something renderable.
+ * Two kinds of loader live here, and which one a section gets is a judgement
+ * about whether stand-in copy would be true.
+ *
+ * `withFallback` is for the sections that describe us: the course list, the
+ * categories, the headline figures. That copy holds whether or not an editor
+ * has touched the CMS, so publishing can be gradual and a CMS outage during a
+ * deploy costs nothing.
+ *
+ * `cmsOnly` is for the sections that quote somebody: articles, questions
+ * visitors asked, reviews they left. Inventing one of those is a claim about
+ * the world, not a placeholder, so those pages render an empty state instead.
  */
 
 /** Photographs already in the repo, used when a CMS record has no cover. */
@@ -99,6 +106,29 @@ async function withFallback<T>(
   }
 }
 
+/**
+ * Runs a loader that has no checked-in content behind it, and answers with an
+ * empty list if it fails.
+ *
+ * For the sections nobody may invent: an article, a question somebody asked, a
+ * review somebody left. Either an editor entered it or it does not exist, and
+ * standing in for one with hand-written copy would put a byline, an answer or
+ * a star rating on something that never happened. Every caller renders an
+ * empty state instead, so a CMS outage costs a section rather than the page.
+ */
+async function cmsOnly<T>(label: string, load: () => Promise<T[]>): Promise<T[]> {
+  try {
+    return await load()
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn(`[content] ${label}: the CMS is unavailable —`, error.message)
+    } else {
+      console.error(`[content] ${label} failed:`, error)
+    }
+    return []
+  }
+}
+
 function toPost(blog: CmsBlog, index: number): Post {
   const { from, to } = gradient(index)
   return {
@@ -118,12 +148,9 @@ function toPost(blog: CmsBlog, index: number): Post {
   }
 }
 
+/** The blog, from the CMS and nowhere else — see `cmsOnly`. */
 export const loadPosts = cache(function loadPosts(): Promise<Post[]> {
-  return withFallback(
-    "blogs",
-    async () => (await getBlogs()).items.map(toPost),
-    POSTS,
-  )
+  return cmsOnly("blogs", async () => (await getBlogs()).items.map(toPost))
 })
 
 function toTestimonial(item: CmsTestimonial, index: number): Testimonial {
@@ -186,8 +213,9 @@ function toFaq(faq: CmsFaq): Faq {
   }
 }
 
+/** Every question on /faq, from the CMS and nowhere else — see `cmsOnly`. */
 export const loadFaqs = cache(function loadFaqs(): Promise<Faq[]> {
-  return withFallback('faqs', async () => (await getFaqs()).items.map(toFaq), FAQS)
+  return cmsOnly('faqs', async () => (await getFaqs()).items.map(toFaq))
 })
 
 /**
@@ -215,15 +243,20 @@ export const loadFaqCategories = cache(async function loadFaqCategories(): Promi
 
 /** The homepage shows a short selection, chosen in the CMS by the featured flag. */
 export const loadHomepageFaqs = cache(function loadHomepageFaqs(): Promise<Faq[]> {
-  return withFallback(
-    'homepage faqs',
-    async () => {
-      const { items } = await getFaqs()
-      const featured = items.filter((faq) => faq.featured)
-      return (featured.length > 0 ? featured : items).slice(0, 6).map(toFaq)
-    },
-    HOMEPAGE_FAQS,
-  )
+  return cmsOnly('homepage faqs', async () => {
+    const { items } = await getFaqs()
+    const featured = items.filter((faq) => faq.featured)
+
+    // Re-sorted by the CMS ordering field, because the list arrives grouped by
+    // category. Six questions from six different sections read as an arbitrary
+    // sample; in the editor's order they read as the six most asked, which is
+    // what the flag is for.
+    return (featured.length > 0 ? featured : items)
+      .slice()
+      .sort((a, b) => a.order - b.order)
+      .slice(0, 6)
+      .map(toFaq)
+  })
 })
 
 /* ------------------------------------------------------------------ */
@@ -264,18 +297,17 @@ function toReview(review: CmsReview): GoogleReview {
 }
 
 /**
- * Only reviews left on Google.
+ * Only reviews left on Google, from the CMS and nowhere else — see `cmsOnly`.
  *
  * The card carries the Google mark, which tells a visitor something specific
  * about where the review came from. A walk-in comment rendered with that badge
- * would be a small lie, so the others are filtered out rather than relabelled.
+ * would be a small lie, so the others are filtered out rather than relabelled
+ * — and a review nobody wrote is the same lie with nobody to attribute it to,
+ * which is why there is no checked-in list behind this one.
  */
 export const loadReviews = cache(function loadReviews(): Promise<GoogleReview[]> {
-  return withFallback(
-    "reviews",
-    async () =>
-      (await getReviews()).items.filter((review) => review.source === "google").map(toReview),
-    REVIEWS,
+  return cmsOnly("reviews", async () =>
+    (await getReviews()).items.filter((review) => review.source === "google").map(toReview),
   )
 })
 

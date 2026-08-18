@@ -60,11 +60,38 @@ export default async function BlogsPage() {
               Latest posts
             </p>
             {/* Reads off the list rather than being typed in, so it cannot go
-                stale when a post is added. */}
-            <p className="font-mono text-xs text-muted">
-              {posts.length} articles
-            </p>
+                stale when a post is added. Hidden at zero — "0 articles" beside
+                the empty notice below only says the same thing twice. */}
+            {posts.length > 0 && (
+              <p className="font-mono text-xs text-muted">
+                {posts.length} {posts.length === 1 ? "article" : "articles"}
+              </p>
+            )}
           </div>
+
+          {/* Nothing published yet.
+
+              The list comes from the CMS and has no checked-in stand-ins, so an
+              empty CMS means an empty page. Saying so plainly beats a bare grid,
+              which reads as a page that failed to load. */}
+          {posts.length === 0 && (
+            <div className="mt-8 rounded-2xl border border-dashed border-line bg-subtle/50 px-6 py-16 text-center lg:mt-10">
+              <p className="font-display text-xl font-bold tracking-tight">
+                No articles published yet.
+              </p>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
+                Our trainers are writing the first ones now. In the meantime, the
+                course pages carry the same detail on syllabus, tools and
+                placement support.
+              </p>
+              <Link
+                href="/courses"
+                className="mt-7 inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-brand-600"
+              >
+                Browse courses <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          )}
 
           {/* Three across on desktop, two on tablet, one on a phone. The cards
               stretch to the tallest in their row, and each one pins its own
