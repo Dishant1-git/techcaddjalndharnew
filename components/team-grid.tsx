@@ -5,6 +5,11 @@ export type TeamMember = {
   /** Designation shown under the name. */
   role: string
   photo: string
+  /**
+   * True when `photo` is a headshot of this person rather than a stand-in.
+   * Drives `alt`: only a real portrait may be named to a screen reader.
+   */
+  isPortrait?: boolean
 }
 
 /**
@@ -44,18 +49,28 @@ export function TeamGrid({ members }: { members: TeamMember[] }) {
 function Card({ member }: { member: TeamMember }) {
   return (
     <li className="group relative aspect-square overflow-hidden rounded-2xl border border-line bg-subtle shadow-[0_14px_36px_-24px_rgba(15,23,42,0.45)] transition-[transform,box-shadow,border-color] duration-500 hover:-translate-y-1 hover:border-brand-600/35 hover:shadow-[0_22px_50px_-26px_rgba(37,99,235,0.45)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-      {/* alt is empty on purpose — these are placeholder photographs, not
-          pictures of the people they sit under, so naming them would tell a
-          screen reader something untrue. The name below is the visible label
-          and is what gets read. */}
+      {/* A stand-in gets an empty alt on purpose — it is not a picture of the
+          person it sits under, so naming it would tell a screen reader
+          something untrue, and the visible name below is read anyway. A real
+          headshot is named. */}
       <Image
         src={member.photo}
-        alt=""
+        alt={member.isPortrait ? member.name : ""}
         fill
         /* Two columns of a full-width grid on a phone, four of a 1304px
            container above `lg` — roughly 46vw and 300px respectively. */
         sizes="(min-width: 1024px) 300px, (min-width: 640px) 30vw, 46vw"
-        className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none"
+        /*
+          A headshot is taller than the square card, so a centred cover crop
+          eats the same amount off the top and the bottom — and the top is
+          where the head is. Anchoring the crop and the hover zoom to the top
+          edge spends the whole overflow on the shoulders instead, which is
+          what a portrait can afford to lose. The stand-ins are rooms, not
+          faces, and stay centred.
+        */
+        className={`object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none ${
+          member.isPortrait ? "origin-top object-top" : ""
+        }`}
       />
 
       {/* The scrim is what makes the name legible: these photographs are

@@ -7,6 +7,11 @@ import { loadHomepageFaqs } from "@/lib/content"
 export async function Faq() {
   const faqs = await loadHomepageFaqs()
 
+  // Nothing published. A "Frequently asked questions" heading over an empty
+  // accordion answers nothing and invites a click that does nothing; /faq
+  // carries its own empty state because a visitor went looking for it.
+  if (faqs.length === 0) return null
+
   return (
     <section id="faq" className="py-20 lg:py-28">
       <Container>

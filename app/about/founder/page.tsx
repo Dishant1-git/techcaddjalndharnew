@@ -117,18 +117,19 @@ const FOUNDER_STORY = [
 ]
 
 /*
-  Placeholder portraits.
+  Stand-in portraits, for a member whose headshot has not arrived yet.
 
   Local files, not a remote avatar service: the site's CSP is
   `img-src 'self' data: blob:` (next.config.mjs), so picsum.photos, pravatar and
-  the rest are blocked outright and would render as broken frames. These are the
-  three photographs that exist in the repo, cycled — the same stand-in that
+  the rest are blocked outright and would render as broken frames. These are
+  general photographs of the centre, cycled — the same stand-in that
   lib/gallery.ts uses, and for the same reason.
 
-  TODO: drop headshots into public/assets/images/team/ and point each member's
-  `photo` at their own file. Set `alt` on the portrait in components/team-grid.tsx
-  to the person's name at the same time — it is empty today precisely because
-  these pictures are not of the people they sit under, and naming them would
+  Every member but Asmita Sehgal now has a real headshot, given as the third
+  tuple entry in TEAM below; hers is the only card still on a stand-in. A member
+  with a real photo is marked `isPortrait`, which is what lets
+  components/team-grid.tsx use their name as `alt` — the stand-in keeps an empty
+  `alt`, because naming a picture that is not of the person it sits under would
   tell a screen reader something untrue.
 */
 const PLACEHOLDER_PORTRAITS = [
@@ -148,36 +149,42 @@ const PLACEHOLDER_PORTRAITS = [
  */
 const TEAM: TeamMember[] = (
   [
-    ["Gourav Gupta", "Founder & CEO"],
-    ["Shilpa Gupta"],
-    ["Asmita Sehgal"],
-    ["Daljeet Singh"],
-    ["Amit Sharma"],
-    ["Harrachneet Kaur"],
-    ["Alam"],
-    ["Tanisha"],
-    ["Sandeep"],
-    ["Anita"],
-    ["Shiv"],
-    ["Aman"],
+    ["Gourav Gupta", "Founder & CEO", "/assets/images/about/gourav-sir.png"],
+    ["Shilpa Gupta", undefined, "/assets/images/about/shilpa-mam.png"],
+    // TODO: no headshot for Asmita Sehgal yet — this one card still carries a
+    // stand-in. Drop the file in and add the third entry when it arrives.
+    ["Asmita Sehgal" ,undefined, "/assets/images/about/asmita-mam.png"],
+    ["Daljeet Singh", undefined, "/assets/images/about/daljeet-sir.png"],
+    ["Amit Sharma", undefined, "/assets/images/about/amit-sir.png"],
+    ["Harrachneet Kaur", undefined, "/assets/images/about/harrachneet-mam.png"],
+    ["Alam", undefined, "/assets/images/about/Alam-sir.png"],
+    ["Tanisha", undefined, "/assets/images/about/tanisha-mam.png"],
+    ["Sandeep Chugh", undefined, "/assets/images/about/sandeep-sir.png"],
+    ["Anita Sharma", undefined, "/assets/images/about/Anita-mam.png"],
+    ["Shiv", undefined, "/assets/images/about/shiv-sir.png"],
+    ["Aman Sharma", undefined, "/assets/images/about/aman-sir.png"],
   ] as const
-).map(([name, role], index) => ({
+).map(([name, role, photo], index) => ({
   name,
   role: role ?? "Team Member",
-  // Deterministic rather than random: Math.random() here would pick a different
-  // picture on the server than on the client and fail hydration.
-  photo: PLACEHOLDER_PORTRAITS[index % PLACEHOLDER_PORTRAITS.length],
+  // A real headshot when one exists, otherwise the cycled stand-in. Deterministic
+  // rather than random: Math.random() here would pick a different picture on the
+  // server than on the client and fail hydration.
+  photo: photo ?? PLACEHOLDER_PORTRAITS[index % PLACEHOLDER_PORTRAITS.length],
+  // Only a real headshot may name the person to a screen reader — a stand-in
+  // sitting under a name is not a picture of them.
+  isPortrait: Boolean(photo),
 }))
 
 /*
-  "Meet Our Team" is hidden for now, at the client's request.
+  "Meet Our Team" is visible again.
 
   A flag rather than commented-out JSX: the section below carries block comments
   of its own, which cannot be nested inside another one, and gating it here
   keeps TEAM, TeamGrid and TeamIcon in use so nothing else has to be touched.
-  Flip to `true` to bring the section back.
+  Flip to `false` to hide the section again.
 */
-const SHOW_TEAM = false
+const SHOW_TEAM = true
 
 export default function FounderPage() {
   return (
