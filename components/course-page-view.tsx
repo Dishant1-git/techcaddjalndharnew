@@ -383,7 +383,7 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
               />
               <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-white/60">
                 Everything below is installed on the lab machines and used on
-                live client work — not shown once in a slide and forgotten.
+                live client work, not shown once in a slide and forgotten.
               </p>
             </div>
 
@@ -457,12 +457,12 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
-      {/* --- 10. Why Techcadd --- */}
+      {/* --- 10. Why techcadd --- */}
       {page.whyTechcadd && (
         <Section id="why-techcadd" dark>
           <SectionHead
-            eyebrow="Why Techcadd"
-            lines={["Why students choose", "Techcadd"]}
+            eyebrow="Why techcadd"
+            lines={["Why students choose", "techcadd"]}
             dark
           />
           {page.whyTechcadd.intro && (

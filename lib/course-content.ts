@@ -14,7 +14,7 @@ import type {
 /**
  * Builds full page content from a course spec.
  *
- * The brand sections (Why Techcadd, the placement argument) are genuinely the
+ * The brand sections (Why techcadd, the placement argument) are genuinely the
  * same on every page because they describe the institute, not the course —
  * writing fifty variations of one truth would be worse, not better. Everything
  * that *is* course-specific — syllabus, tools, careers, salary, FAQs, reviews —
@@ -68,12 +68,12 @@ const REVIEW_POOL: Omit<Review, "quote">[] = [
 ]
 
 const QUOTE_TEMPLATES = [
-  (c: string) => `I joined the ${c} batch with almost no background and finished with a project I could actually show. The trainers correct your work daily rather than just moving to the next slide.`,
-  (c: string) => `What made ${c} click for me was the lab time. You can sit after class and someone will still explain it until you get it.`,
-  (c: string) => `The ${c} course got me interview-ready faster than I expected. My interviewer asked to see my project and that was the whole conversation.`,
-  (c: string) => `I travelled in for the weekend ${c} batch and it was worth every trip. Small batch, real work, no time wasted on theory nobody uses.`,
-  (c: string) => `Techcadd's placement cell kept calling me for drives until I was placed. That persistence mattered more than the certificate for ${c}.`,
-  (c: string) => `I was switching careers and worried I would be behind. Half the ${c} batch were doing the same thing, and nobody made me feel slow.`,
+  (c: string) => `Joined the ${c} batch with almost no background and came out with a project I could actually show people. They check your work every day here, they don't just move on to the next slide.`,
+  (c: string) => `The lab time is what made ${c} click for me. You can stay back after class and somebody will still sit and explain it until you get it.`,
+  (c: string) => `${c} got me interview-ready quicker than I expected. My interviewer asked to see the project and honestly that was the entire conversation.`,
+  (c: string) => `I came in from out of town every weekend for the ${c} batch and it was worth the travel. Small batch, real work, not much time wasted.`,
+  (c: string) => `The placement cell kept calling me for drives until I got placed. For ${c}, that mattered to me more than the certificate did.`,
+  (c: string) => `I was changing careers and worried I would be the slowest one there. Half the ${c} batch were doing exactly the same thing.`,
 ]
 
 function buildReviews(courseName: string, seed: string): Review[] {
@@ -171,22 +171,22 @@ function buildProjects(spec: CourseSpec, name: string): Project[] {
   return [
     {
       title: `${name} Fundamentals Build`,
-      body: `Your first working piece, applying ${t[0]?.toLowerCase()} and ${t[1]?.toLowerCase()} end to end rather than as isolated exercises.`,
+      body: `Your first working piece. Two blocks used together in one build rather than as separate exercises: ${t[0]}; ${t[1]}.`,
       tags: [spec.tools[0], spec.tools[1]].filter(Boolean),
     },
     {
       title: "Real-World Data Challenge",
-      body: `Work with messy, real inputs — ${t[3]?.toLowerCase()} and ${t[4]?.toLowerCase()} — and defend the choices you made to a trainer.`,
+      body: `Messy, real inputs. The work covers ${t[3]}, then ${t[4]}. A trainer will ask why you made the calls you did.`,
       tags: [spec.tools[2], spec.tools[3]].filter(Boolean),
     },
     {
       title: "Live Client Brief",
-      body: `A genuine requirement from Techcadd's delivery pipeline, scoped, built and shipped under supervision. This is the one interviewers ask about.`,
+      body: `A genuine requirement out of techcadd's delivery pipeline: scoped, built and shipped under supervision. In interviews, this is the one they ask about.`,
       tags: ["Live work", "Supervised"],
     },
     {
       title: "Portfolio Capstone",
-      body: `A ${name.toLowerCase()} project you specify yourself, covering ${t[6]?.toLowerCase() ?? "advanced topics"} and deployment, and present as your final piece.`,
+      body: `A ${name} project of your own choosing. You take it through ${t[6] ?? "the advanced topics"}, then deploy it, then present it as your final piece.`,
       tags: [spec.tools[4] ?? "Deployment", "Presentation"].filter(Boolean),
     },
   ]
@@ -201,19 +201,19 @@ function buildOutcomes(spec: CourseSpec, name: string): Outcome[] {
     },
     {
       q: "What can I earn, and how fast does it grow?",
-      a: `A fresher with a working portfolio starts around ${spec.salary} a month in the Jalandhar and Mohali market. With two years of delivery experience that typically doubles, and specialists who keep learning move well beyond it.`,
+      a: `A fresher with a working portfolio starts around ${spec.salary} a month in the Jalandhar and Mohali market. Two years of delivery experience usually doubles that, and specialists who keep learning go well past it.`,
     },
     {
       q: "Can I freelance or work remotely with this skill?",
-      a: `Yes. A Jalandhar address costs you nothing on a remote brief — students bill clients in Delhi, Dubai and Canada. The course covers client handling, proposals and reporting so you can price and defend your work, not just do it.`,
+      a: `Yes. A Jalandhar address costs you nothing on a remote brief, and our students currently bill clients in Delhi, Dubai and Canada. Client handling, proposals and reporting are on the syllabus for that reason: you need to be able to price the work and defend it, not only do it.`,
     },
     {
       q: "Which industries hire for this in Punjab?",
-      a: `Beyond IT companies, the export houses, sports goods and hand tool manufacturers, immigration consultancies, hospitals, schools and real estate firms across Jalandhar all now hire for these skills directly.`,
+      a: `IT companies are the obvious answer, but around Jalandhar the export houses, sports goods and hand tool manufacturers, immigration consultancies, hospitals, schools and property firms now hire for these skills directly.`,
     },
     {
       q: "Can I continue to higher studies or a specialisation later?",
-      a: `The certificate and portfolio stand on their own, and they stack. Most students move on to an adjacent Techcadd track — the tools overlap, so the second course is faster than the first.`,
+      a: `The certificate and the portfolio hold up on their own, and they also stack. A lot of students come back for an adjacent techcadd track, and because the tools overlap the second course goes faster than the first.`,
     },
   ]
 }
@@ -253,19 +253,19 @@ function buildFaqs(
   return [
     {
       q: `What is the duration of the ${name} course in Jalandhar?`,
-      a: `Techcadd runs ${name} over ${durationPhrase}. Weekday, evening and weekend batches cover the same syllabus, and 1-on-1 training is available if you would rather set your own pace — every class runs for 2 hours, whichever format you choose.`,
+      a: `techcadd runs ${name} over ${durationPhrase}. Weekday, evening and weekend batches all cover the same syllabus, and 1-on-1 training is there if you would rather set your own pace. Whichever format you pick, a class is 2 hours.`,
     },
     {
       q: `What is the fee for the ${name} course in Jalandhar?`,
-      a: `In Jalandhar, shorter 2–3 month courses typically cost ₹8,000 to ₹15,000, while comprehensive 4–6 month programmes with live projects, an internship and placement support run roughly ₹18,000 to ₹40,000. Techcadd counsellors share the current fee sheet and EMI options on request, and a demo class is free.`,
+      a: `Across Jalandhar, a shorter 2–3 month course usually falls between ₹8,000 and ₹15,000. A full 4–6 month programme with live projects, an internship and placement support is closer to ₹18,000–₹40,000. Ask a counsellor for the current fee sheet and the EMI options. The demo class costs nothing.`,
     },
     {
       q: after12
         ? `Can I join this course straight after 12th?`
         : `Who can join the ${name} course?`,
       a: after12
-        ? `Yes. This programme is designed for students joining directly after 12th, from any stream. There is no prior technical requirement — you start from fundamentals and build up to live project work.`
-        : `Students after 12th, graduates and final-year students, working professionals switching careers, and business owners all join this course. You start from fundamentals, so a technical background helps but is not required.`,
+        ? `Yes. The programme is written for students coming straight out of 12th, from any stream. Nothing technical is assumed beforehand: you begin at fundamentals and work up to live project work.`
+        : `The batch usually mixes school leavers, graduates and final-year students, working professionals changing tracks, and business owners. Everyone starts at fundamentals, so a technical background helps but is not needed.`,
     },
     {
       q: `What jobs can I get after the ${name} course?`,
@@ -273,27 +273,27 @@ function buildFaqs(
     },
     {
       q: `What salary can a fresher expect after this course in Jalandhar?`,
-      a: `A fresher with a working portfolio typically starts around ${spec.salary} per month in the Jalandhar and Mohali market, rising substantially within two years of experience. Freelancers handling multiple clients often earn more, since remote work is not limited by location.`,
+      a: `A fresher with a working portfolio usually starts around ${spec.salary} per month in the Jalandhar and Mohali market, and that rises sharply inside two years. Freelancers running several clients often do better, since remote work does not care where you live.`,
     },
     {
       q: `Is placement guaranteed after the ${name} course?`,
-      a: `No institute can honestly guarantee a job, and you should be cautious of any in Jalandhar that does. Techcadd guarantees placement support — CV reviews, mock interviews, portfolio preparation and repeated drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana.`,
+      a: `No institute can honestly guarantee a job, and any in Jalandhar that says otherwise is worth a second look. What techcadd does commit to is placement support: CV reviews, mock interviews, portfolio preparation and repeated drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana.`,
     },
     {
       q: `Which tools and software will I learn?`,
-      a: `You will work hands-on with ${spec.tools.slice(0, 6).join(", ")} and the supporting toolchain used on live projects. All practice happens in the lab on licensed software, not on demo screenshots.`,
+      a: `You work hands-on with ${spec.tools.slice(0, 6).join(", ")} and the supporting toolchain that goes with live projects. All of it happens in the lab on licensed software, on your own machine, not through demo screenshots.`,
     },
     {
       q: `Will I get a certificate and internship letter?`,
-      a: `Yes. Every student receives an industry-recognised certificate on completion plus a documented internship letter based on live client work. The internship satisfies the industrial training requirement at most Punjab universities.`,
+      a: `Yes. Everyone finishes with an industry-recognised certificate and a documented internship letter based on live client work. Most Punjab universities accept that internship against their industrial training requirement.`,
     },
     {
       q: `Do you work on real projects or only theory?`,
-      a: `Every module ends with something you built. ${h1} finishes with a live project drawn from Techcadd's own client delivery work, supervised by a trainer, which becomes the portfolio you take to interviews.`,
+      a: `Every module ends with something you have built. ${h1} closes on a live project pulled from techcadd's own client delivery work and supervised by a trainer, and that project is what you carry into interviews.`,
     },
     {
       q: `Are weekend and evening batches available?`,
-      a: `Yes. Techcadd Jalandhar runs weekday, evening and weekend batches in parallel so working professionals and college students can both attend, and 1-on-1 training is available for a fully personal schedule. Every class — batch or 1-on-1 — runs for 2 hours; book a free demo class to see the lab and meet the trainer before enrolling.`,
+      a: `Yes. techcadd Jalandhar runs weekday, evening and weekend batches side by side, so a working professional and a college student can both find a slot. 1-on-1 training covers anyone whose schedule fits neither. Every class runs 2 hours. Book a free demo first if you want to see the lab and meet the trainer before paying.`,
     },
   ]
 }
@@ -325,8 +325,8 @@ export function generateContent(
       `${name.toLowerCase()} course with placement jalandhar`,
       `${name.toLowerCase()} classes in jalandhar punjab`,
     ],
-    description: `${page.h1} at Techcadd — ${spec.tagline}. Live projects, industry trainers, internship letter and placement support. ${spec.careers.slice(0, 2).join(" and ")} roles start around ${spec.salary}.`,
-    intro: `Learn ${spec.tagline} — taught on live client work at Techcadd Jalandhar, not from slides.`,
+    description: `${page.h1} at techcadd — ${spec.tagline}. Live projects, industry trainers, internship letter and placement support. ${spec.careers.slice(0, 2).join(" and ")} roles start around ${spec.salary}.`,
+    intro: `Learn ${spec.tagline}, taught on live client work at techcadd Jalandhar.`,
 
     /**
      * Deliberately one short paragraph.
@@ -342,27 +342,27 @@ export function generateContent(
        "search Console" and "APIs with Flask" into "aPIs" — the strings are
        product names as often as they are prose. */
     overview: [
-      `Techcadd's ${page.h1} takes you from ${spec.topics[0]} to ${spec.topics[spec.topics.length - 1]}, taught on ${spec.tools.slice(0, 3).join(", ")}. You work on live client briefs under trainer supervision, not slideware. ${OVERVIEW_CLOSE[page.segment]}`,
+      `techcadd's ${page.h1} runs from ${spec.topics[0]} through to ${spec.topics[spec.topics.length - 1]}, on ${spec.tools.slice(0, 3).join(", ")}. The practice work comes from live client briefs, with a trainer checking it. ${OVERVIEW_CLOSE[page.segment]}`,
     ],
 
     whoCanDo: {
-      intro: `The ${name} course is built for people at six different starting points, and the batch is deliberately mixed. What matters far more than your background is turning up consistently and finishing what each module asks you to build.`,
+      intro: `The ${name} course takes people in from six different starting points, and we keep the batch mixed on purpose. Where you begin matters much less than whether you turn up regularly and finish what each module asks you to build.`,
       groups: [
         {
           title: "Students after 12th",
-          body: `Join from any stream. You start from fundamentals with no assumed knowledge, and most students run the course alongside a degree at a Jalandhar college using the weekday or weekend batch.`,
+          body: `Any stream is fine. Nothing is assumed, so you begin at fundamentals. Most students here run the course alongside a degree at a Jalandhar college, on either the weekday or the weekend batch.`,
         },
         {
           title: "Graduates and final-year students",
-          body: `If you are finishing a BA, BBA, B.Com, BCA or B.Tech, this is the shortest route from degree to salary. Enter placement season with project work in hand instead of a blank CV.`,
+          body: `Finishing a BA, BBA, B.Com, BCA or B.Tech, this is the shortest route from degree to salary. You reach placement season with project work in hand rather than a blank CV.`,
         },
         {
           title: "Working professionals",
-          body: `The weekend batch exists for people already earning. Career switchers typically become interview-ready for ${spec.careers[0]} roles within five to six months without leaving their current job.`,
+          body: `The weekend batch is there for people already earning. Career switchers are usually interview-ready for ${spec.careers[0]} roles inside five to six months, without leaving the job they have.`,
         },
         {
           title: "Business owners and freelancers",
-          body: `Owners take this course to stop outsourcing work they cannot judge. Freelancers take it to bill clients beyond Punjab — location does not limit remote work in this field.`,
+          body: `Owners join to stop outsourcing work they have no way of judging. Freelancers join to bill clients outside Punjab, since remote work in this field does not care where you sit.`,
         },
         ...COMMON_AUDIENCE,
       ],
@@ -372,38 +372,38 @@ export function generateContent(
        say something that paragraph hasn't already — the supervision claim and
        the salary figure both appear there too, just not in this phrasing. */
     casePitch: {
-      headline: `${name} Is Powering the Next Generation of Industry Leaders`,
+      headline: `Where ${name} Is Actually Being Hired For Right Now`,
       bullets: [
-        "Live client work from week one, supervised by a trainer — not slides, not simulations.",
+        "Live client work from week one, with a trainer looking over what you build.",
         `${spec.careers[0]} roles in Punjab start around ${spec.salary} a month for a fresher with a working portfolio.`,
       ],
     },
 
     whyProgram: [
-      `${spec.demand} That gap is the whole argument for this course: there is local demand, there are budgets, and there are very few trained people to hand the work to.`,
-      `What separates this from a playlist of tutorials is supervision on real work. From the second half of the course you build on live client projects with a trainer beside you, make decisions that have consequences, and correct them the following week. That loop is the skill. No employer in Jalandhar or Mohali will take your word for it without work they can inspect.`,
-      `Be realistic about the money. A fresher who finishes with a working portfolio typically starts around ${spec.salary} a month locally, and moves up quickly with experience. Roles include ${spec.careers.join(", ")}. The ceiling is high, but it is earned — nobody pays a beginner well for a certificate alone.`,
-      `The alternative is what most people try first: free videos, a cheap online course, six months of drifting, and knowledge you cannot demonstrate. A structured programme with live projects, a mentor who corrects you, an internship letter and a placement cell that actually calls employers is the difference between knowing the subject and being hired to do it.`,
+      `${spec.demand} That is the argument for the course in one line: the demand is local, the budgets exist, and there are not enough trained people in Punjab to hand the work to.`,
+      `Tutorials will teach you the syntax. What they cannot give you is somebody senior looking at your decisions. From the second half of the course you are on live client projects with a trainer beside you, so a bad call gets caught the same week you make it. That is the part employers in Jalandhar and Mohali are testing for, and they will want to open the work and see it for themselves.`,
+      `On money, the honest figure: a fresher with a working portfolio starts around ${spec.salary} a month locally, and the number climbs quickly with delivery experience. Roles include ${spec.careers.join(", ")}. The ceiling is high. Nobody reaches it on a certificate alone.`,
+      `Most people try the cheap route first. A few free videos, a discounted online course, six months of drifting, and nothing at the end they can actually show anyone. The reason a structured programme costs more is that it comes with live projects, someone correcting you, an internship letter and a placement cell that keeps ringing employers on your behalf.`,
       /* Moved down from the overview when that was cut to one paragraph — the
          local-area names are worth keeping on the page for search, just not in
          the first block a reader meets. */
-      `Students reach the Jalandhar centre from ${LOCAL_AREAS}. Whether you have just finished 12th, are completing a degree at a local college, or are switching from a non-technical job, the course starts at zero — which is why weekday, evening, weekend and 1-on-1 timings all exist rather than a single fixed slot, with every class running two hours.`,
+      `Students reach the Jalandhar centre from ${LOCAL_AREAS}. School leavers, college students and people moving across from non-technical jobs all start at the same place, from zero. That is also why the timings are split into weekday, evening, weekend and 1-on-1 slots instead of one fixed batch. Every class runs two hours.`,
     ],
 
     whyTechcadd: {
-      intro: `There are many places to learn this in Jalandhar and the brochure syllabus looks similar at all of them. What differs is who teaches, whether you ever touch real work, and whether anyone picks up the phone after you have paid. Techcadd has trained students across Punjab since 2007 on the same model: small batches, working practitioners as trainers, client projects as coursework.`,
+      intro: `Plenty of institutes in Jalandhar teach this, and on paper the syllabus looks much the same everywhere. The differences show up elsewhere: who is standing at the front, whether you ever touch a real requirement, and whether anybody answers your call once the fee is paid. techcadd has run on the same model across Punjab since 2007 — small batches, practitioners teaching, client work as coursework.`,
       points: [
         {
           title: "Trainers who still do the work",
-          body: "Your trainer is not a full-time lecturer. They deliver client projects for Techcadd's services arm, so examples in class are current rather than a case study from five years ago.",
+          body: "Your trainer is not a full-time lecturer. They deliver client projects for techcadd's services arm, so the examples in class come from this quarter and not from a case study written five years ago.",
         },
         {
           title: "Live projects, real consequences",
-          body: "You work on genuine client requirements under supervision. This is where a portfolio comes from, and it is the first thing an interviewer asks to see.",
+          body: "You build against genuine client requirements under supervision. That is where a portfolio comes from, and it is the first thing any interviewer asks to see.",
         },
         {
           title: "Small batches and open lab hours",
-          body: "Batches stay small enough that a trainer sees your screen daily. Lab time runs outside class hours and doubt sessions continue until the concept lands.",
+          body: "Batches stay small enough for a trainer to look at every screen each day. Lab time carries on outside class hours, and doubt sessions run until the concept lands.",
         },
         {
           title: "Internship letter and certificate",
@@ -411,26 +411,26 @@ export function generateContent(
         },
         {
           title: "A placement cell that persists",
-          body: "Mock interviews, CV reviews and drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana — repeated after a rejection, not abandoned.",
+          body: "Mock interviews, CV reviews and drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana. A rejection puts you in the next drive rather than off the list.",
         },
         {
           title: "Since 2007, 25,000+ students",
-          body: "Nearly two decades of hiring relationships in Punjab is why a call from our placement cell gets answered and why local employers know what our certificate means.",
+          body: "Nearly two decades of hiring relationships in Punjab is why a call from our placement cell gets answered, and why local employers already know what our certificate means.",
         },
       ],
     },
 
     learn: {
       intro: timeline
-        ? `The programme is broken down by the ${page.segment === "internship-training" ? "weeks and months" : "months"} you actually spend on it rather than a generic module list. Early time goes on ${spec.topics.slice(0, 3).join(", ").toLowerCase()}, the middle stretch moves into ${spec.topics.slice(3, 6).join(", ").toLowerCase()}, and the final stretch is live client work, a documented internship letter and placement preparation.`
-        : `The syllabus is arranged so every module produces an asset rather than a set of notes. You will cover ${spec.topics.slice(0, 5).join(", ").toLowerCase()}, and finish with a live project built on ${spec.tools.slice(0, 3).join(", ")}. Modules run in the order a real project runs — foundations first, then the core skills, then applied work under supervision, then the portfolio and interview preparation that turn all of it into an offer letter.`,
+        ? `The programme is laid out against the ${page.segment === "internship-training" ? "weeks and months" : "months"} you will actually be here, not as a generic module list. The early time goes on ${spec.topics.slice(0, 3).join(", ").toLowerCase()}. The middle stretch moves into ${spec.topics.slice(3, 6).join(", ").toLowerCase()}. The last stretch is live client work, a documented internship letter and placement preparation.`
+        : `Every module is meant to leave you with something built, not a set of notes. You cover ${spec.topics.slice(0, 5).join(", ").toLowerCase()}, and finish on a live project using ${spec.tools.slice(0, 3).join(", ")}. The order follows the way a real project runs: foundations, then core skills, then supervised applied work, then the portfolio and interview preparation that turn all of it into an offer.`,
       modules: timeline ? buildTimelineModules(spec, timeline) : buildModules(spec),
       tools: spec.tools,
     },
 
     video: {
       url: SITE.promoVideo,
-      title: `Inside the ${name} course at Techcadd Jalandhar`,
+      title: `Inside the ${name} course at techcadd Jalandhar`,
     },
     /* No generated `tracks` — a duration-comparison stack only makes sense
        where a student is genuinely choosing between enrolment lengths on the

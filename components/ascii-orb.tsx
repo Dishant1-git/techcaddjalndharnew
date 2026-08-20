@@ -142,7 +142,7 @@ export function AsciiOrb({ className = "" }: { className?: string }) {
         const depth = (b + 0.5) / BANDS
         const alpha = 0.05 + Math.pow(depth, 1.7) * 0.62
 
-        // Far side stays neutral slate; the near face picks up Techcadd blue.
+        // Far side stays neutral slate; the near face picks up techcadd blue.
         const mix = Math.pow(depth, 2.2)
         const r = Math.round(148 + (37 - 148) * mix)
         const g = Math.round(163 + (99 - 163) * mix)

@@ -95,7 +95,7 @@ export default async function DashboardPage({
         This page reads the website's own table, which is only a safety net: an
         enquiry lands here solely when the CMS could not be reached, and is
         forwarded on as soon as it can be. The CMS is where staff work the
-        queue, with status, notes and assignment — so this says so rather than
+        queue, with status, notes and assignment, so this says so rather than
         presenting itself as a second inbox to remember to check.
       */}
       <section className="rounded-xl border border-amber-200 bg-amber-50 p-4">
@@ -105,7 +105,7 @@ export default async function DashboardPage({
         <p className="mt-1 text-sm leading-relaxed text-amber-800">
           Enquiries go straight to the CMS inbox, where they carry a status, notes and an
           assignee. Anything below was held here because the CMS was briefly unreachable, and
-          is forwarded automatically once it is back — so this page should normally be a
+          is forwarded automatically once it is back, so this page should normally be a
           historical record rather than a queue.
         </p>
       </section>

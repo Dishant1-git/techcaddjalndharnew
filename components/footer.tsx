@@ -46,7 +46,7 @@ export async function Footer() {
       {/* --- Oversized wordmark background ---
           Drawn as SVG text rather than a CSS font-size: `textLength` forces the
           word to exactly the viewBox width, so it fills the footer edge to edge
-          and can never be clipped by `overflow-hidden` — which is what a `vw`
+          and can never be clipped by `overflow-hidden`, which is what a `vw`
           size did, because the word's real width depends on font metrics no
           `clamp()` can know. */}
       <svg
@@ -83,10 +83,10 @@ export async function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-10">
             {/* --- Brand --- */}
             <div className="max-w-sm">
-              <Link href="/" className="block" aria-label="Techcadd home">
+              <Link href="/" className="block" aria-label="techcadd home">
                 <Image
                   src="/assets/icon/tce.png"
-                  alt="Techcadd — Your Skill & Technology Partner"
+                  alt="techcadd — Your Skill & Technology Partner"
                   width={952}
                   height={262}
                   className="h-14 w-auto"

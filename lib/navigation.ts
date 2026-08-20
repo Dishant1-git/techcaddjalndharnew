@@ -1,5 +1,5 @@
 /**
- * Navigation mirrored from the live Techcadd site (mohali.techcadd.com):
+ * Navigation mirrored from the live techcadd site (mohali.techcadd.com):
  * Home · About Us · AI · Courses (mega menu) · Internship & Training ·
  * After 12th Courses · Contact Us
  */
@@ -283,7 +283,7 @@ export const AFTER_12TH_GROUPS: CourseGroup[] = [
 
 /** About Us — the institute's own story. */
 export const ABOUT_LINKS: NavLink[] = [
-  { label: "About Techcadd", href: "/about" },
+  { label: "About techcadd", href: "/about" },
   { label: "Mission and Vision", href: "/about/mission-vision" },
   /* Restored: /about/founder now exists, which is the condition the note here
      set for putting it back. */
@@ -303,7 +303,7 @@ export const ABOUT_LINKS: NavLink[] = [
 */
 export const ABOUT_FEATURED: FeaturedCard[] = [
   {
-    title: "About Techcadd",
+    title: "About techcadd",
     href: "/about",
     image: "/assets/images/about/team.jpg",
     tag: "Story",

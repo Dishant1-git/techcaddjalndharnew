@@ -6,13 +6,13 @@
  * few things that measurably suppresses local rankings.
  */
 export const SITE = {
-  name: "Techcadd",
+  name: "techcadd",
   url: "https://techcadd.com",
-  legalName: "Techcadd Computer Education",
+  legalName: "techcadd Computer Education",
   tagline: "Your Skill & Technology Partner",
   /**
    * Taken from the Google Business Profile listing, so the NAP here matches
-   * the listing character for character. "Techcadd" rather than the listing's
+   * the listing character for character. "techcadd" rather than the listing's
    * own casing — the brand spelling is fixed everywhere on this site, and
    * Google's matching is case-insensitive.
    */
@@ -28,7 +28,7 @@ export const SITE = {
   founded: "2007",
   /**
    * The walkthrough that opens from every course page.
-   * TODO: replace with Techcadd's own campus/course video — one edit here
+   * TODO: replace with techcadd's own campus/course video — one edit here
    * changes it on all 50+ course pages.
    */
   promoVideo: "https://www.youtube.com/watch?v=aircAruvnKk",
@@ -49,7 +49,7 @@ export const SITE = {
   maps: {
     cid: "3965721629544103804",
     query:
-      "Techcadd Computer Education, 2nd Floor, Crystal Plaza, SCS 78, Opposite PIMS Hospital, Jalandhar, Punjab 144001",
+      "techcadd Computer Education, 2nd Floor, Crystal Plaza, SCS 78, Opposite PIMS Hospital, Jalandhar, Punjab 144001",
   },
   /** Areas the Jalandhar centre actually draws students from. */
   areasServed: [

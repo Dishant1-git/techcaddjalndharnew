@@ -68,7 +68,7 @@ function BrandHeader({
       {/* Full wordmark, except on desktop when the rail is collapsed. */}
       <NavLink
         to="/"
-        aria-label="TechCadd CMS — go to dashboard"
+        aria-label="techcadd CMS — go to dashboard"
         className={cn(
           'flex min-w-0 flex-1 items-center gap-2.5',
           collapsed && 'lg:hidden',
@@ -83,7 +83,7 @@ function BrandHeader({
       {/* Square mark for the collapsed rail. */}
       <NavLink
         to="/"
-        aria-label="TechCadd CMS — go to dashboard"
+        aria-label="techcadd CMS — go to dashboard"
         className={cn('mx-auto hidden text-primary-500', collapsed && 'lg:block')}
       >
         <LogoMark className="size-10" />
@@ -149,7 +149,7 @@ function FooterCard({ collapsed }: { collapsed: boolean }) {
   return (
     <div className={cn('border-t border-white/10 p-3', collapsed && 'lg:hidden')}>
       <div className="rounded-lg bg-white/5 p-3">
-        <p className="text-xs font-semibold text-white">TechCadd CMS v1.0</p>
+        <p className="text-xs font-semibold text-white">techcadd CMS v1.0</p>
         <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
           Manage courses, enquiries and website content from one place.
         </p>

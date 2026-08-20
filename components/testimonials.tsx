@@ -27,7 +27,7 @@ export async function Testimonials() {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <ScrollHeading
-              lines={["What our students say", "about Techcadd"]}
+              lines={["What our students say", "about techcadd"]}
               className="font-display text-4xl leading-[1.05] font-bold tracking-tight lg:text-5xl"
             />
 

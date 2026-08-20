@@ -120,6 +120,7 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
 
   /** Announcing the framework and its version only helps someone shopping for a CVE. */

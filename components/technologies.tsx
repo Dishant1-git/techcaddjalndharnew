@@ -106,7 +106,7 @@ function Orbit({ items }: { items: Tech[] }) {
       {/* Hub */}
       <div className="absolute top-1/2 left-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-foreground shadow-[0_18px_40px_-12px_rgba(15,23,42,0.6)] sm:size-20 lg:size-24">
         <TechcaddT className="h-8 w-auto text-white sm:h-10 lg:h-12" />
-        <span className="sr-only">Techcadd</span>
+        <span className="sr-only">techcadd</span>
       </div>
     </div>
   )

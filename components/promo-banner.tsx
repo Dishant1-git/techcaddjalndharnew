@@ -34,7 +34,7 @@ export async function PromoBanner({
 
     Rendering at the file's own proportions meant a square or portrait upload
     became a full-screen image between the hero and the next section, shoving
-    the page down — which is what an editor gets by default, because "banner"
+    the page down, which is what an editor gets by default, because "banner"
     does not tell anyone what dimensions to export. A fixed strip keeps the
     homepage's rhythm whatever arrives, and object-cover fills it without
     distorting anyone's artwork.

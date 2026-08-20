@@ -40,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   /* Articles written in the CMS.
      Each has a real page at /blogs/<slug>, but nothing links to one except the
      index, so without this an article is crawlable only by following that
-     listing — and undeclared to every crawler that reads the sitemap first.
+     listing, and undeclared to every crawler that reads the sitemap first.
      The teasers in lib/blogs.ts are filtered out by `hasArticle`: they have no
      page, and listing a 404 in a sitemap is worse than omitting it. */
   const posts = (await loadPosts()).filter((post) => post.hasArticle)

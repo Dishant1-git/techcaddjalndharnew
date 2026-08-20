@@ -7,7 +7,7 @@ import { loadContact } from "@/lib/content"
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "What Techcadd collects when you use this website, why, and how to have it removed.",
+    "What techcadd collects when you use this website, why, and how to have it removed.",
   alternates: { canonical: `${SITE.url}/privacy` },
   robots: { index: true, follow: true },
 }

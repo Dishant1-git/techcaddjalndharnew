@@ -66,7 +66,7 @@ export function EnquiryDrawer({
     setNoteDraft('')
   }
 
-  const contactMessage = `Hello ${enquiry.studentName}, thanks for your enquiry about ${enquiry.courseName} at TechCadd.`
+  const contactMessage = `Hello ${enquiry.studentName}, thanks for your enquiry about ${enquiry.courseName} at techcadd.`
 
   return (
     <Drawer
@@ -92,7 +92,7 @@ export function EnquiryDrawer({
             </Button>
           </a>
           {enquiry.email && (
-            <a href={`mailto:${enquiry.email}?subject=${encodeURIComponent('Your TechCadd enquiry')}`}>
+            <a href={`mailto:${enquiry.email}?subject=${encodeURIComponent('Your techcadd enquiry')}`}>
               <Button variant="secondary" size="sm" icon={Mail}>
                 Email
               </Button>

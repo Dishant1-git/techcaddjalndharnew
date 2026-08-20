@@ -217,7 +217,7 @@ export function EnquiryPopup({ contact }: { contact: Contact }) {
         Centring an item that is taller than its scroll container puts half the
         overflow above the scroll origin, where it cannot be reached: on a
         390×844 screen the dialog measured 1145px tall with its top at -150px,
-        and scrolling to the very top still left it there — so the close button
+        and scrolling to the very top still left it there, so the close button
         sat off-screen with no way to bring it back. The flex form centres only
         while the dialog fits and otherwise starts it at the top, which keeps
         the whole thing scrollable.

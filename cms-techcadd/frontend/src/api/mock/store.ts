@@ -39,7 +39,7 @@ export interface Database {
 /** The site's own configuration. Structural, not content, so it has defaults. */
 function defaultSettings(): SiteSettings {
   return {
-    siteName: 'TechCadd',
+    siteName: 'techcadd',
     tagline: '',
     contactEmail: '',
     contactPhone: '',

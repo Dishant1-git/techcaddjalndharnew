@@ -210,9 +210,9 @@ export const COURSE_PAGES: CoursePage[] = [
     eyebrow: "Digital Marketing",
     h1: "Digital Marketing Course in Jalandhar",
     title:
-      "Digital Marketing Course in Jalandhar — Live Projects & Placement | Techcadd",
+      "Digital Marketing Course in Jalandhar — Live Projects & Placement | techcadd",
     description:
-      "Job-oriented digital marketing course in Jalandhar with SEO, Google Ads, Meta Ads, analytics and AI tools. Live client campaigns, internship letter and placement support at Techcadd.",
+      "Job-oriented digital marketing course in Jalandhar with SEO, Google Ads, Meta Ads, analytics and AI tools. Live client campaigns, internship letter and placement support at techcadd.",
     keywords: [
       "digital marketing course jalandhar",
       "digital marketing course in jalandhar",
@@ -225,7 +225,7 @@ export const COURSE_PAGES: CoursePage[] = [
       "digital marketing classes in jalandhar punjab",
     ],
     intro:
-      "Learn the skill Jalandhar businesses are actively hiring for — taught on live client accounts, not slide decks.",
+      "Learn the skill Jalandhar businesses are hiring for right now, taught on live client accounts rather than slide decks.",
     facts: [
       { label: "Duration", value: "3 / 6 / 9 Months" },
       { label: "Mode", value: "Classroom, Weekend & 1-on-1" },
@@ -235,13 +235,13 @@ export const COURSE_PAGES: CoursePage[] = [
 
     // --- Stage 1 ---
     overview: [
-      "Techcadd's Digital Marketing Course in Jalandhar takes you from buyer psychology to AI-powered campaigns across SEO, Meta Ads and Google Ads. You build a real website, rank real keywords and run client budgets under trainer supervision. Choose 3, 6 or 9 months — every stage ends in a portfolio deliverable.",
+      "techcadd's Digital Marketing Course in Jalandhar takes you from buyer psychology to AI-powered campaigns across SEO, Meta Ads and Google Ads. You build a real website, rank real keywords and run client budgets under trainer supervision. Choose 3, 6 or 9 months. Every stage ends in a portfolio deliverable.",
     ],
 
     // --- Stage 2A ---
     whoCanDo: {
       intro:
-        "The Digital Marketing course is open at Module 01 to people with zero marketing background — funnel maths, buyer psychology and design fundamentals are taught from the ground up before any live account work begins. The batch at Techcadd Jalandhar is deliberately mixed, and what decides your outcome is consistency through the modules, not your starting point.",
+        "Module 01 assumes no marketing background at all. Funnel maths, buyer psychology and design fundamentals are taught from the ground up, and nobody touches a live account until that groundwork is done. The batch at techcadd Jalandhar is mixed on purpose. What decides your outcome is whether you keep up through the modules, not where you started.",
       groups: [
         {
           title: "Students after 12th",
@@ -257,7 +257,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Business owners and freelancers",
-          body: "Owners take this course to stop outsourcing spend they cannot judge and start running their own Meta and Google accounts. Freelancers and agency founders take the 9-month Expert track specifically for the client-commercial skills — audits, proposals, quotations and GST invoicing — that let them bill clients beyond Punjab.",
+          body: "Owners take this course to stop outsourcing spend they cannot judge and start running their own Meta and Google accounts. Freelancers and agency founders take the 9-month Expert track for the commercial side of it: audits, proposals, quotations and GST invoicing, which is what lets them bill clients outside Punjab.",
         },
         ...COMMON_AUDIENCE,
       ],
@@ -266,7 +266,7 @@ export const COURSE_PAGES: CoursePage[] = [
     // --- Stage 2B ---
     whyProgram: [
       "Digital marketing sits under nearly every business's growth line today, and Jalandhar's export houses, hospitals, real estate firms, immigration consultancies, schools and D2C brands are hiring for it directly rather than routing everything through a Chandigarh or Delhi agency. That gap between local demand and locally trained talent is the argument for this course.",
-      "What separates it from a stack of YouTube tutorials is supervised work on live accounts. From Module 02 onward at Techcadd, every session is production work — a real website goes live, a real Meta Pixel fires, a real ranking is tracked with dates. That loop of building, being corrected and shipping again is the actual skill an interviewer is testing for, and no employer in Jalandhar or Mohali will take your word for it without work they can open and inspect.",
+      "YouTube will teach you the buttons. What it cannot do is put somebody senior next to your live account. From Module 02 onward every session here is production work: a real website goes live, a real Meta Pixel fires, a real ranking gets tracked with dates against it. Building, being corrected, then shipping again is the actual skill an interviewer is testing for, and no employer in Jalandhar or Mohali will take your word for it without work they can open and inspect.",
       "Be realistic about the numbers too. A fresher who finishes the Practitioner stage with a working portfolio typically starts as a Digital Marketing Executive or SEO Executive locally, moving into Performance Marketing Executive or SEO Specialist roles after the Professional stage, and Growth Manager, Digital Growth Architect or Agency Founder territory after the full Expert track. The ceiling in this field is high specifically because so few people can back a claim with a tracked conversion.",
       "The alternative most people try first is free content, a cheap online certificate, six months of drifting between platforms, and no evidence they can defend in an interview. A structured programme with live client budgets, a mentor who corrects your work weekly, a documented internship and a placement cell that calls employers is the difference between having watched digital marketing and being hired to do it.",
     ],
@@ -281,14 +281,14 @@ export const COURSE_PAGES: CoursePage[] = [
      */
     syllabus: {
       intro:
-        "Modules are numbered 01 to 34 in a single sequence, and progression is capability-gated: you advance when a deliverable passes review, not when the calendar says so. Every module is specified the same way — topics, tool stack, the commercial problem the skill solves, and a graded artefact that goes into your portfolio.",
+        "Modules are numbered 01 to 34 in a single sequence, and progression is capability-gated: you advance when a deliverable passes review, not when the calendar says so. Every module is specified the same way: topics, tool stack, the commercial problem the skill solves, and a graded artefact that goes into your portfolio.",
       stages: [
         {
           months: 3,
           label: "Practitioner",
           range: "Modules 1 – 10",
           summary:
-            "Plan, build and run your first live campaign — starting from no marketing background.",
+            "Plan, build and run your first live campaign, starting from no marketing background.",
         },
         {
           months: 6,
@@ -310,7 +310,7 @@ export const COURSE_PAGES: CoursePage[] = [
           n: 1,
           from: 3,
           title: "Marketing Foundations, Funnels & Campaign Maths",
-          body: "Buyer psychology, funnel architecture (TOFU/MOFU/BOFU) and the metric chain — CPM, CPC, CPL, CAC, ROAS, break-even ROAS.",
+          body: "Buyer psychology, funnel architecture (TOFU/MOFU/BOFU) and the metric chain: CPM, CPC, CPL, CAC, ROAS and break-even ROAS.",
         },
         {
           n: 2,
@@ -376,7 +376,7 @@ export const COURSE_PAGES: CoursePage[] = [
           n: 12,
           from: 6,
           title: "Conversion Copywriting & AI Content Systems",
-          body: "Direct-response copy frameworks — AIDA, PAS, FAB — and AI-assisted drafting across ads, landing pages and email sequences.",
+          body: "Direct-response copy frameworks (AIDA, PAS, FAB) plus AI-assisted drafting across ads, landing pages and email sequences.",
         },
         {
           n: 13,
@@ -460,7 +460,7 @@ export const COURSE_PAGES: CoursePage[] = [
           n: 26,
           from: 9,
           title: "Vibe-Coded Web Design with Lovable",
-          body: "Building deployed web products — landing pages and lead-capture apps with a database — using Lovable and Supabase.",
+          body: "Building deployed web products in Lovable and Supabase: landing pages and lead-capture apps with a database behind them.",
         },
         {
           n: 27,
@@ -508,20 +508,20 @@ export const COURSE_PAGES: CoursePage[] = [
           n: 34,
           from: 9,
           title: "Agency Operating System, Client Commercials & Architect Capstone",
-          body: "A complete client kit — audit, proposal, quotation and GST invoice — plus a live growth system presented as an agency pitch deck.",
+          body: "A complete client kit covering audit, proposal, quotation and GST invoice, plus a live growth system presented as an agency pitch deck.",
         },
       ],
-      note: "Nested, not parallel. The six-month programme contains everything in the three-month programme and continues from Module 11; the nine-month programme contains both and continues from Module 23. Choosing a shorter programme costs you scope, never depth — and you can extend later without repeating a single module.",
+      note: "Nested, not parallel. The six-month programme contains everything in the three-month programme and continues from Module 11; the nine-month programme contains both and continues from Module 23. Choosing a shorter programme costs you scope, never depth, and you can extend later without repeating a single module.",
     },
 
     // --- Stage 3 ---
     whyTechcadd: {
       intro:
-        "There are several places to learn digital marketing in Jalandhar and the brochure syllabus looks similar at most of them. What differs is whether you ever touch a live account, whether the trainer still does client work, and whether the placement cell keeps calling after your batch ends. Techcadd has trained students across Punjab since 2007 on the same model: small batches, practitioner trainers, live client work as coursework.",
+        "There are several places to learn digital marketing in Jalandhar and the brochure syllabus looks similar at most of them. What differs is whether you ever touch a live account, whether the trainer still does client work, and whether the placement cell keeps calling after your batch ends. techcadd has trained students across Punjab since 2007 on the same model: small batches, practitioner trainers, live client work as coursework.",
       points: [
         {
           title: "Trainers who still do the work",
-          body: "Your trainer runs live client accounts for Techcadd's own services arm, so the Meta and Google Ads examples in class are from this quarter, not a five-year-old case study.",
+          body: "Your trainer runs live client accounts for techcadd's own services arm, so the Meta and Google Ads examples in class are from this quarter, not a five-year-old case study.",
         },
         {
           title: "Live budgets, real consequences",
@@ -537,11 +537,11 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "A placement cell that persists",
-          body: "Mock interviews, CV reviews and drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana — repeated after a rejection, not abandoned.",
+          body: "Mock interviews, CV reviews and drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana. A rejection puts you into the next drive rather than off the list.",
         },
         {
           title: "Since 2007, 25,000+ students",
-          body: "Nearly two decades of hiring relationships in Punjab is why local employers know exactly what a Techcadd certificate in digital marketing means.",
+          body: "Nearly two decades of hiring relationships in Punjab is why local employers know exactly what a techcadd certificate in digital marketing means.",
         },
       ],
     },
@@ -552,7 +552,7 @@ export const COURSE_PAGES: CoursePage[] = [
          lists all thirty-four, and repeating them as an accordion would make
          a reader scroll the same syllabus twice. */
       intro:
-        "The syllabus runs as a single ladder, not three separate courses — the 6-month Professional track continues exactly where the 3-month Practitioner track ends, and the 9-month Expert track continues where the Professional track ends, so choosing a shorter duration costs you scope, never depth. You begin with buyer psychology and funnel maths, move into a live website, ranked keywords and a running Meta ad account by the end of Stage 1, then layer in generative AI, technical SEO, the full Google Ads suite and WooCommerce by the end of Stage 2. Stage 3 is where you stop running channels and start designing growth systems — AI video production, niche audience building, Shopify and vibe-coded web products, automation, GEO/AEO visibility and the commercial mechanics of running an agency. Every module is specified the same way and ends in a graded, portfolio-ready deliverable: a funnel blueprint, a ranked site, a live Meta campaign, a technical SEO audit, an AI-generated video ad set, a completed client kit. Evidence — a tracked conversion, a before-and-after ranking record, a documented cost per acquisition — is what interviewers in Jalandhar and Mohali actually ask to see, so every fortnight of the course is built around producing one.",
+        "This is one ladder, not three separate courses. The 6-month Professional track carries on from exactly where the 3-month Practitioner track ends, and the 9-month Expert track from where Professional ends, so a shorter duration costs you scope but never depth. You begin with buyer psychology and funnel maths. By the end of Stage 1 you have a live website, ranked keywords and a Meta ad account running. Stage 2 layers in generative AI, technical SEO, the full Google Ads suite and WooCommerce. In Stage 3 you stop running individual channels and start designing whole growth systems: AI video production, niche audience building, Shopify and vibe-coded web products, automation, GEO/AEO visibility, and the commercial mechanics of running an agency. Every module is specified the same way and closes on a graded, portfolio-ready deliverable. A funnel blueprint. A ranked site. A live Meta campaign. A technical SEO audit. An AI-generated video ad set. A completed client kit. What interviewers in Jalandhar and Mohali ask to see is evidence: a tracked conversion, a before-and-after ranking record, a documented cost per acquisition. Every fortnight of the course is built around producing one.",
       tools: [
         "Google Ads",
         "Meta Ads Manager",
@@ -601,7 +601,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Can I freelance or work remotely with this skill?",
-        a: "Yes. A Jalandhar address is no barrier on a remote brief — the 9-month track specifically covers client acquisition, proposals, pricing models, GST invoicing and contracts so you can price and defend freelance or agency work for clients anywhere.",
+        a: "Yes. A Jalandhar address is no barrier on a remote brief. The 9-month track covers client acquisition, proposals, pricing models, GST invoicing and contracts, so you can price freelance or agency work and then defend that price to a client anywhere.",
       },
       {
         q: "Which industries hire for this in Punjab?",
@@ -609,7 +609,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Can I continue to higher studies or a specialisation later?",
-        a: "Yes. The 34-module ladder is designed to be picked up again — a 3-month graduate can return and continue from Module 11 without repeating any module, and the certificate and portfolio from each stage stand on their own for university industrial training requirements.",
+        a: "Yes. The 34-module ladder is built to be picked up again. A 3-month graduate comes back and carries on from Module 11 with nothing repeated, and the certificate and portfolio from each stage stand on their own for university industrial training requirements.",
       },
     ],
 
@@ -631,7 +631,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         title: "Client Kit / Growth System Capstone",
-        body: "Depending on your track: a Practitioner client report, a Professional omnichannel audit, or — at 9 months — a complete agency kit of audit, proposal, quotation and GST invoice for a real business, defended to a mock client panel.",
+        body: "Depending on your track: a Practitioner client report, a Professional omnichannel audit, or at 9 months a complete agency kit of audit, proposal, quotation and GST invoice for a real business, defended in front of a mock client panel.",
         tags: ["Looker Studio", "Zoho Books"],
       },
     ],
@@ -660,7 +660,7 @@ export const COURSE_PAGES: CoursePage[] = [
         city: "Kapurthala",
         initials: "SS",
         quote:
-          "I run ads for three sports goods exporters in Jalandhar now. Techcadd taught me the ads, but honestly the client handling and proposal sessions are what let me charge properly.",
+          "I run ads for three sports goods exporters in Jalandhar now. techcadd taught me the ads, but honestly the client handling and proposal sessions are what let me charge properly.",
       },
       {
         name: "Anjali Verma",
@@ -716,7 +716,7 @@ export const COURSE_PAGES: CoursePage[] = [
         city: "Kartarpur",
         initials: "PR",
         quote:
-          "I came in knowing nothing beyond Instagram. The open lab hours saved me — you can sit after class and the trainer will still explain until it clicks.",
+          "I came in knowing nothing beyond Instagram. Honestly the open lab hours saved me. You can stay back after class and the trainer will keep explaining until it clicks.",
       },
     ],
 
@@ -730,15 +730,15 @@ export const COURSE_PAGES: CoursePage[] = [
     faqs: [
       {
         q: "What is the duration of the Digital Marketing course in Jalandhar?",
-        a: "Techcadd runs the Digital Marketing course over 3, 6 or 9 months, structured as one continuous 34-module programme rather than three separate courses. Weekday, evening and weekend batches cover the same syllabus, and each stage picks up exactly where the previous one ended — no module is repeated if you extend later.",
+        a: "techcadd runs the Digital Marketing course over 3, 6 or 9 months, structured as one continuous 34-module programme rather than three separate courses. Weekday, evening and weekend batches cover the same syllabus, and each stage picks up exactly where the last one ended, so no module gets repeated if you extend later.",
       },
       {
         q: "What is the fee for the Digital Marketing course in Jalandhar?",
-        a: "Techcadd's Digital Marketing course fee depends on the track — the 3-month Practitioner stage costs less than the 6-month Professional or 9-month Expert stages, which include live paid-media budgets, AI tools and a larger deliverable set. Counsellors share the current fee sheet and EMI options on request, and a demo class is free.",
+        a: "The fee depends on which track you take. The 3-month Practitioner stage costs less than the 6-month Professional or 9-month Expert stages, which carry live paid-media budgets, AI tools and a bigger set of deliverables. Ask a counsellor for the current fee sheet and the EMI options. A demo class costs nothing.",
       },
       {
         q: "Who can join the Digital Marketing course?",
-        a: "Students after 12th, graduates, working professionals switching careers, and business owners or freelancers can all join — the course starts at Module 01 with no marketing or design background assumed. A basic comfort with computers is helpful but not required.",
+        a: "Students after 12th, graduates, working professionals changing careers, and business owners or freelancers all join this one. The course starts at Module 01 and assumes no marketing or design background. Being reasonably comfortable with a computer helps, but it is not a requirement.",
       },
       {
         q: "What jobs can I get after the Digital Marketing course?",
@@ -750,7 +750,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Is placement guaranteed after the Digital Marketing course?",
-        a: "No institute can honestly guarantee a job, and any Jalandhar institute claiming otherwise should be treated with caution. Techcadd guarantees placement support — CV reviews, mock interviews, portfolio preparation and repeated drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana.",
+        a: "No institute can honestly guarantee a job, and any in Jalandhar that claims to is worth a second look. What techcadd commits to is placement support: CV reviews, mock interviews, portfolio preparation and repeated drives with hiring partners across Jalandhar, Mohali, Chandigarh and Ludhiana.",
       },
       {
         q: "Which tools and software will I learn?",
@@ -762,11 +762,11 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Do you work on real campaigns or only theory?",
-        a: "Every module ends in a graded deliverable built on a real account — a live website, a ranked keyword set, a running Meta or Google Ads campaign with real spend. The course finishes with a capstone built on a live client brief, supervised by a trainer.",
+        a: "Every module ends in a graded deliverable built on a real account: a live website, a ranked keyword set, a Meta or Google Ads campaign running on real spend. The course finishes with a capstone on a live client brief, supervised by a trainer.",
       },
       {
         q: "Are weekend and evening batches available?",
-        a: "Yes. Techcadd Jalandhar runs weekday, evening and weekend batches in parallel so working professionals and college students can both attend without changing their existing schedule. 1-on-1 training is also available if you would rather set your own pace. Every class — batch or 1-on-1 — runs for 2 hours, and a free demo class lets you see the lab and meet the trainer before enrolling.",
+        a: "Yes. techcadd Jalandhar runs weekday, evening and weekend batches in parallel so working professionals and college students can both attend without changing their existing schedule. 1-on-1 training is there if you would rather set your own pace. Every class runs 2 hours whichever you pick, and a free demo class lets you see the lab and meet the trainer before enrolling.",
       },
       {
         q: "What is the difference between the 3, 6 and 9-month Digital Marketing courses?",
@@ -790,9 +790,9 @@ export const COURSE_PAGES: CoursePage[] = [
     eyebrow: "WordPress",
     h1: "WordPress Development Course in Jalandhar",
     title:
-      "WordPress Development Course in Jalandhar — Live Client Build | Techcadd",
+      "WordPress Development Course in Jalandhar — Live Client Build | techcadd",
     description:
-      "14-week WordPress Development Course in Jalandhar — build in Gutenberg and Elementor Pro, launch a WooCommerce store with Indian payments, then rank it with SEO, AEO and GEO. Live client build, internship letter and placement support at Techcadd.",
+      "14-week WordPress Development Course in Jalandhar — build in Gutenberg and Elementor Pro, launch a WooCommerce store with Indian payments, then rank it with SEO, AEO and GEO. Live client build, internship letter and placement support at techcadd.",
     keywords: [
       "wordpress course jalandhar",
       "wordpress development course in jalandhar",
@@ -804,7 +804,7 @@ export const COURSE_PAGES: CoursePage[] = [
       "website designing course jalandhar",
     ],
     intro:
-      "Build it, rank it, sell from it — a 14-week production course in WordPress, WooCommerce, Elementor and search visibility, including AEO and GEO for AI answers.",
+      "Build it, rank it, sell from it. A 14-week production course in WordPress, WooCommerce, Elementor and search visibility, AEO and GEO for AI answers included.",
     facts: [
       { label: "Duration", value: "14 Weeks · 3 Months" },
       { label: "Mode", value: "Classroom, Weekend & 1-on-1" },
@@ -813,17 +813,17 @@ export const COURSE_PAGES: CoursePage[] = [
     ],
 
     overview: [
-      "Techcadd's WordPress Development Course in Jalandhar is a 14-week, 14-module programme that takes you from an empty domain to a client-grade website you rank, sell from and hand over. You build in Gutenberg and Elementor Pro, engineer a WooCommerce store that takes real Indian payments, then rank the same site with keyword research, on-page work and a properly configured SEO plugin stack — finishing with AEO and GEO work so the pages can be cited inside AI search.",
+      "techcadd's WordPress Development Course in Jalandhar is a 14-week, 14-module programme that takes you from an empty domain to a client-grade website you rank, sell from and hand over. You build in Gutenberg and Elementor Pro, engineer a WooCommerce store that takes real Indian payments, then rank that same site using keyword research, on-page work and a properly configured SEO plugin stack. The last stretch is AEO and GEO work, so the pages can be cited inside AI search.",
       "Every module ends in a graded deliverable built on a live domain you own, not a localhost demo that disappears at the end of the batch. The final week is a client-grade build handed over with documentation, a quotation and a GST invoice.",
     ],
 
     whoCanDo: {
       intro:
-        "WordPress starts at Module 01 with domains, hosting and DNS, so no coding or design background is assumed. The batch mixes students, graduates, working professionals and business owners — what decides the outcome is consistency through the fourteen modules, not where you start.",
+        "WordPress starts at Module 01 with domains, hosting and DNS, so no coding or design background is assumed. The batch mixes students, graduates, working professionals and business owners. What decides the outcome is keeping pace through the fourteen modules, not where you started.",
       groups: [
         {
           title: "Students after 12th",
-          body: "No coding or design background is needed — Module 01 starts at domains, DNS and hosting and assumes nothing before it. Most students build their first paid site for a local shop or clinic during the course.",
+          body: "No coding or design background is needed. Module 01 starts at domains, DNS and hosting, and assumes nothing before that. Most students build their first paid site for a local shop or clinic while the course is still running.",
         },
         {
           title: "Graduates and final-year students",
@@ -835,17 +835,17 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Business owners and freelancers",
-          body: "Shop owners, coaching-centre operators and clinic owners across Jalandhar are paying agencies monthly for a site they cannot edit themselves. This course teaches you to build, rank and maintain it in-house — including WooCommerce with Indian payments, GST tax classes and courier integration.",
+          body: "Shop owners, coaching-centre operators and clinic owners across Jalandhar are paying agencies monthly for a site they cannot edit themselves. This course teaches you to build, rank and maintain that site in-house, WooCommerce included, with Indian payments, GST tax classes and courier integration.",
         },
         ...COMMON_AUDIENCE,
       ],
     },
 
     whyProgram: [
-      "Every business that opens needs a website, and most of Jalandhar's businesses sit within a twenty-kilometre radius of you. The sports goods and leather cluster, the coaching-institute belt around Model Town, clinics, showrooms, gyms and real-estate offices all buy the same two things — a five-page site with an enquiry form, or a WooCommerce store that takes payments. Both are taught here.",
+      "Every business that opens needs a website, and most of Jalandhar's businesses sit within a twenty-kilometre radius of you. The sports goods and leather cluster, the coaching-institute belt around Model Town, clinics, showrooms, gyms and real-estate offices all buy one of two things: a five-page site with an enquiry form, or a WooCommerce store that takes payments. Both are taught here.",
       "The money is in what happens after launch. A one-off site is sold once; hosting, maintenance, security, backups, SEO and content are sold every month against a documented checklist, and a dedicated module covers scoping and pricing exactly that retainer. Students who finish this course leave with two revenue models, not one.",
       "Supervised live work beats free tutorials because of the review, not the content. What a tutorial cannot give you is someone checking whether your permalinks were set before publishing, whether your build loads six web fonts, or whether your migration lost indexed pages. Every module here ends in a graded deliverable a trainer reviews before you move on.",
-      "You are being trained for a job that changed recently. Block themes replaced classic ones, Core Web Vitals became a measured ranking input, and a growing share of search now ends inside an AI answer that cites only a handful of pages. Assembling a theme is no longer a skill anyone pays for — structuring a site so it loads, ranks, gets cited, converts and can be maintained still is, and this programme is built around exactly that shift.",
+      "You are being trained for a job that changed recently. Block themes replaced classic ones, Core Web Vitals became a measured ranking input, and a growing share of search now ends inside an AI answer that cites only a handful of pages. Nobody pays for theme assembly any more. What people do still pay for is a site structured to load fast, rank, get cited, convert and stay maintainable, and this programme is built around that shift.",
     ],
 
     whyTechcadd: {
@@ -854,11 +854,11 @@ export const COURSE_PAGES: CoursePage[] = [
       points: [
         {
           title: "Trainers who do live client work",
-          body: "Your trainer builds and maintains sites for paying clients, so the course covers unglamorous things like failed checkouts, plugin conflicts and migrations that lose rankings — not a five-year-old case study.",
+          body: "Your trainer builds and maintains sites for paying clients, so the course covers unglamorous things like failed checkouts, plugin conflicts and migrations that lose rankings, not a five-year-old case study.",
         },
         {
           title: "Fourteen graded deliverables, not fourteen lectures",
-          body: "Every module ends in an artefact a trainer reviews before you move on — a live URL, a tracked form, a test order, a crawl report, a Core Web Vitals score. You do not advance on attendance.",
+          body: "Every module ends in an artefact a trainer reviews before you move on: a live URL, a tracked form, a test order, a crawl report, a Core Web Vitals score. Attendance alone does not advance you.",
         },
         {
           title: "You work on a live domain you own",
@@ -874,20 +874,20 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Since 2007, trained across Punjab",
-          body: "Techcadd has run skill-training programmes across Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali since 2007.",
+          body: "techcadd has run skill-training programmes across Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali since 2007.",
         },
       ],
     },
 
     learn: {
       intro:
-        "The course moves in one line from an empty domain to a site someone pays for. You begin with the plumbing — DNS, hosting, cPanel and staging — then install WordPress and learn to publish properly in Gutenberg before touching any page builder. From there you build a design system with block themes, then learn Elementor Pro's theme builder so a fifty-page site costs the same effort as a five-page one. Month 2 turns the site into a business — landing pages that capture enquiries, tracking that proves they arrived, a WooCommerce catalogue, and Indian payments, GST and shipping configured to actually complete an order. Month 3 makes the site findable and durable — keyword research drives the architecture, on-page work and a properly configured SEO plugin stack fix what is published, technical SEO and Core Web Vitals fix what is underneath, AEO and GEO structure the pages so AI answers can cite them, and security, backups and migration keep the whole thing alive. The final week is a client-grade build handed over with documentation, a quotation and a GST invoice.",
+        "The course moves in one line from an empty domain to a site someone pays for. You begin with the plumbing: DNS, hosting, cPanel and staging. Then you install WordPress and learn to publish properly in Gutenberg before touching any page builder. From there you build a design system with block themes, then learn Elementor Pro's theme builder so a fifty-page site costs the same effort as a five-page one. Month 2 turns the site into a business. Landing pages that capture enquiries, tracking that proves they arrived, a WooCommerce catalogue, and Indian payments, GST and shipping configured well enough to actually complete an order. Month 3 makes the site findable and durable. Keyword research drives the architecture, on-page work and a properly configured SEO plugin stack fix what is published, technical SEO and Core Web Vitals fix what sits underneath, AEO and GEO structure the pages so AI answers can cite them, and security, backups and migration keep the whole thing alive. The final week is a client-grade build handed over with documentation, a quotation and a GST invoice.",
       modules: [
         {
           title: "Web Foundations, Domains & Hosting Operations",
           points: [
             "DNS, nameservers, A/CNAME/MX/TXT records and propagation",
-            "cPanel operations — file manager, FTP, phpMyAdmin, staging and scheduled backups",
+            "cPanel operations: file manager, FTP, phpMyAdmin, staging and scheduled backups",
             "SSL, forced HTTPS and local development with LocalWP",
           ],
         },
@@ -1031,15 +1031,15 @@ export const COURSE_PAGES: CoursePage[] = [
     outcomes: [
       {
         q: "What job roles open up after WordPress?",
-        a: "Graduates move into WordPress Developer, WooCommerce Developer, Website Manager, Web Content Executive and SEO Executive roles, plus freelance web consulting. Agencies in Jalandhar, Mohali and Ludhiana hire for the first three directly, and the SEO route opens because the course covers keyword research, on-page, technical SEO and AI-search visibility rather than design alone.",
+        a: "Graduates move into WordPress Developer, WooCommerce Developer, Website Manager, Web Content Executive and SEO Executive roles, plus freelance web consulting. Agencies in Jalandhar, Mohali and Ludhiana hire for the first three directly, and the SEO route opens up because this course covers keyword research, on-page, technical SEO and AI-search visibility, not only the design side.",
       },
       {
         q: "What can I earn, and how fast does it grow?",
-        a: "Entry-level WordPress roles in the Jalandhar and Mohali market start modestly and move up quickly once you can show WooCommerce and technical SEO work alongside a build. Freelance work is priced per project rather than monthly, and remote roles for metro or overseas clients pay noticeably more once your portfolio can prove it.",
+        a: "Entry-level WordPress roles in the Jalandhar and Mohali market start modestly and move up quickly once you can show WooCommerce and technical SEO work alongside a build. Freelance work is priced per project instead of monthly, and remote roles for metro or overseas clients pay noticeably more once your portfolio can back it up.",
       },
       {
         q: "Can I freelance or work remotely with this skill?",
-        a: "Yes — WordPress is one of the few skills where the deliverable is a URL, so location stops mattering once you can show completed work. The course covers scoping and pricing a maintenance retainer and writing quotations, which is what lets you charge properly for freelance builds.",
+        a: "Yes. WordPress is one of the few skills where the deliverable is just a URL, so location stops mattering the moment you can show completed work. Scoping and pricing a maintenance retainer, and writing quotations, are both on the syllabus, which is what lets you charge properly for freelance builds.",
       },
       {
         q: "Which industries hire for this in Punjab?",
@@ -1047,7 +1047,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Can I specialise further after this course?",
-        a: "Yes — the natural next steps are SEO, performance marketing or Shopify development, and this course already carries the search foundation. Students who want to go deeper into rankings and link building usually continue into the dedicated SEO programme.",
+        a: "Yes. The natural next steps are SEO, performance marketing or Shopify development, and the search foundation is already in this course. Students who want to go deeper into rankings and link building usually continue into the dedicated SEO programme.",
       },
     ],
 
@@ -1144,11 +1144,11 @@ export const COURSE_PAGES: CoursePage[] = [
     faqs: [
       {
         q: "How long is the WordPress course in Jalandhar?",
-        a: "The course runs 14 weeks, roughly three and a half months, at one module per week. It covers domains and hosting through Gutenberg, Elementor Pro, WooCommerce, SEO and site handover, with progression based on deliverables rather than the calendar.",
+        a: "The course runs 14 weeks, roughly three and a half months, at one module per week. It runs from domains and hosting through Gutenberg, Elementor Pro, WooCommerce, SEO and site handover. You progress on deliverables, not on the calendar.",
       },
       {
         q: "What is the fee for a WordPress course in Jalandhar?",
-        a: "Techcadd's WordPress course fee covers all fourteen modules, live project work and the internship letter. Counsellors share the current fee sheet and instalment options on request, and a demo class is free.",
+        a: "techcadd's WordPress course fee covers all fourteen modules, live project work and the internship letter. Counsellors share the current fee sheet and instalment options on request, and a demo class is free.",
       },
       {
         q: "Do I need coding knowledge to learn WordPress?",
@@ -1159,8 +1159,8 @@ export const COURSE_PAGES: CoursePage[] = [
         a: "WordPress Developer, WooCommerce Developer, Website Manager, Web Content Executive and SEO Executive are the common roles, plus freelance site building. Agencies, coaching institutes, clinics and manufacturers across Jalandhar, Mohali and Ludhiana hire for these.",
       },
       {
-        q: "Does Techcadd guarantee placement after the course?",
-        a: "No institute can honestly guarantee a job, and Techcadd does not. What is provided is placement support — interview preparation, portfolio and resume review, and referrals through the placement cell.",
+        q: "Does techcadd guarantee placement after the course?",
+        a: "No. No institute can honestly promise a job, and we will not pretend otherwise. What you do get is placement support: interview preparation, a review of your portfolio and CV, and referrals put out through the placement cell.",
       },
       {
         q: "Which software and tools are taught in this WordPress course?",
@@ -1172,11 +1172,11 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Are weekend or evening batches available for working professionals?",
-        a: "Yes, weekday, evening and weekend batches are offered so working professionals and college students can attend without leaving their job or classes. 1-on-1 training is also available for anyone who wants a fully personal schedule. Every class — batch or 1-on-1 — runs for 2 hours.",
+        a: "Yes. Weekday, evening and weekend batches run in parallel, so neither a job nor college classes need to be dropped to attend. If none of those slots work, 1-on-1 training lets you set the schedule yourself. A class runs 2 hours either way.",
       },
       {
         q: "Should I learn WordPress or digital marketing first?",
-        a: "Learn WordPress first if you want to build and sell websites, and digital marketing first if you want to run advertising campaigns. This course includes the search side — keyword research, on-page, technical SEO and AI-search visibility — so it also serves as an entry point into SEO work.",
+        a: "Learn WordPress first if you want to build and sell websites, and digital marketing first if you want to run advertising campaigns. This course includes the search side too: keyword research, on-page, technical SEO and AI-search visibility. That makes it a reasonable entry point into SEO work as well.",
       },
       {
         q: "Is a WooCommerce store included in the course?",
@@ -1198,9 +1198,9 @@ export const COURSE_PAGES: CoursePage[] = [
     segment: "courses",
     eyebrow: "SEO",
     h1: "SEO Course in Jalandhar",
-    title: "SEO Course in Jalandhar — Rank a Live Domain | Techcadd",
+    title: "SEO Course in Jalandhar — Rank a Live Domain | techcadd",
     description:
-      "13-week SEO Course in Jalandhar — keyword research, on-page, technical SEO, Core Web Vitals, local SEO, link building and AI search visibility on a live domain you build and rank yourself. Internship letter and placement support at Techcadd.",
+      "13-week SEO Course in Jalandhar — keyword research, on-page, technical SEO, Core Web Vitals, local SEO, link building and AI search visibility on a live domain you build and rank yourself. Internship letter and placement support at techcadd.",
     keywords: [
       "seo course jalandhar",
       "seo training institute jalandhar",
@@ -1211,7 +1211,7 @@ export const COURSE_PAGES: CoursePage[] = [
       "seo course fees in jalandhar",
     ],
     intro:
-      "Rank it. Prove it. Keep it. A 13-week course on one live domain — design the imagery, build the site in WordPress and Elementor, then rank it across on-page, technical, local, off-page and AI search.",
+      "Rank it. Prove it. Keep it. Thirteen weeks on one live domain: design the imagery, build the site in WordPress and Elementor, then rank it across on-page, technical, local, off-page and AI search.",
     facts: [
       { label: "Duration", value: "13 Weeks · 3 Months" },
       { label: "Mode", value: "Classroom, Weekend & 1-on-1" },
@@ -1220,7 +1220,7 @@ export const COURSE_PAGES: CoursePage[] = [
     ],
 
     overview: [
-      "Techcadd's SEO Course in Jalandhar is a 13-week, 13-module programme covering keyword research, on-page, technical SEO, Core Web Vitals, local SEO, link building and AI search visibility. You build the site yourself in WordPress and Elementor, then rank it — leaving with dated ranking records and a full client audit pack, not a screenshot from a slide.",
+      "techcadd's SEO Course in Jalandhar is a 13-week, 13-module programme covering keyword research, on-page, technical SEO, Core Web Vitals, local SEO, link building and AI search visibility. You build the site yourself in WordPress and Elementor, then rank it. You leave with dated ranking records and a full client audit pack rather than a screenshot off a slide.",
       "Rankings move slowly, which is exactly why the course puts you on a live domain from Week 3 rather than handing you a finished case study at the end.",
     ],
 
@@ -1230,7 +1230,7 @@ export const COURSE_PAGES: CoursePage[] = [
       groups: [
         {
           title: "Students after 12th",
-          body: "No coding, design or marketing background is required — crawling, indexing and ranking are explained from scratch. Your site is live from Week 3, so you are working on something real almost immediately.",
+          body: "No coding, design or marketing background is required. Crawling, indexing and ranking all get explained from scratch. Your site goes live in Week 3, so you are working on something real almost immediately.",
         },
         {
           title: "Graduates and final-year students",
@@ -1242,17 +1242,17 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Business owners and freelancers",
-          body: "A module covers Google Business Profile and the map pack — the highest-converting SEO service in the Indian market, and one you can deliver for a client without ever touching their website.",
+          body: "One module covers Google Business Profile and the map pack, which is the highest-converting SEO service in the Indian market and the one you can deliver without ever touching a client's website.",
         },
         ...COMMON_AUDIENCE,
       ],
     },
 
     whyProgram: [
-      "SEO is the only marketing skill where the work keeps paying after you stop. A ranked collection page, a claimed and optimised Google Business Profile and a page that AI answers cite keep returning visitors next year at no additional cost — that difference is the entire commercial argument.",
+      "SEO is the only marketing skill where the work keeps paying after you stop. A ranked collection page, a claimed and optimised Google Business Profile and a page that AI answers cite will still be bringing visitors next year at no extra cost. That is the whole commercial argument for it.",
       "The local market buys map-pack rankings before it buys anything else. For a clinic, a gym or a coaching centre, appearing in the top three map results outperforms the website entirely, and a dedicated module covers profile optimisation, citations, review systems and geo-grid rank tracking end to end.",
-      "Supervised live work beats free tutorials because SEO advice cannot be verified from a video — and you cannot tell which advice is outdated until six months of your own work has failed. Every module here ends in a graded deliverable a trainer reviews before you advance, on a live domain with real Search Console data.",
-      "You are being trained for the version of this job that exists now. AI Overviews answer a share of queries without a click, Core Web Vitals made page experience measurable, and structure a machine can extract and quote is what still moves rankings — almost no competing institute in Punjab teaches the AI-search side yet.",
+      "Supervised live work beats free tutorials because SEO advice cannot be verified from a video, and you cannot tell which advice is outdated until six months of your own work has failed. Every module here ends in a graded deliverable a trainer reviews before you advance, on a live domain with real Search Console data.",
+      "You are being trained for the version of this job that exists now. AI Overviews answer a share of queries without a click, Core Web Vitals made page experience measurable, and structure a machine can extract and quote is what still moves rankings. Almost no competing institute in Punjab teaches the AI-search side yet.",
     ],
 
     whyTechcadd: {
@@ -1261,11 +1261,11 @@ export const COURSE_PAGES: CoursePage[] = [
       points: [
         {
           title: "Trainers who run live SEO engagements",
-          body: "Real hosting, real Search Console data and dated ranking records from Week 3 — rankings move slowly, which is exactly why you need a live site from the start rather than a case study handed to you at the end.",
+          body: "Real hosting, real Search Console data and dated ranking records from Week 3. Rankings move slowly, which is exactly why the site has to be live from the start instead of a case study handed to you at the end.",
         },
         {
           title: "Thirteen graded deliverables, not thirteen lectures",
-          body: "Every module ends in an artefact a trainer reviews before you advance — a keyword matrix, a crawl fix sheet, a Core Web Vitals score, a geo-grid screenshot, an outreach reply log.",
+          body: "Every module ends in an artefact a trainer reviews before you advance: a keyword matrix, a crawl fix sheet, a Core Web Vitals score, a geo-grid screenshot, an outreach reply log.",
         },
         {
           title: "You rank your own domain, not a demo",
@@ -1273,7 +1273,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "AEO and GEO are taught, not mentioned",
-          body: "A full week covers visibility inside ChatGPT, Perplexity and Google AI Overviews with its own deliverable — a share-of-voice scorecard.",
+          body: "A full week goes on visibility inside ChatGPT, Perplexity and Google AI Overviews, with a share-of-voice scorecard as the deliverable.",
         },
         {
           title: "Small batches",
@@ -1281,21 +1281,21 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Since 2007, trained across Punjab",
-          body: "Techcadd runs skill-training programmes across Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali.",
+          body: "Beyond Jalandhar, there are centres running the same programmes in Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali.",
         },
       ],
     },
 
     learn: {
       intro:
-        "The course moves from an empty domain to a ranked site you can prove you ranked. You start with how search engines actually work and how SEO is scoped and sold, then produce your own imagery in Photoshop and build a real site in WordPress and Elementor Pro rather than practising on someone else's. Month 2 is research and execution — keyword intent decides the architecture before the menu is built, on-page work fixes what is published, content briefs make publishing repeatable, and a crawl-driven technical audit fixes what sits underneath. Month 3 builds authority and evidence — Core Web Vitals engineered on a live build, a Google Business Profile ranked in the map pack with geo-grid proof, an outreach campaign with logged replies, pages structured so AI answers can cite them, and finally a full client audit, dashboard and reporting pack you defend in front of a panel.",
+        "The course moves from an empty domain to a ranked site you can prove you ranked. You start with how search engines actually work and how SEO is scoped and sold, then produce your own imagery in Photoshop and build a real site in WordPress and Elementor Pro rather than practising on someone else's. Month 2 is research and execution. Keyword intent decides the architecture before the menu is built, on-page work fixes what is published, content briefs make publishing repeatable, and a crawl-driven technical audit fixes what sits underneath. Month 3 builds authority and evidence: Core Web Vitals engineered on a live build, a Google Business Profile ranked in the map pack with geo-grid proof, an outreach campaign with logged replies, pages structured so AI answers can cite them, and finally a full client audit, dashboard and reporting pack that you defend in front of a panel.",
       modules: [
         {
           title: "How Search Works & the SEO Business Case",
           points: [
             "Crawling, indexing, rendering and ranking explained without jargon",
             "SERP features, the E-E-A-T framework and algorithm updates",
-            "The business case — traffic value, cost per acquisition and an honest timeline",
+            "The business case: traffic value, cost per acquisition and an honest timeline",
           ],
         },
         {
@@ -1303,7 +1303,7 @@ export const COURSE_PAGES: CoursePage[] = [
           points: [
             "Background removal, retouching, composites and page banners",
             "Designing blog featured images, infographics and comparison graphics",
-            "Exporting for the web — WebP, compression and alt text conventions",
+            "Exporting for the web: WebP, compression and alt text conventions",
           ],
         },
         {
@@ -1317,7 +1317,7 @@ export const COURSE_PAGES: CoursePage[] = [
         {
           title: "Elementor Pro — Building Pages That Rank",
           points: [
-            "Theme builder — headers, footers, single, archive and 404 templates",
+            "Theme builder: headers, footers, single, archive and 404 templates",
             "Heading hierarchy inside a builder and why H1 discipline breaks there first",
             "Question-first headings, direct answer blocks, tables and FAQ sections",
           ],
@@ -1341,7 +1341,7 @@ export const COURSE_PAGES: CoursePage[] = [
         {
           title: "Content Writing, Briefs & Editorial Systems",
           points: [
-            "Article structures — how-to, listicle, comparison, buying guide",
+            "Article structures: how-to, listicle, comparison and buying guide",
             "Writing content briefs a freelancer can execute unaided",
             "AI-assisted drafting held to a human editing standard",
           ],
@@ -1365,7 +1365,7 @@ export const COURSE_PAGES: CoursePage[] = [
         {
           title: "Local SEO & Google Business Profile",
           points: [
-            "How the map pack ranks — relevance, distance and prominence",
+            "How the map pack ranks: relevance, distance and prominence",
             "NAP consistency, citation building and review generation systems",
             "Local landing pages, LocalBusiness schema and geo-grid rank tracking",
           ],
@@ -1437,7 +1437,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Can I freelance or work remotely with this skill?",
-        a: "Yes — SEO is delivered as reports, rankings and traffic, so location is irrelevant once you can evidence results. A Google Business Profile-only service is the easiest first sale, since it needs no website access at all.",
+        a: "Yes. SEO is delivered as reports, rankings and traffic, so location stops mattering once you can evidence results. A Google Business Profile-only service is usually the easiest first sale, since it needs no website access at all.",
       },
       {
         q: "Which industries hire for this in Punjab?",
@@ -1445,7 +1445,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Can I specialise further after this course?",
-        a: "Yes. Natural next steps are technical SEO and performance, paid media, or full WordPress and WooCommerce development — this course already carries the build skills for the last of those.",
+        a: "Yes. The natural next steps are technical SEO and performance, paid media, or full WordPress and WooCommerce development. The build skills for that last one are already in this course.",
       },
     ],
 
@@ -1479,7 +1479,7 @@ export const COURSE_PAGES: CoursePage[] = [
         city: "Jalandhar",
         initials: "SM",
         quote:
-          "The SEO module is the real thing — we ranked an actual client site, not a demo. My interviewer asked for proof and I just opened Search Console on my phone.",
+          "The SEO module is the real thing. We ranked an actual client site, not some demo. My interviewer asked for proof and I just opened Search Console on my phone.",
       },
       {
         name: "Ishika Grover",
@@ -1538,7 +1538,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "What is the fee for an SEO course in Jalandhar?",
-        a: "Techcadd's SEO course fee covers all thirteen modules, live project work on your own domain and the capstone client engagement. Counsellors share the current fee sheet and instalment options on request.",
+        a: "techcadd's SEO course fee covers all thirteen modules, live project work on your own domain and the capstone client engagement. Counsellors share the current fee sheet and instalment options on request.",
       },
       {
         q: "Do I need coding knowledge to learn SEO?",
@@ -1553,8 +1553,8 @@ export const COURSE_PAGES: CoursePage[] = [
         a: "SEO Executive, Technical SEO Specialist, Local SEO Specialist, Content and Outreach Executive, and freelance SEO consultant. Your thirteen graded deliverables are what interviews actually assess.",
       },
       {
-        q: "Does Techcadd guarantee placement after the SEO course?",
-        a: "No institute can honestly guarantee a job, and Techcadd does not. What is provided is placement support — interview preparation, portfolio and resume review, and referrals through the placement cell.",
+        q: "Does techcadd guarantee placement after the SEO course?",
+        a: "Nobody can guarantee an employer will hire you, so we do not claim to. The support is real enough though: interview practice, a proper look at your portfolio and resume, and referrals through the placement cell.",
       },
       {
         q: "Which tools and software are taught in the SEO course?",
@@ -1562,11 +1562,11 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Is SEO still worth learning with AI answers taking over search?",
-        a: "Yes, but the work has changed — a growing share of queries now ends in an AI answer that cites a handful of sources, so the goal is being one of those cited sources. A dedicated module covers answer engine and generative engine optimisation.",
+        a: "Yes, though the work has changed. A growing share of queries now ends in an AI answer that cites only a handful of sources, so the goal becomes being one of the sources cited. A dedicated module covers answer engine and generative engine optimisation.",
       },
       {
         q: "Are weekend or evening batches available?",
-        a: "Yes, weekday, evening and weekend batches are offered so working professionals and college students can attend without leaving their job or classes. 1-on-1 training is also available for anyone who wants a fully personal schedule. Every class — batch or 1-on-1 — runs for 2 hours.",
+        a: "Yes. There are weekday, evening and weekend batches, which covers most people already working or still in college. Anyone who needs something more flexible can take 1-on-1 training instead. Classes are 2 hours long in every format.",
       },
     ],
 
@@ -1584,9 +1584,9 @@ export const COURSE_PAGES: CoursePage[] = [
     segment: "courses",
     eyebrow: "Google Ads",
     h1: "Google Ads Course in Jalandhar",
-    title: "Google Ads Course in Jalandhar — Live Ad Budget | Techcadd",
+    title: "Google Ads Course in Jalandhar — Live Ad Budget | techcadd",
     description:
-      "9-week Google Ads Course in Jalandhar — the auction, Photoshop ad creative, keyword research, account architecture, conversion tracking, Search, Shopping, Display, YouTube and Performance Max, spent on a real advertising budget. Placement support at Techcadd.",
+      "9-week Google Ads Course in Jalandhar — the auction, Photoshop ad creative, keyword research, account architecture, conversion tracking, Search, Shopping, Display, YouTube and Performance Max, spent on a real advertising budget. Placement support at techcadd.",
     keywords: [
       "google ads course jalandhar",
       "ppc training institute jalandhar",
@@ -1605,8 +1605,8 @@ export const COURSE_PAGES: CoursePage[] = [
     ],
 
     overview: [
-      "Techcadd's Google Ads Course in Jalandhar is a nine-week, nine-module programme covering the auction, Photoshop ad creative, keyword research, account architecture, conversion tracking, Search, Shopping, Display, YouTube and Performance Max. You spend a real advertising budget from Module 06, then leave with a structured account, a documented audit and a defended client report.",
-      "Nothing launches until the creative exists, the keywords are researched, the account is structured and the tracking is verified — the same order a competent agency works in.",
+      "techcadd's Google Ads Course in Jalandhar is a nine-week, nine-module programme covering the auction, Photoshop ad creative, keyword research, account architecture, conversion tracking, Search, Shopping, Display, YouTube and Performance Max. You spend a real advertising budget from Module 06, then leave with a structured account, a documented audit and a defended client report.",
+      "Nothing launches until the creative exists, the keywords are researched, the account is structured and the tracking is verified. That is the order a competent agency works in.",
     ],
 
     whoCanDo: {
@@ -1615,7 +1615,7 @@ export const COURSE_PAGES: CoursePage[] = [
       groups: [
         {
           title: "Students after 12th",
-          body: "No marketing or design background is required — the auction, Quality Score and campaign arithmetic are taught from scratch. Google Ads is a numbers job more than a creative one, so commerce and science students often take to it fastest.",
+          body: "No marketing or design background is required. The auction, Quality Score and campaign arithmetic are all taught from scratch. Google Ads is a numbers job more than a creative one, which is why commerce and science students often take to it fastest.",
         },
         {
           title: "Graduates and final-year students",
@@ -1634,15 +1634,15 @@ export const COURSE_PAGES: CoursePage[] = [
     },
 
     whyProgram: [
-      "Google Ads captures demand that already exists, which is why businesses keep paying for it. Someone typing a high-intent local search has already told you what they want before you spend a rupee — it is the highest-intent channel in advertising, which makes competent account management directly billable from your first month.",
+      "Google Ads captures demand that already exists, which is why businesses keep paying for it. Someone typing a high-intent local search has already told you what they want before you have spent a rupee. It is the highest-intent channel in advertising, and that is what makes competent account management billable from your first month.",
       "Punjab has an unusually heavy Google Ads market. Immigration and IELTS consultancies, coaching institutes, real estate developers, clinics and hospitality across Jalandhar, Ludhiana, Mohali and Chandigarh compete on search every day, and most of the accounts local agencies inherit are badly built.",
-      "Supervised live work beats free tutorials because mistakes here cost money, not time. A match type error, a missing negative list or a conversion action counted twice spends a real budget on queries that were never going to convert — and from Module 06 the account runs on live money with cost per conversion recorded before and after.",
-      "The job has narrowed to exactly what automation cannot do. Smart bidding sets the bids, broad match chooses many of the queries and Performance Max chooses the network — what is left to a specialist is deciding what counts as a conversion, feeding the system clean measurement, writing the offer and auditing where the money went. These nine modules are built around that remaining job.",
+      "Supervised live work beats free tutorials because mistakes here cost money, not time. A match type error, a missing negative list or a conversion action counted twice spends a real budget on queries that were never going to convert, and from Module 06 the account runs on live money with cost per conversion recorded before and after.",
+      "The job has narrowed to exactly what automation cannot do. Smart bidding sets the bids, broad match chooses many of the queries and Performance Max chooses the network. What is left to a specialist is deciding what counts as a conversion, feeding the system clean measurement, writing the offer, and auditing where the money actually went. These nine modules are built around that remaining job.",
     ],
 
     whyTechcadd: {
       intro:
-        "Sessions are run by people currently managing live accounts, which is why the course covers disapprovals, restricted accounts, rising CPMs, wasted spend and conversion actions that never fired — the things that actually decide whether an account survives.",
+        "Sessions are run by people currently managing live accounts, which is why the course covers disapprovals, restricted accounts, rising CPMs, wasted spend and conversion actions that never fired. Those are the things that decide whether an account survives.",
       points: [
         {
           title: "Trainers who spend real budgets every week",
@@ -1650,7 +1650,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Nine graded deliverables, not nine lectures",
-          body: "Every module ends in an artefact a trainer reviews before you advance — a break-even model, a banner set, a keyword file, an Editor-built account, a verified tracking container, an optimisation log.",
+          body: "Every module ends in an artefact a trainer reviews before you advance: a break-even model, a banner set, a keyword file, an Editor-built account, a verified tracking container, an optimisation log.",
         },
         {
           title: "You spend real money from Month 2",
@@ -1658,7 +1658,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Nothing launches before it should",
-          body: "Creative, keywords, account structure and verified tracking all come before the first campaign goes live — the same sequence a competent agency follows.",
+          body: "Creative, keywords, account structure and verified tracking all come before the first campaign goes live. It is the sequence a competent agency follows.",
         },
         {
           title: "You produce the ad creative as well as run the account",
@@ -1666,20 +1666,20 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Since 2007, trained across Punjab",
-          body: "Techcadd runs skill-training programmes across Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali.",
+          body: "The same training runs out of Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali.",
         },
       ],
     },
 
     learn: {
       intro:
-        "The course runs in the order a competent agency actually works, which is not the order most people learn in. You start with the arithmetic — the auction, Quality Score and a break-even model — because a campaign that cannot pay for itself on paper will not pay for itself in the auction. Then you produce the creative yourself in Photoshop, since Display, Demand Gen and Performance Max consume image assets continuously. Next comes keyword research and intent, then the account architecture, match types and negative lists that determine how much control you will have later. Only then does anything launch: conversion tracking is installed and verified first, because smart bidding optimises towards whatever your tracking tells it. From Module 06 you run live Search campaigns on real budget, add Display, remarketing and YouTube using your own creative, build a Merchant Center feed with Shopping and Performance Max, and finish with a two-week optimisation log, a full account audit, a dashboard and a client report you defend in front of a panel.",
+        "The course runs in the order a competent agency actually works, which is not the order most people learn in. You start with the arithmetic: the auction, Quality Score and a break-even model. A campaign that cannot pay for itself on paper will not pay for itself in the auction either. Then you produce the creative yourself in Photoshop, since Display, Demand Gen and Performance Max consume image assets continuously. Next comes keyword research and intent, then the account architecture, match types and negative lists that determine how much control you will have later. Only then does anything launch: conversion tracking is installed and verified first, because smart bidding optimises towards whatever your tracking tells it. From Module 06 you run live Search campaigns on real budget, add Display, remarketing and YouTube using your own creative, build a Merchant Center feed with Shopping and Performance Max, and finish with a two-week optimisation log, a full account audit, a dashboard and a client report you defend in front of a panel.",
       modules: [
         {
           title: "Search Advertising Foundations & Campaign Maths",
           points: [
             "The auction, Ad Rank and Quality Score components",
-            "The metric chain — CPM, CPC, CTR, CPA, ROAS and break-even ROAS",
+            "The metric chain: CPM, CPC, CTR, CPA, ROAS and break-even ROAS",
             "Reverse-engineering a revenue target into required clicks and daily spend",
           ],
         },
@@ -1695,7 +1695,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Keyword Research & Search Intent",
           points: [
             "Classifying informational, commercial, transactional and navigational intent",
-            "Keyword Planner forecasts — volume, competition and bid estimates",
+            "Keyword Planner forecasts: volume, competition and bid estimates",
             "Building negative keyword lists before launch, not after",
           ],
         },
@@ -1718,8 +1718,8 @@ export const COURSE_PAGES: CoursePage[] = [
         {
           title: "Search Campaigns — Responsive Ads, Assets & Bidding",
           points: [
-            "Responsive search ads — headline strategy, pinning and asset strength",
-            "The full asset suite — sitelinks, callouts, structured snippets, call and lead form",
+            "Responsive search ads: headline strategy, pinning and asset strength",
+            "The full asset suite: sitelinks, callouts, structured snippets, call and lead form",
             "Bidding strategies and a fourteen-day optimisation log",
           ],
         },
@@ -1728,7 +1728,7 @@ export const COURSE_PAGES: CoursePage[] = [
           points: [
             "Display targeting by audience, topic and placement",
             "The remarketing tag, audience lists and dynamic remarketing basics",
-            "YouTube campaign types — in-stream, in-feed, bumper and Shorts",
+            "YouTube campaign types: in-stream, in-feed, bumper and Shorts",
           ],
         },
         {
@@ -1736,7 +1736,7 @@ export const COURSE_PAGES: CoursePage[] = [
           points: [
             "Merchant Center setup, product feeds and required attributes",
             "Feed rules, disapproval troubleshooting and Shopping campaign structure",
-            "Performance Max — asset groups, audience signals and search themes",
+            "Performance Max: asset groups, audience signals and search themes",
           ],
         },
         {
@@ -1781,11 +1781,11 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Can I freelance or work remotely with this skill?",
-        a: "Yes — account access is granted remotely, so location is irrelevant. An account audit is the standard way to win the first client, and a dedicated module covers proposals, pricing and retainers.",
+        a: "Yes. Account access is granted remotely, so location makes no difference. An account audit is the usual way to win a first client, and a dedicated module covers proposals, pricing and retainers.",
       },
       {
         q: "Which industries hire for this in Punjab?",
-        a: "Immigration and IELTS consultancies, coaching institutes, real estate developers, clinics and dental practices, hotels and hospitality, and exporters running B2B search — immigration and education are among the region's heaviest search spenders.",
+        a: "Immigration and IELTS consultancies, coaching institutes, real estate developers, clinics and dental practices, hotels and hospitality, and exporters running B2B search. Immigration and education are among the heaviest search spenders in the region.",
       },
       {
         q: "Can I specialise further after this course?",
@@ -1823,7 +1823,7 @@ export const COURSE_PAGES: CoursePage[] = [
         city: "Jalandhar",
         initials: "AK",
         quote:
-          "I travelled from Ludhiana for the weekend batch and it was worth every trip. Real ad spend, real mistakes, real corrections — YouTube does not give you that.",
+          "I travelled in from Ludhiana every weekend and it was worth every trip. Real ad spend, real mistakes, real corrections. YouTube does not give you that.",
       },
       {
         name: "Gurleen Kaur",
@@ -1874,11 +1874,11 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "What is the fee for a Google Ads course in Jalandhar?",
-        a: "Techcadd's Google Ads course fee covers the full nine-week programme. Counsellors share the current fee sheet and instalment options on request.",
+        a: "techcadd's Google Ads course fee covers the full nine-week programme. Counsellors share the current fee sheet and instalment options on request.",
       },
       {
         q: "How much ad budget do I need during the course?",
-        a: "A small live advertising spend runs from Module 06 to Module 09. The amount is kept deliberately low because the objective is learning optimisation on real data rather than scaling spend — confirm the current recommended figure with a counsellor.",
+        a: "A small live advertising spend runs from Module 06 to Module 09. The amount is kept deliberately low, since the point is learning optimisation on real data and not scaling spend. Confirm the current recommended figure with a counsellor.",
       },
       {
         q: "Do I need marketing experience to learn Google Ads?",
@@ -1889,8 +1889,8 @@ export const COURSE_PAGES: CoursePage[] = [
         a: "Google Ads Executive, PPC Executive, Search Specialist, E-commerce PPC Executive and Performance Marketing Executive, plus freelance account management.",
       },
       {
-        q: "Does Techcadd guarantee placement after the Google Ads course?",
-        a: "No institute can honestly guarantee a job, and Techcadd does not. What is provided is placement support — interview preparation, portfolio and resume review, and referrals through the placement cell.",
+        q: "Does techcadd guarantee placement after the Google Ads course?",
+        a: "No, and be wary of anyone who says yes. What is on offer is placement support: mock interviews, portfolio and CV review, and your name put in front of hiring partners through the placement cell.",
       },
       {
         q: "Which tools and software are taught in the Google Ads course?",
@@ -1898,11 +1898,11 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Should I learn Google Ads or Meta Ads first?",
-        a: "Learn Google Ads first if your target businesses sell something people actively search for — coaching, immigration services, clinics, property. Learn Meta Ads first if the product needs to be discovered rather than searched.",
+        a: "Learn Google Ads first if your target businesses sell something people actively search for: coaching, immigration services, clinics, property. Learn Meta Ads first if the product has to be discovered instead of searched for.",
       },
       {
         q: "Are weekend or evening batches available for working professionals?",
-        a: "Yes, weekday, evening and weekend batches are offered so working professionals and college students can attend without leaving their job or classes. 1-on-1 training is also available for anyone who wants a fully personal schedule. Every class — batch or 1-on-1 — runs for 2 hours.",
+        a: "Yes, all three run: weekday, evening and weekend. Working professionals usually take the evening or weekend slot and keep their job through the course. 1-on-1 training is there for schedules that fit nothing else. Every class is 2 hours.",
       },
     ],
 
@@ -1921,9 +1921,9 @@ export const COURSE_PAGES: CoursePage[] = [
     eyebrow: "Social Media Marketing",
     h1: "Social Media Marketing Course in Jalandhar",
     title:
-      "Social Media Marketing Course in Jalandhar — Content & Meta Ads | Techcadd",
+      "Social Media Marketing Course in Jalandhar — Content & Meta Ads | techcadd",
     description:
-      "17-week Social Media Marketing Course in Jalandhar covering design, video editing, shooting, scripting, UGC production and Meta Ads on a live budget. Two tracks, one placement-focused programme at Techcadd.",
+      "17-week Social Media Marketing Course in Jalandhar covering design, video editing, shooting, scripting, UGC production and Meta Ads on a live budget. Two tracks, one placement-focused programme at techcadd.",
     keywords: [
       "social media marketing course jalandhar",
       "social media marketing training institute jalandhar",
@@ -1934,7 +1934,7 @@ export const COURSE_PAGES: CoursePage[] = [
       "social media marketing course fees in jalandhar",
     ],
     intro:
-      "Make it, post it, then put money behind it. A four-month, 17-module programme in content creation and Meta Ads — design, shoot, edit and script your own work, then run paid campaigns on a live budget.",
+      "Make it, post it, then put money behind it. Four months and 17 modules across content creation and Meta Ads: design, shoot, edit and script your own work, then run paid campaigns on a live budget.",
     facts: [
       { label: "Duration", value: "17 Weeks · 4 Months" },
       { label: "Mode", value: "Classroom, Weekend & 1-on-1" },
@@ -1943,17 +1943,17 @@ export const COURSE_PAGES: CoursePage[] = [
     ],
 
     overview: [
-      "Techcadd's Social Media Marketing Course in Jalandhar is a four-month, 17-module programme in content creation and Meta Ads. You learn design, video editing, shooting, scripting, UGC production and analytics across Track One, then run paid campaigns on a live budget in Track Two.",
-      "It suits students, creators, working professionals and business owners with no prior design or marketing background — the design and Canva work starts from absolute zero in Module 01, and Track Two advertises the exact content Track One taught you to produce.",
+      "techcadd's Social Media Marketing Course in Jalandhar is a four-month, 17-module programme in content creation and Meta Ads. You learn design, video editing, shooting, scripting, UGC production and analytics across Track One, then run paid campaigns on a live budget in Track Two.",
+      "It suits students, creators, working professionals and business owners with no design or marketing background. The design and Canva work starts from absolute zero in Module 01, and Track Two advertises the exact content Track One taught you to produce.",
     ],
 
     whoCanDo: {
       intro:
-        "The course starts at Module 01 with design fundamentals and Canva from scratch, so no design, video or marketing background is assumed. This is one of the few Techcadd courses where you can start earning during the course — UGC brands buy creative volume, not follower counts.",
+        "The course starts at Module 01 with design fundamentals and Canva from scratch, so no design, video or marketing background is assumed. This is one of the few techcadd courses where you can start earning before it ends, because UGC brands buy creative volume and not follower counts.",
       groups: [
         {
           title: "Students after 12th",
-          body: "No design, video or marketing background is needed — Module 01 starts with design fundamentals and Canva from scratch. UGC brands buy creative volume rather than follower counts, so a student with a few good product videos and a rate card can bill from Month 3.",
+          body: "No design, video or marketing background is needed. Module 01 starts with design fundamentals and Canva from scratch. Because UGC brands buy creative volume and not follower counts, a student with a few good product videos and a rate card can be billing by Month 3.",
         },
         {
           title: "Graduates and final-year students",
@@ -1961,7 +1961,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Working professionals",
-          body: "Evening and weekend batches let you keep the job. Track Two — Business Manager, pixel, tracking, campaign builds and optimisation — is where salaried performance marketing roles sit, and it is only four weeks of the programme.",
+          body: "Evening and weekend batches let you keep the job. Track Two covers Business Manager, pixel, tracking, campaign builds and optimisation, which is where the salaried performance marketing roles sit, and it takes only four weeks of the programme.",
         },
         {
           title: "Business owners, creators and freelancers",
@@ -1972,7 +1972,7 @@ export const COURSE_PAGES: CoursePage[] = [
     },
 
     whyProgram: [
-      "Creative production is now the job, because the platforms automated everything else. Meta chooses who sees an ad, at what price, in which placement — what it has not automated is the idea, the shoot and the edit, which is why this programme spends three months on making content before it spends one on spending money.",
+      "Creative production is now the job, because the platforms automated everything else. Meta already decides who sees an ad, at what price and in which placement. What it has not automated is the idea, the shoot and the edit. That is why this programme spends three months on making content before it spends one on spending money.",
       "UGC is the fastest paid work available in this field, and it does not need an audience. Brands buy creative volume rather than follower counts, which is why a creator with no following can bill from the first month, provided they have a media kit, a rate card and a demonstrated outreach habit.",
       "Supervised live work beats free tutorials because of the feedback loop, not the information. What is not free is someone telling you your hook is dead by second two, your audio is unusable, or your campaign is optimising towards an event that never fired. Every module here ends in a graded deliverable published on live accounts and run on real ad budgets.",
       "Two hiring markets open, not one. Jalandhar and Ludhiana agencies hire creators, video editors and social media executives; brands and performance agencies hire media buyers who can also produce the creative. Very few candidates carry both, which is exactly what finishing both tracks gives you.",
@@ -1980,7 +1980,7 @@ export const COURSE_PAGES: CoursePage[] = [
 
     whyTechcadd: {
       intro:
-        "Sessions are run by people currently shooting, editing and buying media for clients, which is why the course covers unusable audio, dead hooks, creative fatigue and events that never fired — the things that actually decide whether content works.",
+        "Sessions are run by people currently shooting, editing and buying media for clients, which is why the course covers unusable audio, dead hooks, creative fatigue and events that never fired. Those are the things that decide whether content works.",
       points: [
         {
           title: "Trainers who produce content and spend real budgets",
@@ -1988,7 +1988,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Seventeen graded deliverables, not seventeen lectures",
-          body: "Every module ends in an artefact a trainer reviews before you advance — a design set, a footage bank, a script and hook bank, a UGC pack, an optimisation log.",
+          body: "Every module ends in an artefact a trainer reviews before you advance: a design set, a footage bank, a script and hook bank, a UGC pack, an optimisation log.",
         },
         {
           title: "You publish on live accounts and spend a real ad budget",
@@ -2004,20 +2004,20 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Since 2007, trained across Punjab",
-          body: "Techcadd runs skill-training programmes across Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali.",
+          body: "Nine towns across Punjab now run techcadd programmes: Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali.",
         },
       ],
     },
 
     learn: {
       intro:
-        "The course runs from 'I have never opened Canva' to 'I run this brand's content and its ad account.' You start with design fundamentals and Photoshop, then learn Premiere Pro before ever picking up a camera — because editing is the bottleneck in every content team. Mobile videography and shooting discipline come next, since most creators are limited by their footage rather than their edit. From there the work becomes strategic — niche research and an AI workflow, audience personas and content pillars, a thirty-day calendar, scriptwriting and hook banks, on-camera performance and shoot planning. Month 3 turns it commercial — UGC production with a media kit and logged brand outreach, brand campaigns delivered against a real client workflow, and analytics that decide what to make next from data rather than taste. Month 4 is Track Two — Business Manager and policy, pixel and event tracking, audiences and funnels, campaign builds with your own creative, then optimisation, scaling and a client report. The final week takes one brand through all of it end to end.",
+        "The course runs from 'I have never opened Canva' to 'I run this brand's content and its ad account.' You start with design fundamentals and Photoshop, then learn Premiere Pro before ever picking up a camera, because editing is the bottleneck in every content team. Mobile videography and shooting discipline come next, since most creators are held back by their footage rather than their edit. From there the work turns strategic: niche research and an AI workflow, audience personas and content pillars, a thirty-day calendar, scriptwriting and hook banks, on-camera performance and shoot planning. Month 3 makes it commercial, with UGC production, a media kit and logged brand outreach, brand campaigns delivered against a real client workflow, and analytics that decide what to make next from data instead of taste. Month 4 is Track Two: Business Manager and policy, pixel and event tracking, audiences and funnels, campaign builds using your own creative, then optimisation, scaling and a client report. The final week takes one brand through all of it end to end.",
       modules: [
         {
           title: "Design Foundations & Canva Production",
           points: [
             "Visual hierarchy, contrast, whitespace and typography pairing",
-            "Canva in production — brand kits, template systems and magic resize",
+            "Canva in production: brand kits, template systems and magic resize",
             "Social posts, Instagram carousels, story sets, Reel covers and thumbnails",
           ],
         },
@@ -2040,7 +2040,7 @@ export const COURSE_PAGES: CoursePage[] = [
         {
           title: "Mobile Videography & Shooting Discipline",
           points: [
-            "Smartphone camera control — resolution, frame rate, exposure and focus lock",
+            "Smartphone camera control: resolution, frame rate, exposure and focus lock",
             "Lighting setups and audio capture with lavalier and shotgun microphones",
             "Batch shoot day methodology and an edit-ready handover",
           ],
@@ -2065,15 +2065,15 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Audience, Content Pillars & the Calendar",
           points: [
             "Building an audience persona from evidence rather than assumption",
-            "Content pillars — educational, entertaining, inspirational, promotional",
+            "Content pillars: educational, entertaining, inspirational and promotional",
             "Thirty-day calendars, posting cadence and bio optimisation",
           ],
         },
         {
           title: "Scriptwriting, Hooks & Storytelling",
           points: [
-            "Script structures — educational, storytelling, listicle, UGC",
-            "The first three seconds — curiosity, problem, question and story hooks",
+            "Script structures: educational, storytelling, listicle and UGC",
+            "The first three seconds: curiosity, problem, question and story hooks",
             "Writing at volume from a hook bank",
           ],
         },
@@ -2088,7 +2088,7 @@ export const COURSE_PAGES: CoursePage[] = [
         {
           title: "UGC Production & Winning Brand Work",
           points: [
-            "UGC formats — demonstration, testimonial, review and lifestyle",
+            "UGC formats: demonstration, testimonial, review and lifestyle",
             "Usage rights, deliverable counts and revision limits",
             "Pricing, rate cards, media kits and brand outreach",
           ],
@@ -2097,7 +2097,7 @@ export const COURSE_PAGES: CoursePage[] = [
           title: "Brand Campaigns & Client Delivery Workflow",
           points: [
             "Product campaigns, promotional Reels and product photography for social",
-            "The client workflow — brief, concept, script, approval, shoot, edit, revision",
+            "The client workflow: brief, concept, script, approval, shoot, edit, revision",
             "Scheduling, approval and community management",
           ],
         },
@@ -2128,9 +2128,9 @@ export const COURSE_PAGES: CoursePage[] = [
         {
           title: "Campaign Build, Ad Formats & Paid Creative",
           points: [
-            "Choosing the objective — traffic, engagement, leads, sales, catalogue sales",
+            "Choosing the objective: traffic, engagement, leads, sales, catalogue sales",
             "Budgets, bid strategies and instant-form lead delivery",
-            "Ad formats — image, video, carousel, collection, Reels and Stories",
+            "Ad formats: image, video, carousel, collection, Reels and Stories",
           ],
         },
         {
@@ -2185,7 +2185,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Can I freelance or work remotely with this skill?",
-        a: "Yes, and this is one of the most freelance-friendly skills of the lot — UGC videos are delivered as files, so brands anywhere can hire you. A dedicated module covers rate cards, proposals and retainers.",
+        a: "Yes, and this is one of the most freelance-friendly skills of the lot. UGC videos are delivered as files, so a brand anywhere can hire you. A dedicated module covers rate cards, proposals and retainers.",
       },
       {
         q: "Which industries hire for this in Punjab?",
@@ -2200,7 +2200,7 @@ export const COURSE_PAGES: CoursePage[] = [
     projects: [
       {
         title: "Brand Design Set & Commercial Creative",
-        body: "A ten-piece Canva set for one brand with a reusable template kit — carousel, story set, Reel covers, thumbnails and poster — plus five retouched commercial creatives including a product advertisement built in Photoshop.",
+        body: "A ten-piece Canva set for one brand with a reusable template kit covering carousel, story set, Reel covers, thumbnails and poster, plus five retouched commercial creatives including a product advertisement built in Photoshop.",
         tags: ["Canva Pro", "Adobe Photoshop"],
       },
       {
@@ -2243,7 +2243,7 @@ export const COURSE_PAGES: CoursePage[] = [
         city: "Kapurthala",
         initials: "AS",
         quote:
-          "The thirty-day content calendar we built for a real account is what got me hired — my interviewer asked to see it before asking anything else.",
+          "The thirty-day content calendar we built for a real account is what got me hired. My interviewer asked to see it before asking me anything else.",
       },
       {
         name: "Kabir Ahluwalia",
@@ -2274,27 +2274,27 @@ export const COURSE_PAGES: CoursePage[] = [
     faqs: [
       {
         q: "How long is the social media marketing course in Jalandhar?",
-        a: "The course runs 17 weeks, roughly four months, at one module per week. Months 1 to 3 cover content creation — design, video, shooting, scripting, UGC and analytics — and Month 4 covers Meta Ads, ending with a one-brand capstone.",
+        a: "The course runs 17 weeks, roughly four months, at one module a week. Months 1 to 3 cover content creation: design, video, shooting, scripting, UGC and analytics. Month 4 covers Meta Ads and ends with a one-brand capstone.",
       },
       {
         q: "What is the fee for a social media marketing course in Jalandhar?",
-        a: "Techcadd's social media marketing course fee covers the full four-month programme. Counsellors share the current fee sheet and instalment options on request.",
+        a: "techcadd's social media marketing course fee covers the full four-month programme. Counsellors share the current fee sheet and instalment options on request.",
       },
       {
         q: "Do I need a good camera or laptop for this course?",
-        a: "A smartphone is enough for all shooting modules — camera control, lighting and audio are taught on a phone specifically. A laptop capable of running Adobe Premiere Pro and Photoshop is needed for the editing and design modules.",
+        a: "A smartphone is enough for every shooting module. Camera control, lighting and audio are all taught on a phone deliberately. For the editing and design modules you will need a laptop that can run Adobe Premiere Pro and Photoshop.",
       },
       {
         q: "Can I earn during the course as a UGC creator?",
-        a: "Yes, that is deliberate — UGC brands buy creative volume, not follower counts, so you can be hired with no audience. A dedicated module builds three UGC videos, a media kit, a rate card and twenty logged brand approaches.",
+        a: "Yes, and that is deliberate. UGC brands buy creative volume rather than follower counts, so you can be hired with no audience at all. A dedicated module builds three UGC videos, a media kit, a rate card and twenty logged brand approaches.",
       },
       {
         q: "What jobs can I get after a social media marketing course?",
         a: "Content Creator, UGC Creator, Video Editor, Social Media Executive, Social Media Manager and Meta Ads or Performance Executive. Your seventeen graded deliverables are what interviews assess.",
       },
       {
-        q: "Does Techcadd guarantee placement after this course?",
-        a: "No institute can honestly guarantee a job, and Techcadd does not. What is provided is placement support — interview preparation, portfolio and resume review, and referrals through the placement cell.",
+        q: "Does techcadd guarantee placement after this course?",
+        a: "A guarantee would be dishonest, so there is not one. There is placement support instead: interview preparation, a review of your resume and portfolio, and referrals sent out by the placement cell.",
       },
       {
         q: "Which tools and software are taught in this course?",
@@ -2306,7 +2306,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Are weekend or evening batches available for working professionals?",
-        a: "Yes, weekday, evening and weekend batches are offered so working professionals and college students can attend without leaving their job or classes. 1-on-1 training is also available for anyone who wants a fully personal schedule. Every class — batch or 1-on-1 — runs for 2 hours.",
+        a: "Yes. Between the weekday, evening and weekend batches, most people find a slot that does not clash with work or college. For the ones who do not, 1-on-1 training runs on a schedule you set. Each class lasts 2 hours.",
       },
     ],
 
@@ -2325,9 +2325,9 @@ export const COURSE_PAGES: CoursePage[] = [
     eyebrow: "Shopify",
     h1: "Shopify Development Course in Jalandhar",
     title:
-      "Shopify Development Course in Jalandhar — Live Store & Ad Spend | Techcadd",
+      "Shopify Development Course in Jalandhar — Live Store & Ad Spend | techcadd",
     description:
-      "Shopify Development Course in Jalandhar — source a product, build the store, rank it and advertise it, then let AI produce the photography, video and copy. Two exit points: 3 months to a live store, 6 months to a growth system. At Techcadd.",
+      "Shopify Development Course in Jalandhar — source a product, build the store, rank it and advertise it, then let AI produce the photography, video and copy. Two exit points: 3 months to a live store, 6 months to a growth system. At techcadd.",
     keywords: [
       "shopify course jalandhar",
       "shopify development course in jalandhar",
@@ -2338,7 +2338,7 @@ export const COURSE_PAGES: CoursePage[] = [
       "shopify course fees in jalandhar",
     ],
     intro:
-      "Build the store, source the product, rank it and advertise it — then let AI produce the photography, the video and the copy. Two exit points: three months to a live selling store, six months to a growth system.",
+      "Build the store, source the product, rank it and advertise it, then let AI produce the photography, the video and the copy. Two exit points: three months to a live selling store, six months to a growth system.",
     facts: [
       { label: "Duration", value: "3 or 6 Months" },
       { label: "Mode", value: "Classroom, Weekend & 1-on-1" },
@@ -2347,8 +2347,8 @@ export const COURSE_PAGES: CoursePage[] = [
     ],
 
     overview: [
-      "Techcadd's Shopify Development Course in Jalandhar teaches you to source a product, build a store, launch it on a custom domain with working payments, then rank and advertise it. Choose three months for a live selling store, or six months to add AI product photography, video and paid media scaling.",
-      "It is one 22-module ladder with two exit points, not two separate courses — the six-month AI-powered stage continues from Module 12 on the same store you already built in the first three months, so nothing is repeated if you extend.",
+      "techcadd's Shopify Development Course in Jalandhar teaches you to source a product, build a store, launch it on a custom domain with working payments, then rank and advertise it. Choose three months for a live selling store, or six months to add AI product photography, video and paid media scaling.",
+      "This is one 22-module ladder with two exit points rather than two separate courses. The six-month AI-powered stage carries on from Module 12 using the same store you built in the first three months, so nothing is repeated if you extend.",
     ],
 
     whoCanDo: {
@@ -2357,11 +2357,11 @@ export const COURSE_PAGES: CoursePage[] = [
       groups: [
         {
           title: "Students after 12th",
-          body: "No coding, design or marketing background is needed — Module 01 starts with product research and margin arithmetic taught from scratch. The three-month stage ends with a store that has taken real orders, which becomes your portfolio and your interview answer.",
+          body: "No coding, design or marketing background is needed. Module 01 starts with product research and margin arithmetic, taught from scratch. The three-month stage ends with a store that has taken real orders, and that store becomes both your portfolio and your interview answer.",
         },
         {
           title: "Graduates and final-year students",
-          body: "E-commerce roles hire on evidence — a live URL, a completed test order, a verified pixel and a cost per purchase before and after. By Week 13 you have all four, and the technical ceiling is Shopify's admin panel, not code.",
+          body: "E-commerce roles hire on evidence: a live URL, a completed test order, a verified pixel, and a cost per purchase before and after. By Week 13 you have all four, and the technical ceiling is Shopify's admin panel rather than code.",
         },
         {
           title: "Working professionals",
@@ -2369,22 +2369,22 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Business owners, traders and exporters",
-          body: "Manufacturers and retailers being asked for a direct-to-consumer channel build it in-house here — Shopify with Razorpay, cash on delivery, GST settings and courier integration, plus the Meta and Google advertising that fills it.",
+          body: "Manufacturers and retailers under pressure to open a direct-to-consumer channel build it in-house here: Shopify with Razorpay, cash on delivery, GST settings and courier integration, plus the Meta and Google advertising that fills it.",
         },
         ...COMMON_AUDIENCE,
       ],
     },
 
     whyProgram: [
-      "D2C is the channel Punjab manufacturers are being pushed into, and almost nobody locally can build it properly. Selling directly needs a store that takes payments correctly, a catalogue structured for Shopping feeds and someone who can run the advertising behind it — three skills this syllabus covers early on.",
-      "The skill splits into two income routes, and you choose after Week 13. One is employment — store manager, e-commerce executive, performance marketer. The other is your own store, which is a business rather than a salary, and Module 01 teaches the margin arithmetic that tells you which one you are looking at before you commit any budget.",
+      "D2C is the channel Punjab manufacturers are being pushed into, and almost nobody locally can build it properly. Selling directly needs three things: a store that takes payments correctly, a catalogue structured for Shopping feeds, and someone who can run the advertising behind it. This syllabus covers all three early.",
+      "The skill splits into two income routes and you choose after Week 13. One is employment: store manager, e-commerce executive, performance marketer. The other is your own store, which is a business rather than a salary. Module 01 teaches the margin arithmetic that tells you which of the two you are actually looking at, before you commit any budget.",
       "Supervised live work beats free tutorials because of the review, not the information. What a tutorial cannot check is whether your product actually has margin after courier and payment gateway fees, whether your pixel is firing verified purchase events, or whether your test order actually reached the supplier.",
       "The creative side is now the whole job, and it is why the six-month stage exists. Meta and Google have automated targeting; what they have not automated is the photograph, the video and the offer. Producing on-brand product scenes and video ad variations without a shoot is currently the most saleable service you can offer other store owners.",
     ],
 
     syllabus: {
       intro:
-        "Two exit points on one ladder. Modules are numbered 01 to 22 in a single sequence — the six-month programme contains everything in the three-month one and continues from Module 12 on the same store you already built. Nothing is repeated, and you can extend later without redoing a module.",
+        "Two exit points on one ladder. Modules are numbered 01 to 22 in a single sequence. The six-month programme contains everything in the three-month one and carries on from Module 12 using the store you already built. Nothing is repeated, and you can extend later without redoing a module.",
       stages: [
         {
           months: 3,
@@ -2406,7 +2406,7 @@ export const COURSE_PAGES: CoursePage[] = [
           n: 1,
           from: 3,
           title: "Product Research & Store Economics",
-          body: "Winning product criteria, supplier sourcing and vetting, and pricing to a target margin — landed cost, payment fees, ad cost and break-even ROAS.",
+          body: "Winning product criteria, supplier sourcing and vetting, and pricing to a target margin: landed cost, payment fees, ad cost and break-even ROAS.",
         },
         {
           n: 2,
@@ -2418,7 +2418,7 @@ export const COURSE_PAGES: CoursePage[] = [
           n: 3,
           from: 3,
           title: "Canva & Brand Design Systems",
-          body: "A brand kit and store graphics — banners, trust badges, size charts and social templates — held across store, ads and social.",
+          body: "A brand kit and store graphics covering banners, trust badges, size charts and social templates, held consistent across store, ads and social.",
         },
         {
           n: 4,
@@ -2430,7 +2430,7 @@ export const COURSE_PAGES: CoursePage[] = [
           n: 5,
           from: 3,
           title: "Theme Customisation & Conversion Page Design",
-          body: "Home and product page design — gallery, price framing, objection handling and sticky add-to-cart — tested and passed on mobile.",
+          body: "Home and product page design covering gallery, price framing, objection handling and sticky add-to-cart, then tested and passed on mobile.",
         },
         {
           n: 6,
@@ -2535,12 +2535,12 @@ export const COURSE_PAGES: CoursePage[] = [
           body: "Running one store as a complete system, with a full audit, a blended dashboard, a profit report and a client kit ready to pitch.",
         },
       ],
-      note: "Nested, not parallel. The six-month AI-powered programme contains everything in the three-month Practitioner programme and continues from Module 12 on the same store you already built. Choosing the shorter programme costs you scope, never depth — and you can extend later without repeating a single module.",
+      note: "Nested, not parallel. The six-month AI-powered programme contains everything in the three-month Practitioner programme and continues from Module 12 on the same store you already built. Choosing the shorter programme costs you scope, never depth, and you can extend later without repeating a single module.",
     },
 
     whyTechcadd: {
       intro:
-        "Sessions are run by people currently building stores and spending real advertising money, which is why the course covers failed checkouts, gateway approvals, feed disapprovals and rising cost per purchase — the things that actually break a store.",
+        "Sessions are run by people currently building stores and spending real advertising money, which is why the course covers failed checkouts, gateway approvals, feed disapprovals and rising cost per purchase. Those are the things that break a store.",
       points: [
         {
           title: "Trainers who run live stores and live budgets",
@@ -2548,7 +2548,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Twenty-two graded deliverables, not twenty-two lectures",
-          body: "Every module ends in an artefact a trainer reviews before you advance — a supplier quote, a live URL, a completed test order, a verified pixel event, an approved feed, a profit sheet.",
+          body: "Every module ends in an artefact a trainer reviews before you advance: a supplier quote, a live URL, a completed test order, a verified pixel event, an approved feed, a profit sheet.",
         },
         {
           title: "You spend a real advertising budget",
@@ -2556,7 +2556,7 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Honest arithmetic, including when a product fails",
-          body: "Students are taught to identify an unprofitable product early rather than to keep spending on it — the opposite of what most e-commerce content online teaches.",
+          body: "Students are taught to spot an unprofitable product early and stop spending on it, which is close to the opposite of what most e-commerce content online teaches.",
         },
         {
           title: "Internship letter, certificate and one continuous portfolio",
@@ -2564,14 +2564,14 @@ export const COURSE_PAGES: CoursePage[] = [
         },
         {
           title: "Since 2007, trained across Punjab",
-          body: "Techcadd runs skill-training programmes across Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali.",
+          body: "Centres in Jalandhar, Ludhiana, Mukerian, Hoshiarpur, Phagwara, Bathinda, Amritsar, Patiala and Mohali all run techcadd skill-training programmes.",
         },
       ],
     },
 
     learn: {
       intro:
-        "The programme runs in one line from an empty Shopify trial to a store that has taken real orders and can prove what it earned. You start with product research and margin arithmetic, because a product bought badly cannot be advertised profitably later. Then you produce its creative yourself in Photoshop and Canva, build and theme the store, and launch it on a custom domain with Razorpay, GST, shipping and a completed test order fulfilled through the supplier. From there the store has to be found and filled — keyword research and on-page SEO for free traffic, then Meta and Google Ads on a real budget, ending in a profit-and-loss sheet after every cost. The six-month stage takes that same store further into where the work is actually going — a brand-trained AI assistant, AI product photography and video that replace a shoot, Premiere Pro editing, conversion copywriting, technical SEO, Meta and Google scaling with proper feed engineering, GA4 reporting, and retention flows that make the second order the profitable one.",
+        "The programme runs in one line from an empty Shopify trial to a store that has taken real orders and can prove what it earned. You start with product research and margin arithmetic, because a product bought badly cannot be advertised profitably later. Then you produce its creative yourself in Photoshop and Canva, build and theme the store, and launch it on a custom domain with Razorpay, GST, shipping and a completed test order fulfilled through the supplier. From there the store has to be found and filled: keyword research and on-page SEO for free traffic, then Meta and Google Ads on a real budget, ending in a profit-and-loss sheet drawn up after every cost. The six-month stage takes that same store into where the work is heading. A brand-trained AI assistant, AI product photography and video that replace a shoot, Premiere Pro editing, conversion copywriting, technical SEO, Meta and Google scaling with proper feed engineering, GA4 reporting, and retention flows that make the second order the profitable one.",
       tools: [
         "Shopify",
         "AliExpress",
@@ -2609,11 +2609,11 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "What can I earn, and how fast does it grow?",
-        a: "Entry-level e-commerce and store roles in the Punjab market move up quickly for someone who can run paid media and read a profit sheet. Store ownership is a business, not a salary — the range there is genuinely open at both ends.",
+        a: "Entry-level e-commerce and store roles in the Punjab market move up quickly for someone who can run paid media and read a profit sheet. Store ownership is a business rather than a salary, and the range there is genuinely open at both ends.",
       },
       {
         q: "Can I freelance or work remotely with this skill?",
-        a: "Yes — a Shopify build is delivered as a URL, so location stops mattering once you can show completed stores. A dedicated module covers scoping, pricing, quotations, retainers and GST invoicing.",
+        a: "Yes. A Shopify build is delivered as a URL, so location stops mattering once you can show completed stores. A dedicated module covers scoping, pricing, quotations, retainers and GST invoicing.",
       },
       {
         q: "Which industries hire for this in Punjab?",
@@ -2702,11 +2702,11 @@ export const COURSE_PAGES: CoursePage[] = [
     faqs: [
       {
         q: "How long is the Shopify course in Jalandhar?",
-        a: "There are two durations — three months ending in a live store that has taken orders, and six months adding AI product photography, AI video, advanced paid media, analytics and retention. The six-month track continues from the three-month one without repeating anything.",
+        a: "There are two durations. Three months ends in a live store that has taken orders. Six months adds AI product photography, AI video, advanced paid media, analytics and retention. The six-month track continues from the three-month one without repeating anything.",
       },
       {
         q: "What is the fee for a Shopify course in Jalandhar?",
-        a: "Techcadd's Shopify course is priced separately for the three-month and six-month tracks. Counsellors share the current fee sheet, instalment options and the recommended budget for a domain, a Shopify plan and the live ad campaigns on request.",
+        a: "techcadd's Shopify course is priced separately for the three-month and six-month tracks. Counsellors share the current fee sheet, instalment options and the recommended budget for a domain, a Shopify plan and the live ad campaigns on request.",
       },
       {
         q: "Do I need coding knowledge to build a Shopify store?",
@@ -2714,15 +2714,15 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "How much money do I need to actually run a store during the course?",
-        a: "Plan for a Shopify plan, a domain, a product sample and a small advertising budget for the live campaign modules. Amounts are kept deliberately small because the goal is to learn optimisation on real data — discuss the current recommended figure with a counsellor.",
+        a: "Plan for a Shopify plan, a domain, a product sample and a small advertising budget for the live campaign modules. The amounts are kept deliberately small, since the goal is to learn optimisation on real data. Discuss the current recommended figure with a counsellor.",
       },
       {
         q: "What jobs can I get after a Shopify course?",
         a: "Shopify Store Developer, E-commerce Executive, Store Manager, and after the six-month stage, AI Creative Producer or E-commerce Performance Marketer.",
       },
       {
-        q: "Does Techcadd guarantee placement after the course?",
-        a: "No institute can honestly guarantee a job, and Techcadd does not. What is provided is placement support — interview preparation, portfolio and resume review, and referrals through the placement cell.",
+        q: "Does techcadd guarantee placement after the course?",
+        a: "No institute can honestly guarantee a job and techcadd does not try to. The commitment is to placement support: preparing you for interviews, going through your portfolio and CV, and referring you through the placement cell.",
       },
       {
         q: "Which tools and software are taught in the Shopify course?",
@@ -2734,7 +2734,7 @@ export const COURSE_PAGES: CoursePage[] = [
       },
       {
         q: "Are weekend or evening batches available for working professionals?",
-        a: "Yes, weekday, evening and weekend batches are offered so working professionals and college students can attend without leaving their job or classes. 1-on-1 training is also available for anyone who wants a fully personal schedule. Every class — batch or 1-on-1 — runs for 2 hours.",
+        a: "Yes. Weekday, evening and weekend batches all cover the same syllabus, so you pick whichever fits around your job or classes. 1-on-1 training is available if you would rather set your own timings. A class is 2 hours in all cases.",
       },
     ],
 
@@ -2812,7 +2812,7 @@ const SEGMENT_COPY: Record<
   courses: {
     heading: (label) => `${label} Course in Jalandhar`,
     intro:
-      "Job-oriented training at Techcadd Jalandhar — small batches, daily lab practice and live projects, taught by engineers who still ship client work.",
+      "Job-oriented training at techcadd Jalandhar. Small batches, daily lab practice and live projects, taught by engineers who still ship client work.",
     facts: [
       { label: "Duration", value: "3 – 6 Months" },
       { label: "Mode", value: "Classroom, Weekend & 1-on-1" },
@@ -2823,7 +2823,7 @@ const SEGMENT_COPY: Record<
   "internship-training": {
     heading: (label) => `${label} in Jalandhar`,
     intro:
-      "University-recognised industrial training at Techcadd Jalandhar, finishing with a live project, an internship letter and placement drives.",
+      "University-recognised industrial training at techcadd Jalandhar, finishing with a live project, an internship letter and placement drives.",
     facts: [
       { label: "Mode", value: "Classroom & 1-on-1" },
       { label: "Project", value: "Live Client Work" },
@@ -2834,7 +2834,7 @@ const SEGMENT_COPY: Record<
   "after-12th-courses": {
     heading: (label) => `${label} Course After 12th in Jalandhar`,
     intro:
-      "A career track you can start straight after school — from fundamentals to a portfolio employers in Punjab actually ask to see.",
+      "A career track you can start straight after school, running from fundamentals to a portfolio employers in Punjab actually ask to see.",
     facts: [
       { label: "Duration", value: "6 Months – 1 Year" },
       { label: "Mode", value: "Classroom & 1-on-1" },
@@ -2997,8 +2997,8 @@ function stubPage(entry: CatalogueEntry, specs: Record<string, CourseSpec> = COU
     segment: entry.segment,
     eyebrow: entry.label,
     h1,
-    title: `${h1} | Techcadd`,
-    description: `${h1} at Techcadd — live projects, industry trainers, internship letter and placement support. Enquire about batches, fees and duration.`,
+    title: `${h1} | techcadd`,
+    description: `${h1} at techcadd — live projects, industry trainers, internship letter and placement support. Enquire about batches, fees and duration.`,
     keywords: [
       `${entry.label.toLowerCase()} course jalandhar`,
       `${entry.label.toLowerCase()} training in jalandhar`,

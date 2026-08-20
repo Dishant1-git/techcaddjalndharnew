@@ -7,9 +7,9 @@ import { REVIEW_META, type GoogleReview } from "@/lib/reviews"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
-  title: "Student Reviews — Techcadd Jalandhar",
+  title: "Student Reviews — techcadd Jalandhar",
   description:
-    "What students say about training at Techcadd Jalandhar — course reviews covering full stack, data science, AI, cyber security, digital marketing and industrial training.",
+    "What students say about training at techcadd Jalandhar — course reviews covering full stack, data science, AI, cyber security, digital marketing and industrial training.",
   alternates: { canonical: `${SITE.url}/reviews` },
 }
 
@@ -73,10 +73,34 @@ export default async function ReviewsPage() {
             <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
               Recent reviews
             </p>
-            <p className="font-mono text-xs text-muted">
-              {reviews.length} shown
-            </p>
+            {/* Hidden at zero: "0 shown" beside the notice below only says the
+                same thing twice. */}
+            {reviews.length > 0 && (
+              <p className="font-mono text-xs text-muted">
+                {reviews.length} shown
+              </p>
+            )}
           </div>
+
+          {/* None to show.
+
+              The cards come from the CMS and have no checked-in stand-ins,
+              because a review is somebody's words and the Google mark on a card
+              says a visitor can go and check them. So this points at the
+              profile itself rather than apologising: the reviews are real and
+              readable, they are simply not reproduced here yet. */}
+          {reviews.length === 0 && (
+            <div className="mt-8 rounded-2xl border border-dashed border-line bg-subtle/50 px-6 py-16 text-center lg:mt-10">
+              <GoogleMark className="mx-auto size-8" />
+              <p className="mt-5 font-display text-xl font-bold tracking-tight">
+                Reviews are on our Google profile.
+              </p>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
+                We have not reproduced them here yet. In the meantime they are
+                readable in full, and unedited, on Google.
+              </p>
+            </div>
+          )}
 
           {/* Masonry-ish without the complexity: three CSS columns, so cards of
               different lengths pack tightly instead of every row stretching to
@@ -88,10 +112,13 @@ export default async function ReviewsPage() {
             ))}
           </div>
 
-          <p className="mt-12 text-center text-xs leading-relaxed text-muted">
-            Reviews are shown as written by students on our Google Business
-            Profile.
-          </p>
+          {/* Only true when there are cards above it to describe. */}
+          {reviews.length > 0 && (
+            <p className="mt-12 text-center text-xs leading-relaxed text-muted">
+              Reviews are shown as written by students on our Google Business
+              Profile.
+            </p>
+          )}
         </Container>
       </section>
 

@@ -74,7 +74,7 @@ export function AuthLayout({ title, description, children, footer, secure }: Aut
 
           {/* Outside the card so it reads as page furniture, not form content. */}
           <p className="mt-5 text-center text-[13px] text-white/40">
-            © 2026 TechCADD. All rights reserved.
+            © 2026 techcadd. All rights reserved.
           </p>
         </div>
       </main>

@@ -61,10 +61,10 @@ export async function About() {
             />
 
             <p className="mt-5 max-w-lg text-base leading-relaxed text-muted lg:text-lg">
-              Techcadd is an IT company that trains the people who build with
-              it. Every course is taught from the same stack we ship client work
-              on — so the syllabus moves when the industry does, and your mentor
-              is an engineer who still writes code for a living.
+              techcadd is an IT company that also trains people. Our courses run
+              on the same stack our client projects are built on, which is why
+              the syllabus keeps shifting, and why the person teaching you still
+              writes code for a living.
             </p>
 
             {/* Formats sit high on the page: it's the first thing a student
@@ -128,12 +128,12 @@ export async function About() {
               {/* Taller crop on phones so the group still reads at 360px. */}
               <Photo
                 src="/assets/images/about/team.jpg"
-                alt="The Techcadd team and students outside the Jalandhar campus"
+                alt="The techcadd team and students outside the Jalandhar campus"
                 className="col-span-2 aspect-[2/1] sm:aspect-[14/5]"
                 sizes="(min-width: 1024px) 590px, 92vw"
               >
                 <span className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-black/45 px-3 py-1 font-mono text-[10px] tracking-[0.18em] text-white/85 uppercase backdrop-blur-md">
-                  Team Techcadd
+                  Team techcadd
                 </span>
               </Photo>
 
@@ -146,7 +146,7 @@ export async function About() {
 
               <Photo
                 src="/assets/images/about/lab-demo.webp"
-                alt="A robotics demonstration during a Techcadd lab session"
+                alt="A robotics demonstration during a techcadd lab session"
                 className="aspect-[4/3]"
                 sizes="(min-width: 1024px) 290px, 45vw"
               />

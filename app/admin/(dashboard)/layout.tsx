@@ -25,7 +25,7 @@ export default async function DashboardLayout({
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
           <div>
             <p className="text-xs font-semibold tracking-[0.2em] text-brand-600 uppercase">
-              Techcadd
+              techcadd
             </p>
             <h1 className="text-lg font-bold tracking-tight text-foreground">
               Enquiry dashboard

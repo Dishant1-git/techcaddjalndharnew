@@ -62,7 +62,7 @@ export function Preloader() {
       Time-based easing, not per-frame.
 
       This used to close a fixed 6% of the remaining distance on every
-      animation frame, which paced the splash by frame count — and frames are
+      animation frame, which paced the splash by frame count, and frames are
       scarcest exactly while the page is hydrating and the splash is up. The
       result was backwards: the heavier the page, the longer its boot screen.
       On the homepage `load` fired at 457ms and the overlay stayed until
@@ -142,7 +142,7 @@ export function Preloader() {
     <>
       {/*
         The overlay is server-rendered so it covers the page from the very
-        first paint — but only JavaScript can ever dismiss it. Without this,
+        first paint, but only JavaScript can ever dismiss it. Without this,
         a visitor with JS disabled (or blocked by an extension) stares at a
         splash screen forever.
       */}
@@ -167,7 +167,7 @@ export function Preloader() {
         {/* Inverted to white — the source artwork is navy on transparent. */}
         <Image
           src="/assets/icon/tce.png"
-          alt="Techcadd"
+          alt="techcadd"
           width={952}
           height={262}
           priority

@@ -10,7 +10,7 @@ import { SITE } from "@/lib/site"
 export const metadata: Metadata = {
   title: "College Partnerships — Workshops, Training and Placement Drives",
   description:
-    "Techcadd partners with colleges and universities on campus workshops, industrial training, faculty development and joint placement drives across Punjab.",
+    "techcadd partners with colleges and universities on campus workshops, industrial training, faculty development and joint placement drives across Punjab.",
   alternates: { canonical: `${SITE.url}/college-partnerships` },
 }
 

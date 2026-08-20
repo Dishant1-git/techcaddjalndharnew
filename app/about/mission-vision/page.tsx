@@ -7,7 +7,7 @@ import { SITE } from "@/lib/site"
 export const metadata: Metadata = {
   title: "Mission and Vision",
   description:
-    "techcadd's mission is to bridge education with industry through accessible technology, practical exposure and industry-ready skills — and its vision, to help build India's future-ready technology workforce.",
+    "techcadd's mission is to bridge education with industry through accessible technology, practical exposure and industry-ready skills, and its vision, to help build India's future-ready technology workforce.",
   alternates: { canonical: `${SITE.url}/about/mission-vision` },
 }
 
@@ -22,27 +22,27 @@ export const metadata: Metadata = {
 const MISSION_POINTS = [
   {
     title: "Make Technology Accessible",
-    body: "Provide learners with relevant and accessible technology education.",
+    body: "Keep good technology training within reach, on fees and on entry requirements.",
     icon: "M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Zm0 0c-2.2 2.2-3.3 5-3.3 8.5s1.1 6.3 3.3 8.5m0-17c2.2 2.2 3.3 5 3.3 8.5s-1.1 6.3-3.3 8.5M4 12h16",
   },
   {
-    title: "Prioritize Practical Learning",
-    body: "Go beyond theory through projects, hands-on training, and real-world exposure.",
+    title: "Prioritise Practical Learning",
+    body: "Theory gets the class started. Projects and lab work are where it sticks.",
     icon: "M14.5 4.5a4 4 0 0 0 5 5L10 19a2.8 2.8 0 0 1-4-4l8.5-10.5ZM6.5 15.5l2 2",
   },
   {
     title: "Build Industry-Ready Talent",
-    body: "Develop skills that align with evolving industry requirements and employment opportunities.",
+    body: "Teach what local employers are hiring for, and keep checking that it still is.",
     icon: "M4 8.5h16v11H4v-11Zm4.5 0v-2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2M4 13h16",
   },
   {
     title: "Encourage Continuous Upskilling",
-    body: "Help learners adapt to emerging technologies and continuously upgrade their capabilities.",
+    body: "Alumni come back for the next thing. Keep the door open and the fees fair when they do.",
     icon: "M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4",
   },
   {
-    title: "Expand the Learning Ecosystem",
-    body: "Build a wider network through centres and collaborations so advanced technology education reaches more learners.",
+    title: "Reach More Towns",
+    body: "More centres and more college tie-ups, so this training is not only a big-city option.",
     icon: "M12 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm-6.5 12a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm13 0a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM10.5 7.5 6.8 14m6.7-6.5 3.7 6.5M8 18h8",
   },
 ]
@@ -116,16 +116,16 @@ export default function MissionVisionPage() {
               suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
             >
-              Our mission is to build a strong training ecosystem where learners
-              can access advanced technology, practical exposure, and
-              industry-relevant skills that prepare them for real-world
-              opportunities.
+              Put plainly: get people access to the technology that is actually
+              being used, give them enough practice on it to be useful, and send
+              them into interviews with something to show. Five things follow
+              from that.
             </p>
           </div>
 
           {/*
             Horizontal timeline. Each item is a three-row grid — space above, the
-            rail crossing, space below — and the node is placed into row 1 or
+            rail crossing, space below, and the node is placed into row 1 or
             row 3 so the circles alternate over and under the line. Because the
             outer rows are both `1fr`, the middle row always lands on the
             vertical centre of the list, which is exactly where the rail is
@@ -235,10 +235,10 @@ export default function MissionVisionPage() {
           {/* Attribution: this is the company's own published wording, not
               ours, and it is marked as such. */}
           <p className="mx-auto mt-16 max-w-3xl text-center text-xs leading-relaxed text-muted lg:mt-24">
-            This direction is consistent with TechCADD&apos;s publicly stated
-            mission of developing a national and international network through
-            franchise centres and providing qualitative advanced technology with
-            practical exposure to improve employability.
+            These five follow techcadd&apos;s own published mission: to grow a
+            national and international network of franchise centres, and to
+            provide advanced technology training with the practical exposure
+            that improves employability.
           </p>
         </Container>
       </section>
@@ -263,10 +263,10 @@ export default function MissionVisionPage() {
               suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
             >
-              techcadd envisions contributing to an India where skilled
-              engineers, technology professionals, and digitally capable young
-              people are prepared to participate confidently in the evolving
-              technology economy.
+              India does not lack young people who want technical careers. What
+              is thin on the ground is the training that makes them employable.
+              We would like to be one of the places that closes that gap, five
+              commitments at a time.
             </p>
           </div>
 
@@ -346,9 +346,9 @@ export default function MissionVisionPage() {
           </ul>
 
           <p className="mx-auto mt-14 max-w-3xl text-center text-xs leading-relaxed text-muted lg:mt-16">
-            The organization&apos;s publicly stated vision is to help make India
-            a hub of well-trained engineers and technical professionals and
-            establish a globally trusted name in software and services.
+            In the company&apos;s own published words: to help make India a hub
+            of well-trained engineers and technical professionals, and to build
+            a globally trusted name in software and services.
           </p>
         </Container>
       </section>
@@ -374,10 +374,10 @@ export default function MissionVisionPage() {
             suppressHydrationWarning
             className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted lg:text-lg"
           >
-            techcadd aims to keep evolving with emerging fields such as
-            Artificial Intelligence, Cloud Computing, Cyber Security, Data
-            Science, Automation and other future-facing technologies, helping
-            learners stay relevant in a rapidly changing digital world.
+            The catalogue will keep moving with the field — AI, cloud, cyber
+            security, data science, automation, and whatever follows them. A
+            student who finishes here should be able to keep up with that on
+            their own.
           </p>
         </Container>
       </section>

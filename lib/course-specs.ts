@@ -478,7 +478,7 @@ export const COURSE_SPECS: Record<string, CourseSpec> = {
   "courses/linux": {
     tagline: "the operating system every server, container and cloud instance actually runs",
     demand:
-      "Linux is the quiet prerequisite behind cloud, DevOps and security roles — and the fastest gap to close.",
+      "Linux is the quiet prerequisite behind cloud, DevOps and security roles, and the fastest gap to close.",
     careers: ["Linux Administrator", "System Engineer", "DevOps Associate", "Support Engineer"],
     topics: [
       "Linux installation and file system",

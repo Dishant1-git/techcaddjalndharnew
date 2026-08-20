@@ -55,7 +55,7 @@ export function useDeferredVideo(
       This is the change with the most real-world effect and the least visible
       one. The loop is blurred, scaled past the edges and under a scrim at
       80–85% opacity, so on a 390px screen there is almost nothing of it left
-      to see — while the download is the same several megabytes, on the
+      to see, while the download is the same several megabytes, on the
       connection least able to afford it. The flat panel underneath is the
       design's own fallback, not a degraded version of it.
     */

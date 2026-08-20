@@ -21,7 +21,7 @@ export default async function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="rounded-2xl border border-line bg-white p-8 shadow-[0_24px_60px_-34px_rgba(15,23,42,0.45)]">
           <p className="text-xs font-semibold tracking-[0.2em] text-brand-600 uppercase">
-            Techcadd
+            techcadd
           </p>
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
             Dashboard sign-in

@@ -50,7 +50,7 @@ const MODULES: Module[] = [
   {
     step: "03",
     title: "Live client projects",
-    body: "You ship features out of our actual delivery pipeline — not a toy app copied from a tutorial.",
+    body: "The work comes out of our own delivery pipeline, so you are shipping features rather than copying a tutorial app.",
     icon: (
       <path
         d="M5 5h14v11H5V5Zm0 11-1.5 3h17L19 16M9.5 9l-2 2.5 2 2.5m5-5 2 2.5-2 2.5"

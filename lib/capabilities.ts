@@ -37,7 +37,7 @@ export type Capability = {
 }
 
 /**
- * What Techcadd builds and teaches, each backed by the stack it is actually
+ * What techcadd builds and teaches, each backed by the stack it is actually
  * delivered on. The blurbs carry the copy the old capabilities list used.
  */
 export const CAPABILITIES: Capability[] = [
@@ -45,7 +45,7 @@ export const CAPABILITIES: Capability[] = [
     id: "ai-ml",
     label: "AI & Machine Learning",
     blurb:
-      "Models, agents and data pipelines built for production — not for the demo.",
+      "Models, agents and data pipelines built for production, not for the demo.",
     items: [
       ico(siTensorflow, "TensorFlow"),
       ico(siPytorch, "PyTorch"),

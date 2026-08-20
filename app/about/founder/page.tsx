@@ -77,7 +77,7 @@ const ENGAGEMENTS: Engagement[] = [
   {
     tag: "IKGPTU · 2025",
     title: "Pre-placement talk at I.K. Gujral Punjab Technical University",
-    body: "IKGPTU identifies Mr. Gourav Gupta as Founder & CEO of TechCADD, and hosted him for a pre-placement talk and interaction with students during TechCADD's 2025 campus placement drive.",
+    body: "IKGPTU identifies Mr. Gourav Gupta as Founder & CEO of techcadd, and hosted him for a pre-placement talk and interaction with students during techcadd's 2025 campus placement drive.",
   },
   {
     tag: "Workshops",
@@ -117,18 +117,19 @@ const FOUNDER_STORY = [
 ]
 
 /*
-  Placeholder portraits.
+  Stand-in portraits, for a member whose headshot has not arrived yet.
 
   Local files, not a remote avatar service: the site's CSP is
   `img-src 'self' data: blob:` (next.config.mjs), so picsum.photos, pravatar and
-  the rest are blocked outright and would render as broken frames. These are the
-  three photographs that exist in the repo, cycled — the same stand-in that
+  the rest are blocked outright and would render as broken frames. These are
+  general photographs of the centre, cycled — the same stand-in that
   lib/gallery.ts uses, and for the same reason.
 
-  TODO: drop headshots into public/assets/images/team/ and point each member's
-  `photo` at their own file. Set `alt` on the portrait in components/team-grid.tsx
-  to the person's name at the same time — it is empty today precisely because
-  these pictures are not of the people they sit under, and naming them would
+  Every member but Asmita Sehgal now has a real headshot, given as the third
+  tuple entry in TEAM below; hers is the only card still on a stand-in. A member
+  with a real photo is marked `isPortrait`, which is what lets
+  components/team-grid.tsx use their name as `alt` — the stand-in keeps an empty
+  `alt`, because naming a picture that is not of the person it sits under would
   tell a screen reader something untrue.
 */
 const PLACEHOLDER_PORTRAITS = [
@@ -148,36 +149,42 @@ const PLACEHOLDER_PORTRAITS = [
  */
 const TEAM: TeamMember[] = (
   [
-    ["Gourav Gupta", "Founder & CEO"],
-    ["Shilpa Gupta"],
-    ["Asmita Sehgal"],
-    ["Daljeet Singh"],
-    ["Amit Sharma"],
-    ["Harrachneet Kaur"],
-    ["Alam"],
-    ["Tanisha"],
-    ["Sandeep"],
-    ["Anita"],
-    ["Shiv"],
-    ["Aman"],
+    ["Gourav Gupta", "Founder & CEO", "/assets/images/about/gourav-sir.png"],
+    ["Shilpa Gupta", undefined, "/assets/images/about/shilpa-mam.png"],
+    // TODO: no headshot for Asmita Sehgal yet — this one card still carries a
+    // stand-in. Drop the file in and add the third entry when it arrives.
+    ["Asmita Sehgal" ,undefined, "/assets/images/about/asmita-mam.png"],
+    ["Daljeet Singh", undefined, "/assets/images/about/daljeet-sir.png"],
+    ["Amit Sharma", undefined, "/assets/images/about/amit-sir.png"],
+    ["Harrachneet Kaur", undefined, "/assets/images/about/harrachneet-mam.png"],
+    ["Alam", undefined, "/assets/images/about/Alam-sir.png"],
+    ["Tanisha", undefined, "/assets/images/about/tanisha-mam.png"],
+    ["Sandeep Chugh", undefined, "/assets/images/about/sandeep-sir.png"],
+    ["Anita Sharma", undefined, "/assets/images/about/Anita-mam.png"],
+    ["Shiv", undefined, "/assets/images/about/shiv-sir.png"],
+    ["Aman Sharma", undefined, "/assets/images/about/aman-sir.png"],
   ] as const
-).map(([name, role], index) => ({
+).map(([name, role, photo], index) => ({
   name,
   role: role ?? "Team Member",
-  // Deterministic rather than random: Math.random() here would pick a different
-  // picture on the server than on the client and fail hydration.
-  photo: PLACEHOLDER_PORTRAITS[index % PLACEHOLDER_PORTRAITS.length],
+  // A real headshot when one exists, otherwise the cycled stand-in. Deterministic
+  // rather than random: Math.random() here would pick a different picture on the
+  // server than on the client and fail hydration.
+  photo: photo ?? PLACEHOLDER_PORTRAITS[index % PLACEHOLDER_PORTRAITS.length],
+  // Only a real headshot may name the person to a screen reader — a stand-in
+  // sitting under a name is not a picture of them.
+  isPortrait: Boolean(photo),
 }))
 
 /*
-  "Meet Our Team" is hidden for now, at the client's request.
+  "Meet Our Team" is visible again.
 
   A flag rather than commented-out JSX: the section below carries block comments
   of its own, which cannot be nested inside another one, and gating it here
   keeps TEAM, TeamGrid and TeamIcon in use so nothing else has to be touched.
-  Flip to `true` to bring the section back.
+  Flip to `false` to hide the section again.
 */
-const SHOW_TEAM = false
+const SHOW_TEAM = true
 
 export default function FounderPage() {
   return (
@@ -267,15 +274,17 @@ export default function FounderPage() {
                 className="mt-7 space-y-5 text-base leading-relaxed text-muted lg:text-[17px]"
               >
                 <p>
-                  Mr. Gourav Gupta founded techcadd in 2016 with a vision of
-                  making young people more capable and confident in using
-                  technology and building careers in the digital economy.
+                  Mr. Gourav Gupta started techcadd in 2016. The aim then was
+                  narrow and has stayed narrow: give young people enough real
+                  practice with technology that they can walk into a job and be
+                  useful in the first month.
                 </p>
                 <p>
-                  Under his leadership, techcadd has expanded its focus beyond
-                  conventional computer education into emerging technologies,
-                  practical training, industry engagement, career development
-                  and innovation.
+                  Under him the institute has moved well past the computer
+                  courses it began with. AI, cloud, cyber security and
+                  automation are on the syllabus now, taught the same way as
+                  everything else here — on projects, with a trainer who still
+                  does the work.
                 </p>
               </div>
 
@@ -352,7 +361,7 @@ export default function FounderPage() {
             </p>
 
             <p className="mt-6 text-base text-muted lg:text-lg">
-              His vision centres on one fundamental idea:
+              It comes down to one line he has repeated for years:
             </p>
 
             <blockquote
@@ -517,8 +526,8 @@ export default function FounderPage() {
               suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
             >
-              His involvement extends into technology awareness and
-              industry–academia engagement, on campus and at technology events.
+              A fair amount of his year is spent on college campuses and at
+              technology events rather than at the head office.
             </p>
           </div>
 
@@ -691,10 +700,10 @@ export default function FounderPage() {
               suppressHydrationWarning
               className="mt-8 text-base leading-relaxed text-muted lg:text-lg"
             >
-              From a vision to make technology education more accessible, to
-              today&apos;s focus on AI, automation, cloud, cyber security and
-              industry-ready skills — techcadd continues to evolve with the
-              technology landscape.
+              The starting idea was simply to make good technology training
+              easier to get to. A decade on, the same institute teaches AI,
+              automation, cloud and cyber security, and the syllabus is still
+              being rewritten every year.
             </p>
           </div>
         </Container>
@@ -705,7 +714,7 @@ export default function FounderPage() {
 
         The tinted inset panel that used to frame this is gone with the
         travelling lanes it was built for. A grid needs no frame — the cards
-        are their own edges — and on the plain ground they align with the
+        are their own edges, and on the plain ground they align with the
         container gutter like every other section's content.
       */}
       {SHOW_TEAM && (
