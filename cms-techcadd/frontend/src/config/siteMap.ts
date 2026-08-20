@@ -78,7 +78,7 @@ export const SITE_MAP: Record<string, Placement> = {
   },
   banners: {
     where:
-      'The homepage, directly under the hero — but only for the "Home hero" placement, which is the only one the website renders today. A banner also needs artwork, and needs today to fall inside its start and end dates.',
+      'Where the placement says: under the hero on the homepage, at the foot of every course page, or as an overlay shown once per visitor per session. A banner also needs artwork, and needs today to fall inside its start and end dates.',
   },
   settings: {
     where:

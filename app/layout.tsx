@@ -5,6 +5,7 @@ import { CursorFollower } from "@/components/cursor-follower"
 import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
 import { EnquiryPopup } from "@/components/enquiry-popup"
+import { PromoPopup } from "@/components/promo-popup"
 import { NavProgress } from "@/components/nav-progress"
 import { Preloader } from "@/components/preloader"
 import { ScrollReveal } from "@/components/scroll-reveal"
@@ -12,7 +13,7 @@ import { ScrollToTop } from "@/components/scroll-to-top"
 import { SiteChrome } from "@/components/site-chrome"
 import { jsonLd } from "@/lib/json-ld"
 import { organisationSchema, SITE } from "@/lib/site"
-import { loadContact } from "@/lib/content"
+import { loadBanners, loadContact } from "@/lib/content"
 import "./globals.css"
 
 /*
@@ -73,6 +74,11 @@ export default async function RootLayout({
   // client components that cannot fetch it themselves.
   const contact = await loadContact()
 
+  // Loaded here because PromoPopup is a client component and cannot fetch it
+  // itself. Only the first is used: a second overlay competing for the same
+  // moment is one more than anybody wants.
+  const [promo] = await loadBanners("popup")
+
   return (
     /*
       suppressHydrationWarning is required, not cosmetic: the inline script
@@ -132,6 +138,9 @@ export default async function RootLayout({
         {children}
         <SiteChrome>
           <Footer />
+          {/* Renders nothing unless a popup banner is scheduled and live. */}
+          <PromoPopup banner={promo ?? null} />
+
           <EnquiryPopup contact={contact} />
           <CookieConsent />
           <ScrollToTop />

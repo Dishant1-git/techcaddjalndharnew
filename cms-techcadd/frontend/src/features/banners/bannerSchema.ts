@@ -78,14 +78,20 @@ export function emptyBanner(order = 0): BannerFormValues {
  * appears nowhere, with nothing to explain why.
  */
 export const PLACEMENT_OPTIONS = [
-  { value: 'home-hero', label: 'Home hero — shown on the website' },
-  { value: 'course-page', label: 'Course page — not built yet' },
+  { value: 'home-hero', label: 'Home hero — under the hero on the homepage' },
+  { value: 'course-page', label: 'Course page — at the foot of every course page' },
+  { value: 'popup', label: 'Popup — an overlay, once per visitor per session' },
   { value: 'sidebar', label: 'Sidebar — not built yet' },
-  { value: 'popup', label: 'Popup — not built yet' },
 ]
 
-/** Placements the website actually renders today. */
-export const LIVE_PLACEMENTS = new Set(['home-hero'])
+/**
+ * Placements the website actually renders today.
+ *
+ * Sidebar is still absent because the site has no sidebar to put one in —
+ * unlike the others, it needs a layout that does not exist rather than a
+ * component that was missing.
+ */
+export const LIVE_PLACEMENTS = new Set(['home-hero', 'course-page', 'popup'])
 
 export type ScheduleState = 'live' | 'scheduled' | 'expired' | 'inactive'
 

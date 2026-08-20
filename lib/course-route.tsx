@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { CoursePageView } from "@/components/course-page-view"
+import { PromoBanner } from "@/components/promo-banner"
 import { SegmentIndexView, SEGMENT_INDEX } from "@/components/segment-index-view"
 import { loadCourseCatalogue, loadCourseSpecs } from "./content"
 import { getCoursePage, hrefFor, slugsInSegment, type Segment } from "./course-pages"
@@ -179,6 +180,11 @@ export async function CourseRoute({
       />
       <main>
         <CoursePageView page={page} />
+
+        {/* The "course page" placement, on every course page. Renders nothing
+            unless a banner is scheduled and live, so a page with no campaign
+            running is byte-for-byte what it was. */}
+        <PromoBanner placement="course-page" />
       </main>
     </>
   )
