@@ -17,7 +17,7 @@ export function BrandLogo({ className, height = 'h-6' }: BrandLogoProps) {
   return (
     <img
       src={BRAND_LOGO_URL}
-      alt="TechCadd"
+      alt="techcadd"
       width={INTRINSIC_WIDTH}
       height={INTRINSIC_HEIGHT}
       // The artwork is a fixed navy, so it cannot take a text colour the way

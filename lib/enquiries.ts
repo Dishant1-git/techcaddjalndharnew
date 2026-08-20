@@ -19,7 +19,7 @@ export const FORM_TYPES = {
   brochure: "Brochure Download",
   /* The phone field in the closing CTA band. It opens the same popup the
      header button does, so without its own label every row it produces would
-     be filed as a Call Request — and the two convert differently enough that
+     be filed as a Call Request, and the two convert differently enough that
      telling them apart is the point of recording the form at all. */
   demo: "Book Demo",
 } as const

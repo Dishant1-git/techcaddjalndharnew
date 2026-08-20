@@ -22,22 +22,22 @@ const RECOGNITION: Recognition[] = [
   {
     icon: "badge",
     title: "ISO 9001 Certified",
-    body: "techcadd's public LinkedIn profile describes the organization as an ISO 9001-certified and government-registered IT institute.",
+    body: "The organisation is listed on its public LinkedIn profile as an ISO 9001-certified, government-registered IT institute.",
   },
   {
     icon: "handshake",
     title: "Industry–Academia Engagement",
-    body: "techcadd has participated in institutional initiatives and placement activities, including a joint campus placement drive hosted by I.K. Gujral Punjab Technical University in November 2025.",
+    body: "In November 2025 techcadd joined a campus placement drive hosted by I.K. Gujral Punjab Technical University, one of several university placement activities it has taken part in.",
   },
   {
     icon: "campus",
     title: "Academic Collaboration",
-    body: "Publicly available information also records techcadd's collaboration with educational institutions for skill development, workshops and experiential learning initiatives.",
+    body: "Public records also show work with colleges and schools on skill development programmes, workshops and hands-on learning sessions.",
   },
   {
     icon: "spark",
     title: "Technology & Innovation Initiatives",
-    body: "techcadd has participated in AI and robotics-focused initiatives, including demonstrations involving its AI robotic dog Chi-Chi at educational and technology events.",
+    body: "techcadd has shown AI and robotics work at education and technology events, including demonstrations of its AI robotic dog, Chi-Chi.",
   },
 ]
 
@@ -55,8 +55,7 @@ export function Recognition({ tinted = false }: { tinted?: boolean }) {
             suppressHydrationWarning
             className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl"
           >
-            Recognition built through learning, innovation and industry
-            engagement
+            What we are certified for, and who we work with
           </h2>
 
           <p
@@ -64,10 +63,10 @@ export function Recognition({ tinted = false }: { tinted?: boolean }) {
             suppressHydrationWarning
             className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
           >
-            techcadd&apos;s credibility is supported not only by its training
-            programs but also by its participation in industry–academia
-            initiatives, campus placements, workshops, technology events and
-            institutional collaborations.
+            Alongside the training itself, techcadd works with universities on
+            placement drives, runs workshops on college campuses and shows up at
+            technology events across Punjab. The record below is drawn from
+            public sources.
           </p>
         </div>
 

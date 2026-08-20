@@ -107,8 +107,8 @@ export function Navbar({ contact }: { contact: Contact }) {
            capture phase, so it still runs if a child stops propagation.
 
            Deferred by a task, and that is the whole point. Closing here
-           synchronously unmounts the panel — and with it the very anchor being
-           clicked — while the event is still in its capture phase. React's
+           synchronously unmounts the panel, and with it the very anchor being
+           clicked, while the event is still in its capture phase. React's
            handler for that <Link> then never runs, so preventDefault() is
            never called and the browser follows the href natively: a full page
            reload. It was visible on every dropdown that closes (Courses,

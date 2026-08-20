@@ -77,7 +77,7 @@ const ENGAGEMENTS: Engagement[] = [
   {
     tag: "IKGPTU · 2025",
     title: "Pre-placement talk at I.K. Gujral Punjab Technical University",
-    body: "IKGPTU identifies Mr. Gourav Gupta as Founder & CEO of TechCADD, and hosted him for a pre-placement talk and interaction with students during TechCADD's 2025 campus placement drive.",
+    body: "IKGPTU identifies Mr. Gourav Gupta as Founder & CEO of techcadd, and hosted him for a pre-placement talk and interaction with students during techcadd's 2025 campus placement drive.",
   },
   {
     tag: "Workshops",
@@ -274,15 +274,17 @@ export default function FounderPage() {
                 className="mt-7 space-y-5 text-base leading-relaxed text-muted lg:text-[17px]"
               >
                 <p>
-                  Mr. Gourav Gupta founded techcadd in 2016 with a vision of
-                  making young people more capable and confident in using
-                  technology and building careers in the digital economy.
+                  Mr. Gourav Gupta started techcadd in 2016. The aim then was
+                  narrow and has stayed narrow: give young people enough real
+                  practice with technology that they can walk into a job and be
+                  useful in the first month.
                 </p>
                 <p>
-                  Under his leadership, techcadd has expanded its focus beyond
-                  conventional computer education into emerging technologies,
-                  practical training, industry engagement, career development
-                  and innovation.
+                  Under him the institute has moved well past the computer
+                  courses it began with. AI, cloud, cyber security and
+                  automation are on the syllabus now, taught the same way as
+                  everything else here — on projects, with a trainer who still
+                  does the work.
                 </p>
               </div>
 
@@ -359,7 +361,7 @@ export default function FounderPage() {
             </p>
 
             <p className="mt-6 text-base text-muted lg:text-lg">
-              His vision centres on one fundamental idea:
+              It comes down to one line he has repeated for years:
             </p>
 
             <blockquote
@@ -524,8 +526,8 @@ export default function FounderPage() {
               suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-muted lg:text-lg"
             >
-              His involvement extends into technology awareness and
-              industry–academia engagement, on campus and at technology events.
+              A fair amount of his year is spent on college campuses and at
+              technology events rather than at the head office.
             </p>
           </div>
 
@@ -698,10 +700,10 @@ export default function FounderPage() {
               suppressHydrationWarning
               className="mt-8 text-base leading-relaxed text-muted lg:text-lg"
             >
-              From a vision to make technology education more accessible, to
-              today&apos;s focus on AI, automation, cloud, cyber security and
-              industry-ready skills — techcadd continues to evolve with the
-              technology landscape.
+              The starting idea was simply to make good technology training
+              easier to get to. A decade on, the same institute teaches AI,
+              automation, cloud and cyber security, and the syllabus is still
+              being rewritten every year.
             </p>
           </div>
         </Container>
@@ -712,7 +714,7 @@ export default function FounderPage() {
 
         The tinted inset panel that used to frame this is gone with the
         travelling lanes it was built for. A grid needs no frame — the cards
-        are their own edges — and on the plain ground they align with the
+        are their own edges, and on the plain ground they align with the
         container gutter like every other section's content.
       */}
       {SHOW_TEAM && (

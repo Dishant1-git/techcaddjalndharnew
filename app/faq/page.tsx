@@ -60,7 +60,7 @@ export default async function FaqPage() {
 
               The questions come from it and have no checked-in stand-ins, so an
               empty CMS means no accordions. The "Still not sure?" panel below
-              stays either way — with nothing above it, it stops being a
+              stays either way, with nothing above it, it stops being a
               footnote and becomes the answer to the page. */}
           {faqs.length === 0 && (
             <div className="rounded-2xl border border-dashed border-line bg-subtle/50 px-6 py-16 text-center">
@@ -68,7 +68,7 @@ export default async function FaqPage() {
                 No questions published yet.
               </p>
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
-                Nothing here yet — but the centre answers all of this on the
+                Nothing here yet, but the centre answers all of this on the
                 phone, and there is no charge for asking.
               </p>
             </div>

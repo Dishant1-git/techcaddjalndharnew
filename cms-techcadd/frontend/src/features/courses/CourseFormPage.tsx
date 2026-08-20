@@ -353,7 +353,7 @@ export default function CourseFormPage() {
               </FormField>
 
               <FormField label="Certification">
-                <Input {...register('certification')} placeholder="e.g. TechCadd certificate" />
+                <Input {...register('certification')} placeholder="e.g. techcadd certificate" />
               </FormField>
             </CardBody>
           </Card>

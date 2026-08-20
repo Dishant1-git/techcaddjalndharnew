@@ -122,7 +122,7 @@ export function Hero() {
             {/* Both phrases plus the tracking run past 360px, so the pill
                 wraps rather than being clipped by the section. */}
             <span className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-mono text-[10px] tracking-[0.12em] text-white/80 uppercase backdrop-blur-md sm:text-[11px] sm:tracking-[0.18em]">
-              Techcadd Jalandhar
+              techcadd Jalandhar
               <span className="size-1 rounded-full bg-white/40" />
               AI &amp; Software Training
             </span>
@@ -151,9 +151,10 @@ export function Hero() {
                 </h1>
 
                 <p className="reveal mt-7 max-w-xl text-sm leading-relaxed text-white/75 [animation-delay:250ms] sm:text-base">
-                  Learn the AI, cloud and full-stack systems businesses actually
-                  run on. Techcadd handles the curriculum, the live projects and
-                  the placement drives — so you only have to show up and build.
+                  Learn the AI, cloud and full-stack systems companies are
+                  hiring for right now. We look after the curriculum, the live
+                  projects and the placement drives. Your job is to turn up and
+                  build.
                 </p>
 
                 <div className="reveal mt-9 flex flex-col items-start gap-4 [animation-delay:350ms] sm:flex-row">
@@ -219,8 +220,8 @@ export function Hero() {
                 <div className="max-w-47.5">
                   <p className="text-sm font-medium text-white">See Preview</p>
                   <p className="mt-1 text-xs leading-relaxed text-white/70">
-                    A quick look inside the labs, the mentors and a live batch in
-                    session.
+                    A quick look inside the labs, the mentors and a batch
+                    mid-session.
                   </p>
                 </div>
               </div>

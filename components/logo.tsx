@@ -23,10 +23,10 @@ export function Logo({
     /* Hover-prefetched. The logo sits in the bar on every page and the
        homepage RSC payload is 117 KB — eagerly fetched from every other page
        for a link people rarely take. */
-    <PrefetchLink href="/" className="block shrink-0" aria-label="Techcadd home">
+    <PrefetchLink href="/" className="block shrink-0" aria-label="techcadd home">
       <Image
         src="/assets/icon/tce.png"
-        alt="Techcadd — Your Skill & Technology Partner"
+        alt="techcadd — Your Skill & Technology Partner"
         width={LOGO_WIDTH}
         height={LOGO_HEIGHT}
         priority

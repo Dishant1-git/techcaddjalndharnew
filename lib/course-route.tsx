@@ -71,7 +71,7 @@ export async function SegmentIndexRoute({ segment }: { segment: Segment }) {
     name: copy.h1,
     description: copy.description,
     url: `${SITE}/${segment}`,
-    isPartOf: { "@type": "WebSite", name: "Techcadd", url: SITE },
+    isPartOf: { "@type": "WebSite", name: "techcadd", url: SITE },
   }
 
   return (
@@ -118,7 +118,7 @@ export async function CourseRoute({
       inLanguage: "en-IN",
       provider: {
         "@type": "EducationalOrganization",
-        name: "Techcadd",
+        name: "techcadd",
         url: SITE,
         address: {
           "@type": "PostalAddress",
@@ -133,7 +133,7 @@ export async function CourseRoute({
         courseWorkload: page.facts.find((f) => f.label === "Duration")?.value,
         location: {
           "@type": "Place",
-          name: "Techcadd Jalandhar",
+          name: "techcadd Jalandhar",
           address: {
             "@type": "PostalAddress",
             addressLocality: "Jalandhar",

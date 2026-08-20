@@ -25,8 +25,8 @@ const REASONS: Reason[] = [
     icon: "curriculum",
     body: (
       <>
-        We teach from the same stack we ship client work on — so the syllabus
-        moves the moment the industry does.
+        The syllabus is built around whatever our own client projects are
+        running on, so it changes as often as that work does.
       </>
     ),
   },
@@ -35,8 +35,8 @@ const REASONS: Reason[] = [
     icon: "trainers",
     body: (
       <>
-        Learn from engineers who still write production code, not from career
-        instructors reading a decade-old slide deck.
+        Your trainer spends part of every week on production code for paying
+        clients, and most of what they demonstrate in class comes out of it.
       </>
     ),
   },
@@ -45,8 +45,8 @@ const REASONS: Reason[] = [
     icon: "placement",
     body: (
       <>
-        500+ hiring partners, mock interviews and on-campus drives, run by our
-        placement cell.
+        A placement cell with 500+ hiring partners on its list, mock interview
+        rounds and drives held here on campus.
       </>
     ),
   },
@@ -55,9 +55,9 @@ const REASONS: Reason[] = [
     icon: "batches",
     body: (
       <>
-        45-day, 6-week, 6-month, weekend and 1-on-1 formats — every class runs
-        2 hours — with fee{" "}
-        <Inline href="/contact">EMI options</Inline> so cost never decides it.
+        45-day, 6-week, 6-month, weekend and 1-on-1 formats, all with 2-hour
+        classes. Fee <Inline href="/contact">EMI options</Inline> are there if
+        paying in one go is difficult.
       </>
     ),
   },
@@ -74,18 +74,18 @@ export async function WhyUs() {
         {/* --- Statement --- */}
         <div>
           <p className="text-sm font-medium">
-            <span className="text-brand-600">/</span> Why Techcadd?
+            <span className="text-brand-600">/</span> Why techcadd?
           </p>
 
           <ScrollHeading
-            lines={["The Techcadd", "Difference"]}
+            lines={["The techcadd", "Difference"]}
             className="mt-6 font-display text-[clamp(2.75rem,7vw,4.75rem)] leading-[0.95] font-bold tracking-tight"
           />
 
           <p className="mt-7 max-w-md text-base leading-relaxed text-muted">
-            For nearly two decades we&apos;ve been the training partner students
-            and employers in Jalandhar keep coming back to — 25,000+ engineers
-            trained, and a hiring network that answers when we call.
+            We have been training in Jalandhar for close to two decades. More
+            than 25,000 students have come through the labs in that time, and
+            the hiring network we built along the way still picks up the phone.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">

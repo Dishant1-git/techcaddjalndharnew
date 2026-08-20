@@ -14,28 +14,28 @@ export const SEGMENT_INDEX: Record<
     eyebrow: "Courses",
     h1: "IT & Software Courses in Jalandhar",
     intro:
-      "Programming, AI, data, cloud, cybersecurity and digital marketing — every track taught on live projects at Techcadd Jalandhar, with an internship letter and placement support.",
-    title: "IT & Software Courses in Jalandhar | Techcadd",
+      "Programming, AI, data, cloud, cybersecurity and digital marketing. Every track at techcadd Jalandhar is taught on live projects and finishes with an internship letter and placement support.",
+    title: "IT & Software Courses in Jalandhar | techcadd",
     description:
-      "Browse Techcadd Jalandhar's courses — Python, Java, MERN, AI, data science, cybersecurity, cloud and digital marketing. Live projects, internship letter, placement support.",
+      "Browse techcadd Jalandhar's courses — Python, Java, MERN, AI, data science, cybersecurity, cloud and digital marketing. Live projects, internship letter, placement support.",
   },
   "internship-training": {
     eyebrow: "Internship & Training",
     h1: "Industrial Training & Internship in Jalandhar",
     intro:
-      "45-day, 6-week, 4-month and 6-month industrial training at Techcadd Jalandhar — university-recognised, finished with a live client project and an internship letter.",
-    title: "Industrial Training & Internship in Jalandhar | Techcadd",
+      "45-day, 6-week, 4-month and 6-month industrial training at techcadd Jalandhar. University-recognised, and finished with a live client project and an internship letter.",
+    title: "Industrial Training & Internship in Jalandhar | techcadd",
     description:
-      "45 days, 6 weeks, 4 months and 6 months industrial training in Jalandhar. Live client projects, internship letter and placement drives at Techcadd.",
+      "45 days, 6 weeks, 4 months and 6 months industrial training in Jalandhar. Live client projects, internship letter and placement drives at techcadd.",
   },
   "after-12th-courses": {
     eyebrow: "After 12th",
     h1: "Courses After 12th in Jalandhar",
     intro:
-      "Career tracks you can start straight after school — 6-month and 1-year certificate programmes in AI, cloud, cybersecurity, programming and digital marketing.",
-    title: "Best Courses After 12th in Jalandhar | Techcadd",
+      "Career tracks you can start straight after school. Six-month and one-year certificate programmes in AI, cloud, cybersecurity, programming and digital marketing.",
+    title: "Best Courses After 12th in Jalandhar | techcadd",
     description:
-      "Certificate courses after 12th in Jalandhar — generative AI, cloud computing, data science, cybersecurity, Python and digital marketing at Techcadd.",
+      "Certificate courses after 12th in Jalandhar — generative AI, cloud computing, data science, cybersecurity, Python and digital marketing at techcadd.",
   },
 }
 

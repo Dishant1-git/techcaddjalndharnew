@@ -12,7 +12,7 @@ import { SITE } from "@/lib/site"
 import { loadStats } from "@/lib/content"
 
 export const metadata: Metadata = {
-  title: "About Techcadd — Our Story, Values and Journey",
+  title: "About techcadd — Our Story, Values and Journey",
   description:
     "Founded in 2016 in Jalandhar, techcadd trains learners in AI, data science, cyber security, cloud, full stack development, design and CAD/CAM. Our story, our approach, and the milestones along the way.",
   alternates: { canonical: `${SITE.url}/about` },
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
      L            D                 L         D           L          D  L  D
 
   Each dark panel is dressed differently — video, circuit texture, a
-  photograph, the aurora texture, flat ink — so the rhythm reads as variety
+  photograph, the aurora texture, flat ink, so the rhythm reads as variety
   rather than five copies of the same navy block.
 */
 
@@ -69,80 +69,80 @@ const DISCIPLINES = [
 const LEARNERS = [
   {
     title: "School & College Students",
-    body: "Looking to develop technology skills early.",
+    body: "Starting on technology skills early.",
   },
   {
     title: "Graduates & Job Seekers",
-    body: "Preparing for technology careers.",
+    body: "Getting ready for a first technology job.",
   },
   {
     title: "Engineering & IT Students",
-    body: "Seeking practical exposure and industrial training.",
+    body: "Here for industrial training and practical exposure.",
   },
   {
     title: "Working Professionals",
-    body: "Looking to upgrade or diversify their skills.",
+    body: "Adding to or shifting the skills they already have.",
   },
   {
     title: "Career Switchers",
-    body: "Exploring opportunities in the technology sector.",
+    body: "Moving into tech from another line of work.",
   },
   {
     title: "Entrepreneurs & Freelancers",
-    body: "Seeking digital and technology capabilities.",
+    body: "Building the digital skills their own work needs.",
   },
 ]
 
 /** Learn → Practice → Build → Grow. */
 const JOURNEY_STEPS = [
-  { title: "Learn", body: "Understand the concepts and fundamentals." },
+  { title: "Learn", body: "Get the concepts and the fundamentals straight." },
   {
     title: "Practice",
-    body: "Apply knowledge through hands-on exercises and guided learning.",
+    body: "Work through exercises in the lab with a trainer at hand.",
   },
-  { title: "Build", body: "Work on projects and practical applications." },
+  { title: "Build", body: "Take on projects that behave like real work." },
   {
     title: "Grow",
-    body: "Develop professional confidence and career-oriented skills.",
+    body: "Walk into an interview able to talk about what you built.",
   },
 ]
 
 const DIFFERENTIATORS = [
   {
     title: "Industry-Oriented Curriculum",
-    body: "Training is designed around practical skills and technologies relevant to today's digital workplace.",
+    body: "Every syllabus is built around the tools and skills people are being hired for in the current market.",
   },
   {
     title: "Hands-On Learning",
-    body: "Students get opportunities to apply concepts rather than relying solely on theoretical instruction.",
+    body: "Concepts are taught, then used the same week. Most of a batch's time goes on the machine, not on notes.",
   },
   {
     title: "Emerging Technology Programs",
-    body: "Learners can explore domains including AI, Machine Learning, Data Science, Cyber Security, Cloud Computing and other modern technologies.",
+    body: "AI, machine learning, data science, cyber security, cloud computing and the other areas the industry has moved into.",
   },
   {
     title: "Projects & Industrial Exposure",
-    body: "Project-based learning and industrial training help students connect classroom concepts with practical applications.",
+    body: "Project work and industrial training are where the classroom material finally makes sense to most students.",
   },
   {
     title: "Experienced Trainers & Mentors",
-    body: "Guidance from trainers and mentors helps learners understand technical concepts and their real-world applications.",
+    body: "Trainers explain the concept, then show where it turns up in the work they do outside class.",
   },
   {
     title: "Career Guidance",
-    body: "Students can receive guidance related to course selection, skill development, resumes, interviews and career pathways.",
+    body: "Help with choosing a course, planning what to learn next, and getting a CV and interview answers into shape.",
   },
   {
     title: "Placement Assistance",
-    body: "techcadd provides placement assistance and career support to eligible learners; actual employment decisions remain with recruiting organizations.",
+    body: "techcadd supports eligible learners with placement and career help. The hiring decision itself always sits with the employer.",
   },
   {
     title: "Modern Learning Infrastructure",
-    body: "Technology-focused learning environments are designed to support practical training and hands-on work.",
+    body: "Labs set up for practical work, with licensed software and a machine for every student in the batch.",
   },
   {
     title: "Industry & Academic Engagement",
-    body: "techcadd has participated in workshops, training initiatives and placement activities with educational institutions, strengthening the connection between academic learning and industry-oriented skills.",
+    body: "Workshops, training programmes and placement activities run together with colleges and universities across Punjab.",
   },
 ]
 
@@ -194,15 +194,15 @@ const DOMAINS = [
 const PRINCIPLES = [
   {
     title: "Relevance",
-    body: "Learn technologies and skills that connect with evolving industry requirements.",
+    body: "Learn the tools employers are actually asking for this year, not the ones that were on the syllabus five years ago.",
   },
   {
     title: "Application",
-    body: "Turn concepts into practical skills through projects, exercises and hands-on learning.",
+    body: "Turn what you have understood into something you can build, through projects and daily practice.",
   },
   {
     title: "Growth",
-    body: "Develop the mindset and adaptability required to keep learning in a rapidly changing technology landscape.",
+    body: "Leave able to pick up the next thing on your own, because this field will not stop changing.",
   },
 ]
 
@@ -327,22 +327,20 @@ export default async function AboutPage() {
                   >
                     Mr. Gourav Gupta
                   </Link>
-                  , techcadd is an IT training and skill-development
-                  organization focused on bridging the gap between academic
-                  learning and evolving industry requirements. The organization
-                  combines practical exposure, emerging technologies,
-                  project-based learning and career-oriented training to help
-                  learners develop relevant skills and greater confidence for
-                  the professional world.
+                  , techcadd trains people in the skills employers are short of.
+                  The starting point was a plain one: a degree tells an
+                  interviewer what you sat through, and very little about what
+                  you can do. Our courses are built the other way round, on
+                  project work, current tooling and steady career guidance.
                 </p>
                 <p>
-                  From Artificial Intelligence, Data Science, Machine Learning,
-                  Cyber Security and Cloud Computing to Full Stack Development,
-                  MERN Stack, Python, Web Development, Mobile App Development,
-                  Digital Marketing, Graphic Designing, UI/UX, Animation, Video
-                  Editing, CAD/CAM and other technology-focused disciplines,
-                  techcadd provides learners with opportunities to explore
-                  diverse career pathways in the digital economy.
+                  The catalogue runs from Artificial Intelligence, Data Science,
+                  Machine Learning, Cyber Security and Cloud Computing through
+                  to Full Stack Development, MERN Stack, Python, Web
+                  Development, Mobile App Development, Digital Marketing,
+                  Graphic Designing, UI/UX, Animation, Video Editing and
+                  CAD/CAM. Most students arrive knowing roughly which direction
+                  they want, and a counsellor helps them narrow it down.
                 </p>
               </div>
 
@@ -350,9 +348,8 @@ export default async function AboutPage() {
                 What we teach
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                From Artificial Intelligence to CAD/CAM and other
-                technology-focused disciplines — skills for the evolving digital
-                economy.
+                Sixteen disciplines, from Artificial Intelligence at one end to
+                CAD/CAM at the other.
               </p>
 
               <ul className="mt-5 flex flex-wrap gap-2">
@@ -430,7 +427,7 @@ export default async function AboutPage() {
                 suppressHydrationWarning
                 className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
               >
-                A skill-building ecosystem.
+                Learn it, then go and build it.
               </h2>
 
               <div
@@ -439,23 +436,20 @@ export default async function AboutPage() {
                 className="mt-6 space-y-5 text-base leading-relaxed text-white/70 lg:text-[17px]"
               >
                 <p>
-                  At techcadd, technology education is designed to go beyond
-                  textbooks and conventional classroom learning. The focus is on
-                  helping learners{" "}
+                  A textbook can only take a student so far. What we ask of a
+                  batch is that they{" "}
                   <strong className="font-semibold text-white">
                     learn, implement and grow
                   </strong>{" "}
-                  by combining conceptual understanding with practical
-                  application.
+                  — understand the idea in class, then put it to work the same
+                  week.
                 </p>
                 <p>
-                  Students can work on assignments, projects, industrial
-                  training and internship-oriented learning experiences that
-                  help them understand how technology is applied in real-world
-                  environments. Publicly available information about techcadd
-                  also reflects recent practical workshops and training
-                  activities in areas such as mobile application development,
-                  cloud computing, AI/ML, DevOps and data-related skills.
+                  That means assignments, project work, industrial training and
+                  internships where the brief comes from an actual requirement.
+                  Recent workshops have covered mobile application development,
+                  cloud computing, AI and machine learning, DevOps and data
+                  skills.
                 </p>
               </div>
             </div>
@@ -504,17 +498,16 @@ export default async function AboutPage() {
               className="mt-6 space-y-5 text-base leading-relaxed text-muted lg:text-lg"
             >
               <p>
-                Technology is evolving rapidly. Artificial Intelligence,
-                automation, cloud platforms, cybersecurity, data and software
-                development are continuously changing the way businesses
-                operate.
+                AI, automation, cloud platforms, cybersecurity and data work
+                have changed what an employer expects from a fresher, and they
+                are still changing it. A syllabus written three years ago will
+                not survive that.
               </p>
               <p>
-                techcadd aims to keep its learning ecosystem aligned with this
-                changing environment by introducing learners to emerging
-                technologies and industry-relevant tools, helping them develop
-                the adaptability required to continue learning throughout their
-                careers.
+                So ours gets revised, and students are put in front of the newer
+                tools while they are still new. The point is less about any one
+                technology than about being able to pick up the next one without
+                needing a classroom to do it.
               </p>
             </div>
           </div>
@@ -526,9 +519,9 @@ export default async function AboutPage() {
             suppressHydrationWarning
             className="mx-auto mt-12 max-w-3xl rounded-2xl border border-line bg-subtle px-7 py-6 text-center font-display text-lg leading-relaxed font-medium tracking-tight text-ink text-balance lg:text-xl"
           >
-            The objective is not simply to teach a technology, but to develop
-            the ability to understand problems, build solutions, use technology
-            effectively and keep upgrading one&apos;s skills.
+            Teaching a technology is the easy half. The harder half is leaving
+            someone able to read a problem, build something that answers it, and
+            go on learning after the course has ended.
           </p>
         </Container>
       </section>
@@ -572,7 +565,7 @@ export default async function AboutPage() {
               suppressHydrationWarning
               className="mt-4 font-display text-3xl leading-[1.12] font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl"
             >
-              Learning for every stage of the career journey
+              Six kinds of people sit in our batches
             </h2>
 
             <p
@@ -580,8 +573,7 @@ export default async function AboutPage() {
               suppressHydrationWarning
               className="mt-5 text-base leading-relaxed text-white/70"
             >
-              techcadd&apos;s training ecosystem is designed to serve a diverse
-              learner base, including:
+              A single classroom usually has most of them in it at once:
             </p>
           </div>
 
@@ -673,9 +665,8 @@ export default async function AboutPage() {
             suppressHydrationWarning
             className="mx-auto mt-14 max-w-3xl text-center text-sm leading-relaxed text-muted lg:mt-16"
           >
-            This practical orientation is reflected in techcadd&apos;s publicly
-            described offerings, which include live projects, industrial
-            training programs and internship opportunities.
+            Every programme we run carries the same three things through those
+            four steps: a live project, industrial training and an internship.
           </p>
         </Container>
       </section>
@@ -745,11 +736,10 @@ export default async function AboutPage() {
             </h2>
 
             <p data-reveal suppressHydrationWarning className="mt-5 text-base leading-relaxed text-muted">
-              Whether a learner wants to code an application, analyse data,
-              build an AI solution, secure a network, manage cloud
-              infrastructure, design a digital experience, create visual content
-              or grow a business online, techcadd provides multiple learning
-              pathways.
+              Writing an application, analysing data, building something with
+              AI, securing a network, running cloud infrastructure, designing an
+              interface, editing video, or getting a business found online.
+              There is a track for each, and they group roughly like this.
             </p>
           </div>
 
@@ -881,16 +871,16 @@ export default async function AboutPage() {
                 className="mt-6 space-y-5 text-base leading-relaxed text-muted lg:text-[17px]"
               >
                 <p>
-                  A major part of techcadd&apos;s broader ecosystem is its
-                  engagement with educational institutions and industry-oriented
-                  initiatives. Public records show techcadd participating in
-                  campus placement activities and technology workshops with
-                  educational institutions, providing students with
-                  opportunities for industry interaction and practical exposure.
+                  A good part of our work happens off our own campus. Public
+                  records show techcadd taking part in campus placement drives
+                  and running technology workshops at colleges and
+                  universities, which is where a lot of students meet a working
+                  engineer for the first time.
                 </p>
                 <p>
-                  These interactions help strengthen the bridge between what
-                  students learn and how technology is applied professionally.
+                  It cuts both ways. Those visits are also how we hear what
+                  employers are struggling to hire for, which eventually shows
+                  up in the syllabus.
                 </p>
               </div>
             </div>
@@ -902,7 +892,7 @@ export default async function AboutPage() {
         Moved here from /about/founder: these are the institute's
         certifications, university engagements and collaborations rather than
         anything personal to the founder, so they belong on the page about the
-        institute — and directly under the industry-engagement section, which
+        institute, and directly under the industry-engagement section, which
         is what earned them.
 
         The one place the dark/light alternation gives: this is a light panel
@@ -922,7 +912,7 @@ export default async function AboutPage() {
         The panel holds one viewport from `lg` up, and the list scrolls inside
         it. Eleven milestones do not fit a screen at a readable size — the
         earlier attempt to divide the height between them clipped 2026 off the
-        bottom — so the height stays fixed and the overflow becomes a scroll
+        bottom, so the height stays fixed and the overflow becomes a scroll
         rather than a loss. Under `lg` the panel simply grows with its content.
 
         On ink the white year cards read as chips on the rail, and `timeline-dark`
@@ -956,11 +946,10 @@ export default async function AboutPage() {
               suppressHydrationWarning
               className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/65 lg:text-base"
             >
-              What began in 2016 has evolved into a technology-focused training
-              ecosystem with an expanding portfolio of courses and practical
-              learning initiatives — and the focus keeps moving towards emerging
-              areas such as Artificial Intelligence, automation, cloud
-              technologies, cybersecurity, data and modern software development.
+              What started in 2016 as a small centre has grown into a full
+              catalogue, and the weight of it keeps shifting: towards AI and
+              automation, cloud, cybersecurity, data work and modern software
+              development.
             </p>
           </div>
 
@@ -995,7 +984,7 @@ export default async function AboutPage() {
                         key={milestone.year}
                         /* No `data-reveal` here. That is a one-shot that latches
                            on first sight, which cannot express a state the
-                           timeline needs to take away again — and its
+                           timeline needs to take away again, and its
                            `.is-visible { opacity: 1 }` is (0,3,0), so it would
                            outrank the dimmed state and pin every milestone lit. */
                         data-timeline-item
@@ -1065,7 +1054,7 @@ export default async function AboutPage() {
       {/* --- 12 · LIGHT — our belief, then techcadd today ----------------
         Two closing thoughts in one light panel, shaped differently from each
         other: the belief is editorial — three lines, ruled, with the prose
-        held beside them — and techcadd today is a card, so the page signs off
+        held beside them, and techcadd today is a card, so the page signs off
         on something that reads as a note rather than another band.
       */}
       <section className="bg-subtle py-20 lg:py-28">
@@ -1104,13 +1093,14 @@ export default async function AboutPage() {
               className="space-y-5 border-l-2 border-brand-600/30 pl-6 text-base leading-relaxed text-muted lg:mt-6 lg:text-[17px]"
             >
               <p>
-                We believe that meaningful technology education should not end
-                when a course ends.
+                A course that stops being useful the day it ends was not worth
+                the fee.
               </p>
               <p>
-                It should give learners the knowledge to understand, the skills
-                to build, the confidence to perform and the curiosity to keep
-                growing.
+                What a student should leave with is narrower and more durable
+                than a syllabus: enough understanding to follow the argument,
+                enough practice to build the thing, and enough curiosity to go
+                after whatever comes next.
               </p>
             </div>
           </div>
@@ -1150,10 +1140,9 @@ export default async function AboutPage() {
               </p>
 
               <p className="mx-auto mt-7 max-w-xl text-sm leading-relaxed text-muted lg:text-base">
-                With a focus on practical technology education, emerging skills,
-                industry engagement and career development, techcadd continues
-                its journey towards creating a stronger ecosystem of
-                future-ready technology professionals.
+                Three words that have not changed since the first batch, and
+                still the shortest description of how a course here runs from
+                the first day to the last.
               </p>
 
               <div className="mt-10 border-t border-line pt-8">

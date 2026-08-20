@@ -35,7 +35,7 @@ export async function renderBrochurePdf(
     size: "A4",
     margins: { top: MARGIN, bottom: 72, left: MARGIN, right: MARGIN },
     info: {
-      Title: `${page.h1} — Techcadd Brochure`,
+      Title: `${page.h1} — techcadd Brochure`,
       Author: SITE.legalName,
       Subject: page.h1,
     },

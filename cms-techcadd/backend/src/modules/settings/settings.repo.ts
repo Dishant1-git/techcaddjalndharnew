@@ -68,7 +68,7 @@ export async function get(profile: Profile): Promise<unknown> {
   if (!row) {
     await execute(
       `INSERT INTO settings (id, site_name, robots_txt, social, notifications, integrations, created_at, updated_at)
-       VALUES (?, 'TechCADD', 'User-agent: *\\nAllow: /\\n', '{}', '{}', '{}', NOW(3), NOW(3))`,
+       VALUES (?, 'techcadd', 'User-agent: *\\nAllow: /\\n', '{}', '{}', '{}', NOW(3), NOW(3))`,
       [SINGLETON_ID],
     )
     const seeded = await queryOne<Row>(SELECT_SETTINGS, [SINGLETON_ID])

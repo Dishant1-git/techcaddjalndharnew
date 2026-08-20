@@ -41,7 +41,7 @@ export function CookieConsent() {
 
     localStorage is not readable during the server render, so rendering the
     banner immediately would mean the server emits it for everyone — including
-    the people who answered months ago — and React would then tear it back out.
+    the people who answered months ago, and React would then tear it back out.
     The effect below opens it after mount, once the stored answer is known.
   */
   const [open, setOpen] = useState(false)

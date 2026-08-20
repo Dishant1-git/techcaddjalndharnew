@@ -16,9 +16,9 @@ import { loadGalleryTiles } from "@/lib/content"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
-  title: "Gallery — Inside the Techcadd Jalandhar Centre",
+  title: "Gallery — Inside the techcadd Jalandhar Centre",
   description:
-    "Classrooms, labs, live projects, workshops and placement drives — a look inside the Techcadd centre in Jalandhar.",
+    "Classrooms, labs, live projects, workshops and placement drives — a look inside the techcadd centre in Jalandhar.",
   alternates: { canonical: `${SITE.url}/gallery` },
 }
 
@@ -66,7 +66,7 @@ export default async function GalleryPage() {
       <section className="py-16 lg:py-24">
         <Container>
           <p className="font-mono text-xs tracking-[0.22em] text-brand-600 uppercase">
-            Life at Techcadd
+            Life at techcadd
           </p>
 
           <h2

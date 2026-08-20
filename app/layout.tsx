@@ -36,14 +36,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Techcadd Jalandhar — IT Courses, Training & Placement",
+    default: "techcadd Jalandhar — IT Courses, Training & Placement",
     // Course pages set their own full title; anything else inherits the brand.
-    template: "%s | Techcadd",
+    template: "%s | techcadd",
   },
   description:
-    "Techcadd is an IT company and technology institute in Jalandhar — AI, data, cloud, cybersecurity, full-stack and digital marketing courses with live projects, internship letters and placement support.",
+    "techcadd is an IT company and technology institute in Jalandhar — AI, data, cloud, cybersecurity, full-stack and digital marketing courses with live projects, internship letters and placement support.",
   keywords: [
-    "Techcadd",
+    "techcadd",
     "IT institute in Jalandhar",
     "computer course in Jalandhar",
     "digital marketing course Jalandhar",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: SITE.url },
   openGraph: {
-    title: "Techcadd Jalandhar — IT Courses, Training & Placement",
+    title: "techcadd Jalandhar — IT Courses, Training & Placement",
     description:
       "AI, cloud, cybersecurity, full-stack and digital marketing courses in Jalandhar, with live projects and placement support.",
     url: SITE.url,
@@ -98,7 +98,7 @@ export default async function RootLayout({
             so a no-JS visit still gets the plain, fully visible page. */}
         {/* The second statement makes a reload start at the top of the page.
             Browsers restore the previous scroll offset on reload by default,
-            and that restore happens after this script runs — so it has to be
+            and that restore happens after this script runs, so it has to be
             switched off here rather than undone later with a scrollTo, which
             would show the old position first and then jump.
 

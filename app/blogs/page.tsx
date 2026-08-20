@@ -10,7 +10,7 @@ import { SITE } from "@/lib/site"
 export const metadata: Metadata = {
   title: "Blog — Guides on AI, Development, Careers and Training",
   description:
-    "Notes from the classroom and the codebase — course guides, hiring trends and career advice from the trainers and placement team at Techcadd Jalandhar.",
+    "Notes from the classroom and the codebase — course guides, hiring trends and career advice from the trainers and placement team at techcadd Jalandhar.",
   alternates: { canonical: `${SITE.url}/blogs` },
 }
 

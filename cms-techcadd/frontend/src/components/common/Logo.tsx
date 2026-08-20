@@ -1,7 +1,7 @@
 import { cn } from '../../lib/cn'
 
 /**
- * TechCadd wordmark, redrawn as a geometric rounded-sans construction so it
+ * techcadd wordmark, redrawn as a geometric rounded-sans construction so it
  * stays crisp at any size and inherits its colour from `currentColor`.
  * Swap in the official artwork by pointing this component at an <img> instead.
  */
@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
     <svg
       viewBox="0 0 214 40"
       role="img"
-      aria-label="TechCadd"
+      aria-label="techcadd"
       className={cn('h-auto', className)}
       fill="none"
       stroke="currentColor"
@@ -52,7 +52,7 @@ export function LogoMark({ className }: { className?: string }) {
     <svg
       viewBox="0 0 40 40"
       role="img"
-      aria-label="TechCadd"
+      aria-label="techcadd"
       className={cn('shrink-0', className)}
     >
       <rect width="40" height="40" rx="11" fill="currentColor" />

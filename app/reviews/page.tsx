@@ -7,9 +7,9 @@ import { REVIEW_META, type GoogleReview } from "@/lib/reviews"
 import { SITE } from "@/lib/site"
 
 export const metadata: Metadata = {
-  title: "Student Reviews — Techcadd Jalandhar",
+  title: "Student Reviews — techcadd Jalandhar",
   description:
-    "What students say about training at Techcadd Jalandhar — course reviews covering full stack, data science, AI, cyber security, digital marketing and industrial training.",
+    "What students say about training at techcadd Jalandhar — course reviews covering full stack, data science, AI, cyber security, digital marketing and industrial training.",
   alternates: { canonical: `${SITE.url}/reviews` },
 }
 

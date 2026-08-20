@@ -45,7 +45,7 @@ const schema = z.object({
   SMTP_PORT: z.coerce.number().int().positive().optional(),
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
-  MAIL_FROM: z.string().default('TechCADD CMS <no-reply@techcadd.com>'),
+  MAIL_FROM: z.string().default('techcadd CMS <no-reply@techcadd.com>'),
 
   /**
    * Where to tell the website that content changed.

@@ -16,8 +16,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const { phone } = await loadContact()
 
   return {
-    title: "Contact Techcadd Jalandhar — Batches, Fees & Free Demo Class",
-    description: `Talk to a Techcadd counsellor in Jalandhar about course fees, batch timings and placement support. Call ${phone} or book a free demo class.`,
+    title: "Contact techcadd Jalandhar — Batches, Fees & Free Demo Class",
+    description: `Talk to a techcadd counsellor in Jalandhar about course fees, batch timings and placement support. Call ${phone} or book a free demo class.`,
     alternates: { canonical: `${SITE.url}/contact` },
   }
 }
@@ -40,7 +40,7 @@ const supportDesks = (contact: Contact) => [
     name: "Student Desk",
     phone: contact.phone,
     email: contact.email,
-    location: "Techcadd Jalandhar Campus",
+    location: "techcadd Jalandhar Campus",
   },
   {
     id: "college",
@@ -50,7 +50,7 @@ const supportDesks = (contact: Contact) => [
     name: "Partnerships Desk",
     phone: contact.phone,
     email: contact.email,
-    location: "Techcadd Jalandhar Campus",
+    location: "techcadd Jalandhar Campus",
   },
 ]
 
@@ -79,7 +79,7 @@ export default async function ContactPage() {
 
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70 lg:text-lg">
               Tell us where you are — 12th pass, mid-degree, working, or running
-              a business — and we will tell you honestly which track fits and
+              a business, and we will tell you honestly which track fits and
               which does not.
             </p>
 

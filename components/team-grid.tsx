@@ -62,7 +62,7 @@ function Card({ member }: { member: TeamMember }) {
         sizes="(min-width: 1024px) 300px, (min-width: 640px) 30vw, 46vw"
         /*
           A headshot is taller than the square card, so a centred cover crop
-          eats the same amount off the top and the bottom — and the top is
+          eats the same amount off the top and the bottom, and the top is
           where the head is. Anchoring the crop and the hover zoom to the top
           edge spends the whole overflow on the shoulders instead, which is
           what a portrait can afford to lose. The stand-ins are rooms, not

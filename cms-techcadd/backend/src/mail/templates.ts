@@ -15,7 +15,7 @@ const shell = (heading: string, body: string) => `
   <h1 style="font-size:18px;margin:0 0 12px">${escapeHtml(heading)}</h1>
   ${body}
   <p style="color:#64748b;font-size:12px;margin-top:24px">
-    TechCADD CMS · this message was sent automatically, please do not reply.
+    techcadd CMS · this message was sent automatically, please do not reply.
   </p>
 </div>`
 
@@ -25,7 +25,7 @@ export function passwordResetEmail(to: string, token: string): Mail {
   const link = `${base}/reset-password?token=${encodeURIComponent(token)}`
 
   const text = [
-    'Someone asked to reset the password for this TechCADD CMS account.',
+    'Someone asked to reset the password for this techcadd CMS account.',
     '',
     `Open this link to choose a new one: ${link}`,
     '',
@@ -35,11 +35,11 @@ export function passwordResetEmail(to: string, token: string): Mail {
 
   return {
     to,
-    subject: 'Reset your TechCADD CMS password',
+    subject: 'Reset your techcadd CMS password',
     text,
     html: shell(
       'Reset your password',
-      `<p>Someone asked to reset the password for this TechCADD CMS account.</p>
+      `<p>Someone asked to reset the password for this techcadd CMS account.</p>
        <p style="margin:20px 0">
          <a href="${link}"
             style="background:#4f46e5;color:#fff;padding:10px 18px;border-radius:8px;
