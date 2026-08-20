@@ -5,6 +5,19 @@
  * `/after-12th-courses/generative-ai` can differ. Everything here is course
  * data — the shared brand copy lives in the generator, not in fifty copies.
  */
+/** The fields of a CourseSpec that a CMS record can supply. */
+export type CourseSpecField =
+  | 'tagline'
+  | 'demand'
+  | 'careers'
+  | 'topics'
+  | 'tools'
+  | 'salary'
+  | 'duration'
+  | 'mode'
+  | 'fee'
+  | 'level'
+
 export type CourseSpec = {
   /** One line: what the course actually is. */
   tagline: string
@@ -29,6 +42,14 @@ export type CourseSpec = {
   mode?: string
   fee?: string
   level?: string
+  /**
+   * Which of the above came from a CMS record rather than from this file.
+   *
+   * Absent on every checked-in spec below — they are all authored copy by
+   * definition. Set by `specFromCourse`, and read by `getCoursePage` to decide
+   * which hand-written page fields an editor is allowed to overrule.
+   */
+  fromCms?: readonly CourseSpecField[]
 }
 
 export const COURSE_SPECS: Record<string, CourseSpec> = {

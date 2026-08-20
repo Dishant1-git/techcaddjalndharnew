@@ -23,7 +23,8 @@ import { COURSE_CATEGORIES, type CourseCategory } from "./categories"
 import { STATS, type Stat } from "./stats"
 import { FAQ_CATEGORIES, type Faq } from "./faqs"
 import { COURSE_SPECS, GENERIC_SPEC, type CourseSpec } from "./course-specs"
-import { CATALOGUE, COURSE_LABELS, type CatalogueEntry } from "./course-pages"
+import { specFromCourse } from "./course-spec-from-cms"
+import { COURSE_LABELS, type CatalogueEntry, type PageLayout } from "./course-pages"
 import { GALLERY_TILES, type GalleryTile } from "./gallery"
 import { type GoogleReview } from "./reviews"
 import { TESTIMONIALS, type Testimonial } from "./testimonials"
@@ -296,6 +297,7 @@ function toReview(review: CmsReview): GoogleReview {
     quote: review.quote,
     course: review.courseName ?? "",
     source: "google",
+    googleUrl: review.googleUrl || undefined,
   }
 }
 
@@ -334,7 +336,7 @@ export interface Contact {
 /** tel: wants digits and a plus, not the spacing a human reads. */
 const withHrefs = (c: Omit<Contact, "phoneHref" | "emailHref">): Contact => ({
   ...c,
-  phoneHref: `tel:${c.phone.replace(/[^d+]/g, "")}`,
+  phoneHref: `tel:${c.phone.replace(/[^0-9+]/g, "")}`,
   emailHref: `mailto:${c.email}`,
 })
 
@@ -472,9 +474,12 @@ export const loadCourseCategories = cache(function loadCourseCategories(): Promi
         const { from, to } = known ?? CATEGORY_GRADIENTS[index % CATEGORY_GRADIENTS.length]!
 
         return {
-          // The id picks the card's line-art. An editor chooses it from the
-          // icon field; the slug is the sensible guess when they have not.
-          id: category.icon || category.slug,
+          // The slug is the identity: it is unique per category, and it is
+          // what React keys the card list on. The icon is presentation and
+          // is free to repeat — an editor may well give two categories the
+          // same glyph, which is why the two are no longer one field.
+          id: category.slug,
+          icon: category.icon || category.slug,
           label: category.name,
           blurb: category.description ?? "",
           href: `/courses/${category.slug}`,
@@ -502,36 +507,6 @@ const CATEGORY_GRADIENTS = [
 /* Course page copy                                                     */
 /* ------------------------------------------------------------------ */
 
-/** The CMS stores a key; the page prints a phrase. */
-const MODE_LABELS: Record<string, string> = {
-  online: "Online",
-  offline: "Classroom",
-  hybrid: "Classroom & Online",
-}
-
-const LEVEL_LABELS: Record<string, string> = {
-  beginner: "Beginner",
-  intermediate: "Intermediate",
-  advanced: "Advanced",
-}
-
-/**
- * The fee as a visitor should read it.
- *
- * Zero counts as "not priced" rather than "free": the field starts at 0 on a
- * new course, and a page announcing a free course because nobody filled the box
- * in is a worse error than showing no price. A discount prints as the price
- * being charged with the old one in brackets, since the strip is one line.
- */
-function feeLabel(course: { fee: number; discountedFee?: number }): string | undefined {
-  if (!course.fee || course.fee <= 0) return undefined
-
-  const money = (value: number) => `₹${value.toLocaleString("en-IN")}`
-  return course.discountedFee && course.discountedFee < course.fee
-    ? `${money(course.discountedFee)} (was ${money(course.fee)})`
-    : money(course.fee)
-}
-
 /**
  * Courses that exist in the CMS but not in the site's navigation.
  *
@@ -541,17 +516,30 @@ function feeLabel(course: { fee: number; discountedFee?: number }): string | und
  * listing card and a sitemap line; editing the menus is still how it gets into
  * the dropdown.
  */
+/**
+ * The CMS course list, fetched once per render rather than once per reader.
+ *
+ * Four things here need it — the catalogue, the specs, the page layouts and
+ * the enquiry-form label check — and each used to call `getCourses` itself.
+ * With CMS_CACHE_SECONDS at 0, which is the development default, that was four
+ * identical round trips for every page rendered. During a build of fifty course
+ * pages it was enough extra load to start timing out other pages' CMS calls,
+ * which showed up as blog posts quietly dropping out of the prerender.
+ *
+ * `cache` dedupes within one render pass, so the four readers below now share
+ * a single response.
+ */
+const loadCourses = cache(async function loadCourses() {
+  return (await getCourses(100)).items
+})
 export const loadCourseCatalogue = cache(async function loadCourseCatalogue(): Promise<CatalogueEntry[]> {
   try {
-    const { items } = await getCourses(100)
+    const items = await loadCourses()
 
+    // Every CMS course, including ones the menus already list: mergedCatalogue
+    // keeps the menu's group and takes the CMS's name, so renaming a course
+    // here reaches the site instead of being dropped on the floor.
     return items
-      // An authored page always wins. The built-in entry carries the menu
-      // group it belongs to, which the CMS does not know about.
-      .filter(
-        (course) =>
-          !CATALOGUE.some((e) => e.segment === course.segment && e.slug === course.slug),
-      )
       .map((course) => ({
         segment: course.segment,
         slug: course.slug,
@@ -582,7 +570,7 @@ export const isKnownCourseLabel = cache(async function isKnownCourseLabel(label:
   if (COURSE_LABELS.has(label)) return true
 
   try {
-    const { items } = await getCourses(100)
+    const items = await loadCourses()
     return items.some((course) => course.title === label)
   } catch {
     // The CMS being down must not start rejecting enquiries for built-in
@@ -601,29 +589,58 @@ export const isKnownCourseLabel = cache(async function isKnownCourseLabel(label:
  * fields an editor actually filled in are taken, so a half-completed record
  * cannot blank a tagline that was already written.
  */
+/**
+ * Per-course page arrangement from the CMS, keyed the way getCoursePage looks
+ * it up.
+ *
+ * Split from `loadCourseSpecs` because the two answer different questions —
+ * one is the copy a page is generated from, the other is which sections that
+ * page has and in what order — and because a course with nothing arranged
+ * should contribute no entry at all rather than an empty one, so that
+ * `getCoursePage` can skip the whole step.
+ */
+export const loadCourseLayouts = cache(async function loadCourseLayouts(): Promise<
+  Record<string, PageLayout>
+> {
+  try {
+    const items = await loadCourses()
+    const layouts: Record<string, PageLayout> = {}
+
+    for (const course of items) {
+      const layout: PageLayout = {
+        hiddenSections: course.hiddenSections?.length ? course.hiddenSections : undefined,
+        blocks: course.sections?.length ? course.sections : undefined,
+        overview: course.overview || undefined,
+        videoUrl: course.videoUrl || undefined,
+        videoTitle: course.videoTitle || undefined,
+      }
+
+      if (Object.values(layout).some((value) => value !== undefined)) {
+        layouts[`${course.segment}/${course.slug}`] = layout
+      }
+    }
+
+    return layouts
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn('[content] course layouts: using built-in content —', error.message)
+    } else {
+      console.error('[content] course layouts failed:', error)
+    }
+    return {}
+  }
+})
+
 export const loadCourseSpecs = cache(async function loadCourseSpecs(): Promise<Record<string, CourseSpec>> {
   try {
-    const { items } = await getCourses(100)
+    const items = await loadCourses()
     const merged: Record<string, CourseSpec> = { ...COURSE_SPECS }
 
     for (const course of items) {
       const key = `${course.segment}/${course.slug}`
-      const existing = merged[key] ?? GENERIC_SPEC
-
-      merged[key] = {
-        tagline: course.tagline || existing.tagline,
-        demand: course.demand || existing.demand,
-        careers: course.careers.length > 0 ? course.careers : existing.careers,
-        topics: course.highlights.length > 0 ? course.highlights : existing.topics,
-        tools: course.tools.length > 0 ? course.tools : existing.tools,
-        salary: course.salary || existing.salary,
-        // The facts strip. Absent unless the CMS has a value, so a course
-        // nobody has priced keeps the segment's generic wording.
-        duration: course.duration || undefined,
-        mode: MODE_LABELS[course.mode] ?? undefined,
-        level: LEVEL_LABELS[course.level] ?? undefined,
-        fee: feeLabel(course),
-      }
+      // The same mapping the CMS preview runs, so what an editor is shown
+      // before saving is what this produces after.
+      merged[key] = specFromCourse(course, merged[key] ?? GENERIC_SPEC)
     }
 
     return merged

@@ -38,7 +38,8 @@ export interface NavSection {
 export interface Stat {
   id: string
   label: string
-  value: number
+  /** Absent when the API did not report this count — rendered as a dash. */
+  value?: number
   icon: LucideIcon
   /** Percentage change vs. the comparison period — absent until history exists. */
   change?: number

@@ -1,5 +1,11 @@
 export type CourseCategory = {
+  /** Stable identity — the CMS slug. Unique per category. */
   id: string
+  /**
+   * Picks the fallback cover's line-art. Presentation, not identity: two
+   * categories may legitimately share a glyph. Falls back to `id`.
+   */
+  icon?: string
   label: string
   blurb: string
   href: string

@@ -3,6 +3,8 @@ import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import { ExternalLink } from 'lucide-react'
+
 import { ApiError } from '../../api'
 import { AppearsOn } from '../../components/common/AppearsOn'
 import { Button } from '../../components/common/Button'
@@ -19,6 +21,7 @@ import { FormFooter } from '../../components/layout/FormFooter'
 import { PageHeader } from '../../components/layout/PageHeader'
 import { useToast } from '../../hooks/useToast'
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges'
+import { isGoogleUrl } from '../../lib/googleUrl'
 import { STATUS_OPTIONS } from '../courses/courseSchema'
 import { emptyReview, reviewSchema, SOURCE_OPTIONS, type ReviewFormValues } from './reviewSchema'
 import { reviewHooks } from './useReviews'
@@ -57,6 +60,9 @@ export default function ReviewFormPage() {
   // Feeds the "where this appears" note — it shows the live URL, which moves
   // with the slug as it is typed.
   const watched = useWatch({ control }) as Record<string, unknown>
+
+  /** Drives the "test this link" affordance beside the Google URL field. */
+  const googleUrl = useWatch({ control, name: 'googleUrl' })
 
   /**
    * Publishes and saves in one action.
@@ -172,6 +178,40 @@ export default function ReviewFormPage() {
                 description="Only mark it Google if it was genuinely left there — the card shows the Google mark."
               >
                 <Select {...register('source')} options={SOURCE_OPTIONS} />
+              </FormField>
+
+              <FormField
+                label="Google review link"
+                description="Where this exact review can be read. The card shows a “Read on Google” button only when this is filled in."
+                error={errors.googleUrl?.message}
+              >
+                <Input
+                  {...register('googleUrl')}
+                  type="url"
+                  inputMode="url"
+                  placeholder="https://g.page/r/…"
+                />
+
+                {/*
+                  Open it before publishing.
+
+                  A link that validates is not the same as a link that goes
+                  where the editor meant — only they can tell whether the page
+                  that opens is the right review. Shown only once the address
+                  is genuinely a Google one, so the button cannot be used to
+                  launch whatever was half-typed into the box.
+                */}
+                {googleUrl && isGoogleUrl(googleUrl) && (
+                  <a
+                    href={googleUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-blue-700 hover:text-blue-800"
+                  >
+                    Test this link
+                    <ExternalLink size={12} aria-hidden="true" />
+                  </a>
+                )}
               </FormField>
 
               <FormField

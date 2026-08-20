@@ -36,7 +36,7 @@ export function useDashboardStats() {
     STAT_META.map((meta) => ({
       id: meta.id,
       label: meta.label,
-      value: summary.totals[meta.id],
+      value: summary.totals?.[meta.id],
       icon: meta.icon,
       path: meta.path,
     })),

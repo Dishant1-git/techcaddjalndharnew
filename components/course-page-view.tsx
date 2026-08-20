@@ -1,8 +1,9 @@
 import Link from "next/link"
-import { loadContact } from "@/lib/content"
+import { type Contact } from "@/lib/content"
 // Commented out with its only use below — an unused import fails the lint.
 // import { BrochureButton } from "./brochure-button"
 import { Container } from "./container"
+import { CourseBlocks } from "./course-blocks"
 import { CourseEnquiryForm } from "./course-enquiry-form"
 import { EnquireButton } from "./enquire-button"
 import { FaqAccordion } from "./faq-accordion"
@@ -36,16 +37,28 @@ const PROJECT_PLACEMENT = [
  * Sections render only when their content exists, so a page authored up to
  * "Overview" is complete rather than half-broken — later stages light up as
  * they land in the registry.
+ *
+ * `contact` arrives as a prop rather than being fetched here. That is what
+ * makes this component renderable on the client as well as the server, which
+ * is what lets the CMS preview pane mount this exact template over draft data
+ * instead of a lookalike built from the same fields. Every child below is
+ * already either a client component or a pure one, so this was the only
+ * server-side call in the tree.
  */
-export async function CoursePageView({ page }: { page: CoursePage }) {
-  const contact = await loadContact()
-
+export function CoursePageView({
+  page,
+  contact,
+}: {
+  page: CoursePage
+  contact: Contact
+}) {
   const self = hrefFor(page)
 
   return (
     <article>
       {/* --- Hero --- */}
       <section
+        id="hero"
         data-cursor="light"
         className="relative isolate overflow-hidden bg-ink pt-32 pb-16 text-white lg:pt-40 lg:pb-20"
       >
@@ -138,6 +151,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Container>
       </section>
 
+      <CourseBlocks blocks={page.blocks} after="hero" before="overview" />
+
       {/* --- 1. Overview and walkthrough, full width ---
           The video now lives inside this section, so the section renders if
           either exists: a page with a video but no overview would otherwise
@@ -177,6 +192,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
           )}
         </Section>
       )}
+
+      <CourseBlocks blocks={page.blocks} after="overview" before="who-can-do" />
 
       {/* --- 3. Who can do this --- */}
       {page.whoCanDo && (
@@ -218,6 +235,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
           )}
         </Section>
       )}
+
+      <CourseBlocks blocks={page.blocks} after="who-can-do" before="why-this-program" />
 
       {/* --- 4. Why this programme, full width --- */}
       {page.whyProgram && (
@@ -285,6 +304,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="why-this-program" before="modules" />
+
       {/* --- 5. Modules, by duration ---
           Two presentations of the same question. A course with an authored
           `syllabus` gets the comparison table; everything else keeps the
@@ -318,6 +339,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
           </Container>
         </section>
       )}
+
+      <CourseBlocks blocks={page.blocks} after="modules" before="what-you-will-learn" />
 
       {/* --- 6. What you will learn --- */}
       {page.learn && (
@@ -363,6 +386,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="what-you-will-learn" before="tools" />
+
       {/* --- 7. Tools --- */}
       {page.learn?.tools && page.learn.tools.length > 0 && (
         <section
@@ -394,6 +419,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="tools" before="outcomes" />
+
       {/* --- 8. Future outcomes --- */}
       {page.outcomes && page.outcomes.length > 0 && (
         <Section id="outcomes" tinted>
@@ -411,6 +438,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
           />
         </Section>
       )}
+
+      <CourseBlocks blocks={page.blocks} after="outcomes" before="projects" />
 
       {/* --- 9. Hands-on projects ---
           Styling lives in globals.css under "HANDS-ON PROJECTS SECTION"; the
@@ -457,6 +486,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="projects" before="why-techcadd" />
+
       {/* --- 10. Why techcadd --- */}
       {page.whyTechcadd && (
         <Section id="why-techcadd" dark>
@@ -493,6 +524,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="why-techcadd" before="reviews" />
+
       {/* --- 11. Reviews ---
           Plain white, matching the homepage testimonials: the grain backdrop
           and colour blooms this used to sit on are gone. Still `bleed`, so the
@@ -509,6 +542,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="reviews" before="faqs" />
+
       {/* --- 12. FAQs --- */}
       {page.faqs && (
         <Section id="faqs">
@@ -524,8 +559,10 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="faqs" before="cta" />
+
       {/* --- 13. CTA, deliberately lighter than the homepage one --- */}
-      <section className="px-4 pb-4 lg:px-8">
+      <section id="cta" className="px-4 pb-4 lg:px-8">
         <Container>
           <div className="relative isolate overflow-hidden rounded-[1.75rem] bg-linear-to-br from-brand-700 via-brand-600 to-accent-500 px-7 py-10 text-white sm:px-10 lg:py-12">
             <span
@@ -603,6 +640,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
         </Section>
       )}
 
+      <CourseBlocks blocks={page.blocks} after="cta" before="enquiry" />
+
       {/* --- 15. Enquiry, over a technology backdrop --- */}
       <section
         id="enquiry"
@@ -674,6 +713,8 @@ export async function CoursePageView({ page }: { page: CoursePage }) {
           </div>
         </Container>
       </section>
+
+      <CourseBlocks blocks={page.blocks} after="enquiry" />
     </article>
   )
 }

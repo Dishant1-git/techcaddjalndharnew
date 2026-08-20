@@ -63,6 +63,11 @@ function toCourse(row: Row, children: Children): unknown {
     gallery: children.gallery,
     syllabus: children.syllabus,
     highlights: children.highlights,
+    overview: row.overview ?? undefined,
+    videoUrl: row.video_url ?? undefined,
+    videoTitle: row.video_title ?? undefined,
+    hiddenSections: (row.hidden_sections as string[] | null) ?? [],
+    sections: children.sections,
     eligibility: row.eligibility ?? undefined,
     certification: row.certification ?? undefined,
     branchIds: children.branchIds,
@@ -84,9 +89,10 @@ interface Children {
   highlights: string[]
   branchIds: string[]
   gallery: unknown[]
+  sections: unknown[]
 }
 
-const EMPTY: Children = { syllabus: [], highlights: [], branchIds: [], gallery: [] }
+const EMPTY: Children = { syllabus: [], highlights: [], branchIds: [], gallery: [], sections: [] }
 
 /**
  * Loads every child row for a set of courses in four queries rather than four
@@ -96,7 +102,9 @@ async function loadChildren(ids: string[]): Promise<Map<string, Children>> {
   const map = new Map<string, Children>()
   if (ids.length === 0) return map
 
-  for (const id of ids) map.set(id, { syllabus: [], highlights: [], branchIds: [], gallery: [] })
+  for (const id of ids) {
+    map.set(id, { syllabus: [], highlights: [], branchIds: [], gallery: [], sections: [] })
+  }
   const placeholders = ids.map(() => '?').join(',')
 
   const syllabus = await query<Row>(
@@ -138,6 +146,42 @@ async function loadChildren(ids: string[]): Promise<Map<string, Children>> {
   )
   for (const row of gallery) {
     map.get(row.course_id as string)?.gallery.push({ id: row.id, url: row.url, alt: row.alt })
+  }
+
+  // Ordered by anchor then position so the CMS receives them already grouped
+  // the way the page renders them, and an editor's arrangement survives a
+  // round trip without the client having to re-sort.
+  const sections = await query<Row>(
+    `SELECT s.*, m.url AS media_url, m.alt AS media_alt, m.width AS media_width,
+            m.height AS media_height
+       FROM course_sections s
+       LEFT JOIN media m ON m.id = s.media_id
+      WHERE s.course_id IN (${placeholders})
+      ORDER BY s.anchor, s.position`,
+    ids,
+  )
+  for (const row of sections) {
+    map.get(row.course_id as string)?.sections.push({
+      id: row.id,
+      type: row.type,
+      title: row.title ?? undefined,
+      body: row.body ?? undefined,
+      media: row.media_id
+        ? {
+            id: row.media_id,
+            url: row.media_url,
+            alt: row.media_alt ?? '',
+            width: row.media_width ?? undefined,
+            height: row.media_height ?? undefined,
+          }
+        : undefined,
+      linkUrl: row.link_url ?? undefined,
+      linkLabel: row.link_label ?? undefined,
+      linkTarget: row.link_target,
+      anchor: row.anchor,
+      placement: row.placement,
+      visible: Boolean(row.visible),
+    })
   }
 
   return map
@@ -215,6 +259,7 @@ async function writeChildren(
   await connection.execute<ResultSetHeader>('DELETE FROM course_highlights WHERE course_id = ?', [courseId])
   await connection.execute<ResultSetHeader>('DELETE FROM course_branches   WHERE course_id = ?', [courseId])
   await connection.execute<ResultSetHeader>('DELETE FROM course_gallery    WHERE course_id = ?', [courseId])
+  await connection.execute<ResultSetHeader>('DELETE FROM course_sections   WHERE course_id = ?', [courseId])
 
   for (const [index, module] of input.syllabus.entries()) {
     await connection.execute<ResultSetHeader>(
@@ -244,11 +289,49 @@ async function writeChildren(
       [courseId, image.id, index],
     )
   }
+
+  /*
+    Position is per anchor, not per course.
+
+    Blocks only ever compete for order with the other blocks at the same
+    anchor — two paragraphs after the overview — so numbering them across the
+    whole page would leave gaps that mean nothing and would renumber unrelated
+    blocks whenever one moved. The counter resets for each anchor.
+  */
+  const nextPosition = new Map<string, number>()
+
+  for (const section of input.sections) {
+    const position = nextPosition.get(section.anchor) ?? 0
+    nextPosition.set(section.anchor, position + 1)
+
+    await connection.execute<ResultSetHeader>(
+      `INSERT INTO course_sections
+         (id, course_id, type, title, body, media_id, link_url, link_label,
+          link_target, anchor, placement, visible, position, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(3), NOW(3))`,
+      [
+        randomUUID(),
+        courseId,
+        section.type,
+        section.title || null,
+        section.body || null,
+        section.media?.id ?? null,
+        section.linkUrl || null,
+        section.linkLabel || null,
+        section.linkTarget,
+        section.anchor,
+        section.placement,
+        section.visible ? 1 : 0,
+        position,
+      ],
+    )
+  }
 }
 
 const COLUMNS = `title, slug, segment, category_id, short_description, tagline, demand,
   careers, tools, salary, description, duration, fee,
   discounted_fee, level, mode, thumbnail_id, eligibility, certification, featured, status,
+  overview, video_url, video_title, hidden_sections,
   meta_title, meta_description, meta_keywords, og_image_id, canonical_url`
 
 function columnValues(input: CourseInput): unknown[] {
@@ -274,6 +357,10 @@ function columnValues(input: CourseInput): unknown[] {
     input.certification ?? null,
     input.featured ? 1 : 0,
     input.status,
+    input.overview || null,
+    input.videoUrl || null,
+    input.videoTitle || null,
+    JSON.stringify(input.hiddenSections ?? []),
     input.seo.metaTitle ?? null,
     input.seo.metaDescription ?? null,
     JSON.stringify(input.seo.keywords ?? []),

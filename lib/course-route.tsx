@@ -3,7 +3,12 @@ import { notFound } from "next/navigation"
 import { CoursePageView } from "@/components/course-page-view"
 import { PromoBanner } from "@/components/promo-banner"
 import { SegmentIndexView, SEGMENT_INDEX } from "@/components/segment-index-view"
-import { loadCourseCatalogue, loadCourseSpecs } from "./content"
+import {
+  loadContact,
+  loadCourseCatalogue,
+  loadCourseLayouts,
+  loadCourseSpecs,
+} from "./content"
 import { getCoursePage, hrefFor, slugsInSegment, type Segment } from "./course-pages"
 import { jsonLd } from "./json-ld"
 
@@ -25,6 +30,7 @@ export async function metadataFor(segment: Segment, slug: string): Promise<Metad
     slug,
     await loadCourseSpecs(),
     await loadCourseCatalogue(),
+    await loadCourseLayouts(),
   )
   if (!page) return {}
 
@@ -100,6 +106,7 @@ export async function CourseRoute({
     slug,
     await loadCourseSpecs(),
     await loadCourseCatalogue(),
+    await loadCourseLayouts(),
   )
   if (!page) notFound()
 
@@ -179,7 +186,7 @@ export async function CourseRoute({
         dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
       />
       <main>
-        <CoursePageView page={page} />
+        <CoursePageView page={page} contact={await loadContact()} />
 
         {/* The "course page" placement, on every course page. Renders nothing
             unless a banner is scheduled and live, so a page with no campaign

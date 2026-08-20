@@ -199,7 +199,7 @@ function Cover({ category }: { category: CourseCategory }) {
         fill="none"
         className="absolute bottom-[-8%] left-1/2 size-[70%] -translate-x-1/2 text-white/25"
       >
-        {ICONS[category.id]}
+        {ICONS[category.icon ?? category.id]}
       </svg>
     </span>
   )

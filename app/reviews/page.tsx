@@ -163,9 +163,47 @@ function ReviewCard({ review }: { review: GoogleReview }) {
         {review.quote}
       </blockquote>
 
-      <p className="mt-4 inline-flex rounded-md bg-brand-600/10 px-2.5 py-1 text-[11px] font-semibold text-brand-700">
-        {review.course}
-      </p>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        {review.course && (
+          <p className="inline-flex rounded-md bg-brand-600/10 px-2.5 py-1 text-[11px] font-semibold text-brand-700">
+            {review.course}
+          </p>
+        )}
+
+        {/*
+          Only rendered when the CMS holds an address for this exact review.
+
+          The alternative — always showing the button and sending everyone to
+          the business profile — makes the same promise for a link that does
+          not keep it: a visitor who clicks "Read on Google" under a particular
+          review expects to land on it, not on a list of several hundred.
+        */}
+        {review.googleUrl && (
+          <a
+            href={review.googleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-semibold text-brand-700 transition-colors hover:bg-brand-600/10"
+          >
+            Read on Google
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className="size-3"
+              aria-hidden="true"
+            >
+              <path
+                d="M7 17 17 7m0 0h-7m7 0v7"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="sr-only">, opens in a new tab</span>
+          </a>
+        )}
+      </div>
     </article>
   )
 }

@@ -59,6 +59,18 @@ const CMS_ORIGIN = (process.env.CMS_API_URL ?? "http://localhost:4000/api").repl
   "",
 )
 
+/**
+ * Where the CMS admin UI is served from — the one origin allowed to frame the
+ * preview route, and the only origin its postMessage handler will trust.
+ *
+ * Separate from CMS_API_URL: that is the Express API on :4000, this is the
+ * admin SPA on :5173 (or cms.<domain> in production). They are different
+ * origins and conflating them would let the API host frame the site.
+ */
+const CMS_ADMIN_ORIGIN = (
+  process.env.CMS_ADMIN_ORIGIN ?? "http://localhost:5173"
+).replace(/[/]+$/, "")
+
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -148,6 +160,38 @@ const nextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      {
+        /*
+          The CMS live preview, and the only route on the site that may be
+          framed.
+
+          Everything else keeps `frame-ancestors 'none'` from securityHeaders
+          above; this narrows the exception to one path and one origin rather
+          than relaxing the site-wide policy. /preview renders only what its
+          parent frame posts into it — it reads no draft from the database and
+          has no session — so the worst a wrongly-allowed framer could do is
+          look at content it supplied itself.
+
+          X-Frame-Options cannot express "one specific other origin", and per
+          CSP it is ignored whenever frame-ancestors is present. It is set to
+          an invalid value here purely to stop the inherited DENY from the
+          block above reaching browsers that check it first; frame-ancestors
+          is what actually enforces the rule.
+        */
+        source: "/preview/:path*",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: csp.replace(
+              "frame-ancestors 'none'",
+              `frame-ancestors 'self' ${CMS_ADMIN_ORIGIN}`,
+            ),
+          },
+          { key: "X-Frame-Options", value: "ALLOWALL" },
+          // A preview is per-editor and never shared; no cache may hold it.
+          { key: "Cache-Control", value: "no-store" },
+        ],
+      },
       {
         /*
           Everything under public/assets — the two hero loops at 5.5 MB and

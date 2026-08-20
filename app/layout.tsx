@@ -131,20 +131,26 @@ export default async function RootLayout({
           brand preloader all belong to the public visit, not to someone
           reading the enquiries those forms produced.
         */}
-        <SiteChrome>
+        <SiteChrome interruptive>
           <Preloader />
+        </SiteChrome>
+        <SiteChrome>
           <Navbar contact={contact} />
         </SiteChrome>
         {children}
         <SiteChrome>
           <Footer />
+          {/* Reveals anything marked data-reveal, so it has to run in the
+              preview too — without it those sections stay invisible. */}
+          <ScrollReveal />
+        </SiteChrome>
+        <SiteChrome interruptive>
           {/* Renders nothing unless a popup banner is scheduled and live. */}
           <PromoPopup banner={promo ?? null} />
 
           <EnquiryPopup contact={contact} />
           <CookieConsent />
           <ScrollToTop />
-          <ScrollReveal />
           <CursorFollower />
         </SiteChrome>
       </body>

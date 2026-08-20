@@ -122,6 +122,8 @@ export interface CmsGalleryAlbum {
   images: { id: string; media: CmsMedia; caption?: string }[]
 }
 
+import type { CourseBlockSource } from "./course-spec-from-cms"
+
 export interface CmsCourse {
   id: string
   title: string
@@ -151,6 +153,14 @@ export interface CmsCourse {
    */
   categoryName?: string
   categorySlug?: string
+  /** Overrides the generated overview. One paragraph per line. */
+  overview?: string
+  videoUrl?: string
+  videoTitle?: string
+  /** Ids of generated sections this course leaves out. */
+  hiddenSections?: string[]
+  /** Blocks the editor added, anchored to the generated sections. */
+  sections?: CourseBlockSource[]
   updatedAt: string
 }
 
@@ -184,6 +194,8 @@ export interface CmsReview {
   reviewedOn?: string
   courseName?: string
   source: 'google' | 'website' | 'walk-in'
+  /** Where this exact review can be read. Absent on most. */
+  googleUrl?: string
   order: number
 }
 

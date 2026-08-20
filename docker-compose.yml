@@ -63,6 +63,9 @@ services:
         # next.config.mjs reads this while `next build` runs, to fix the
         # image-optimizer's allowed host and the CSP img-src.
         CMS_API_URL: https://cms-api.${APP_DOMAIN}/api
+        # Also build-time: the frame-ancestors exception for /preview is baked
+        # into the routes manifest, so setting it only at runtime is too late.
+        CMS_ADMIN_ORIGIN: https://cms.${APP_DOMAIN}
     restart: unless-stopped
     depends_on:
       mysql:
@@ -71,6 +74,7 @@ services:
         condition: service_started
     environment:
       CMS_API_URL: https://cms-api.${APP_DOMAIN}/api
+      CMS_ADMIN_ORIGIN: https://cms.${APP_DOMAIN}
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: techcadd_site

@@ -23,6 +23,93 @@ const syllabusModuleSchema = z.object({
   hours: z.number().min(0).optional(),
 })
 
+export const SECTION_TYPES = [
+  { value: 'rich-text', label: 'Text' },
+  { value: 'image', label: 'Image' },
+  { value: 'video', label: 'Video' },
+  { value: 'cta', label: 'Call to action' },
+] as const
+
+/**
+ * The generated sections of the course page, in the order they render.
+ *
+ * `hideable` is false for the three that are structural — the hero carries the
+ * title and the facts, and the CTA and enquiry form are how the page converts.
+ * A block can still be anchored to them.
+ */
+export const PAGE_SECTIONS = [
+  { id: 'hero', label: 'Hero', hideable: false },
+  { id: 'overview', label: 'Overview & video', hideable: true },
+  { id: 'who-can-do', label: 'Who can do this', hideable: true },
+  { id: 'why-this-program', label: 'The case for it', hideable: true },
+  { id: 'modules', label: 'Modules by duration', hideable: true },
+  { id: 'what-you-will-learn', label: 'What you will learn', hideable: true },
+  { id: 'tools', label: 'Tools', hideable: true },
+  { id: 'outcomes', label: 'Future scope', hideable: true },
+  { id: 'projects', label: 'Hands-on projects', hideable: true },
+  { id: 'why-techcadd', label: 'Why techcadd', hideable: true },
+  { id: 'reviews', label: 'Reviews', hideable: true },
+  { id: 'faqs', label: 'FAQs', hideable: true },
+  { id: 'cta', label: 'Call to action', hideable: false },
+  { id: 'enquiry', label: 'Enquiry form', hideable: false },
+] as const
+
+const SECTION_ANCHORS = PAGE_SECTIONS.map((s) => s.id)
+
+/**
+ * A link an editor typed. Mirrors the server rule in sections.schema.ts.
+ *
+ * Internal links start with '/', external ones must be http(s). That rules out
+ * `javascript:` and `data:`, which would otherwise go straight into an href.
+ */
+const linkUrl = z
+  .string()
+  .max(500, 'That link is too long to store.')
+  .refine(
+    (value) => value === '' || value.startsWith('/') || /^https?:\/\//i.test(value),
+    'Enter a path beginning with "/" for a page on this site, or a full https:// address.',
+  )
+
+export const courseSectionSchema = z
+  .object({
+    id: z.string().optional(),
+    type: z.enum(['rich-text', 'image', 'video', 'cta']),
+    title: z.string().max(200).optional(),
+    body: z.string().optional(),
+    media: mediaRefSchema.nullish(),
+    linkUrl: linkUrl.optional(),
+    linkLabel: z.string().max(120).optional(),
+    linkTarget: z.enum(['same', 'new']),
+    anchor: z.enum(SECTION_ANCHORS as unknown as [string, ...string[]]),
+    placement: z.enum(['before', 'after']),
+    visible: z.boolean(),
+  })
+  .superRefine((section, ctx) => {
+    // Each kind has one thing it cannot render without. Caught here so the
+    // editor is told which box to fill rather than publishing an empty strip.
+    const required: Record<string, [string, string]> = {
+      'rich-text': ['body', 'Add some text for this block.'],
+      image: ['media', 'Choose an image for this block.'],
+      video: ['linkUrl', 'Paste the video URL.'],
+      cta: ['linkUrl', 'A call to action needs a link.'],
+    }
+
+    const [field, message] = required[section.type]!
+    if (!(section as Record<string, unknown>)[field]) {
+      ctx.addIssue({ code: 'custom', path: [field], message })
+    }
+
+    if (section.type === 'cta' && !section.linkLabel) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['linkLabel'],
+        message: 'A call to action needs button text.',
+      })
+    }
+  })
+
+export type CourseSectionValues = z.infer<typeof courseSectionSchema>
+
 export const courseSchema = z
   .object({
     title: z.string().min(1, 'Title is required.').max(120, 'Keep titles under 120 characters.'),
@@ -54,6 +141,12 @@ export const courseSchema = z
     eligibility: z.string().optional(),
     certification: z.string().optional(),
     branchIds: z.array(z.string()),
+    /** Overrides the generated overview. One paragraph per line. */
+    overview: z.string().optional(),
+    videoUrl: z.string().max(500).optional(),
+    videoTitle: z.string().max(200).optional(),
+    hiddenSections: z.array(z.string()),
+    sections: z.array(courseSectionSchema),
     featured: z.boolean(),
     seo: seoSchema,
     status: z.enum(['published', 'draft', 'review']),
@@ -96,6 +189,11 @@ export function emptyCourse(): CourseFormValues {
     eligibility: '',
     certification: '',
     branchIds: [],
+    overview: '',
+    videoUrl: '',
+    videoTitle: '',
+    hiddenSections: [],
+    sections: [],
     featured: false,
     seo: { keywords: [] },
     status: 'draft',

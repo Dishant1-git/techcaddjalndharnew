@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -26,7 +26,15 @@ import { FormFooter } from '../../components/layout/FormFooter'
 import { PageHeader } from '../../components/layout/PageHeader'
 import { useToast } from '../../hooks/useToast'
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges'
+import { PreviewPane } from '../../components/preview/PreviewPane'
+import { SITE_ORIGIN } from '../../components/preview/previewProtocol'
+import { CourseLayoutEditor } from './CourseLayoutEditor'
 import { SyllabusEditor } from './SyllabusEditor'
+import {
+  COURSE_SECTIONS,
+  toPreviewDraft,
+  type CourseSectionId,
+} from './coursePreview'
 import {
   courseSchema,
   emptyCourse,
@@ -36,6 +44,41 @@ import {
   type CourseFormValues,
 } from './courseSchema'
 import { useCourse, useCourseReferenceData, useCreateCourse, useUpdateCourse } from './useCourses'
+
+/** Schema keys as they are labelled on this page, for the error summary. */
+const FIELD_LABELS: Record<string, string> = {
+  overview: 'Overview',
+  videoUrl: 'Video URL',
+  videoTitle: 'Video title',
+  hiddenSections: 'Hidden sections',
+  sections: 'Page blocks',
+  title: 'Course title',
+  slug: 'URL slug',
+  categoryId: 'Category',
+  segment: 'Section',
+  tagline: 'Tagline',
+  demand: 'Who hires for it',
+  careers: 'Careers',
+  tools: 'Tools',
+  salary: 'Salary',
+  shortDescription: 'Short description',
+  description: 'Full description',
+  duration: 'Duration',
+  fee: 'Fee',
+  discountedFee: 'Discounted fee',
+  level: 'Level',
+  mode: 'Delivery mode',
+  thumbnail: 'Thumbnail',
+  gallery: 'Gallery',
+  syllabus: 'Syllabus',
+  highlights: 'Highlights',
+  eligibility: 'Eligibility',
+  certification: 'Certification',
+  branchIds: 'Branches',
+  featured: 'Featured course',
+  seo: 'SEO',
+  status: 'Status',
+}
 
 export default function CourseFormPage() {
   const { id } = useParams<{ id: string }>()
@@ -64,10 +107,22 @@ export default function CourseFormPage() {
     formState: { errors, isDirty, isSubmitting },
   } = form
 
-  // Populate once the record arrives; `reset` also clears the dirty flag so the
-  // guard does not fire on an untouched form.
+  /*
+    Populate once the record arrives; `reset` also clears the dirty flag so the
+    guard does not fire on an untouched form.
+
+    Layered over `emptyCourse()` rather than used raw. A course saved before a
+    field existed — or fetched from an API that does not send one — arrives
+    without it, and `undefined` fails the schema for every required array on
+    the record. That produced a save that refused with "check the highlighted
+    fields" while highlighting nothing, because the field at fault has no
+    input to highlight. Defaults fill those gaps; anything the record does
+    carry still wins.
+  */
   useEffect(() => {
-    if (existing.data) reset(existing.data as CourseFormValues)
+    if (existing.data) {
+      reset({ ...emptyCourse(), ...(existing.data as Partial<CourseFormValues>) })
+    }
   }, [existing.data, reset])
 
   const blocker = useUnsavedChanges(isDirty && !isSubmitting)
@@ -80,12 +135,35 @@ export default function CourseFormPage() {
 
   const saving = create.isPending || update.isPending
 
+  const [section, setSection] = useState<CourseSectionId>('basics')
+  const sectionRefs = useRef(new Map<string, HTMLElement | null>())
+
+  /** Scrolls the editor column; the preview follows via PreviewPane's focus. */
+  function goToSection(id: CourseSectionId) {
+    setSection(id)
+    sectionRefs.current.get(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
 
   // Feeds the "where this appears" note — it shows the live URL, which moves
 
   // with the slug as it is typed.
 
   const watched = useWatch({ control }) as Record<string, unknown>
+
+  /**
+   * What the preview renders.
+   *
+   * Recomputed on every keystroke, which is the point — but memoised on the
+   * watched values so an unrelated re-render does not post an identical draft
+   * into the frame and restart its animations.
+   */
+  const previewDraft = useMemo(
+    () => toPreviewDraft(watched as Parameters<typeof toPreviewDraft>[0], categoryOptions),
+    [watched, categoryOptions],
+  )
+
+  const previewAnchor = COURSE_SECTIONS.find((s) => s.id === section)?.anchor
 
 
   /**
@@ -172,12 +250,69 @@ export default function CourseFormPage() {
 
       {Object.keys(errors).length > 0 && (
         <Alert tone="error" title="This course could not be saved">
-          Check the highlighted fields below and try again.
+          {/*
+            Named, not just "check the highlighted fields".
+
+            Not every field in the schema has an input on this page, so a
+            failure on one of those left the editor reading an instruction they
+            could not act on. Listing the labels means the message is always
+            actionable, even when the offending value is one the form does not
+            show.
+          */}
+          <p>Please fix:</p>
+          <ul className="mt-1.5 list-disc space-y-0.5 pl-5">
+            {Object.entries(errors).map(([field, error]) => (
+              <li key={field}>
+                <strong className="font-medium">{FIELD_LABELS[field] ?? field}</strong>
+                {(error as { message?: string })?.message
+                  ? ` — ${(error as { message?: string }).message}`
+                  : ''}
+              </li>
+            ))}
+          </ul>
         </Alert>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      {/*
+        Editor on the left, the live website on the right.
+
+        The preview is the real site in a frame, not a rebuilt approximation,
+        so the question "what will this look like" is answered here rather than
+        by saving and going to look. Below xl the two stack: at that width a
+        split pane leaves neither side usable.
+      */}
+      <div className="grid gap-6 xl:grid-cols-2">
+        <div className="space-y-6">
+          {/* Section switcher. Selecting one scrolls this column and tells the
+              preview to scroll to the part of the page it controls. */}
+          <nav
+            aria-label="Course sections"
+            className="sticky top-0 z-10 -mx-1 flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-white/95 p-1 backdrop-blur"
+          >
+            {COURSE_SECTIONS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => goToSection(item.id)}
+                aria-current={section === item.id ? 'true' : undefined}
+                className={
+                  'shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ' +
+                  (section === item.id
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700')
+                }
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          <section
+            id="section-basics"
+            ref={(node) => { sectionRefs.current.set('basics', node) }}
+            aria-label="Basics"
+            className="scroll-mt-4"
+          >
           <Card flush>
             <CardHeader title="Basics" />
             <CardBody className="space-y-5">
@@ -220,7 +355,14 @@ export default function CourseFormPage() {
               </FormField>
             </CardBody>
           </Card>
+          </section>
 
+          <section
+            id="section-page-copy"
+            ref={(node) => { sectionRefs.current.set('page-copy', node) }}
+            aria-label="Course page copy"
+            className="scroll-mt-4"
+          >
           <Card flush>
             <CardHeader
               title="Course page copy"
@@ -244,6 +386,29 @@ export default function CourseFormPage() {
                 error={errors.demand?.message}
               >
                 <Textarea {...register('demand')} rows={3} />
+              </FormField>
+
+              <FormField
+                label="Overview"
+                description="Replaces the generated overview paragraphs. One paragraph per line. Leave empty to keep the generated copy."
+                error={errors.overview?.message}
+              >
+                <Textarea {...register('overview')} rows={5} />
+              </FormField>
+
+              <FormField
+                label="Walkthrough video"
+                description="A YouTube or Vimeo address. Shown in the overview section."
+                error={errors.videoUrl?.message}
+              >
+                <Input
+                  {...register('videoUrl')}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+              </FormField>
+
+              <FormField label="Video title" error={errors.videoTitle?.message}>
+                <Input {...register('videoTitle')} placeholder="Course walkthrough" />
               </FormField>
 
               <FormField label="Careers" description="Job titles this course leads to.">
@@ -275,7 +440,14 @@ export default function CourseFormPage() {
               </FormField>
             </CardBody>
           </Card>
+          </section>
 
+          <section
+            id="section-curriculum"
+            ref={(node) => { sectionRefs.current.set('curriculum', node) }}
+            aria-label="Curriculum"
+            className="scroll-mt-4"
+          >
           <Card flush>
             <CardHeader title="Syllabus" subtitle="Drag to reorder; each module can list its topics" />
             <CardBody>
@@ -288,7 +460,53 @@ export default function CourseFormPage() {
               />
             </CardBody>
           </Card>
+          </section>
 
+          <section
+            id="section-layout"
+            ref={(node) => { sectionRefs.current.set('layout', node) }}
+            aria-label="Page layout"
+            className="scroll-mt-4"
+          >
+          <Card flush>
+            <CardHeader
+              title="Page layout"
+              subtitle="Every section of the course page, in order. Switch one off, or add your own between any two."
+            />
+            <CardBody>
+              <Controller
+                control={control}
+                name="sections"
+                render={({ field: sectionsField }) => (
+                  <Controller
+                    control={control}
+                    name="hiddenSections"
+                    render={({ field: hiddenField }) => (
+                      <CourseLayoutEditor
+                        sections={sectionsField.value ?? []}
+                        hidden={hiddenField.value ?? []}
+                        onSectionsChange={sectionsField.onChange}
+                        onHiddenChange={hiddenField.onChange}
+                        errors={
+                          errors.sections as unknown as
+                            | Record<number, Record<string, string | undefined>>
+                            | undefined
+                        }
+                      />
+                    )}
+                  />
+                )}
+              />
+            </CardBody>
+          </Card>
+          </section>
+
+          <section
+            id="section-details"
+            ref={(node) => { sectionRefs.current.set('details', node) }}
+            aria-label="Details"
+            className="scroll-mt-4"
+          >
           <Card flush>
             <CardHeader title="Details" />
             <CardBody className="grid gap-5 sm:grid-cols-2">
@@ -357,25 +575,39 @@ export default function CourseFormPage() {
               </FormField>
             </CardBody>
           </Card>
-        </div>
+          </section>
 
-        <div className="space-y-6">
+          <section
+            id="section-media"
+            ref={(node) => { sectionRefs.current.set('media', node) }}
+            aria-label="Media"
+            className="scroll-mt-4"
+          >
           <Card flush>
             <CardHeader
               title="Thumbnail"
               subtitle="Shown on the course list and on cards across the site"
             />
             <CardBody>
-              <Controller
-                control={control}
-                name="thumbnail"
-                render={({ field }) => (
-                  <ImageField value={field.value} onChange={field.onChange} aspect="video" />
-                )}
-              />
+              <FormField label="" error={errors.thumbnail?.message}>
+                <Controller
+                  control={control}
+                  name="thumbnail"
+                  render={({ field }) => (
+                    <ImageField value={field.value} onChange={field.onChange} aspect="video" />
+                  )}
+                />
+              </FormField>
             </CardBody>
           </Card>
+          </section>
 
+          <section
+            id="section-publishing"
+            ref={(node) => { sectionRefs.current.set('publishing', node) }}
+            aria-label="Publishing"
+            className="scroll-mt-4"
+          >
           <Card flush>
             <CardHeader title="Publishing" />
             <CardBody className="space-y-5">
@@ -455,7 +687,14 @@ export default function CourseFormPage() {
               />
             </CardBody>
           </Card>
+          </section>
 
+          <section
+            id="section-seo"
+            ref={(node) => { sectionRefs.current.set('seo', node) }}
+            aria-label="SEO"
+            className="scroll-mt-4"
+          >
           <Controller
             control={control}
             name="seo"
@@ -473,7 +712,26 @@ export default function CourseFormPage() {
               />
             )}
           />
+          </section>
         </div>
+
+        {/*
+          Sticky, and its own scroll container, so the page under review stays
+          in view while the editor works down the form. `liveUrl` is only
+          offered once the course exists and is published — a link to a page
+          that would 404 is worse than no link.
+        */}
+        <PreviewPane
+          kind="course"
+          draft={previewDraft}
+          focus={previewAnchor}
+          liveUrl={
+            isEdit && watched.status === 'published' && slug
+              ? `${SITE_ORIGIN}/${watched.segment ?? 'courses'}/${slug}`
+              : undefined
+          }
+          className="h-[70vh] xl:sticky xl:top-4 xl:h-[calc(100vh-7rem)]"
+        />
       </div>
 
       <FormFooter

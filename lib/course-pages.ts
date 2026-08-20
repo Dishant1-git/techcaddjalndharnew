@@ -93,9 +93,32 @@ export type HeroImage = {
   height: number
 }
 
+/**
+ * A block an editor added to a course page in the CMS.
+ *
+ * Anchored to one of the generated sections rather than given an absolute
+ * position, so "put this after the syllabus" survives the template gaining or
+ * losing a section — which an index would not.
+ */
+export type CourseBlock = {
+  id?: string
+  type: "rich-text" | "image" | "video" | "cta"
+  title?: string
+  body?: string
+  media?: { id: string; url: string; alt: string; width?: number; height?: number }
+  linkUrl?: string
+  linkLabel?: string
+  linkTarget: "same" | "new"
+  anchor: string
+  placement: "before" | "after"
+  visible: boolean
+}
+
 export type CoursePage = {
   slug: string
   segment: Segment
+  /** Editor-authored blocks, already filtered to the visible ones. */
+  blocks?: CourseBlock[]
   /** Small label above the H1. */
   eyebrow: string
   h1: string
@@ -2761,6 +2784,40 @@ export type CatalogueEntry = {
   slug: string
   label: string
   group: string
+  /** True when the CMS supplied this entry's name. See `mergedCatalogue`. */
+  fromCms?: boolean
+}
+
+/**
+ * The built-in catalogue with the CMS layered over it.
+ *
+ * The two sources own different things. The menus own the *group* a course is
+ * filed under, which the CMS has no concept of; the CMS owns the course's
+ * *name*, because that is the field an editor is given and typing in it has to
+ * do something. Previously a CMS course whose slug already appeared in the
+ * menus was discarded outright, so renaming such a course in the CMS changed
+ * nothing on the site — the page kept the name compiled into navigation.ts.
+ *
+ * Keyed by segment and slug so a course cannot be listed twice, which is what
+ * a plain concatenation would produce for every course the menus already know.
+ */
+export function mergedCatalogue(extra: CatalogueEntry[] = []): CatalogueEntry[] {
+  if (extra.length === 0) return CATALOGUE
+
+  const byKey = new Map(CATALOGUE.map((e) => [`${e.segment}/${e.slug}`, e]))
+
+  for (const entry of extra) {
+    const key = `${entry.segment}/${entry.slug}`
+    const builtIn = byKey.get(key)
+    byKey.set(
+      key,
+      builtIn
+        ? { ...builtIn, label: entry.label, fromCms: true }
+        : { ...entry, fromCms: true },
+    )
+  }
+
+  return [...byKey.values()]
 }
 
 function buildCatalogue(): CatalogueEntry[] {
@@ -3113,12 +3170,19 @@ export function getCoursePage(
    * can never shadow an authored page.
    */
   extra: CatalogueEntry[] = [],
+  /**
+   * Per-course page arrangement from the CMS, keyed `segment/slug`: which
+   * generated sections to leave out, and which blocks the editor added.
+   */
+  layouts: Record<string, PageLayout> = {},
 ) {
-  const matches = (e: CatalogueEntry) => e.segment === segment && e.slug === slug
-  const entry = CATALOGUE.find(matches) ?? extra.find(matches)
+  const entry = mergedCatalogue(extra).find(
+    (e) => e.segment === segment && e.slug === slug,
+  )
   if (!entry) return undefined
 
-  const generated = generateContent(stubPage(entry, specs), `${segment}/${slug}`, specs)
+  const key = `${segment}/${slug}`
+  const generated = generateContent(stubPage(entry, specs), key, specs)
 
   // Generated content is the floor, hand-authored copy the override. Layering
   // this way means a page authored before a section existed still gets that
@@ -3127,7 +3191,141 @@ export function getCoursePage(
     (p) => p.segment === segment && p.slug === slug,
   )
 
-  return authored ? { ...generated, ...defined(authored) } : generated
+  const layout = layouts[key]
+
+  if (!authored) return layout ? applyPageLayout(generated, layout) : generated
+
+  const merged = withCmsPrecedence(
+    { ...generated, ...defined(authored) },
+    generated,
+    entry,
+    specs[key],
+  )
+
+  // Layout last: hiding a section and adding a block are decisions about this
+  // page, and must hold whether the copy underneath was generated or authored.
+  return layout ? applyPageLayout(merged, layout) : merged
+}
+
+export interface PageLayout {
+  hiddenSections?: string[]
+  blocks?: CourseBlock[]
+  overview?: string
+  videoUrl?: string
+  videoTitle?: string
+}
+
+/**
+ * Gives an edited field back to the editor.
+ *
+ * Six courses carry a hand-written page in COURSE_PAGES, written before the
+ * CMS existed, and the layering above puts all of it on top of the generated
+ * content. That is right for the sections nobody can edit yet — the projects
+ * bento, the reviews, the case pitch — and wrong for the handful of fields
+ * that now have a box in the CMS: typing a new tagline, fee or course name
+ * appeared to save and then changed nothing on the page, which is the worst
+ * failure a CMS can have.
+ *
+ * So the authored copy still wins by default, and loses field by field
+ * wherever somebody has actually filled the corresponding box in.
+ */
+function withCmsPrecedence(
+  merged: CoursePage,
+  generated: CoursePage,
+  entry: CatalogueEntry,
+  spec: CourseSpec | undefined,
+): CoursePage {
+  const from = new Set(spec?.fromCms ?? [])
+  const out = { ...merged }
+
+  // The course's name, which the heading and the eyebrow are both built from.
+  if (entry.fromCms) {
+    out.eyebrow = generated.eyebrow
+    out.h1 = generated.h1
+  }
+
+  // The tagline is the sentence the intro paragraph is generated around.
+  if (from.has('tagline')) out.intro = generated.intro
+
+  // Any one of the four having been typed means the strip was curated, and
+  // factsFor has already merged them over the segment's generic facts.
+  if (['duration', 'mode', 'fee', 'level'].some((f) => from.has(f as never))) {
+    out.facts = generated.facts
+  }
+
+  // The tools mesh lives inside `learn`, which an authored page replaces
+  // whole — so this is a nested merge rather than a swap, to keep the
+  // authored modules while taking the edited tool list.
+  if (from.has('tools') && out.learn && generated.learn) {
+    out.learn = { ...out.learn, tools: generated.learn.tools }
+  }
+
+  return out
+}
+
+/**
+ * Applies the parts of a CMS record that are about the page rather than its
+ * copy: which generated sections to leave out, and which blocks to add.
+ *
+ * Hiding is done by clearing the fields a section renders from, because every
+ * section in the template is already conditional on its own data — `{page.faqs
+ * && ...}`. Switching one off is therefore the same operation as never having
+ * authored it, and needs no second mechanism in the template to go wrong.
+ */
+export function applyPageLayout(page: CoursePage, layout: PageLayout): CoursePage {
+  const out = { ...page }
+
+  // One paragraph per line, blank lines dropped — an editor pressing return
+  // twice should not produce an empty paragraph on the page.
+  if (layout.overview?.trim()) {
+    out.overview = layout.overview
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+  }
+
+  if (layout.videoUrl?.trim()) {
+    out.video = {
+      url: layout.videoUrl.trim(),
+      title: layout.videoTitle?.trim() || `${page.eyebrow} walkthrough`,
+    }
+  }
+
+  for (const id of layout.hiddenSections ?? []) {
+    // Tools is the one section not gated by a field of its own — it renders
+    // from `learn.tools`, so switching it off means emptying that rather than
+    // clearing `learn`, which would take the syllabus with it.
+    if (id === 'tools') {
+      if (out.learn) out.learn = { ...out.learn, tools: [] }
+      continue
+    }
+
+    for (const field of HIDES[id] ?? []) {
+      ;(out as Record<string, unknown>)[field] = undefined
+    }
+  }
+
+  // Invisible blocks are dropped here rather than in the template, so nothing
+  // downstream has to remember to check the flag.
+  const blocks = (layout.blocks ?? []).filter((block) => block.visible)
+  if (blocks.length > 0) out.blocks = blocks
+
+  return out
+}
+
+/** Which CoursePage fields each hideable section renders from. */
+const HIDES: Record<string, string[]> = {
+  overview: ['overview', 'video'],
+  'who-can-do': ['whoCanDo'],
+  'why-this-program': ['whyProgram', 'casePitch'],
+  modules: ['syllabus', 'tracks'],
+  'what-you-will-learn': ['learn'],
+  outcomes: ['outcomes'],
+  projects: ['projects'],
+  'why-techcadd': ['whyTechcadd'],
+  reviews: ['reviews'],
+  faqs: ['faqs'],
+  related: ['related'],
 }
 
 export function pagesInSegment(segment: Segment): CoursePage[] {
@@ -3145,7 +3343,7 @@ export function pagesInSegment(segment: Segment): CoursePage[] {
  */
 export function slugsInSegment(segment: Segment, extra: CatalogueEntry[] = []): string[] {
   const slugs = new Set<string>()
-  for (const entry of [...CATALOGUE, ...extra]) {
+  for (const entry of mergedCatalogue(extra)) {
     if (entry.segment === segment) slugs.add(entry.slug)
   }
   return [...slugs]
@@ -3154,7 +3352,7 @@ export function slugsInSegment(segment: Segment, extra: CatalogueEntry[] = []): 
 /** Catalogue for a segment, grouped as the navigation groups it. */
 export function groupedSegment(segment: Segment, extra: CatalogueEntry[] = []) {
   const groups = new Map<string, CatalogueEntry[]>()
-  for (const entry of [...CATALOGUE, ...extra]) {
+  for (const entry of mergedCatalogue(extra)) {
     if (entry.segment !== segment) continue
     groups.set(entry.group, [...(groups.get(entry.group) ?? []), entry])
   }

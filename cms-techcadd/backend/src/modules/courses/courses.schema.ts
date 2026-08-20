@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { courseSectionSchema, HIDEABLE_SECTIONS } from './sections.schema.js'
+
 /**
  * Mirrors `frontend/src/features/courses/courseSchema.ts`.
  *
@@ -81,6 +83,14 @@ export const courseSchema = z
     eligibility: z.string().optional(),
     certification: z.string().optional(),
     branchIds: z.array(z.string()).default([]),
+    /** Overrides the generated overview. One paragraph per line. */
+    overview: z.string().optional(),
+    videoUrl: z.string().max(500).optional(),
+    videoTitle: z.string().max(200).optional(),
+    /** Generated sections to leave off this course's page. */
+    hiddenSections: z.array(z.enum(HIDEABLE_SECTIONS)).default([]),
+    /** Blocks the editor added, in the order they were arranged. */
+    sections: z.array(courseSectionSchema).default([]),
     featured: z.boolean().default(false),
     seo: seo.default({ keywords: [] }),
     status: z.enum(['published', 'draft', 'review']).default('draft'),

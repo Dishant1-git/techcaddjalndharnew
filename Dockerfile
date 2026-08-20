@@ -20,6 +20,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ARG CMS_API_URL
 ENV CMS_API_URL=$CMS_API_URL
 
+# Read by next.config.mjs while building, to allow the CMS to frame /preview.
+ARG CMS_ADMIN_ORIGIN
+ENV CMS_ADMIN_ORIGIN=$CMS_ADMIN_ORIGIN
+
 RUN npm run build
 
 

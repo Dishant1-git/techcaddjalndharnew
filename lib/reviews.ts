@@ -23,6 +23,14 @@ export type GoogleReview = {
   course: string
   /** Drives the Google badge. Only reviews genuinely left there may use it. */
   source: "google"
+  /**
+   * The address this review can be read at, when the CMS has one.
+   *
+   * Optional because most reviews will not carry one for a while yet, and a
+   * "Read on Google" button that goes to the profile rather than the review
+   * would be answering a different question than the one it asks.
+   */
+  googleUrl?: string
 }
 
 /**

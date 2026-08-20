@@ -27,7 +27,9 @@ export function StatCard({ stat }: { stat: Stat }) {
       </div>
 
       <p className="mt-3 text-2xl font-semibold text-slate-900 sm:text-3xl">
-        {stat.value.toLocaleString('en-IN')}
+        {/* A count the API did not report is unknown, not zero — one missing
+            number must not take the whole dashboard down with it. */}
+        {typeof stat.value === 'number' ? stat.value.toLocaleString('en-IN') : '—'}
       </p>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">

@@ -18,11 +18,28 @@ import { usePathname } from "next/navigation"
  *
  * `usePathname` renders on the server too, so /admin never sends the navbar's
  * markup and then hides it — it is simply not in the response.
+ *
+ * /preview is the CMS's live preview pane. It keeps the navbar and footer,
+ * because those are part of the page an editor is trying to judge, but drops
+ * anything that interrupts: a brand preloader that replays on every keystroke,
+ * a cookie bar over the content being reviewed, an enquiry popup asking the
+ * editor to book a demo.
  */
-export function SiteChrome({ children }: { children: React.ReactNode }) {
+export function SiteChrome({
+  children,
+  /**
+   * Furniture that demands attention rather than framing the page. Hidden in
+   * the preview pane as well as on /admin.
+   */
+  interruptive = false,
+}: {
+  children: React.ReactNode
+  interruptive?: boolean
+}) {
   const pathname = usePathname()
 
   if (pathname?.startsWith("/admin")) return null
+  if (interruptive && pathname?.startsWith("/preview")) return null
 
   return <>{children}</>
 }
