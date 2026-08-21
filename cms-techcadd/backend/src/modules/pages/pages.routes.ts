@@ -28,7 +28,7 @@ pagesRouter.get(
 
 pagesRouter.post(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(pageSchema.parse(req.body)))
   }),
@@ -36,7 +36,7 @@ pagesRouter.post(
 
 pagesRouter.patch(
   '/:id',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), pagePatchSchema.parse(req.body)))
   }),
@@ -46,7 +46,7 @@ const deleteSchema = z.object({ ids: z.array(z.string().min(1)).min(1) })
 
 pagesRouter.delete(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     const parsed = deleteSchema.safeParse(req.body)
     if (!parsed.success) throw badRequest('Provide the ids to delete.')

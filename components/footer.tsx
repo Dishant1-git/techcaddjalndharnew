@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { loadContact } from "@/lib/content"
+import { loadContact, loadNavPages, loadSocial } from "@/lib/content"
 import Link from "next/link"
 import { Container } from "./container"
 import { PrefetchLink } from "./prefetch-link"
@@ -16,12 +16,22 @@ import {
 const LINKEDIN_PATH =
   "M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"
 
-const SOCIALS = [
-  { path: siInstagram.path, href: "https://instagram.com/techcadd", label: "Instagram" },
-  { path: LINKEDIN_PATH, href: "https://linkedin.com/company/techcadd", label: "LinkedIn" },
-  { path: siFacebook.path, href: "https://facebook.com/techcadd", label: "Facebook" },
-  { path: siYoutube.path, href: "https://youtube.com/@techcadd", label: "YouTube" },
-  { path: siX.path, href: "https://x.com/techcadd", label: "X" },
+/**
+ * The networks the footer can show, and the mark for each.
+ *
+ * Only the artwork lives here now. Which profiles exist, and at what address,
+ * comes from the CMS — these URLs used to be written into this file, so
+ * correcting a moved profile meant a deploy. A network with no URL set is not
+ * rendered at all, rather than linking to a page nobody maintains.
+ *
+ * Keys match the settings row's `social` object.
+ */
+const SOCIAL_MARKS: { key: string; path: string; label: string }[] = [
+  { key: "instagram", path: siInstagram.path, label: "Instagram" },
+  { key: "linkedin", path: LINKEDIN_PATH, label: "LinkedIn" },
+  { key: "facebook", path: siFacebook.path, label: "Facebook" },
+  { key: "youtube", path: siYoutube.path, label: "YouTube" },
+  { key: "x", path: siX.path, label: "X" },
 ]
 
 /** Mega-menu groups double as the footer's course column. */
@@ -37,7 +47,12 @@ const COMPANY_LINKS: NavLink[] = NAV_ITEMS.filter(
 ).map(({ label, href }) => ({ label, href }))
 
 export async function Footer() {
-  const contact = await loadContact()
+  const [contact, social, navPages] = await Promise.all([
+    loadContact(),
+    loadSocial(),
+    loadNavPages(),
+  ])
+  const socials = SOCIAL_MARKS.filter((mark) => social[mark.key])
 
   return (
     /* Flat surface by design — the blue wash belongs to the CTA directly
@@ -116,7 +131,7 @@ export async function Footer() {
 
             <FooterCol title="Courses" links={COURSE_LINKS} />
             <FooterCol title="Company" links={COMPANY_LINKS} />
-            <FooterCol title="Support" links={QUICK_LINKS} />
+            <FooterCol title="Support" links={[...QUICK_LINKS, ...navPages.footer]} />
           </div>
 
           {/* --- Bottom bar --- */}
@@ -127,10 +142,10 @@ export async function Footer() {
             </p>
 
             <div className="flex gap-2">
-              {SOCIALS.map((s) => (
+              {socials.map((s) => (
                 <a
                   key={s.label}
-                  href={s.href}
+                  href={social[s.key]}
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={s.label}

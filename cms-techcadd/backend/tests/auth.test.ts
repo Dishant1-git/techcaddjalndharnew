@@ -108,28 +108,48 @@ describe('password reset', () => {
 
 describe('access', () => {
   /**
-   * There is one role, so every signed-in account can do everything. What
-   * still has to hold is that being signed in is required at all — the gate is
-   * authentication now, not authorisation.
+   * An editor is the content role: everything needed to publish, and nothing
+   * that changes how the site runs or who can reach it.
+   *
+   * This is the test that would fail if a new module were mounted with the
+   * wrong gate — which is the mistake worth catching, since the CMS hides the
+   * buttons either way and the API is what actually decides.
    */
-  it('lets any signed-in account reach every area', async () => {
+  it('lets an editor publish content but not change settings or accounts', async () => {
     const admin = client()
     await admin.signIn()
 
     const created = await admin.post('/users', {
-      name: 'Second Admin',
-      email: 'second-admin@example.com',
-      password: 'AdminPassword1',
+      name: 'An Editor',
+      email: 'an-editor@example.com',
+      password: 'EditorPassword1',
+      role: 'editor',
     })
     expect(created.status).toBe(201)
-    expect(created.body.role).toBe('admin')
+    expect(created.body.role).toBe('editor')
 
-    const other = client()
-    await other.signIn('second-admin@example.com', 'AdminPassword1')
+    const editor = client()
+    await editor.signIn('an-editor@example.com', 'EditorPassword1')
 
-    expect((await other.get('/courses')).status).toBe(200)
-    expect((await other.patch('/settings', { siteName: 'TechCADD' })).status).toBe(200)
-    expect((await other.get('/users')).status).toBe(200)
+    // Content: allowed.
+    expect((await editor.get('/courses')).status).toBe(200)
+    expect((await editor.get('/pages')).status).toBe(200)
+    expect((await editor.get('/media')).status).toBe(200)
+
+    // Running the site, and who may reach it: not theirs.
+    expect((await editor.patch('/settings', { siteName: 'Nope' })).status).toBe(403)
+    expect((await editor.post('/users', { name: 'X', email: 'x@example.com' })).status).toBe(403)
+    expect((await editor.get('/enquiries')).status).toBe(403)
+  })
+
+  it('lets an admin reach every area', async () => {
+    const admin = client()
+    await admin.signIn()
+
+    expect((await admin.get('/courses')).status).toBe(200)
+    expect((await admin.patch('/settings', { siteName: 'TechCADD' })).status).toBe(200)
+    expect((await admin.get('/users')).status).toBe(200)
+    expect((await admin.get('/enquiries')).status).toBe(200)
   })
 
   it('refuses everything without a session', async () => {

@@ -15,7 +15,6 @@ export type CourseSpecField =
   | 'salary'
   | 'duration'
   | 'mode'
-  | 'fee'
   | 'level'
 
 export type CourseSpec = {
@@ -40,7 +39,6 @@ export type CourseSpec = {
    */
   duration?: string
   mode?: string
-  fee?: string
   level?: string
   /**
    * Which of the above came from a CMS record rather than from this file.

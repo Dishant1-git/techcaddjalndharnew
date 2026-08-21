@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { Container } from "@/components/container"
 import { Cta } from "@/components/cta"
-import { AuthoredHtml } from "@/components/authored-html"
-import { CmsUnavailableError, getPage } from "@/lib/cms"
+import { PageBody, PageHero } from "@/components/page-body"
+import { getBlogs, getPage, isCmsNotFound } from "@/lib/cms"
+import { resolveBlockMedia } from "@/lib/content"
 import { SITE } from "@/lib/site"
 
 type Props = { params: Promise<{ slug: string }> }
@@ -33,9 +33,11 @@ async function load(slug: string) {
   try {
     return await getPage(slug)
   } catch (error) {
-    // A 404 from the CMS arrives as CmsUnavailableError too — either way there
-    // is no page to show, and notFound() is the honest answer.
-    if (error instanceof CmsUnavailableError) return undefined
+    // Absent is absent; unreachable is not. Returning undefined here renders
+    // notFound(), so only a real 404 from the CMS may do it — a timeout has to
+    // surface as an error rather than telling a visitor, and Next's cache,
+    // that a page which exists does not.
+    if (isCmsNotFound(error)) return undefined
     throw error
   }
 }
@@ -65,32 +67,31 @@ export default async function CmsPageRoute({ params }: Props) {
   const page = await load((await params).slug)
   if (!page) notFound()
 
+  // Only fetched when a block actually asks for posts — most pages have none,
+  // and a request per page render for a list nothing displays is waste.
+  const needsPosts = page.sections?.some((block) => block.type === "blogs" && block.visible)
+  const posts = needsPosts ? await recentPosts() : undefined
+
   return (
     <main>
-      <section
-        data-cursor="light"
-        className="bg-ink pt-32 pb-14 text-white lg:pt-40 lg:pb-16"
-      >
-        <Container>
-          <h1
-            data-reveal
-            suppressHydrationWarning
-            className="max-w-3xl font-display text-3xl leading-[1.12] font-bold tracking-tight text-white text-balance sm:text-4xl lg:text-5xl"
-          >
-            {page.title}
-          </h1>
-        </Container>
-      </section>
-
-      <section className="py-14 lg:py-20">
-        <Container>
-          <div className="mx-auto max-w-3xl">
-            <AuthoredHtml html={page.content} />
-          </div>
-        </Container>
-      </section>
-
+      <PageHero title={page.title} />
+      <PageBody blocks={resolveBlockMedia(page.sections)} content={page.content} posts={posts} />
       <Cta />
     </main>
   )
+}
+
+/** Teasers for a 'blogs' block. Degrades to none if the CMS is unreachable. */
+async function recentPosts() {
+  try {
+    const { items } = await getBlogs(6)
+    return items.map((post) => ({
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      coverUrl: post.coverImage?.url,
+    }))
+  } catch {
+    return undefined
+  }
 }

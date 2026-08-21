@@ -2,6 +2,15 @@ export type GalleryTile = {
   image: string
   /** Used as the tile's alt text and its accessible name. */
   title: string
+  /**
+   * Where the photograph goes when clicked, if the CMS gave it one.
+   *
+   * A tile without a link opens the lightbox, which is what every photograph
+   * did before. A tile with one navigates instead: an award that opens the
+   * certificate, a campus shot that opens the branch page. Making it do both
+   * would mean guessing which the visitor meant.
+   */
+  href?: string
 }
 
 /*

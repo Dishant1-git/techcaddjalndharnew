@@ -205,6 +205,22 @@ function useDraft<T extends object>(source: T) {
   return { draft, setDraft, dirty, revert: () => setDraft(baseline) }
 }
 
+/**
+ * The social links, in the order they sit in the footer.
+ *
+ * `website` is last and is the odd one out: it is not a network and the footer
+ * does not render an icon for it, but it belongs with the others as a
+ * site-wide address.
+ */
+const SOCIAL_FIELDS = [
+  { key: 'instagram', label: 'Instagram', placeholder: 'https://instagram.com/…' },
+  { key: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/company/…' },
+  { key: 'facebook', label: 'Facebook', placeholder: 'https://facebook.com/…' },
+  { key: 'youtube', label: 'YouTube', placeholder: 'https://youtube.com/@…' },
+  { key: 'x', label: 'X', placeholder: 'https://x.com/…' },
+  { key: 'website', label: 'Website', placeholder: 'https://techcadd.com' },
+] as const
+
 function GeneralTab({ settings }: { settings: SiteSettings }) {
   const update = useUpdateSettings()
   const toast = useToast()
@@ -267,25 +283,29 @@ function GeneralTab({ settings }: { settings: SiteSettings }) {
           />
         </FormField>
 
-        <FormField label="LinkedIn">
-          <Input
-            value={draft.social.linkedin ?? ''}
-            onChange={(event) =>
-              setDraft({ ...draft, social: { ...draft.social, linkedin: event.target.value } })
-            }
-            placeholder="https://linkedin.com/company/…"
-          />
-        </FormField>
+        {/*
+          Every network the footer can show.
 
-        <FormField label="Website">
-          <Input
-            value={draft.social.website ?? ''}
-            onChange={(event) =>
-              setDraft({ ...draft, social: { ...draft.social, website: event.target.value } })
-            }
-            placeholder="https://techcadd.com"
-          />
-        </FormField>
+          Only two of these were on this page before, while the row stored six
+          and the footer ignored all of them — its links were written into the
+          component, so correcting a moved profile meant a deploy. An icon
+          appears in the footer only when its address is filled in here, so
+          clearing one removes it rather than leaving a dead link.
+        */}
+        {SOCIAL_FIELDS.map((field) => (
+          <FormField key={field.key} label={field.label}>
+            <Input
+              value={draft.social[field.key] ?? ''}
+              onChange={(event) =>
+                setDraft({
+                  ...draft,
+                  social: { ...draft.social, [field.key]: event.target.value },
+                })
+              }
+              placeholder={field.placeholder}
+            />
+          </FormField>
+        ))}
 
         <div className="lg:col-span-2">
           <StatsEditor

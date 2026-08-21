@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { SITE_LABEL } from '../../config/brand'
 import { CalendarDays, Mail, Plus } from 'lucide-react'
 
 import { BookOpen, ClipboardCheck } from 'lucide-react'
@@ -25,7 +26,7 @@ export function WelcomeSection() {
             Welcome back, {session?.name ?? 'there'} <span aria-hidden="true"></span>
           </h2>
           <p className="mt-1 max-w-xl text-sm text-slate-500">
-            Here&apos;s what&apos;s happening with your institute website today.
+            Here&apos;s what&apos;s happening with the {SITE_LABEL} today.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">

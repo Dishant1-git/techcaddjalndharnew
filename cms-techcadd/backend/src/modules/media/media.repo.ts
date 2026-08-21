@@ -67,8 +67,16 @@ export async function list(params: ListParams): Promise<ListResult<unknown>> {
     [...whereParams, params.pageSize, offset],
   )
 
+  // How many records show each file, so the library can say "used on 3 pages"
+  // beside it and warn before a delete blanks them. One extra query per
+  // referencing column for the page being viewed, not for the whole table.
+  const counts = await usage(rows.map((row) => String(row.id)))
+
   return {
-    items: rows.map(toMedia),
+    items: rows.map((row) => ({
+      ...(toMedia(row) as Record<string, unknown>),
+      usageCount: counts.get(String(row.id)) ?? 0,
+    })),
     total: Number(totalRow?.total ?? 0),
     page: params.page,
     pageSize: params.pageSize,
@@ -152,6 +160,65 @@ export async function update(id: string, patch: MediaPatch): Promise<unknown> {
  * Only once the rows are gone are the bytes removed, so a failure can never
  * leave a row pointing at a file that no longer exists.
  */
+/**
+ * Every column that points at a media row, read from the schema itself.
+ *
+ * Derived from the foreign keys rather than listed by hand: seventeen columns
+ * reference media today, across courses, pages, blogs, banners, settings and
+ * the two block tables. A hand-kept list would be wrong the first time a table
+ * gained an image, and wrong in the direction that matters — reporting a file
+ * as unused while something still shows it.
+ *
+ * Cached for the life of the process: foreign keys only change with a
+ * migration, and this would otherwise run on every media page load.
+ */
+let referencingColumns: { table: string; column: string }[] | undefined
+
+async function mediaReferences(): Promise<{ table: string; column: string }[]> {
+  if (referencingColumns) return referencingColumns
+
+  const rows = await query<Row>(
+    `SELECT TABLE_NAME AS t, COLUMN_NAME AS c
+       FROM information_schema.KEY_COLUMN_USAGE
+      WHERE TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME = 'media'`,
+  )
+
+  referencingColumns = rows.map((row) => ({ table: String(row.t), column: String(row.c) }))
+  return referencingColumns
+}
+
+/**
+ * How many records use each of these media ids.
+ *
+ * Deleting an image cannot be undone — the row goes and so does the file on
+ * disk — and every reference to it is ON DELETE SET NULL, so the picture simply
+ * disappears from whatever was showing it with nothing to say why. Counting
+ * first is what lets the CMS warn before that happens rather than after.
+ */
+export async function usage(ids: string[]): Promise<Map<string, number>> {
+  const counts = new Map<string, number>(ids.map((id) => [id, 0]))
+  if (ids.length === 0) return counts
+
+  const placeholders = ids.map(() => '?').join(',')
+
+  for (const { table, column } of await mediaReferences()) {
+    // Identifiers come from information_schema, not from a request, so they
+    // cannot carry anything a caller chose.
+    const rows = await query<Row>(
+      'SELECT `' + column + '` AS id, COUNT(*) AS n FROM `' + table + '`' +
+        ' WHERE `' + column + '` IN (' + placeholders + ') GROUP BY `' + column + '`',
+      ids,
+    )
+
+    for (const row of rows) {
+      const id = String(row.id)
+      counts.set(id, (counts.get(id) ?? 0) + Number(row.n))
+    }
+  }
+
+  return counts
+}
+
 export async function remove(ids: string[]): Promise<void> {
   if (ids.length === 0) return
   const placeholders = ids.map(() => '?').join(',')

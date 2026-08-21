@@ -19,11 +19,7 @@ export const BlogFormPage = lazy(() => import('../features/blogs/BlogFormPage'))
 export const BannersListPage = lazy(() => import('../features/banners/BannersListPage'))
 export const BannerFormPage = lazy(() => import('../features/banners/BannerFormPage'))
 
-export const FacultyListPage = lazy(() => import('../features/faculty/FacultyListPage'))
-export const FacultyFormPage = lazy(() => import('../features/faculty/FacultyFormPage'))
 
-export const BranchesListPage = lazy(() => import('../features/branches/BranchesListPage'))
-export const BranchFormPage = lazy(() => import('../features/branches/BranchFormPage'))
 
 export const TestimonialsListPage = lazy(() => import('../features/testimonials/TestimonialsListPage'))
 export const TestimonialFormPage = lazy(() => import('../features/testimonials/TestimonialFormPage'))
@@ -33,6 +29,8 @@ export const AlbumFormPage = lazy(() => import('../features/gallery/AlbumFormPag
 
 export const EnquiriesListPage = lazy(() => import('../features/enquiries/EnquiriesListPage'))
 
+export const TeamListPage = lazy(() => import('../features/team/TeamListPage'))
+export const TeamFormPage = lazy(() => import('../features/team/TeamFormPage'))
 export const MediaLibraryPage = lazy(() => import('../features/media/MediaLibraryPage'))
 export const SeoPage = lazy(() => import('../features/seo/SeoPage'))
 export const SettingsPage = lazy(() => import('../features/settings/SettingsPage'))

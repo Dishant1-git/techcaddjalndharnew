@@ -37,9 +37,25 @@ async function enquiryTrend(): Promise<TrendPoint[]> {
   return Array.from({ length: 7 }, (_, offset) => {
     const date = new Date(today)
     date.setDate(today.getDate() - (6 - offset))
-    const key = date.toISOString().slice(0, 10)
+    const key = localDate(date)
     return { date: key, value: counts.get(key) ?? 0 }
   })
+}
+
+/**
+ * A YYYY-MM-DD key in the server's own timezone.
+ *
+ * Not `toISOString()`, which is UTC. The counts above come from MySQL's
+ * `DATE(created_at)` and the window from `CURDATE()`, both of which are the
+ * server's local date — so a UTC key does not match them wherever the two
+ * disagree. In IST (UTC+5:30) they disagree from 18:30 until midnight every
+ * day: the last bar was labelled yesterday and every enquiry taken that
+ * evening vanished from the chart, then reappeared the next morning.
+ */
+function localDate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${date.getFullYear()}-${month}-${day}`
 }
 
 interface Recent {
@@ -105,15 +121,13 @@ async function contentOverview(): Promise<Record<string, number>> {
  */
 export async function summary(): Promise<unknown> {
   const [
-    courses, enquiries, blogs, branches, faculty, publishedPages,
+    courses, enquiries, blogs, publishedPages,
     newEnquiriesToday, pendingReview, liveCourses,
     trend, overview, activity, recentEnquiries, recentCourses,
   ] = await Promise.all([
     count('SELECT COUNT(*) AS n FROM courses'),
     count('SELECT COUNT(*) AS n FROM enquiries'),
     count('SELECT COUNT(*) AS n FROM blogs'),
-    count('SELECT COUNT(*) AS n FROM branches'),
-    count('SELECT COUNT(*) AS n FROM faculty'),
     count("SELECT COUNT(*) AS n FROM pages WHERE status = 'published'"),
 
     count('SELECT COUNT(*) AS n FROM enquiries WHERE DATE(created_at) = CURDATE()'),
@@ -136,7 +150,7 @@ export async function summary(): Promise<unknown> {
   ])
 
   return {
-    totals: { courses, enquiries, blogs, branches, faculty, publishedPages },
+    totals: { courses, enquiries, blogs, publishedPages },
     today: { newEnquiries: newEnquiriesToday, pendingReview, liveCourses },
     enquiryTrend: trend,
     contentOverview: overview,

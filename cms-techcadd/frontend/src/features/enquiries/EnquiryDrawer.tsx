@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Check, Mail, MessageCircle, Phone, Send } from 'lucide-react'
 
 import { ApiError } from '../../api'
-import { Badge, EnquiryStatusBadge } from '../../components/common/Badge'
+import { EnquiryStatusBadge } from '../../components/common/Badge'
 import { Button } from '../../components/common/Button'
 import { Drawer } from '../../components/common/Drawer'
 import { DatePicker } from '../../components/form/DatePicker'
@@ -115,9 +115,6 @@ export function EnquiryDrawer({
               </Row>
             )}
             <Row label="Course">{enquiry.courseName}</Row>
-            <Row label="Branch">
-              <Badge tone="neutral">{enquiry.branchName}</Badge>
-            </Row>
             <Row label="Source">{sourceLabel(enquiry.source)}</Row>
             <Row label="Received">{formatShortDate(enquiry.createdAt)}</Row>
           </dl>

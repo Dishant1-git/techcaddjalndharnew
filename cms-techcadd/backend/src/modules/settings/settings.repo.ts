@@ -78,7 +78,7 @@ export async function get(profile: Profile): Promise<unknown> {
   return toSettings(row, profile)
 }
 
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set(['tagline', 'contact_email', 'contact_phone', 'address'])
 
 const SCALARS: Record<string, string> = {

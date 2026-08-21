@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -12,16 +12,27 @@ import { Spinner } from '../../components/feedback/Spinner'
 import { DatePicker } from '../../components/form/DatePicker'
 import { FormField } from '../../components/form/FormField'
 import { Input } from '../../components/form/Input'
+import { NumberInput } from '../../components/form/NumberInput'
 import { RichTextEditor } from '../../components/form/RichTextEditor'
 import { Select } from '../../components/form/Select'
 import { SeoFields } from '../../components/form/SeoFields'
 import { SlugInput } from '../../components/form/SlugInput'
 import { FormFooter } from '../../components/layout/FormFooter'
+import { PreviewPane } from '../../components/preview/PreviewPane'
+import { SITE_ORIGIN } from '../../components/preview/previewProtocol'
+import { blocksForPreview } from '../shared/contentBlockSchema'
+import { PageBlocksEditor } from './PageBlocksEditor'
 import { PageHeader } from '../../components/layout/PageHeader'
 import { useToast } from '../../hooks/useToast'
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges'
 import { STATUS_OPTIONS } from '../courses/courseSchema'
-import { emptyPage, pageSchema, TEMPLATE_OPTIONS, type PageFormValues } from './pageSchema'
+import {
+  emptyPage,
+  NAV_PLACEMENT_OPTIONS,
+  pageSchema,
+  TEMPLATE_OPTIONS,
+  type PageFormValues,
+} from './pageSchema'
 import { pageHooks } from './usePages'
 
 export default function PageFormPage() {
@@ -49,18 +60,39 @@ export default function PageFormPage() {
   })
 
   useEffect(() => {
-    if (existing.data) reset(existing.data as PageFormValues)
+    // Layered over emptyPage() so a page saved before a field existed still
+    // opens, instead of failing validation on a box the form does not show.
+    if (existing.data) {
+      reset({ ...emptyPage(), ...(existing.data as Partial<PageFormValues>) })
+    }
   }, [existing.data, reset])
 
   const blocker = useUnsavedChanges(isDirty && !isSubmitting)
   const title = useWatch({ control, name: 'title' })
   const slug = useWatch({ control, name: 'slug' })
   const isSystem = useWatch({ control, name: 'system' })
+  /** Drives whether the menu label and order are worth showing. */
+  const navPlacement = useWatch({ control, name: 'navPlacement' })
   const saving = create.isPending || update.isPending
 
   // Feeds the "where this appears" note — it shows the live URL, which moves
   // with the slug as it is typed.
   const watched = useWatch({ control }) as Record<string, unknown>
+
+  /**
+   * What the preview renders.
+   *
+   * Memoised on the watched values so an unrelated re-render does not post an
+   * identical draft into the frame and restart its animations.
+   */
+  const previewDraft = useMemo(
+    () => ({
+      title: watched.title as string | undefined,
+      content: watched.content as string | undefined,
+      sections: blocksForPreview(watched.sections as PageFormValues['sections']),
+    }),
+    [watched],
+  )
 
   /**
    * Publishes and saves in one action.
@@ -144,8 +176,14 @@ export default function PageFormPage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      {/*
+        Editor on the left, the live website on the right — the same
+        arrangement as the course editor, and the same frame: /preview/page on
+        the public site, rendering the real components over whatever is typed
+        here. Below xl the two stack; a split pane leaves neither usable.
+      */}
+      <div className="grid gap-6 xl:grid-cols-2">
+        <div className="space-y-6">
           <Card flush>
             <CardHeader title="Content" />
             <CardBody className="space-y-5">
@@ -168,7 +206,11 @@ export default function PageFormPage() {
                 />
               </FormField>
 
-              <FormField label="Body" error={errors.content?.message}>
+              <FormField
+                label="Body"
+                description="Used only while this page has no blocks below. Add a block and this is ignored."
+                error={errors.content?.message}
+              >
                 <Controller
                   control={control}
                   name="content"
@@ -179,9 +221,27 @@ export default function PageFormPage() {
               </FormField>
             </CardBody>
           </Card>
-        </div>
 
-        <div className="space-y-6">
+          <Card flush>
+            <CardHeader
+              title="Blocks"
+              subtitle="Build the page in pieces — text, images, video, a call to action. Drag to reorder."
+            />
+            <CardBody>
+              <Controller
+                control={control}
+                name="sections"
+                render={({ field }) => (
+                  <PageBlocksEditor
+                    blocks={field.value ?? []}
+                    onChange={field.onChange}
+                    errors={errors.sections}
+                  />
+                )}
+              />
+            </CardBody>
+          </Card>
+
           <Card flush>
             <CardHeader title="Publishing" />
             <CardBody className="space-y-5">
@@ -192,6 +252,51 @@ export default function PageFormPage() {
               <FormField label="Template" error={errors.template?.message}>
                 <Select {...register('template')} options={TEMPLATE_OPTIONS} />
               </FormField>
+
+              {/*
+                Where the page is linked from.
+
+                Without this a published page is reachable only by typing its
+                address, which no visitor does — so a page could be finished,
+                live, and still invisible.
+              */}
+              <FormField
+                label="Show in"
+                description="Where visitors will find a link to this page."
+                error={errors.navPlacement?.message}
+              >
+                <Select {...register('navPlacement')} options={NAV_PLACEMENT_OPTIONS} />
+              </FormField>
+
+              {navPlacement !== 'none' && (
+                <>
+                  <FormField
+                    label="Menu label"
+                    description="Shorter wording for the menu. Leave blank to use the page title."
+                    error={errors.navLabel?.message}
+                  >
+                    <Input {...register('navLabel')} placeholder={title || 'e.g. Placements'} />
+                  </FormField>
+
+                  <FormField
+                    label="Menu order"
+                    description="Lower numbers come first."
+                    error={errors.navOrder?.message}
+                  >
+                    <Controller
+                      control={control}
+                      name="navOrder"
+                      render={({ field }) => (
+                        <NumberInput
+                          value={field.value ?? 0}
+                          onChange={(value) => field.onChange(value === '' ? 0 : value)}
+                          min={0}
+                        />
+                      )}
+                    />
+                  </FormField>
+                </>
+              )}
 
               <FormField label="Publish date" description="Leave blank to publish immediately.">
                 <Controller
@@ -222,6 +327,23 @@ export default function PageFormPage() {
             )}
           />
         </div>
+
+        {/*
+          Sticky, and its own scroll container, so the page under review stays
+          in view while the editor works down the form. `liveUrl` is only
+          offered once the page exists and is published — a link that would 404
+          is worse than no link.
+        */}
+        <PreviewPane
+          kind="page"
+          draft={previewDraft}
+          liveUrl={
+            isEdit && watched.status === 'published' && slug
+              ? `${SITE_ORIGIN}/${slug}`
+              : undefined
+          }
+          className="h-[70vh] xl:sticky xl:top-4 xl:h-[calc(100vh-7rem)]"
+        />
       </div>
 
       <FormFooter

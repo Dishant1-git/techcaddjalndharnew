@@ -13,8 +13,6 @@ import {
   AlbumFormPage,
   BannerFormPage,
   BannersListPage,
-  BranchesListPage,
-  BranchFormPage,
   BlogFormPage,
   BlogsListPage,
   CategoriesListPage,
@@ -23,8 +21,6 @@ import {
   CoursesListPage,
   ForgotPasswordPage,
   EnquiriesListPage,
-  FacultyFormPage,
-  FacultyListPage,
   GalleryListPage,
   Lazy,
   LoginPage,
@@ -34,6 +30,8 @@ import {
   ResetPasswordPage,
   SeoPage,
   SettingsPage,
+  TeamFormPage,
+  TeamListPage,
   TestimonialFormPage,
   FaqsListPage,
   FaqFormPage,
@@ -42,17 +40,29 @@ import {
   TestimonialsListPage,
 } from './lazyPages'
 
-/** Modules that have been built — everything else still gets the stand-in. */
+/**
+ * Modules that have been built — everything else still gets the stand-in.
+ *
+ * This list is the one thing here that has to be kept in step by hand, and it
+ * had already drifted: /faqs and /reviews were built and shipped but never
+ * added, so each got a second, unreachable Placeholder route registered
+ * underneath the real one. Harmless only because React Router takes the first
+ * match — the next module added below would have silently shadowed itself.
+ *
+ * Asserted against the real routes at the bottom of this file, so drifting
+ * again fails loudly in development instead of quietly.
+ */
 const BUILT_PATHS = new Set([
   '/courses',
   '/categories',
   '/pages',
   '/blogs',
   '/banners',
-  '/faculty',
-  '/branches',
+  '/team',
   '/testimonials',
   '/gallery',
+  '/faqs',
+  '/reviews',
   '/enquiries',
   '/media',
   '/seo',
@@ -76,6 +86,30 @@ function crudRoutes(segment: string, list: ReactElement, form: ReactElement) {
  * A data router, not `<BrowserRouter>` — `useBlocker`, which powers the
  * unsaved-changes guard on every form, only exists on this router.
  */
+/**
+ * Every sidebar entry must resolve to something.
+ *
+ * A nav item whose path is neither built nor in the placeholder list renders
+ * the catch-all — a 404 reached by clicking the menu, which is the one place a
+ * 404 should be impossible. Checked in development only; the cost of the
+ * assertion is not worth shipping, and a production build has already been
+ * through it.
+ */
+if (import.meta.env.DEV) {
+  const routed = new Set([
+    ...BUILT_PATHS,
+    ...placeholderItems.map((item) => item.path),
+    '/',
+  ])
+  const orphans = navItems.filter((item) => !routed.has(item.path))
+  if (orphans.length > 0) {
+    console.error(
+      'Sidebar entries with no route — these will 404:',
+      orphans.map((item) => `${item.label} (${item.path})`).join(', '),
+    )
+  }
+}
+
 export const router = createBrowserRouter([
   { path: 'login', element: <Lazy><LoginPage /></Lazy> },
   { path: 'forgot-password', element: <Lazy><ForgotPasswordPage /></Lazy> },
@@ -94,8 +128,7 @@ export const router = createBrowserRouter([
       ...crudRoutes('pages', <PagesListPage />, <PageFormPage />),
       ...crudRoutes('blogs', <BlogsListPage />, <BlogFormPage />),
       ...crudRoutes('banners', <BannersListPage />, <BannerFormPage />),
-      ...crudRoutes('faculty', <FacultyListPage />, <FacultyFormPage />),
-      ...crudRoutes('branches', <BranchesListPage />, <BranchFormPage />),
+      ...crudRoutes('team', <TeamListPage />, <TeamFormPage />),
       ...crudRoutes('testimonials', <TestimonialsListPage />, <TestimonialFormPage />),
       ...crudRoutes('gallery', <GalleryListPage />, <AlbumFormPage />),
       ...crudRoutes('faqs', <FaqsListPage />, <FaqFormPage />),

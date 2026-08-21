@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-/** An empty string is kept — see the note in faculty.schema.ts. */
+/** An empty string is kept — see the note in blogs.schema.ts. */
 const optionalId = z.string().optional()
 
 /**
@@ -25,8 +25,6 @@ const base = z.object({
   email: z.union([z.email('Enter a valid email address.'), z.literal('')]).optional(),
   courseId: optionalId,
   courseName: z.string().max(200),
-  branchId: optionalId,
-  branchName: z.string().max(120),
   source: z.enum(['website', 'walk-in', 'phone', 'referral', 'social']),
   /** Where this specific submission came from — see migration 011. */
   formType: z.string().max(32).optional(),
@@ -44,7 +42,6 @@ const base = z.object({
 
 export const enquirySchema = base.extend({
   courseName: z.string().max(200).default(''),
-  branchName: z.string().max(120).default(''),
   source: z.enum(['website', 'walk-in', 'phone', 'referral', 'social']).default('website'),
   status: z.enum(['new', 'contacted', 'follow-up', 'converted', 'closed']).default('new'),
   notes: z.array(enquiryNote).default([]),

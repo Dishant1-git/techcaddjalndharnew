@@ -5,7 +5,7 @@
  * timeout and the caching policy live: a marketing page must not hang because
  * the CMS is slow, and must not hit it on every request either.
  */
-const BASE = (process.env.CMS_API_URL ?? "http://localhost:4000/api").replace(/\/$/, "")
+const BASE = (process.env.CMS_API_URL ?? "http://localhost:4001/api").replace(/\/$/, "")
 
 /**
  * How long a content response may be reused before it is fetched again.
@@ -31,10 +31,35 @@ export const CMS_CACHE_TAG = "cms"
 const TIMEOUT_MS = Number(process.env.CMS_TIMEOUT_MS ?? 4000)
 
 export class CmsUnavailableError extends Error {
-  constructor(message: string, readonly cause?: unknown) {
+  /**
+   * The HTTP status the CMS replied with, when it replied at all.
+   *
+   * Undefined means it did not: a timeout, a refused connection, a DNS
+   * failure. That distinction decides whether a route may render "not found".
+   * Without it every failure looked identical, so a CMS that was merely slow
+   * produced a hard 404 for a page that exists — which is what happens on a
+   * cold dev server, where the first request compiles the route and the fetch
+   * runs out of its four seconds.
+   */
+  constructor(
+    message: string,
+    readonly cause?: unknown,
+    readonly status?: number,
+  ) {
     super(message)
     this.name = "CmsUnavailableError"
   }
+}
+
+/**
+ * Whether a failure means the record is genuinely absent.
+ *
+ * Only a 404 from the CMS does. Everything else — a timeout, a 500, a refused
+ * connection — means we do not know, and "we do not know" must not be shown to
+ * a visitor as "this page does not exist".
+ */
+export function isCmsNotFound(error: unknown): boolean {
+  return error instanceof CmsUnavailableError && error.status === 404
 }
 
 interface FetchOptions {
@@ -67,6 +92,8 @@ async function cmsFetch<T>(path: string, options: FetchOptions = {}): Promise<T>
       const detail = await response.text().catch(() => "")
       throw new CmsUnavailableError(
         `CMS responded ${response.status} for ${path}${detail ? `: ${detail.slice(0, 200)}` : ""}`,
+        undefined,
+        response.status,
       )
     }
 
@@ -119,9 +146,10 @@ export interface CmsGalleryAlbum {
   slug: string
   eventDate?: string
   cover?: CmsMedia
-  images: { id: string; media: CmsMedia; caption?: string }[]
+  images: { id: string; media: CmsMedia; caption?: string; linkUrl?: string }[]
 }
 
+import type { ContentBlock } from "./content-blocks"
 import type { CourseBlockSource } from "./course-spec-from-cms"
 
 export interface CmsCourse {
@@ -138,10 +166,8 @@ export interface CmsCourse {
   shortDescription: string
   description: string
   duration: string
-  fee: number
-  discountedFee?: number
-  level: string
-  mode: string
+  level?: string
+  mode?: string
   thumbnail?: CmsMedia
   highlights: string[]
   /**
@@ -216,7 +242,10 @@ export interface CmsPage {
   title: string
   slug: string
   template: string
+  /** The legacy single-field body. Rendered when the page has no blocks. */
   content: string
+  /** Blocks the editor arranged, in order. */
+  sections?: ContentBlock[]
   seo?: {
     metaTitle?: string
     metaDescription?: string
@@ -275,6 +304,16 @@ export const getCourses = (limit = 50) =>
 
 export const getPage = (slug: string) =>
   cmsFetch<CmsPage>(`/public/pages/${encodeURIComponent(slug)}`)
+
+export interface CmsNavPage {
+  slug: string
+  label: string
+  placement: "header" | "footer"
+}
+
+/** Pages an editor asked to be linked from the site's navigation. */
+export const getNavPages = () =>
+  cmsFetch<ListResponse<CmsNavPage>>("/public/nav-pages")
 
 export const getRedirects = () =>
   cmsFetch<ListResponse<CmsRedirect>>("/public/redirects", { revalidate: 300 })

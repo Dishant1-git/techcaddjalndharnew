@@ -4,12 +4,12 @@ import { Eye, Inbox } from 'lucide-react'
 import { useRecentEnquiries } from '../../features/dashboard/useDashboard'
 import { formatShortDate } from '../../lib/format'
 import type { EnquiryRecord } from '../../types'
-import { Badge, EnquiryStatusBadge } from '../common/Badge'
+import { EnquiryStatusBadge } from '../common/Badge'
 import { Button } from '../common/Button'
 import { Card, CardHeader } from '../common/Card'
 import { EmptyState } from '../common/EmptyState'
 
-const columns = ['Student Name', 'Phone', 'Course', 'Branch', 'Status', 'Date', 'Action'] as const
+const columns = ['Student Name', 'Phone', 'Course', 'Status', 'Date', 'Action'] as const
 
 export function RecentEnquiries() {
   const { data } = useRecentEnquiries()
@@ -19,7 +19,7 @@ export function RecentEnquiries() {
     <Card flush>
       <CardHeader
         title="Recent Enquiries"
-        subtitle="Latest admission enquiries across all branches"
+        subtitle="Latest admission enquiries"
         action={
           <Link to="/enquiries">
             <Button variant="secondary" size="sm">
@@ -81,9 +81,6 @@ function EnquiriesTable({ rows }: { rows: EnquiryRecord[] }) {
                   </a>
                 </td>
                 <td className="px-5 py-3.5 text-slate-600">{enquiry.courseName}</td>
-                <td className="px-5 py-3.5">
-                  <Badge tone="neutral">{enquiry.branchName}</Badge>
-                </td>
                 <td className="px-5 py-3.5">
                   <EnquiryStatusBadge status={enquiry.status} />
                 </td>

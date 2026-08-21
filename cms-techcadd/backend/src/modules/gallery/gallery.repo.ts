@@ -52,7 +52,7 @@ async function loadImages(albumIds: string[]): Promise<Map<string, unknown[]>> {
   for (const id of albumIds) map.set(id, [])
 
   const rows = await query<Row>(
-    `SELECT gi.id, gi.album_id, gi.caption, gi.position,
+    `SELECT gi.id, gi.album_id, gi.caption, gi.link_url, gi.position,
             m.id AS media_id, m.url, m.alt, m.width, m.height
        FROM gallery_images gi
        JOIN media m ON m.id = gi.media_id
@@ -72,6 +72,7 @@ async function loadImages(albumIds: string[]): Promise<Map<string, unknown[]>> {
         height: row.height === null ? undefined : Number(row.height),
       },
       caption: row.caption ?? undefined,
+      linkUrl: row.link_url ?? undefined,
       order: Number(row.position),
     })
   }
@@ -156,9 +157,16 @@ async function writeImages(
 
   for (const [index, image] of images.entries()) {
     await connection.execute<ResultSetHeader>(
-      `INSERT INTO gallery_images (id, album_id, media_id, caption, position)
-       VALUES (?, ?, ?, ?, ?)`,
-      [toStorableId(image.id), albumId, image.media.id, image.caption || null, index] as ExecuteValues,
+      `INSERT INTO gallery_images (id, album_id, media_id, caption, link_url, position)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        toStorableId(image.id),
+        albumId,
+        image.media.id,
+        image.caption || null,
+        image.linkUrl || null,
+        index,
+      ] as ExecuteValues,
     )
   }
 }
@@ -194,7 +202,7 @@ export async function create(input: AlbumInput): Promise<unknown> {
   return get(id)
 }
 
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set(['cover_id', 'event_date', 'description'])
 
 export async function update(id: string, patch: AlbumPatch): Promise<unknown> {

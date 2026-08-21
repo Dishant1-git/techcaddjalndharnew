@@ -1,3 +1,4 @@
+import type { ContentBlock } from "./content-blocks"
 import { generateContent } from "./course-content"
 import { COURSE_SPECS, type CourseSpec } from "./course-specs"
 import {
@@ -100,18 +101,10 @@ export type HeroImage = {
  * position, so "put this after the syllabus" survives the template gaining or
  * losing a section — which an index would not.
  */
-export type CourseBlock = {
-  id?: string
-  type: "rich-text" | "image" | "video" | "cta"
-  title?: string
-  body?: string
-  media?: { id: string; url: string; alt: string; width?: number; height?: number }
-  linkUrl?: string
-  linkLabel?: string
-  linkTarget: "same" | "new"
+export type CourseBlock = ContentBlock & {
+  /** The generated section this block sits against, e.g. "overview". */
   anchor: string
   placement: "before" | "after"
-  visible: boolean
 }
 
 export type CoursePage = {
@@ -3028,7 +3021,6 @@ function factsFor(entry: CatalogueEntry, base: Fact[], spec?: CourseSpec): Fact[
   const overrides: Fact[] = []
   if (spec.duration) overrides.push({ label: 'Duration', value: spec.duration })
   if (spec.mode) overrides.push({ label: 'Mode', value: spec.mode })
-  if (spec.fee) overrides.push({ label: 'Fee', value: spec.fee })
   if (spec.level) overrides.push({ label: 'Level', value: spec.level })
   if (overrides.length === 0) return base
 
@@ -3036,7 +3028,7 @@ function factsFor(entry: CatalogueEntry, base: Fact[], spec?: CourseSpec): Fact[
   const added = overrides.filter((o) => !base.some((fact) => fact.label === o.label))
 
   // Four is what the strip is laid out for, so something has to give. What
-  // gives is the generic copy: a fee somebody typed into the CMS beats
+  // gives is the generic copy: a duration somebody typed into the CMS beats
   // "Eligibility: 12th Pass Onward", which is the same on every page.
   const kept = replaced.filter((fact) => overrides.some((o) => o.label === fact.label))
   const generic = replaced.filter((fact) => !overrides.some((o) => o.label === fact.label))
@@ -3222,7 +3214,7 @@ export interface PageLayout {
  * CMS existed, and the layering above puts all of it on top of the generated
  * content. That is right for the sections nobody can edit yet — the projects
  * bento, the reviews, the case pitch — and wrong for the handful of fields
- * that now have a box in the CMS: typing a new tagline, fee or course name
+ * that now have a box in the CMS: typing a new tagline, duration or course name
  * appeared to save and then changed nothing on the page, which is the worst
  * failure a CMS can have.
  *
@@ -3249,7 +3241,7 @@ function withCmsPrecedence(
 
   // Any one of the four having been typed means the strip was curated, and
   // factsFor has already merged them over the segment's generic facts.
-  if (['duration', 'mode', 'fee', 'level'].some((f) => from.has(f as never))) {
+  if (['duration', 'mode', 'level'].some((f) => from.has(f as never))) {
     out.facts = generated.facts
   }
 

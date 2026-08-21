@@ -209,7 +209,7 @@ export default function CoursesListPage() {
           rows={query.data?.items ?? []}
           columns={columns}
           getRowId={(course) => course.id}
-          caption="All courses with their category, fee, mode and status"
+          caption="All courses with their category, duration, mode and status"
           loading={query.isLoading}
           error={query.error as Error | null}
           onRetry={() => query.refetch()}

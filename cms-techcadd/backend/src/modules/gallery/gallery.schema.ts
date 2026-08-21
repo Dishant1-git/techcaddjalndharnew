@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { blockLinkUrl } from '../shared/contentBlock.schema.js'
+
 /**
  * Optional image slots accept null as well as being absent.
  *
@@ -25,6 +27,14 @@ const galleryImage = z.object({
   id: z.string().optional(),
   media: mediaRef,
   caption: z.string().optional(),
+  /**
+   * Where the photograph goes when clicked, if anywhere.
+   *
+   * The same rule content blocks use: a path on this site, or a full http(s)
+   * address, and nothing else — which is what keeps `javascript:` out of an
+   * href. Empty means the tile is not a link.
+   */
+  linkUrl: blockLinkUrl.optional(),
   order: z.number().default(0),
 })
 

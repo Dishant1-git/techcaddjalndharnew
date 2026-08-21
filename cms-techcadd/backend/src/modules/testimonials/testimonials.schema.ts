@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-/** An empty string is kept — see the note in faculty.schema.ts. */
+/** An empty string is kept — see the note in blogs.schema.ts. */
 const optionalId = z.string().optional()
 
 /**

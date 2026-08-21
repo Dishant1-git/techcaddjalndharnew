@@ -85,9 +85,20 @@ export function MediaBrowser({ mode, multiple = false, onConfirm }: MediaBrowser
 
   async function deleteSelected() {
     const label = `${selectedIds.length} ${selectedIds.length === 1 ? 'file' : 'files'}`
+
+    // Counted from what the server reported for the files actually selected,
+    // so the warning names a number rather than a possibility.
+    const inUse = (items ?? [])
+      .filter((item) => selectedIds.includes(item.id))
+      .reduce((sum, item) => sum + (item.usageCount ?? 0), 0)
+
     const confirmed = await confirm({
       title: `Delete ${label}?`,
-      description: 'Anything still referencing these files will show a broken image.',
+      description: inUse
+        ? `${inUse} ${inUse === 1 ? 'record shows' : 'records show'} ${
+            selectedIds.length === 1 ? 'this file' : 'these files'
+          }. Deleting cannot be undone, and the picture will stop appearing there — the page keeps working, it simply loses the image.`
+        : 'Nothing is using these files. Deleting cannot be undone.',
       confirmLabel: 'Delete',
     })
     if (!confirmed) return
@@ -242,8 +253,26 @@ export function MediaBrowser({ mode, multiple = false, onConfirm }: MediaBrowser
                       </span>
                     )}
 
-                    <span className="block truncate px-2 py-1.5 text-xs text-slate-600">
+                    <span className="block truncate px-2 pt-1.5 text-xs text-slate-600">
                       {item.filename}
+                    </span>
+
+                    {/*
+                      Whether anything is showing this file.
+
+                      "Unused" is the useful half: it is the only safe thing to
+                      delete, and without it the library gives no way to tell a
+                      spare upload from the site logo.
+                    */}
+                    <span
+                      className={
+                        'block truncate px-2 pb-1.5 text-[11px] ' +
+                        (item.usageCount ? 'text-slate-400' : 'text-amber-600')
+                      }
+                    >
+                      {item.usageCount
+                        ? `Used ${item.usageCount}×`
+                        : 'Unused'}
                     </span>
                   </button>
 

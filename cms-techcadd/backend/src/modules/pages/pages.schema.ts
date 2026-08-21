@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { pageSectionSchema } from '../shared/contentBlock.schema.js'
+
 /**
  * Optional image slots accept null as well as being absent.
  *
@@ -36,6 +38,11 @@ const base = z.object({
     .min(1, 'Slug is required.')
     .regex(/^[a-z0-9-]+$/, 'Use lowercase letters, numbers and hyphens only.'),
   template: z.string().min(1, 'Choose a template.'),
+  /** Where the website links to this page. 'none' means nowhere. */
+  navPlacement: z.enum(['none', 'header', 'footer']),
+  /** Shorter wording for the menu. Falls back to the title. */
+  navLabel: z.string().max(80).optional(),
+  navOrder: z.number().int(),
   content: z.string(),
   // The editor sends '' when the date is cleared, so accept it alongside a date.
   publishDate: z
@@ -44,14 +51,19 @@ const base = z.object({
   seo,
   status: z.enum(['published', 'draft', 'review']),
   system: z.boolean(),
+  /** Blocks the editor arranged, in the order they render. */
+  sections: z.array(pageSectionSchema),
 })
 
 export const pageSchema = base.extend({
   template: z.string().min(1, 'Choose a template.').default('default'),
+  navPlacement: z.enum(['none', 'header', 'footer']).default('none'),
+  navOrder: z.number().int().default(0),
   content: z.string().default(''),
   seo: seo.default({ keywords: [] }),
   status: z.enum(['published', 'draft', 'review']).default('draft'),
   system: z.boolean().default(false),
+  sections: z.array(pageSectionSchema).default([]),
 })
 
 export const pagePatchSchema = base.partial()

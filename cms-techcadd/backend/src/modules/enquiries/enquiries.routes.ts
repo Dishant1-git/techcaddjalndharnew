@@ -14,7 +14,17 @@ import {
 
 export const enquiriesRouter = Router()
 
-enquiriesRouter.use(requireAuth)
+/*
+  Admin for the whole module, reading included.
+
+  Every other module gates only its mutating routes, because reading published
+  content is harmless. This one is different: an enquiry is a prospective
+  student's name, phone number and email, submitted to the institute and not to
+  whoever happens to have a CMS login. Somebody whose job is uploading blog
+  posts has no reason to hold the lead list, so the gate goes on the router
+  rather than on the writes.
+*/
+enquiriesRouter.use(requireAuth, requireRole('admin'))
 
 enquiriesRouter.get(
   '/',

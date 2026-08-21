@@ -13,7 +13,7 @@ import { ScrollToTop } from "@/components/scroll-to-top"
 import { SiteChrome } from "@/components/site-chrome"
 import { jsonLd } from "@/lib/json-ld"
 import { organisationSchema, SITE } from "@/lib/site"
-import { loadBanners, loadContact } from "@/lib/content"
+import { loadBanners, loadContact, loadNavPages } from "@/lib/content"
 import "./globals.css"
 
 /*
@@ -79,6 +79,10 @@ export default async function RootLayout({
   // moment is one more than anybody wants.
   const [promo] = await loadBanners("popup")
 
+  // Pages an editor asked to be linked from the header. The footer reads its
+  // own; both come from the same endpoint, cached per render.
+  const navPages = await loadNavPages()
+
   return (
     /*
       suppressHydrationWarning is required, not cosmetic: the inline script
@@ -135,7 +139,7 @@ export default async function RootLayout({
           <Preloader />
         </SiteChrome>
         <SiteChrome>
-          <Navbar contact={contact} />
+          <Navbar contact={contact} pages={navPages.header} />
         </SiteChrome>
         {children}
         <SiteChrome>

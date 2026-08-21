@@ -14,8 +14,6 @@ import { Checkbox } from '../../components/form/Checkbox'
 import { FormField } from '../../components/form/FormField'
 import { ImageField } from '../../components/form/ImageField'
 import { Input } from '../../components/form/Input'
-import { MultiSelect } from '../../components/form/MultiSelect'
-import { NumberInput } from '../../components/form/NumberInput'
 import { RichTextEditor } from '../../components/form/RichTextEditor'
 import { Select } from '../../components/form/Select'
 import { SeoFields } from '../../components/form/SeoFields'
@@ -64,17 +62,13 @@ const FIELD_LABELS: Record<string, string> = {
   shortDescription: 'Short description',
   description: 'Full description',
   duration: 'Duration',
-  fee: 'Fee',
-  discountedFee: 'Discounted fee',
   level: 'Level',
   mode: 'Delivery mode',
   thumbnail: 'Thumbnail',
-  gallery: 'Gallery',
   syllabus: 'Syllabus',
   highlights: 'Highlights',
   eligibility: 'Eligibility',
   certification: 'Certification',
-  branchIds: 'Branches',
   featured: 'Featured course',
   seo: 'SEO',
   status: 'Status',
@@ -89,7 +83,7 @@ export default function CourseFormPage() {
   const existing = useCourse(id)
   const create = useCreateCourse()
   const update = useUpdateCourse()
-  const { categoryOptions, branchOptions } = useCourseReferenceData()
+  const { categoryOptions } = useCourseReferenceData()
 
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
@@ -487,11 +481,10 @@ export default function CourseFormPage() {
                         hidden={hiddenField.value ?? []}
                         onSectionsChange={sectionsField.onChange}
                         onHiddenChange={hiddenField.onChange}
-                        errors={
-                          errors.sections as unknown as
-                            | Record<number, Record<string, string | undefined>>
-                            | undefined
-                        }
+                        // No cast: these really are FieldError objects, and
+                        // pretending they were strings is what put one into
+                        // JSX as a child.
+                        errors={errors.sections}
                       />
                     )}
                   />
@@ -516,40 +509,6 @@ export default function CourseFormPage() {
 
               <FormField label="Level">
                 <Select {...register('level')} options={LEVEL_OPTIONS} />
-              </FormField>
-
-              <FormField label="Full fee" required error={errors.fee?.message}>
-                <Controller
-                  control={control}
-                  name="fee"
-                  render={({ field }) => (
-                    <NumberInput
-                      value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value === '' ? undefined : value)}
-                      min={0}
-                      prefix="₹"
-                    />
-                  )}
-                />
-              </FormField>
-
-              <FormField
-                label="Discounted fee"
-                description="Leave blank if there is no offer."
-                error={errors.discountedFee?.message}
-              >
-                <Controller
-                  control={control}
-                  name="discountedFee"
-                  render={({ field }) => (
-                    <NumberInput
-                      value={field.value ?? ''}
-                      onChange={(value) => field.onChange(value === '' ? undefined : value)}
-                      min={0}
-                      prefix="₹"
-                    />
-                  )}
-                />
               </FormField>
 
               <FormField label="Highlights" className="sm:col-span-2">
@@ -650,24 +609,6 @@ export default function CourseFormPage() {
                       options={categoryOptions}
                       placeholder="Uncategorised"
                       disabled={categoryOptions.length === 0}
-                    />
-                  )}
-                />
-              </FormField>
-
-              <FormField
-                label="Branches offered at"
-                description={branchOptions.length === 0 ? 'No branches exist yet.' : undefined}
-              >
-                <Controller
-                  control={control}
-                  name="branchIds"
-                  render={({ field }) => (
-                    <MultiSelect
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={branchOptions}
-                      placeholder="All branches"
                     />
                   )}
                 />

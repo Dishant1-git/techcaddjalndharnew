@@ -13,7 +13,9 @@
     "db:seed": "tsx src/db/seed.ts",
     "db:inspect": "tsx src/db/inspect.ts",
     "test": "node scripts/prepare-test-db.mjs && vitest run",
-    "test:watch": "node scripts/prepare-test-db.mjs && vitest"
+    "test:watch": "node scripts/prepare-test-db.mjs && vitest",
+    "db:copy-to-jalandhar": "node scripts/copy-to-jalandhar-db.mjs",
+    "db:import-courses": "tsx scripts/import-site-courses.ts"
   },
   "dependencies": {
     "argon2": "^0.44.0",

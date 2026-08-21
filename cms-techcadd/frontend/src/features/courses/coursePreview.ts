@@ -1,3 +1,4 @@
+import { blocksForPreview } from '../shared/contentBlockSchema'
 import type { CourseFormValues } from './courseSchema'
 
 /**
@@ -20,8 +21,6 @@ export interface CoursePreviewDraft {
   highlights: string[]
   salary?: string
   duration?: string
-  fee: number
-  discountedFee?: number
   level: string
   mode: string
   overview?: string
@@ -53,15 +52,13 @@ export function toPreviewDraft(
     highlights: values.highlights ?? [],
     salary: values.salary || undefined,
     duration: values.duration || undefined,
-    fee: values.fee ?? 0,
-    discountedFee: values.discountedFee,
     level: values.level ?? 'beginner',
     mode: values.mode ?? 'offline',
     overview: values.overview || undefined,
     videoUrl: values.videoUrl || undefined,
     videoTitle: values.videoTitle || undefined,
     hiddenSections: values.hiddenSections ?? [],
-    sections: values.sections ?? [],
+    sections: blocksForPreview(values.sections),
   }
 }
 

@@ -11,7 +11,7 @@ export const PREVIEW_SCROLL = 'techcadd:preview-scroll'
 /** Sent back by the frame: things about the rendered page worth surfacing. */
 export const PREVIEW_NOTICE = 'techcadd:preview-notice'
 
-export type PreviewKind = 'course'
+export type PreviewKind = 'course' | 'page'
 
 /** Where the public site is served from. Must match CMS_ADMIN_ORIGIN's peer. */
 export const SITE_ORIGIN = (

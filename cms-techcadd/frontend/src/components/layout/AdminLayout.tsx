@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
+import { CMS_NAME } from '../../config/brand'
 import { getPageTitle } from '../../data/navigation'
 import { cn } from '../../lib/cn'
 import { SIDEBAR_STORAGE_KEY, SidebarContext } from '../../providers/sidebarContext'
@@ -32,6 +33,19 @@ export function AdminLayout() {
       return next
     })
   }, [])
+
+  /*
+    Keeps the browser tab in step with the route.
+
+    A single-page app changes the address without changing the title, so every
+    tab read "techcadd Jalandhar CMS" whatever you were doing. Naming the
+    section matters most to the person with this open beside the live site and
+    the other branch's CMS — three tabs that otherwise look identical.
+  */
+  useEffect(() => {
+    const section = getPageTitle(pathname)
+    document.title = section === 'Dashboard' ? CMS_NAME : `${section} · ${CMS_NAME}`
+  }, [pathname])
 
   // Escape closes the drawer, and the page behind it must not scroll.
   useEffect(() => {

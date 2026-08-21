@@ -9,7 +9,7 @@ export interface SearchHit {
 }
 
 export interface SearchGroup {
-  key: 'courses' | 'blogs' | 'pages' | 'faculty' | 'enquiries'
+  key: 'courses' | 'blogs' | 'pages' | 'enquiries'
   hits: SearchHit[]
 }
 
@@ -24,7 +24,7 @@ export interface SearchGroup {
 export async function search(term: string): Promise<SearchGroup[]> {
   const like = `%${term}%`
 
-  const [courses, blogs, pages, faculty, enquiries] = await Promise.all([
+  const [courses, blogs, pages, enquiries] = await Promise.all([
     query<Row>(
       `SELECT id, title AS label, duration AS detail FROM courses
         WHERE title LIKE ? OR slug LIKE ? ORDER BY updated_at DESC LIMIT ?`,
@@ -38,11 +38,6 @@ export async function search(term: string): Promise<SearchGroup[]> {
     query<Row>(
       `SELECT id, title AS label, CONCAT('/', slug) AS detail FROM pages
         WHERE title LIKE ? OR slug LIKE ? ORDER BY updated_at DESC LIMIT ?`,
-      [like, like, PER_GROUP],
-    ),
-    query<Row>(
-      `SELECT id, name AS label, designation AS detail FROM faculty
-        WHERE name LIKE ? OR designation LIKE ? ORDER BY updated_at DESC LIMIT ?`,
       [like, like, PER_GROUP],
     ),
     query<Row>(
@@ -65,7 +60,6 @@ export async function search(term: string): Promise<SearchGroup[]> {
       { key: 'courses', hits: toHits(courses) },
       { key: 'blogs', hits: toHits(blogs) },
       { key: 'pages', hits: toHits(pages) },
-      { key: 'faculty', hits: toHits(faculty) },
       { key: 'enquiries', hits: toHits(enquiries) },
     ] as SearchGroup[]
   ).filter((group) => group.hits.length > 0)

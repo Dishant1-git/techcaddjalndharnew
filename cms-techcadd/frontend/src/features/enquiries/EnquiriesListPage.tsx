@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Download, Inbox, MoreHorizontal, Trash2, UserPlus } from 'lucide-react'
 
 import { ApiError, enquiriesApi } from '../../api'
-import { Badge, EnquiryStatusBadge } from '../../components/common/Badge'
+import { EnquiryStatusBadge } from '../../components/common/Badge'
 import { Button } from '../../components/common/Button'
 import { Card } from '../../components/common/Card'
 import { DropdownItem, DropdownMenu, DropdownLabel } from '../../components/common/DropdownMenu'
@@ -20,12 +20,11 @@ import { formatShortDate } from '../../lib/format'
 import type { EnquiryRecord, EnquiryStatus } from '../../types'
 import { EnquiryDrawer } from './EnquiryDrawer'
 import { sourceLabel, SOURCE_OPTIONS, STATUS_OPTIONS, statusLabel } from './enquiryMeta'
-import { branchRefHooks, courseRefHooks, enquiryHooks, userRefHooks } from './useEnquiries'
+import { courseRefHooks, enquiryHooks, userRefHooks } from './useEnquiries'
 
 const FILTER_KEYS = [
   'status',
   'source',
-  'branchId',
   'courseId',
   'assigneeId',
   'createdAtFrom',
@@ -38,7 +37,6 @@ const CSV_COLUMNS: CsvColumn<EnquiryRecord>[] = [
   { header: 'Phone', value: (row) => row.phone },
   { header: 'Email', value: (row) => row.email ?? '' },
   { header: 'Course', value: (row) => row.courseName },
-  { header: 'Branch', value: (row) => row.branchName },
   { header: 'Source', value: (row) => sourceLabel(row.source) },
   { header: 'Status', value: (row) => statusLabel(row.status) },
   { header: 'Follow-up', value: (row) => row.followUpDate ?? '' },
@@ -64,11 +62,9 @@ export default function EnquiriesListPage() {
   const remove = enquiryHooks.useRemove()
 
   const courses = courseRefHooks.useList({ page: 1, pageSize: 200 })
-  const branches = branchRefHooks.useList({ page: 1, pageSize: 200 })
   const users = userRefHooks.useList({ page: 1, pageSize: 200 })
 
   const courseOptions = (courses.data?.items ?? []).map((c) => ({ value: c.id, label: c.title }))
-  const branchOptions = (branches.data?.items ?? []).map((b) => ({ value: b.id, label: b.name }))
   const assigneeOptions = (users.data?.items ?? []).map((u) => ({ value: u.id, label: u.name }))
 
   const rows = query.data?.items ?? []
@@ -95,12 +91,6 @@ export default function EnquiriesListPage() {
         ),
       },
       { id: 'courseName', header: 'Course', hideBelow: 'lg', cell: (row) => row.courseName },
-      {
-        id: 'branchName',
-        header: 'Branch',
-        hideBelow: 'xl',
-        cell: (row) => <Badge tone="neutral">{row.branchName}</Badge>,
-      },
       {
         id: 'source',
         header: 'Source',
@@ -144,7 +134,6 @@ export default function EnquiriesListPage() {
     const labels: Record<string, string> = {
       status: 'Status',
       source: 'Source',
-      branchId: 'Branch',
       courseId: 'Course',
       assigneeId: 'Assigned',
       createdAtFrom: 'From',
@@ -154,7 +143,6 @@ export default function EnquiriesListPage() {
     const lookups: Record<string, { value: string; label: string }[]> = {
       status: STATUS_OPTIONS,
       source: SOURCE_OPTIONS,
-      branchId: branchOptions,
       courseId: courseOptions,
       assigneeId: assigneeOptions,
     }
@@ -268,16 +256,6 @@ export default function EnquiriesListPage() {
                 value={list.filters.source ?? ''}
                 onChange={(event) => list.setFilter('source', event.target.value || undefined)}
               />
-              {branchOptions.length > 0 && (
-                <Select
-                  className="h-9 w-auto min-w-32"
-                  aria-label="Filter by branch"
-                  options={branchOptions}
-                  placeholder="All branches"
-                  value={list.filters.branchId ?? ''}
-                  onChange={(event) => list.setFilter('branchId', event.target.value || undefined)}
-                />
-              )}
               {courseOptions.length > 0 && (
                 <Select
                   className="h-9 w-auto min-w-36"

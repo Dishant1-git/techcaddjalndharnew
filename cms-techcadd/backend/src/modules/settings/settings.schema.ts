@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-/** Optional image slots accept null — see the note in faculty.schema.ts. */
+/** Optional image slots accept null — see the note in blogs.schema.ts. */
 const mediaRef = z.object({
   id: z.string().min(1),
   url: z.string().optional(),
@@ -9,14 +9,29 @@ const mediaRef = z.object({
   height: z.number().optional(),
 })
 
+/**
+ * A profile address, or nothing.
+ *
+ * Full URLs only. A handle on its own — "techcadd" — was accepted here and
+ * rendered as href="techcadd" in the footer, which resolves against whatever
+ * page the visitor is on and 404s. Empty clears the link, which is how an icon
+ * is removed from the footer.
+ */
+const profileUrl = z
+  .union([
+    z.string().regex(/^https?:\/\//i, 'Enter the full address, starting with https://'),
+    z.literal(''),
+  ])
+  .optional()
+
 const social = z.object({
-  linkedin: z.string().optional(),
-  x: z.string().optional(),
-  github: z.string().optional(),
-  website: z.string().optional(),
-  facebook: z.string().optional(),
-  instagram: z.string().optional(),
-  youtube: z.string().optional(),
+  linkedin: profileUrl,
+  x: profileUrl,
+  github: profileUrl,
+  website: profileUrl,
+  facebook: profileUrl,
+  instagram: profileUrl,
+  youtube: profileUrl,
 })
 
 const notifications = z.object({

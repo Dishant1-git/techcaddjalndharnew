@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { isSafeLink, LINK_MESSAGE } from '../../lib/links'
+
 const mediaRefSchema = z.object({
   id: z.string(),
   url: z.string(),
@@ -12,6 +14,12 @@ const galleryImageSchema = z.object({
   id: z.string(),
   media: mediaRefSchema,
   caption: z.string().optional(),
+  /** Where the photograph goes when clicked. Empty means it is not a link. */
+  linkUrl: z
+    .string()
+    .max(500, 'That link is too long to store.')
+    .refine((value) => value === '' || isSafeLink(value), LINK_MESSAGE)
+    .optional(),
   order: z.number(),
 })
 

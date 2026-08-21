@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="techcadd">
+  <!--
+    The browser-tab mark.
+
+    app/icon.svg is picked up by the App Router automatically, which is also
+    what stops the browser falling back to requesting /favicon.ico — the 404
+    that was showing in the console.
+
+    Dark navy is --color-ink (#2a2c5e), the same value app/globals.css uses for
+    the site's dark sections, so the tab matches the header a visitor lands on.
+    Hard-coded rather than referenced: an SVG served as an icon has no access to
+    the stylesheet's custom properties.
+
+    The glyph is the "t" and the full stop from the techcadd wordmark, drawn to
+    the same proportions as LogoMark in the CMS so the two installs read as one
+    brand. Stroked rather than filled, because at 16px a filled letterform of
+    this weight closes up into a blob.
+  -->
+  <rect width="40" height="40" rx="11" fill="#2a2c5e" />
+  <g
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="3.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M17 9v16.5c0 3.7 1.9 5.5 5 5.5" />
+    <path d="M12.5 15H23" />
+  </g>
+  <circle cx="29.2" cy="28.8" r="2.2" fill="#ffffff" />
+</svg>

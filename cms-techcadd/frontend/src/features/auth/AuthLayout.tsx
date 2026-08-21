@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { ShieldCheck } from 'lucide-react'
 
 import { AuthBackground } from './AuthBackground'
+import { BRANCH_NAME, ORG_NAME } from '../../config/brand'
 import { BrandLogo } from './BrandLogo'
 
 interface AuthLayoutProps {
@@ -24,7 +25,7 @@ export function AuthLayout({ title, description, children, footer, secure }: Aut
     <span className="flex items-center justify-center gap-2">
       <BrandLogo height="h-5" />
       <span className="rounded bg-primary-50 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-primary-700 uppercase">
-        CMS
+        CMS {BRANCH_NAME}
       </span>
     </span>
   )
@@ -74,7 +75,7 @@ export function AuthLayout({ title, description, children, footer, secure }: Aut
 
           {/* Outside the card so it reads as page furniture, not form content. */}
           <p className="mt-5 text-center text-[13px] text-white/40">
-            © 2026 techcadd. All rights reserved.
+            © 2026 {ORG_NAME}. All rights reserved.
           </p>
         </div>
       </main>

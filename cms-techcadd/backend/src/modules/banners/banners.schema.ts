@@ -28,7 +28,7 @@ const base = z.object({
   altText: z.string().min(1, 'Alt text is required for accessibility.'),
   linkUrl: z.string().optional(),
   ctaText: z.string().optional(),
-  placement: z.enum(['home-hero', 'course-page', 'sidebar', 'popup']),
+  placement: z.enum(['home-hero', 'course-page', 'popup']),
   order: z.number(),
   startsAt: optionalDate,
   endsAt: optionalDate,
@@ -75,7 +75,7 @@ function crossFieldRules(partial: boolean) {
 
 export const bannerSchema = base
   .extend({
-    placement: z.enum(['home-hero', 'course-page', 'sidebar', 'popup']).default('home-hero'),
+    placement: z.enum(['home-hero', 'course-page', 'popup']).default('home-hero'),
     order: z.number().default(0),
     status: z.enum(['published', 'draft', 'review']).default('draft'),
   })

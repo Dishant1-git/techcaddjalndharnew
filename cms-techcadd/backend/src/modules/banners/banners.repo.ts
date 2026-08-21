@@ -130,7 +130,7 @@ export async function create(input: BannerInput): Promise<unknown> {
   return get(id)
 }
 
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set([
   'desktop_image_id', 'mobile_image_id', 'link_url', 'cta_text', 'starts_at', 'ends_at',
 ])

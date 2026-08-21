@@ -118,7 +118,7 @@ export async function create(input: TestimonialInput): Promise<unknown> {
   return get(id)
 }
 
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set(['photo_id', 'course_id', 'batch', 'video_url'])
 
 export async function update(id: string, patch: TestimonialPatch): Promise<unknown> {

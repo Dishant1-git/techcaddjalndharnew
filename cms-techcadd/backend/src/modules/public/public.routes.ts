@@ -216,6 +216,38 @@ publicRouter.get(
   }),
 )
 
+/**
+ * Pages an editor asked to be linked from the site's own navigation.
+ *
+ * Without this a published page was reachable only by typing its address,
+ * which no visitor does — so every page written in the CMS was, in practice,
+ * invisible. Returns just enough to draw a menu item.
+ *
+ * Deliberately not the whole page: a menu needs a label and a href, and
+ * shipping each page's body to render a link would be wasteful and would put
+ * unpublished-adjacent content on a public endpoint for no reason.
+ */
+publicRouter.get(
+  '/nav-pages',
+  asyncHandler(async (_req, res) => {
+    const rows = await query<Row>(
+      `SELECT slug, title, nav_label, nav_placement
+         FROM pages
+        WHERE status = 'published' AND nav_placement <> 'none'
+        ORDER BY nav_order ASC, title ASC`,
+    )
+
+    res.json({
+      items: rows.map((row) => ({
+        slug: row.slug,
+        // The menu wording when there is one; the page title otherwise.
+        label: (row.nav_label as string | null) || row.title,
+        placement: row.nav_placement,
+      })),
+    })
+  }),
+)
+
 publicRouter.get(
   '/pages/:slug',
   asyncHandler(async (req, res) => {
@@ -275,7 +307,6 @@ const publicEnquirySchema = z.object({
   phone: z.string().min(6, 'A contact number is required.').max(30),
   email: z.union([z.email('Enter a valid email address.'), z.literal('')]).optional(),
   courseName: z.string().max(200).default(''),
-  branchName: z.string().max(120).default(''),
   message: z.string().max(2000).optional(),
   source: z.enum(['website', 'walk-in', 'phone', 'referral', 'social']).default('website'),
   // Recorded by the site: which form, which page, and who submitted it.
@@ -334,7 +365,6 @@ publicRouter.post(
       status: 'new',
       notes: [],
       courseId: undefined,
-      branchId: undefined,
       assigneeId: undefined,
       followUpDate: undefined,
     })

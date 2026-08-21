@@ -16,7 +16,21 @@ import {
   type NavItem,
 } from "@/lib/navigation"
 
-export function Navbar({ contact }: { contact: Contact }) {
+/**
+ * `pages` are CMS pages an editor put in the header.
+ *
+ * Appended rather than merged into NAV_ITEMS at module scope: the built-in
+ * menus are what the course catalogue is derived from, and a page arriving
+ * from the database must not be able to alter that.
+ */
+export function Navbar({
+  contact,
+  pages = [],
+}: {
+  contact: Contact
+  pages?: { href: string; label: string }[]
+}) {
+  const items: NavItem[] = pages.length > 0 ? [...NAV_ITEMS, ...pages] : NAV_ITEMS
   const [scrolled, setScrolled] = useState(false)
   const [openMenu, setOpenMenu] = useState<string | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -139,7 +153,7 @@ export function Navbar({ contact }: { contact: Contact }) {
 
           {/* --- Desktop links --- */}
           <div className="hidden items-center gap-5 self-stretch xl:flex 2xl:gap-7">
-            {NAV_ITEMS.map((item) => (
+            {items.map((item) => (
               <DesktopNavLink
                 key={item.label}
                 item={item}
@@ -203,13 +217,13 @@ export function Navbar({ contact }: { contact: Contact }) {
         </div>
 
         <MegaMenu
-          item={NAV_ITEMS.find((i) => i.label === openMenu) ?? null}
+          item={items.find((i) => i.label === openMenu) ?? null}
           onEnter={cancelClose}
           onLeave={scheduleClose}
         />
 
         <FeaturedMenu
-          item={NAV_ITEMS.find((i) => i.label === openMenu) ?? null}
+          item={items.find((i) => i.label === openMenu) ?? null}
           onEnter={cancelClose}
           onLeave={scheduleClose}
         />
@@ -231,7 +245,7 @@ export function Navbar({ contact }: { contact: Contact }) {
       >
         <div className="flex h-full flex-col overflow-y-auto px-6 pt-24 pb-8 sm:px-8">
           <div className="flex flex-1 flex-col justify-center gap-1">
-            {NAV_ITEMS.map((item, i) => (
+            {items.map((item, i) => (
               <div key={item.label} className="border-b border-foreground/5">
                 {item.groups || item.links ? (
                   <>

@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+import {
+  CONTENT_BLOCK_TYPES,
+  contentBlockFields,
+  requireBlockContent,
+} from '../shared/contentBlockSchema'
+
 const mediaRefSchema = z.object({
   id: z.string(),
   url: z.string(),
@@ -23,12 +29,14 @@ const syllabusModuleSchema = z.object({
   hours: z.number().min(0).optional(),
 })
 
-export const SECTION_TYPES = [
-  { value: 'rich-text', label: 'Text' },
-  { value: 'image', label: 'Image' },
-  { value: 'video', label: 'Video' },
-  { value: 'cta', label: 'Call to action' },
-] as const
+/**
+ * Block kinds a course page offers.
+ *
+ * The shared list minus 'blogs': a course page already closes with its own
+ * related-courses strip, and a second list of unrelated posts in the middle of
+ * a syllabus is not something an editor should be offered.
+ */
+export const SECTION_TYPES = CONTENT_BLOCK_TYPES.filter((t) => t.value !== 'blogs')
 
 /**
  * The generated sections of the course page, in the order they render.
@@ -57,56 +65,22 @@ export const PAGE_SECTIONS = [
 const SECTION_ANCHORS = PAGE_SECTIONS.map((s) => s.id)
 
 /**
- * A link an editor typed. Mirrors the server rule in sections.schema.ts.
+ * A course block: the shared block, plus where on the page it sits.
  *
- * Internal links start with '/', external ones must be http(s). That rules out
- * `javascript:` and `data:`, which would otherwise go straight into an href.
+ * The fields and the per-kind rules come from features/shared, so a block on
+ * a course and a block on a page validate identically — same link rule, same
+ * "this kind needs that field" messages. Only the anchoring is particular to
+ * courses, because only a course positions a block against a generated
+ * section.
  */
-const linkUrl = z
-  .string()
-  .max(500, 'That link is too long to store.')
-  .refine(
-    (value) => value === '' || value.startsWith('/') || /^https?:\/\//i.test(value),
-    'Enter a path beginning with "/" for a page on this site, or a full https:// address.',
-  )
-
 export const courseSectionSchema = z
   .object({
-    id: z.string().optional(),
+    ...contentBlockFields,
     type: z.enum(['rich-text', 'image', 'video', 'cta']),
-    title: z.string().max(200).optional(),
-    body: z.string().optional(),
-    media: mediaRefSchema.nullish(),
-    linkUrl: linkUrl.optional(),
-    linkLabel: z.string().max(120).optional(),
-    linkTarget: z.enum(['same', 'new']),
     anchor: z.enum(SECTION_ANCHORS as unknown as [string, ...string[]]),
     placement: z.enum(['before', 'after']),
-    visible: z.boolean(),
   })
-  .superRefine((section, ctx) => {
-    // Each kind has one thing it cannot render without. Caught here so the
-    // editor is told which box to fill rather than publishing an empty strip.
-    const required: Record<string, [string, string]> = {
-      'rich-text': ['body', 'Add some text for this block.'],
-      image: ['media', 'Choose an image for this block.'],
-      video: ['linkUrl', 'Paste the video URL.'],
-      cta: ['linkUrl', 'A call to action needs a link.'],
-    }
-
-    const [field, message] = required[section.type]!
-    if (!(section as Record<string, unknown>)[field]) {
-      ctx.addIssue({ code: 'custom', path: [field], message })
-    }
-
-    if (section.type === 'cta' && !section.linkLabel) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['linkLabel'],
-        message: 'A call to action needs button text.',
-      })
-    }
-  })
+  .superRefine(requireBlockContent)
 
 export type CourseSectionValues = z.infer<typeof courseSectionSchema>
 
@@ -130,17 +104,16 @@ export const courseSchema = z
       .max(200, 'Keep this under 200 characters.'),
     description: z.string(),
     duration: z.string().min(1, 'Duration is required.'),
-    fee: z.number('Fee is required.').min(0, 'Fee cannot be negative.'),
-    discountedFee: z.number().min(0, 'Discounted fee cannot be negative.').optional(),
-    level: z.enum(['beginner', 'intermediate', 'advanced']),
-    mode: z.enum(['online', 'offline', 'hybrid']),
+    // '' means "not stated". A course nobody has graded should say nothing on
+    // its page rather than claim a level, so the facts strip keeps the
+    // segment's generic wording until someone decides.
+    level: z.union([z.enum(['beginner', 'intermediate', 'advanced']), z.literal('')]),
+    mode: z.union([z.enum(['online', 'offline', 'hybrid']), z.literal('')]),
     thumbnail: mediaRefSchema.nullish(),
-    gallery: z.array(mediaRefSchema),
     syllabus: z.array(syllabusModuleSchema),
     highlights: z.array(z.string()),
     eligibility: z.string().optional(),
     certification: z.string().optional(),
-    branchIds: z.array(z.string()),
     /** Overrides the generated overview. One paragraph per line. */
     overview: z.string().optional(),
     videoUrl: z.string().max(500).optional(),
@@ -151,16 +124,7 @@ export const courseSchema = z
     seo: seoSchema,
     status: z.enum(['published', 'draft', 'review']),
   })
-  .superRefine((values, ctx) => {
-    // A "discount" above the real price would display as a price increase.
-    if (values.discountedFee !== undefined && values.discountedFee > values.fee) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['discountedFee'],
-        message: 'The discounted fee must be lower than the full fee.',
-      })
-    }
-  })
+
 
 export type CourseFormValues = z.infer<typeof courseSchema>
 
@@ -178,17 +142,13 @@ export function emptyCourse(): CourseFormValues {
     shortDescription: '',
     description: '',
     duration: '',
-    fee: 0,
-    discountedFee: undefined,
-    level: 'beginner',
-    mode: 'offline',
+    level: '',
+    mode: '',
     thumbnail: undefined,
-    gallery: [],
     syllabus: [],
     highlights: [],
     eligibility: '',
     certification: '',
-    branchIds: [],
     overview: '',
     videoUrl: '',
     videoTitle: '',
@@ -201,12 +161,14 @@ export function emptyCourse(): CourseFormValues {
 }
 
 export const LEVEL_OPTIONS = [
+  { value: '', label: 'Not stated' },
   { value: 'beginner', label: 'Beginner' },
   { value: 'intermediate', label: 'Intermediate' },
   { value: 'advanced', label: 'Advanced' },
 ]
 
 export const MODE_OPTIONS = [
+  { value: '', label: 'Not stated' },
   { value: 'offline', label: 'Offline' },
   { value: 'online', label: 'Online' },
   { value: 'hybrid', label: 'Hybrid' },

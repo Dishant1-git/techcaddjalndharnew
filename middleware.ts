@@ -12,7 +12,7 @@ import { NextResponse, type NextRequest } from "next/server"
  * would tax every page to serve the handful that redirect.
  */
 
-const BASE = (process.env.CMS_API_URL ?? "http://localhost:4000/api").replace(/\/$/, "")
+const BASE = (process.env.CMS_API_URL ?? "http://localhost:4001/api").replace(/\/$/, "")
 
 /** How long a fetched list is reused. Middleware has no Next data cache. */
 const TTL_MS = 60_000

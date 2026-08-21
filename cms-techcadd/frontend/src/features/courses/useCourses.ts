@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { branchesApi, categoriesApi, coursesApi, type ListParams } from '../../api'
+import { categoriesApi, coursesApi, type ListParams } from '../../api'
 import type { CourseCreate, CourseUpdate } from '../../api/resources/courses'
 
 const COURSES_KEY = 'courses'
@@ -53,16 +53,11 @@ export function useDeleteCourses() {
   })
 }
 
-/** Category and branch pickers. Both are empty until those modules are built. */
+/** The category picker on the course form. */
 export function useCourseReferenceData() {
   const categories = useQuery({
     queryKey: ['categories', 'options'],
     queryFn: () => categoriesApi.list({ page: 1, pageSize: 200 }),
-  })
-
-  const branches = useQuery({
-    queryKey: ['branches', 'options'],
-    queryFn: () => branchesApi.list({ page: 1, pageSize: 200 }),
   })
 
   return {
@@ -70,10 +65,6 @@ export function useCourseReferenceData() {
       value: item.id,
       label: item.name,
     })),
-    branchOptions: (branches.data?.items ?? []).map((item) => ({
-      value: item.id,
-      label: item.name,
-    })),
-    loading: categories.isLoading || branches.isLoading,
+    loading: categories.isLoading,
   }
 }

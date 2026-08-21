@@ -9,11 +9,9 @@
  */
 export { bannersApi } from './resources/banners'
 export { blogsApi } from './resources/blogs'
-export { branchesApi } from './resources/branches'
 export { categoriesApi } from './resources/categories'
 export { coursesApi } from './resources/courses'
 export { enquiriesApi } from './resources/enquiries'
-export { facultyApi } from './resources/faculty'
 export { galleryApi } from './resources/gallery'
 export { mediaApi } from './resources/media'
 export { pagesApi } from './resources/pages'

@@ -1,15 +1,16 @@
-import { Eye, EyeOff, GripVertical, Plus, Trash2 } from 'lucide-react'
+import {
+  Eye,
+  EyeOff,
+  Film,
+  Image as ImageIcon,
+  MousePointerClick,
+  Type,
+} from 'lucide-react'
 
 import { SortableList } from '../../components/data/SortableList'
-import { FormField } from '../../components/form/FormField'
-import { ImageField } from '../../components/form/ImageField'
-import { Input } from '../../components/form/Input'
-import { RichTextEditor } from '../../components/form/RichTextEditor'
-import { Select } from '../../components/form/Select'
-import { Switch } from '../../components/form/Switch'
-import { Textarea } from '../../components/form/Textarea'
 import { cn } from '../../lib/cn'
 import { createId } from '../../lib/id'
+import { BlockEditor, type BlockFieldErrors } from '../shared/BlockEditor'
 import { PAGE_SECTIONS, SECTION_TYPES, type CourseSectionValues } from './courseSchema'
 
 /**
@@ -35,15 +36,19 @@ export function CourseLayoutEditor({
   hidden: string[]
   onSectionsChange: (next: CourseSectionValues[]) => void
   onHiddenChange: (next: string[]) => void
-  /** Messages from the resolver, keyed by the block's index in `sections`. */
-  errors?: Record<number, Record<string, string | undefined>>
+  /** Field errors from the resolver, keyed by the block's index in `sections`. */
+  errors?: Record<number, BlockFieldErrors | undefined>
 }) {
-  function addBlock(anchor: string, placement: 'before' | 'after') {
+  function addBlock(
+    anchor: string,
+    placement: 'before' | 'after',
+    type: CourseSectionValues['type'],
+  ) {
     onSectionsChange([
       ...sections,
       {
         id: createId('block'),
-        type: 'rich-text',
+        type,
         title: '',
         body: '',
         media: undefined,
@@ -89,6 +94,7 @@ export function CourseLayoutEditor({
       error={errors?.[indexOf(block)]}
       onChange={(patch) => update(block.id!, patch)}
       onRemove={() => remove(block.id!)}
+      types={SECTION_TYPES.map((t) => ({ value: t.value, label: t.label }))}
     />
   )
 
@@ -101,7 +107,10 @@ export function CourseLayoutEditor({
 
         return (
           <div key={section.id}>
-            <Gap label={`Add above ${section.label}`} onAdd={() => addBlock(section.id, 'before')} />
+            <Gap
+              where={`Above ${section.label}`}
+              onAdd={(type) => addBlock(section.id, 'before', type)}
+            />
 
             {before.length > 0 && (
               <SortableList
@@ -171,7 +180,10 @@ export function CourseLayoutEditor({
               />
             )}
 
-            <Gap label={`Add below ${section.label}`} onAdd={() => addBlock(section.id, 'after')} />
+            <Gap
+              where={`Below ${section.label}`}
+              onAdd={(type) => addBlock(section.id, 'after', type)}
+            />
           </div>
         )
       })}
@@ -180,191 +192,53 @@ export function CourseLayoutEditor({
 }
 
 /** The thin insert affordance between two sections. */
-function Gap({ label, onAdd }: { label: string; onAdd: () => void }) {
-  return (
-    <div className="group flex items-center gap-2 py-1">
-      <span className="h-px flex-1 bg-slate-200 transition-colors group-hover:bg-primary-200" />
-      <button
-        type="button"
-        onClick={onAdd}
-        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-400 opacity-0 transition-all group-hover:opacity-100 hover:border-primary-300 hover:text-primary-700 focus-visible:opacity-100"
-      >
-        <Plus size={11} aria-hidden="true" />
-        {label}
-      </button>
-      <span className="h-px flex-1 bg-slate-200 transition-colors group-hover:bg-primary-200" />
-    </div>
-  )
-}
-
-function BlockEditor({
-  block,
-  onChange,
-  onRemove,
-  error,
-}: {
-  block: CourseSectionValues
-  onChange: (patch: Partial<CourseSectionValues>) => void
-  onRemove: () => void
-  error?: Record<string, string | undefined>
-}) {
-  return (
-    <div className="my-1 rounded-lg border border-primary-200 bg-primary-50/40 p-3">
-      <div className="flex items-center gap-2">
-        <GripVertical size={14} className="shrink-0 text-slate-300" aria-hidden="true" />
-
-        <Select
-          value={block.type}
-          onChange={(event) =>
-            onChange({ type: event.target.value as CourseSectionValues['type'] })
-          }
-          options={SECTION_TYPES.map((t) => ({ value: t.value, label: t.label }))}
-          className="w-40"
-        />
-
-        <Input
-          value={block.title ?? ''}
-          onChange={(event) => onChange({ title: event.target.value })}
-          placeholder="Heading (optional)"
-          className="flex-1"
-        />
-
-        <button
-          type="button"
-          title={block.visible ? 'Hide this block' : 'Show this block'}
-          onClick={() => onChange({ visible: !block.visible })}
-          className="grid size-8 shrink-0 place-items-center rounded-md text-slate-400 transition-colors hover:bg-white hover:text-slate-700"
-        >
-          {block.visible ? <Eye size={15} /> : <EyeOff size={15} />}
-          <span className="sr-only">{block.visible ? 'Hide' : 'Show'} this block</span>
-        </button>
-
-        <button
-          type="button"
-          title="Delete this block"
-          onClick={onRemove}
-          className="grid size-8 shrink-0 place-items-center rounded-md text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
-        >
-          <Trash2 size={15} />
-          <span className="sr-only">Delete this block</span>
-        </button>
-      </div>
-
-      <div className="mt-3 space-y-3">
-        {block.type === 'rich-text' && (
-          <FormField label="Text" error={error?.body}>
-            <RichTextEditor
-              value={block.body ?? ''}
-              onChange={(value) => onChange({ body: value })}
-            />
-          </FormField>
-        )}
-
-        {block.type === 'image' && (
-          <>
-            <FormField label="Image" error={error?.media}>
-              <ImageField
-                value={block.media ?? undefined}
-                onChange={(value) => onChange({ media: value })}
-              />
-            </FormField>
-            <FormField label="Caption">
-              <Input
-                value={block.body ?? ''}
-                onChange={(event) => onChange({ body: event.target.value })}
-                placeholder="Optional caption"
-              />
-            </FormField>
-          </>
-        )}
-
-        {block.type === 'video' && (
-          <FormField
-            label="Video URL"
-            description="A YouTube or Vimeo address — the one from the browser bar is fine."
-            error={error?.linkUrl}
-          >
-            <Input
-              value={block.linkUrl ?? ''}
-              onChange={(event) => onChange({ linkUrl: event.target.value })}
-              placeholder="https://www.youtube.com/watch?v=..."
-            />
-          </FormField>
-        )}
-
-        {block.type === 'cta' && (
-          <FormField label="Lead line">
-            <Textarea
-              value={block.body ?? ''}
-              onChange={(event) => onChange({ body: event.target.value })}
-              rows={2}
-            />
-          </FormField>
-        )}
-
-        {block.type !== 'video' && (
-          <LinkFields block={block} onChange={onChange} error={error} />
-        )}
-      </div>
-    </div>
-  )
-}
-
 /**
- * A link, and where it opens.
+ * The insert point between two sections.
  *
- * Internal and external share one text box rather than a radio pair: an editor
- * knows whether they are pasting a path or a full address, and asking them to
- * classify it as well is a second chance to get it wrong. What they cannot
- * infer is the tab behaviour, so that is the control.
+ * One button per kind rather than a single "Add block" that always made a text
+ * block and left you to change its type afterwards — which is how adding an
+ * image ended up being a two-step guess.
+ *
+ * The row is dimmed rather than hidden until the gap is hovered. Hiding it
+ * entirely made the whole feature invisible: there was nothing on screen to
+ * suggest a block could be added at all.
  */
-function LinkFields({
-  block,
-  onChange,
-  error,
+function Gap({
+  where,
+  onAdd,
 }: {
-  block: CourseSectionValues
-  onChange: (patch: Partial<CourseSectionValues>) => void
-  error?: Record<string, string | undefined>
+  where: string
+  onAdd: (type: CourseSectionValues['type']) => void
 }) {
-  const external = /^https?:\/\//i.test(block.linkUrl ?? '')
-
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
-      <FormField
-        label={block.type === 'cta' ? 'Button link' : 'Link (optional)'}
-        description={
-          external ? 'Goes to another site.' : 'A path like /contact stays on this site.'
-        }
-        error={error?.linkUrl}
-      >
-        <Input
-          value={block.linkUrl ?? ''}
-          onChange={(event) => onChange({ linkUrl: event.target.value })}
-          placeholder="/contact or https://..."
-        />
-      </FormField>
+    <div className="group flex items-center gap-2 py-1.5">
+      <span className="h-px flex-1 bg-slate-200 transition-colors group-hover:bg-primary-200" />
 
-      <FormField label="Button text" error={error?.linkLabel}>
-        <Input
-          value={block.linkLabel ?? ''}
-          onChange={(event) => onChange({ linkLabel: event.target.value })}
-          placeholder="e.g. Book a seat"
-        />
-      </FormField>
+      <span className="flex items-center gap-1 opacity-45 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+        <span className="mr-0.5 text-[11px] text-slate-400">{where}</span>
+        {BLOCK_BUTTONS.map(({ type, label, icon: Icon }) => (
+          <button
+            key={type}
+            type="button"
+            onClick={() => onAdd(type)}
+            title={`${where}: add ${label.toLowerCase()}`}
+            className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-500 transition-colors hover:border-primary-300 hover:text-primary-700"
+          >
+            <Icon size={11} aria-hidden="true" />
+            {label}
+          </button>
+        ))}
+      </span>
 
-      <div className="sm:col-span-2">
-        <Switch
-          checked={block.linkTarget === 'new'}
-          onCheckedChange={(checked) => onChange({ linkTarget: checked ? 'new' : 'same' })}
-          label="Open in a new tab"
-          description={
-            external
-              ? 'Recommended for links that leave the site.'
-              : 'Usually off for pages on this site.'
-          }
-        />
-      </div>
+      <span className="h-px flex-1 bg-slate-200 transition-colors group-hover:bg-primary-200" />
     </div>
   )
 }
+
+/** The kinds a course page offers, with the mark each one gets in the gap. */
+const BLOCK_BUTTONS = [
+  { type: 'rich-text' as const, label: 'Text', icon: Type },
+  { type: 'image' as const, label: 'Image', icon: ImageIcon },
+  { type: 'video' as const, label: 'Video', icon: Film },
+  { type: 'cta' as const, label: 'Button', icon: MousePointerClick },
+]

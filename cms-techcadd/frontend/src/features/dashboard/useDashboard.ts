@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { BookOpen, Building2, FileText, Mail, Newspaper, Users } from 'lucide-react'
+import { BookOpen, FileText, Mail, Newspaper } from 'lucide-react'
 
 import { fetchDashboardSummary, type DashboardSummary } from '../../api/resources/dashboard'
 import type { Stat, TrendPoint } from '../../types'
@@ -24,8 +24,6 @@ const STAT_META = [
   { id: 'courses', label: 'Total Courses', icon: BookOpen, path: '/courses' },
   { id: 'enquiries', label: 'Total Enquiries', icon: Mail, path: '/enquiries' },
   { id: 'blogs', label: 'Total Blogs', icon: Newspaper, path: '/blogs' },
-  { id: 'branches', label: 'Total Branches', icon: Building2, path: '/branches' },
-  { id: 'faculty', label: 'Total Faculty', icon: Users, path: '/faculty' },
   { id: 'publishedPages', label: 'Published Pages', icon: FileText, path: '/pages' },
 ] as const
 

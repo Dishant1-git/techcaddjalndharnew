@@ -10,12 +10,10 @@ import { attachUser } from './middleware/auth.js'
 import { authRouter } from './modules/auth/auth.routes.js'
 import { bannersRouter } from './modules/banners/banners.routes.js'
 import { blogsRouter } from './modules/blogs/blogs.routes.js'
-import { branchesRouter } from './modules/branches/branches.routes.js'
 import { categoriesRouter } from './modules/categories/categories.routes.js'
 import { coursesRouter } from './modules/courses/courses.routes.js'
 import { dashboardRouter, searchRouter } from './modules/dashboard/dashboard.routes.js'
 import { enquiriesRouter } from './modules/enquiries/enquiries.routes.js'
-import { facultyRouter } from './modules/faculty/faculty.routes.js'
 import { faqsRouter } from './modules/faqs/faqs.routes.js'
 import { galleryRouter } from './modules/gallery/gallery.routes.js'
 import { mediaRouter } from './modules/media/media.routes.js'
@@ -84,12 +82,10 @@ export function createApp() {
   app.use('/api/auth', authRouter)
   app.use('/api/banners', bannersRouter)
   app.use('/api/blogs', blogsRouter)
-  app.use('/api/branches', branchesRouter)
   app.use('/api/categories', categoriesRouter)
   app.use('/api/courses', coursesRouter)
   app.use('/api/dashboard', dashboardRouter)
   app.use('/api/enquiries', enquiriesRouter)
-  app.use('/api/faculty', facultyRouter)
   app.use('/api/faqs', faqsRouter)
   app.use('/api/gallery', galleryRouter)
   app.use('/api/media', mediaRouter)

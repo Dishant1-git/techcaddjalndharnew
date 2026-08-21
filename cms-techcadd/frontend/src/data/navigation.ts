@@ -1,6 +1,5 @@
 import {
   BookOpen,
-  Building2,
   FileText,
   Folder,
   GalleryVerticalEnd,
@@ -45,8 +44,6 @@ export const navSections: NavSection[] = [
     id: 'institute',
     title: 'Institute',
     items: [
-      { id: 'faculty', label: 'Faculty', path: '/faculty', icon: Users },
-      { id: 'branches', label: 'Branches', path: '/branches', icon: Building2 },
       { id: 'testimonials', label: 'Testimonials', path: '/testimonials', icon: MessageSquareQuote },
       { id: 'gallery', label: 'Gallery', path: '/gallery', icon: Image },
       { id: 'reviews', label: 'Reviews', path: '/reviews', icon: Star },
@@ -61,6 +58,10 @@ export const navSections: NavSection[] = [
     id: 'system',
     title: 'System',
     items: [
+      // The people who sign in and publish. Formerly a "Faculty" content
+      // module describing trainers the website never rendered; what the office
+      // actually needed was accounts, not biographies.
+      { id: 'team', label: 'Team', path: '/team', icon: Users },
       { id: 'media', label: 'Media Library', path: '/media', icon: Images },
       { id: 'seo', label: 'SEO', path: '/seo', icon: Search },
       { id: 'settings', label: 'Settings', path: '/settings', icon: Settings },

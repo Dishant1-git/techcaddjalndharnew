@@ -139,7 +139,7 @@ export async function create(input: CategoryInput): Promise<unknown> {
  * Accepts a partial body: the drag-reorder action sends `{ order }` alone, so
  * requiring the whole record would make reordering rewrite every field.
  */
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set(['parent_id', 'icon', 'accent_color', 'description'])
 
 export async function update(id: string, patch: CategoryPatch): Promise<unknown> {

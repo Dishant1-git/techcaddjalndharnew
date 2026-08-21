@@ -5,8 +5,6 @@ export interface DashboardTotals {
   courses: number
   enquiries: number
   blogs: number
-  branches: number
-  faculty: number
   publishedPages: number
 }
 
@@ -46,7 +44,7 @@ export interface SearchHit {
 }
 
 export interface SearchGroup {
-  key: 'courses' | 'blogs' | 'pages' | 'faculty' | 'enquiries'
+  key: 'courses' | 'blogs' | 'pages' | 'enquiries'
   hits: SearchHit[]
 }
 

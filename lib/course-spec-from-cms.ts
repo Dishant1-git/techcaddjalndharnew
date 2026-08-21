@@ -48,10 +48,9 @@ export interface CourseSpecSource {
   highlights: string[]
   salary?: string
   duration?: string
-  fee: number
-  discountedFee?: number
-  level: string
-  mode: string
+  /** Absent when nobody has decided — the page keeps its generic facts. */
+  level?: string
+  mode?: string
 }
 
 /** The CMS stores a key; the page prints a phrase. */
@@ -65,26 +64,6 @@ const LEVEL_LABELS: Record<string, string> = {
   beginner: "Beginner",
   intermediate: "Intermediate",
   advanced: "Advanced",
-}
-
-/**
- * The fee as a visitor should read it.
- *
- * Zero counts as "not priced" rather than "free": the field starts at 0 on a
- * new course, and a page announcing a free course because nobody filled the box
- * in is a worse error than showing no price. A discount prints as the price
- * being charged with the old one in brackets, since the strip is one line.
- */
-export function feeLabel(course: {
-  fee: number
-  discountedFee?: number
-}): string | undefined {
-  if (!course.fee || course.fee <= 0) return undefined
-
-  const money = (value: number) => `₹${value.toLocaleString("en-IN")}`
-  return course.discountedFee && course.discountedFee < course.fee
-    ? `${money(course.discountedFee)} (was ${money(course.fee)})`
-    : money(course.fee)
 }
 
 /**
@@ -103,9 +82,8 @@ export function specFromCourse(
   const tools = course.tools.length > 0 ? course.tools : undefined
   const salary = course.salary || undefined
   const duration = course.duration || undefined
-  const mode = MODE_LABELS[course.mode] ?? undefined
-  const level = LEVEL_LABELS[course.level] ?? undefined
-  const fee = feeLabel(course)
+  const mode = course.mode ? (MODE_LABELS[course.mode] ?? undefined) : undefined
+  const level = course.level ? (LEVEL_LABELS[course.level] ?? undefined) : undefined
 
   /*
     Which fields somebody actually typed into the CMS, as opposed to which ones
@@ -129,7 +107,6 @@ export function specFromCourse(
     ['duration', duration],
     ['mode', mode],
     ['level', level],
-    ['fee', fee],
   ]
   for (const [field, value] of supplied) if (value !== undefined) fromCms.push(field)
 
@@ -145,7 +122,6 @@ export function specFromCourse(
     duration,
     mode,
     level,
-    fee,
     fromCms,
   }
 }

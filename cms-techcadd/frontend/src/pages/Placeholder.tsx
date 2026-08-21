@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+
+import { SITE_LABEL } from '../config/brand'
 import { ArrowLeft, Construction } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -28,7 +30,7 @@ export default function Placeholder({ module, icon: Icon }: PlaceholderProps) {
       <h2 className="mt-4 text-xl font-semibold text-slate-900">{module}</h2>
       <p className="mx-auto mt-2 max-w-sm text-sm text-slate-500">
         The {module} module is under construction. It will let you manage {module.toLowerCase()} for
-        the techcadd website from this dashboard.
+        the {SITE_LABEL} from this dashboard.
       </p>
 
       <Link to="/" className="mt-6 inline-block">

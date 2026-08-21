@@ -175,10 +175,46 @@ describe('client-generated ids', () => {
   })
 })
 
-describe('authentication', () => {
-  it('refuses every module without a session', async () => {
+/**
+ * Every API path the CMS sidebar leads to.
+ *
+ * Kept in step with frontend/src/data/navigation.ts by hand, which is the point
+ * of the test below: a sidebar entry whose API is not mounted 404s the moment
+ * an admin clicks it, and that is not something the frontend build can catch.
+ *
+ * The SEO page is here as /redirects because that is the endpoint it reads —
+ * there is deliberately no /api/seo.
+ */
+const SIDEBAR_APIS = [
+  '/courses',
+  '/categories',
+  '/pages',
+  '/banners',
+  '/blogs',
+  '/faqs',
+  '/testimonials',
+  '/gallery',
+  '/reviews',
+  '/enquiries',
+  '/media',
+  '/redirects',
+  '/settings',
+  // The Team page. Formerly a Faculty content module describing trainers the
+  // website never rendered; what the office needed was accounts.
+  '/users',
+  '/dashboard/summary',
+]
+
+describe('every module the sidebar reaches', () => {
+  it('is mounted — a 404 here is a dead link in the CMS', async () => {
+    for (const path of SIDEBAR_APIS) {
+      expect((await api.get(path)).status, `${path} should not 404`).not.toBe(404)
+    }
+  })
+
+  it('refuses anonymous callers', async () => {
     const anonymous = client()
-    for (const path of ['/courses', '/categories', '/media', '/users', '/settings']) {
+    for (const path of SIDEBAR_APIS) {
       expect((await anonymous.get(path)).status, path).toBe(401)
     }
   })

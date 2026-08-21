@@ -204,7 +204,7 @@ export async function create(input: BlogInput, signedInUserId: string): Promise<
   return get(id)
 }
 
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set([
   'author_id', 'category_id', 'cover_image_id', 'publish_date',
   'meta_title', 'meta_description', 'og_image_id', 'canonical_url',

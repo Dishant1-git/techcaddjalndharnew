@@ -67,7 +67,7 @@ mediaRouter.get(
  */
 mediaRouter.post(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   upload.array('files', 20),
   asyncHandler(async (req, res) => {
     const files = Array.isArray(req.files) ? req.files : []
@@ -103,7 +103,7 @@ mediaRouter.post(
 
 mediaRouter.patch(
   '/:id',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     res.json(await repo.update(requireParam(req, 'id'), mediaPatchSchema.parse(req.body)))
   }),
@@ -113,7 +113,7 @@ const deleteSchema = z.object({ ids: z.array(z.string().min(1)).min(1) })
 
 mediaRouter.delete(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     const parsed = deleteSchema.safeParse(req.body)
     if (!parsed.success) throw badRequest('Provide the ids to delete.')

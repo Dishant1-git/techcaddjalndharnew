@@ -96,14 +96,8 @@ export const SITE_MAP: Record<string, Placement> = {
   seo: {
     where: 'Meta titles and descriptions are used on the pages they belong to.',
   },
-  branches: {
-    where: '',
-    notLive:
-      'Nothing on the website reads branches yet — it has no locations section. These records are for internal reference until one is built.',
-  },
-  faculty: {
-    where: '',
-    notLive:
-      'Nothing on the website reads faculty yet — it has no trainers section. These records are for internal reference until one is built.',
+  team: {
+    where:
+      'Nowhere. These are the accounts that sign in to this CMS — an editor can publish content, an admin can also change settings and manage accounts.',
   },
 }

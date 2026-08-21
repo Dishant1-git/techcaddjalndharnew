@@ -1,11 +1,9 @@
 import type {
   Banner,
   Blog,
-  Branch,
   Category,
   Course,
   EnquiryRecord,
-  Faculty,
   GalleryAlbum,
   MediaItem,
   Page,
@@ -25,8 +23,6 @@ export interface Database {
   pages: Page[]
   banners: Banner[]
   blogs: Blog[]
-  faculty: Faculty[]
-  branches: Branch[]
   testimonials: Testimonial[]
   galleryAlbums: GalleryAlbum[]
   enquiries: EnquiryRecord[]
@@ -62,8 +58,6 @@ export function createEmptyDatabase(): Database {
     pages: [],
     banners: [],
     blogs: [],
-    faculty: [],
-    branches: [],
     testimonials: [],
     galleryAlbums: [],
     enquiries: [],

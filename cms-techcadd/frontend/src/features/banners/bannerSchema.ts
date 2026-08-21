@@ -18,7 +18,7 @@ export const bannerSchema = z
     altText: z.string().min(1, 'Alt text is required for accessibility.'),
     linkUrl: z.string().optional(),
     ctaText: z.string().optional(),
-    placement: z.enum(['home-hero', 'course-page', 'sidebar', 'popup']),
+    placement: z.enum(['home-hero', 'course-page', 'popup']),
     order: z.number(),
     startsAt: z.string().optional(),
     endsAt: z.string().optional(),
@@ -81,15 +81,16 @@ export const PLACEMENT_OPTIONS = [
   { value: 'home-hero', label: 'Home hero — under the hero on the homepage' },
   { value: 'course-page', label: 'Course page — at the foot of every course page' },
   { value: 'popup', label: 'Popup — an overlay, once per visitor per session' },
-  { value: 'sidebar', label: 'Sidebar — not built yet' },
 ]
 
 /**
  * Placements the website actually renders today.
  *
- * Sidebar is still absent because the site has no sidebar to put one in —
- * unlike the others, it needs a layout that does not exist rather than a
- * component that was missing.
+ * Every placement offered is now a live one. "Sidebar" used to sit in the list
+ * labelled "not built yet" — the site has no sidebar to put a banner in, so
+ * choosing it produced artwork, a schedule and a published status that reached
+ * nobody. An option that cannot do anything is worse than a missing one,
+ * because the only way to find out is to run a campaign through it.
  */
 export const LIVE_PLACEMENTS = new Set(['home-hero', 'course-page', 'popup'])
 

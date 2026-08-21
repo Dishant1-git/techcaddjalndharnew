@@ -72,17 +72,15 @@ export const courseSchema = z
     tools: z.array(z.string()).default([]),
     salary: z.string().max(120).optional(),
     duration: z.string().min(1, 'Duration is required.'),
-    fee: z.number('Fee is required.').min(0, 'Fee cannot be negative.'),
-    discountedFee: z.number().min(0, 'Discounted fee cannot be negative.').optional(),
-    level: z.enum(['beginner', 'intermediate', 'advanced']),
-    mode: z.enum(['online', 'offline', 'hybrid']),
+    // Optional: a course nobody has graded should say nothing rather than
+    // claim a level. '' is how the form clears it.
+    level: z.union([z.enum(['beginner', 'intermediate', 'advanced']), z.literal('')]).optional(),
+    mode: z.union([z.enum(['online', 'offline', 'hybrid']), z.literal('')]).optional(),
     thumbnail: mediaRef.nullish(),
-    gallery: z.array(mediaRef).default([]),
     syllabus: z.array(syllabusModule).default([]),
     highlights: z.array(z.string()).default([]),
     eligibility: z.string().optional(),
     certification: z.string().optional(),
-    branchIds: z.array(z.string()).default([]),
     /** Overrides the generated overview. One paragraph per line. */
     overview: z.string().optional(),
     videoUrl: z.string().max(500).optional(),
@@ -94,16 +92,6 @@ export const courseSchema = z
     featured: z.boolean().default(false),
     seo: seo.default({ keywords: [] }),
     status: z.enum(['published', 'draft', 'review']).default('draft'),
-  })
-  .superRefine((values, ctx) => {
-    // A "discount" above the real price would display as a price increase.
-    if (values.discountedFee !== undefined && values.discountedFee > values.fee) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['discountedFee'],
-        message: 'The discounted fee must be lower than the full fee.',
-      })
-    }
   })
 
 export type CourseInput = z.infer<typeof courseSchema>

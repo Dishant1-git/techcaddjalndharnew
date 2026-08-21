@@ -19,10 +19,12 @@ export const PREVIEW_DRAFT = "techcadd:preview-draft"
  */
 export const PREVIEW_SCROLL = "techcadd:preview-scroll"
 
+export type PreviewKind = "course" | "page"
+
 export interface PreviewDraftMessage<T = unknown> {
   type: typeof PREVIEW_DRAFT
   /** Which editor is talking, so one frame cannot be fed another's shape. */
-  kind: "course"
+  kind: PreviewKind
   payload: T
 }
 
@@ -31,7 +33,7 @@ export type PreviewMessage<T = unknown> = PreviewDraftMessage<T> | PreviewScroll
 
 export interface PreviewScrollMessage {
   type: typeof PREVIEW_SCROLL
-  kind: "course"
+  kind: PreviewKind
   section: string
 }
 
@@ -43,13 +45,13 @@ export const PREVIEW_NOTICE = "techcadd:preview-notice"
 
 export interface PreviewNoticeMessage {
   type: typeof PREVIEW_NOTICE
-  kind: "course"
+  kind: PreviewKind
   uneditable: string[]
 }
 
 export interface PreviewReadyMessage {
   type: typeof PREVIEW_READY
-  kind: "course"
+  kind: PreviewKind
 }
 
 /**

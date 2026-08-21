@@ -49,18 +49,31 @@ describe('provisioning', () => {
   })
 })
 
-describe('one role', () => {
-  it('assigns admin without being asked', async () => {
-    // The CMS form has no role picker, so the server decides.
+describe('roles', () => {
+  it('defaults to editor when none is given', async () => {
+    // The narrower of the two is what an omitted role should mean: the common
+    // case is adding somebody who writes content.
     const created = await root.post('/users', { name: 'Implicit', email: 'implicit@example.com' })
-    expect(created.body.role).toBe('admin')
+    expect(created.body.role).toBe('editor')
   })
 
-  it('refuses a role that no longer exists', async () => {
+  it('accepts either role', async () => {
+    for (const role of ['admin', 'editor'] as const) {
+      const res = await root.post('/users', {
+        name: `A ${role}`,
+        email: `${role}-explicit@example.com`,
+        role,
+      })
+      expect(res.status, role).toBe(201)
+      expect(res.body.role, role).toBe(role)
+    }
+  })
+
+  it('refuses a role that does not exist', async () => {
     const res = await root.post('/users', {
-      name: 'Old Role',
-      email: 'old-role@example.com',
-      role: 'editor',
+      name: 'Nonsense',
+      email: 'nonsense@example.com',
+      role: 'super-admin',
     })
     expect(res.status).toBe(422)
   })
@@ -83,10 +96,13 @@ describe('the last account', () => {
   })
 
   it('cannot be emptied by deleting everyone at once', async () => {
+    // Admin explicitly: the role now defaults to editor, and an editor cannot
+    // delete accounts at all — which would pass this test for the wrong reason.
     const second = await root.post('/users', {
       name: 'Second',
       email: 'second@example.com',
       password: 'SecondPassword1',
+      role: 'admin',
     })
 
     const other = client()

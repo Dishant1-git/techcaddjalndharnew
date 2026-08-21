@@ -36,7 +36,7 @@ faqsRouter.get(
 
 faqsRouter.post(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     res.status(201).json(await repo.create(faqSchema.parse(req.body)))
   }),
@@ -44,7 +44,7 @@ faqsRouter.post(
 
 faqsRouter.patch(
   '/:id',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     // Partial on purpose — drag-reorder sends `{ order }` on its own.
     res.json(await repo.update(requireParam(req, 'id'), faqPatchSchema.parse(req.body)))
@@ -55,7 +55,7 @@ const deleteSchema = z.object({ ids: z.array(z.string().min(1)).min(1) })
 
 faqsRouter.delete(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     const parsed = deleteSchema.safeParse(req.body)
     if (!parsed.success) throw badRequest('Provide the ids to delete.')

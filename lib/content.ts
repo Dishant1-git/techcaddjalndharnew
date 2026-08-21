@@ -9,6 +9,7 @@ import {
   getGalleryAlbums,
   getReviews,
   getBanners,
+  getNavPages,
   getSite,
   getTestimonials,
   type CmsBanner,
@@ -190,6 +191,7 @@ function toTiles(albums: CmsGalleryAlbum[]): GalleryTile[] {
     album.images.map((image) => ({
       image: cmsImageUrl(image.media.url) ?? "",
       title: image.caption ?? album.title,
+      href: image.linkUrl || undefined,
     })),
   ).filter((tile) => tile.image !== "")
 }
@@ -320,6 +322,35 @@ export const loadReviews = cache(function loadReviews(): Promise<GoogleReview[]>
 /* Contact details                                                      */
 /* ------------------------------------------------------------------ */
 
+/**
+ * The social profiles, as the footer needs them.
+ *
+ * Keyed by the same names the settings row stores, so adding a network is a
+ * field in the CMS and an entry in the footer's icon table — not a deploy.
+ * A profile with no URL is left out rather than linked to nothing.
+ */
+export const loadSocial = cache(async function loadSocial(): Promise<Record<string, string>> {
+  try {
+    const site = await getSite()
+    return Object.fromEntries(
+      Object.entries(site.social ?? {})
+        .map(([key, url]) => [key, (url ?? '').trim()])
+        // Absolute http(s) only. A handle typed into the box — "techcadd" —
+        // becomes href="techcadd", which resolves against the current page and
+        // 404s. Dropping the icon is better than shipping a broken one, and
+        // the CMS refuses the value on the next save so it gets corrected.
+        .filter(([, url]) => /^https?:\/\//i.test(url)),
+    )
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn('[content] social links: none —', error.message)
+    } else {
+      console.error('[content] social links failed:', error)
+    }
+    return {}
+  }
+})
+
 /** The parts of SITE an office can change without a developer. */
 export interface Contact {
   phone: string
@@ -398,11 +429,64 @@ export const loadContact = cache(async function loadContact(): Promise<Contact> 
  * an empty list is the correct answer when nothing is scheduled. A CMS outage
  * therefore hides the promo rather than breaking the page around it.
  */
+/** An image reference with its address made absolute, or undefined. */
+function withResolvedUrl<T extends { url: string }>(image: T | undefined): T | undefined {
+  if (!image?.url) return image
+  return { ...image, url: cmsImageUrl(image.url) ?? image.url }
+}
+
+/**
+ * Menu entries for CMS pages, split by where they belong.
+ *
+ * Empty when the CMS is unreachable rather than throwing: a menu is furniture,
+ * and losing an entry is a far smaller failure than a header that will not
+ * render. The built-in navigation is unaffected either way.
+ */
+export const loadNavPages = cache(async function loadNavPages(): Promise<{
+  header: { href: string; label: string }[]
+  footer: { href: string; label: string }[]
+}> {
+  try {
+    const { items } = await getNavPages()
+    const bucket = (placement: "header" | "footer") =>
+      items
+        .filter((page) => page.placement === placement)
+        .map((page) => ({ href: `/${page.slug}`, label: page.label }))
+
+    return { header: bucket("header"), footer: bucket("footer") }
+  } catch (error) {
+    if (error instanceof CmsUnavailableError) {
+      console.warn("[content] nav pages: none —", error.message)
+    } else {
+      console.error("[content] nav pages failed:", error)
+    }
+    return { header: [], footer: [] }
+  }
+})
+
 export const loadBanners = cache(async function loadBanners(
   placement: CmsBanner["placement"],
 ): Promise<CmsBanner[]> {
   try {
-    return (await getBanners(placement)).items
+    /*
+      Addresses resolved here, on the server, rather than by whatever renders
+      the banner.
+
+      The popup is a client component, and `cmsImageUrl` reads CMS_API_URL —
+      which is not a NEXT_PUBLIC_ variable, so in the browser it is undefined
+      and the helper falls back to its built-in default. That put every popup
+      image on port 4000 while the API runs on 4001: next/image then refused
+      the src outright, because the host it was given is not one the config
+      allows.
+
+      Resolving at the boundary means no consumer has to know the origin, and
+      a client component cannot get it wrong.
+    */
+    return (await getBanners(placement)).items.map((banner) => ({
+      ...banner,
+      desktopImage: withResolvedUrl(banner.desktopImage),
+      mobileImage: withResolvedUrl(banner.mobileImage),
+    }))
   } catch (error) {
     if (error instanceof CmsUnavailableError) {
       console.warn(`[content] banners (${placement}): none shown —`, error.message)
@@ -599,6 +683,30 @@ export const isKnownCourseLabel = cache(async function isKnownCourseLabel(label:
  * should contribute no entry at all rather than an empty one, so that
  * `getCoursePage` can skip the whole step.
  */
+/**
+ * Makes a block's image address absolute.
+ *
+ * The CMS stores media as a site-relative path — "/uploads/photo.png" — because
+ * that survives a change of domain. But the uploads are served by the API, on a
+ * different origin from the website, so rendering the stored path verbatim asks
+ * the *website* for a file it does not have. The image 404s and the block
+ * renders as a broken frame.
+ *
+ * `cmsImageUrl` leaves absolute, data: and blob: URLs alone, so this is safe to
+ * run over blocks that have already been resolved.
+ */
+export function resolveBlockMedia<T extends { media?: { url: string } }>(
+  blocks: T[] | undefined,
+): T[] | undefined {
+  if (!blocks?.length) return blocks
+
+  return blocks.map((block) =>
+    block.media?.url
+      ? { ...block, media: { ...block.media, url: cmsImageUrl(block.media.url) ?? block.media.url } }
+      : block,
+  )
+}
+
 export const loadCourseLayouts = cache(async function loadCourseLayouts(): Promise<
   Record<string, PageLayout>
 > {
@@ -609,7 +717,7 @@ export const loadCourseLayouts = cache(async function loadCourseLayouts(): Promi
     for (const course of items) {
       const layout: PageLayout = {
         hiddenSections: course.hiddenSections?.length ? course.hiddenSections : undefined,
-        blocks: course.sections?.length ? course.sections : undefined,
+        blocks: resolveBlockMedia(course.sections),
         overview: course.overview || undefined,
         videoUrl: course.videoUrl || undefined,
         videoTitle: course.videoTitle || undefined,

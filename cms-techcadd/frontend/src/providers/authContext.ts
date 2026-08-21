@@ -7,14 +7,18 @@ import type { UserRole } from '../types'
 export type Permission = 'manage-users' | 'manage-settings' | 'delete-content' | 'publish-content'
 
 /**
- * One role, and it can do everything.
+ * What each role may reach.
  *
- * The permission names are kept rather than deleted: the call sites already
- * say what each control needs, so reintroducing a narrower role later is a
- * change to this table alone instead of an audit of every button.
+ * The narrower role arrived exactly as this table was built to expect: the
+ * call sites already say which permission each control needs, so adding
+ * `editor` was a line here rather than an audit of every button.
+ *
+ * An editor publishes and deletes content. They do not touch settings or other
+ * people's accounts — that is the whole difference between the two.
  */
 const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   admin: ['manage-users', 'manage-settings', 'delete-content', 'publish-content'],
+  editor: ['delete-content', 'publish-content'],
 }
 
 export function roleAllows(role: UserRole, permission: Permission): boolean {

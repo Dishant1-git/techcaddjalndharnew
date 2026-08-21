@@ -2,7 +2,6 @@ import {
   FilePlus2,
   GraduationCap,
   Mail,
-  MapPinPlus,
   PenSquare,
   UserPlus,
 } from 'lucide-react'
@@ -34,18 +33,11 @@ export const quickActions: QuickAction[] = [
     path: '/blogs/new',
   },
   {
-    id: 'add-faculty',
-    label: 'Add Faculty',
+    id: 'add-team-member',
+    label: 'Add Team Member',
     description: 'Create a trainer profile',
     icon: UserPlus,
-    path: '/faculty/new',
-  },
-  {
-    id: 'add-branch',
-    label: 'Add Branch',
-    description: 'Register a new centre',
-    icon: MapPinPlus,
-    path: '/branches/new',
+    path: '/team/new',
   },
   {
     id: 'create-page',

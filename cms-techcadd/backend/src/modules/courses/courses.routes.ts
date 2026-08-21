@@ -29,7 +29,7 @@ coursesRouter.get(
 
 coursesRouter.post(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     const input = courseSchema.parse(req.body)
     res.status(201).json(await repo.create(input))
@@ -38,7 +38,7 @@ coursesRouter.post(
 
 coursesRouter.patch(
   '/:id',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     // The CMS form always submits the complete record, so a full parse is
     // correct here — a partial merge would silently drop cleared fields.
@@ -51,7 +51,7 @@ const deleteSchema = z.object({ ids: z.array(z.string().min(1)).min(1) })
 
 coursesRouter.delete(
   '/',
-  requireRole('admin'),
+  requireRole('editor'),
   asyncHandler(async (req, res) => {
     const parsed = deleteSchema.safeParse(req.body)
     if (!parsed.success) throw badRequest('Provide the ids to delete.')

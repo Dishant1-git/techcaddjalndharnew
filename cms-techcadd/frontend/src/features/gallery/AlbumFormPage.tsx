@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Image as ImageIcon, Plus, Trash2 } from 'lucide-react'
+import { Image as ImageIcon, ImagePlus, Trash2 } from 'lucide-react'
 
 import { ApiError } from '../../api'
 import { AppearsOn } from '../../components/common/AppearsOn'
@@ -15,6 +15,7 @@ import { Spinner } from '../../components/feedback/Spinner'
 import { DatePicker } from '../../components/form/DatePicker'
 import { FormField } from '../../components/form/FormField'
 import { ImageField } from '../../components/form/ImageField'
+import { MediaPicker } from '../../components/media/MediaPicker'
 import { Input } from '../../components/form/Input'
 import { Select } from '../../components/form/Select'
 import { SlugInput } from '../../components/form/SlugInput'
@@ -24,7 +25,7 @@ import { PageHeader } from '../../components/layout/PageHeader'
 import { useToast } from '../../hooks/useToast'
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges'
 import { createId } from '../../lib/id'
-import type { GalleryImage } from '../../types'
+import type { GalleryImage, MediaRef } from '../../types'
 import { STATUS_OPTIONS } from '../courses/courseSchema'
 import { albumSchema, emptyAlbum, type AlbumFormValues } from './gallerySchema'
 import { galleryHooks } from './useGallery'
@@ -249,19 +250,32 @@ function AlbumImages({
   value: GalleryImage[]
   onChange: (value: GalleryImage[]) => void
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false)
+  /** Row whose image is being swapped, if any. */
+  const [replacing, setReplacing] = useState<string | undefined>()
+
   function patch(imageId: string, next: Partial<GalleryImage>) {
     onChange(value.map((image) => (image.id === imageId ? { ...image, ...next } : image)))
   }
 
-  function add() {
+  /**
+   * Adds whatever was chosen in the media library.
+   *
+   * Replaces an "add row, then type the image URL by hand" flow, which asked
+   * an editor to know the address of a file they had just uploaded — and
+   * accepted any string, so a typo produced a broken tile with nothing to say
+   * so. Multiple selection, because an album is a batch of photographs.
+   */
+  function addFromLibrary(items: MediaRef[]) {
     onChange([
       ...value,
-      {
+      ...items.map((media, offset) => ({
         id: createId('img'),
-        media: { id: createId('med'), url: '', alt: '' },
+        media,
         caption: '',
-        order: value.length,
-      },
+        linkUrl: '',
+        order: value.length + offset,
+      })),
     ])
   }
 
@@ -286,25 +300,30 @@ function AlbumImages({
                 {String(index + 1).padStart(2, '0')}
               </span>
 
-              <div className="h-16 w-24 shrink-0 overflow-hidden rounded border border-slate-200 bg-slate-50">
+              {/* The thumbnail is the swap control: clicking it reopens the
+                  library for this row, which is where an editor looks when
+                  they want to change one photograph. */}
+              <button
+                type="button"
+                onClick={() => setReplacing(image.id)}
+                title="Choose a different image"
+                className="h-16 w-24 shrink-0 overflow-hidden rounded border border-slate-200 bg-slate-50 transition-colors hover:border-primary-300"
+              >
                 {image.media.url ? (
-                  <img src={assetUrl(image.media.url)} alt={image.media.alt} className="size-full object-cover" />
+                  <img
+                    src={assetUrl(image.media.url)}
+                    alt={image.media.alt}
+                    className="size-full object-cover"
+                  />
                 ) : (
                   <span className="grid size-full place-items-center text-slate-300" aria-hidden="true">
                     <ImageIcon size={16} />
                   </span>
                 )}
-              </div>
+                <span className="sr-only">Replace image {index + 1}</span>
+              </button>
 
               <div className="min-w-0 flex-1 space-y-2">
-                <Input
-                  value={image.media.url}
-                  onChange={(event) =>
-                    patch(image.id, { media: { ...image.media, url: event.target.value } })
-                  }
-                  placeholder="Image URL"
-                  aria-label={`Image ${index + 1} URL`}
-                />
                 <div className="grid gap-2 sm:grid-cols-2">
                   <Input
                     value={image.media.alt}
@@ -321,6 +340,16 @@ function AlbumImages({
                     aria-label={`Image ${index + 1} caption`}
                   />
                 </div>
+
+                {/* Optional. A tile is only clickable on the website when this
+                    is filled in, so leaving it empty is a real choice rather
+                    than an unfinished one. */}
+                <Input
+                  value={image.linkUrl ?? ''}
+                  onChange={(event) => patch(image.id, { linkUrl: event.target.value })}
+                  placeholder="Links to (optional) — /courses/python or https://…"
+                  aria-label={`Image ${index + 1} link`}
+                />
               </div>
 
               <Button
@@ -336,9 +365,29 @@ function AlbumImages({
         />
       )}
 
-      <Button variant="secondary" size="sm" icon={Plus} onClick={add}>
-        Add image
+      <Button variant="secondary" size="sm" icon={ImagePlus} onClick={() => setPickerOpen(true)}>
+        Add from media library
       </Button>
+
+      <MediaPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        multiple
+        onSelect={(items) => {
+          addFromLibrary(items)
+          setPickerOpen(false)
+        }}
+      />
+
+      <MediaPicker
+        open={Boolean(replacing)}
+        onOpenChange={(open) => !open && setReplacing(undefined)}
+        onSelect={(items) => {
+          const media = items[0]
+          if (media && replacing) patch(replacing, { media })
+          setReplacing(undefined)
+        }}
+      />
     </div>
   )
 }

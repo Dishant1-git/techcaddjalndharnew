@@ -151,21 +151,52 @@ function Card({
   duplicate: boolean
   onSelect: (index: number) => void
 }) {
+  const art = (
+    <Image
+      src={entry.tile.image}
+      alt={entry.tile.title}
+      fill
+      sizes="(min-width: 1024px) 300px, (min-width: 640px) 250px, 200px"
+      className="object-cover transition-transform duration-700 group-hover:scale-105"
+    />
+  )
+
+  const shell =
+    "group relative mr-4 h-[130px] w-[200px] shrink-0 overflow-hidden rounded-xl border border-line bg-subtle transition-shadow duration-500 hover:shadow-[0_22px_50px_-24px_rgba(15,23,42,0.45)] sm:h-[160px] sm:w-[250px] lg:mr-5 lg:h-[190px] lg:w-[300px]"
+
+  /*
+    A photograph the CMS gave a destination goes there; everything else opens
+    the viewer, which is what every tile did before.
+
+    Not both: a tile that opened a lightbox *and* navigated would have to guess
+    which the visitor meant. The editor decides by filling the link in or
+    leaving it empty.
+  */
+  if (entry.tile.href) {
+    const external = /^https?:\/\//i.test(entry.tile.href)
+
+    return (
+      <a
+        href={entry.tile.href}
+        tabIndex={duplicate ? -1 : 0}
+        aria-label={entry.tile.title}
+        className={shell}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
+        {art}
+      </a>
+    )
+  }
+
   return (
     <button
       type="button"
       onClick={() => onSelect(entry.index)}
       tabIndex={duplicate ? -1 : 0}
       aria-label={`Open ${entry.tile.title} in the gallery viewer`}
-      className="group relative mr-4 h-[130px] w-[200px] shrink-0 overflow-hidden rounded-xl border border-line bg-subtle transition-shadow duration-500 hover:shadow-[0_22px_50px_-24px_rgba(15,23,42,0.45)] sm:h-[160px] sm:w-[250px] lg:mr-5 lg:h-[190px] lg:w-[300px]"
+      className={shell}
     >
-      <Image
-        src={entry.tile.image}
-        alt={entry.tile.title}
-        fill
-        sizes="(min-width: 1024px) 300px, (min-width: 640px) 250px, 200px"
-        className="object-cover transition-transform duration-700 group-hover:scale-105"
-      />
+      {art}
     </button>
   )
 }

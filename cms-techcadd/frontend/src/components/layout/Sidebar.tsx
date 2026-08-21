@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { navSections } from '../../data/navigation'
 import { cn } from '../../lib/cn'
 import type { NavItem } from '../../types'
+import { BRANCH_NAME, CMS_NAME } from '../../config/brand'
 import { Logo, LogoMark } from '../common/Logo'
 
 interface SidebarProps {
@@ -68,22 +69,29 @@ function BrandHeader({
       {/* Full wordmark, except on desktop when the rail is collapsed. */}
       <NavLink
         to="/"
-        aria-label="techcadd CMS — go to dashboard"
+        aria-label={`${CMS_NAME} — go to dashboard`}
         className={cn(
           'flex min-w-0 flex-1 items-center gap-2.5',
           collapsed && 'lg:hidden',
         )}
       >
         <Logo className="h-6 w-auto text-white" />
-        <span className="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-primary-300 uppercase">
-          CMS
+        {/* Two lines rather than one chip: this CMS runs one branch's site, and
+            "CMS" alone was equally true of every other techcadd install. */}
+        <span className="flex min-w-0 flex-col leading-tight">
+          <span className="text-[10px] font-semibold tracking-wider text-primary-300 uppercase">
+            CMS
+          </span>
+          <span className="truncate text-[11px] font-medium text-slate-300">
+            {BRANCH_NAME}
+          </span>
         </span>
       </NavLink>
 
       {/* Square mark for the collapsed rail. */}
       <NavLink
         to="/"
-        aria-label="techcadd CMS — go to dashboard"
+        aria-label={`${CMS_NAME} — go to dashboard`}
         className={cn('mx-auto hidden text-primary-500', collapsed && 'lg:block')}
       >
         <LogoMark className="size-10" />
@@ -149,7 +157,7 @@ function FooterCard({ collapsed }: { collapsed: boolean }) {
   return (
     <div className={cn('border-t border-white/10 p-3', collapsed && 'lg:hidden')}>
       <div className="rounded-lg bg-white/5 p-3">
-        <p className="text-xs font-semibold text-white">techcadd CMS v1.0</p>
+        <p className="text-xs font-semibold text-white">{CMS_NAME}</p>
         <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
           Manage courses, enquiries and website content from one place.
         </p>

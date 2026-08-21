@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { cmsImageUrl, type CmsBanner } from "@/lib/cms"
+import { type CmsBanner } from "@/lib/cms"
 
 /**
  * A promotional banner shown as a dismissible overlay.
@@ -80,9 +80,9 @@ export function PromoPopup({ banner }: { banner: CmsBanner | null }) {
 
   if (!banner || !open) return null
 
-  const desktop = cmsImageUrl(banner.desktopImage?.url)
-  const mobile = cmsImageUrl(banner.mobileImage?.url)
-  const art = mobile ?? desktop
+  // Already absolute: loadBanners resolves the address on the server, because
+  // this component runs in the browser where the API origin is not available.
+  const art = banner.mobileImage?.url ?? banner.desktopImage?.url
   if (!art) return null
 
   const image = (

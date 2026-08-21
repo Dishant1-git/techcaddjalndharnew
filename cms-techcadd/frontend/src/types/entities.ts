@@ -40,7 +40,7 @@ export type CourseMode = 'online' | 'offline' | 'hybrid'
 export type EnquirySource = 'website' | 'walk-in' | 'phone' | 'referral' | 'social'
 export type BannerPlacement = 'home-hero' | 'course-page' | 'sidebar' | 'popup'
 /** The CMS has a single role: an admin can do everything. */
-export type UserRole = 'admin'
+export type UserRole = 'admin' | 'editor'
 
 /* ------------------------------------------------------------------ */
 /* Courses                                                              */
@@ -70,17 +70,19 @@ export interface Course extends BaseEntity {
   salary?: string
   description: string
   duration: string
-  fee: number
-  discountedFee?: number
-  level: CourseLevel
-  mode: CourseMode
+  /**
+   * Absent when nobody has decided.
+   *
+   * The course page's facts strip keeps the segment's generic wording until one
+   * is set, rather than printing a level no one graded.
+   */
+  level?: CourseLevel | ''
+  mode?: CourseMode | ''
   thumbnail?: MediaRef | null
-  gallery: MediaRef[]
   syllabus: SyllabusModule[]
   highlights: string[]
   eligibility?: string
   certification?: string
-  branchIds: string[]
   featured: boolean
   seo: SeoFields
   status: ContentStatus
@@ -106,11 +108,27 @@ export interface Category extends BaseEntity {
 /* Pages                                                                */
 /* ------------------------------------------------------------------ */
 
+/** One block of content on a page. See features/shared/contentBlockSchema.ts. */
+export interface PageSection {
+  id?: string
+  type: 'rich-text' | 'image' | 'video' | 'cta' | 'blogs'
+  title?: string
+  body?: string
+  media?: MediaRef | null
+  linkUrl?: string
+  linkLabel?: string
+  linkTarget: 'same' | 'new'
+  visible: boolean
+}
+
 export interface Page extends BaseEntity {
   title: string
   slug: string
   template: string
+  /** The legacy single-field body. Rendered when the page has no blocks. */
   content: string
+  /** Blocks the editor arranged, in order. */
+  sections: PageSection[]
   publishDate?: string
   seo: SeoFields
   status: ContentStatus
@@ -158,56 +176,21 @@ export interface Blog extends BaseEntity {
 /* Faculty                                                              */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Site-wide profile addresses.
+ *
+ * Matches the server, which has accepted all of these since the settings
+ * module was written — this list had only four of them, so three networks
+ * could be stored and never edited.
+ */
 export interface SocialLinks {
+  instagram?: string
   linkedin?: string
+  facebook?: string
+  youtube?: string
   x?: string
   github?: string
   website?: string
-}
-
-export interface Faculty extends BaseEntity {
-  name: string
-  photo?: MediaRef | null
-  designation: string
-  qualifications: string
-  expertise: string[]
-  experienceYears: number
-  bio: string
-  branchId?: string
-  email?: string
-  social: SocialLinks
-  order: number
-  status: ContentStatus
-}
-
-/* ------------------------------------------------------------------ */
-/* Branches                                                             */
-/* ------------------------------------------------------------------ */
-
-export interface OpeningHours {
-  day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
-  open?: string
-  close?: string
-  closed: boolean
-}
-
-export interface Branch extends BaseEntity {
-  name: string
-  code: string
-  addressLine1: string
-  addressLine2?: string
-  city: string
-  state: string
-  pincode: string
-  phones: string[]
-  email?: string
-  mapEmbedUrl?: string
-  latitude?: number
-  longitude?: number
-  hours: OpeningHours[]
-  photos: MediaRef[]
-  managerId?: string
-  status: ContentStatus
 }
 
 /* ------------------------------------------------------------------ */
@@ -234,6 +217,8 @@ export interface GalleryImage {
   id: string
   media: MediaRef
   caption?: string
+  /** Where the photograph goes when clicked. Absent means it is not a link. */
+  linkUrl?: string
   order: number
 }
 
@@ -265,7 +250,6 @@ export interface EnquiryRecord extends BaseEntity {
   courseId?: string
   courseName: string
   branchId?: string
-  branchName: string
   source: EnquirySource
   message?: string
   status: EnquiryStatus
@@ -288,6 +272,16 @@ export interface MediaItem extends BaseEntity {
   height?: number
   alt: string
   folder?: string
+  /**
+   * How many records currently show this file.
+   *
+   * Counted from the foreign keys that point at media, so it covers course
+   * thumbnails, page and course blocks, banners, blog covers, the site logo
+   * and the rest. Deleting a file in use does not break the page — the
+   * reference is set to null — the picture simply stops appearing, which is
+   * harder to notice than a broken image and worth warning about.
+   */
+  usageCount?: number
 }
 
 /* ------------------------------------------------------------------ */

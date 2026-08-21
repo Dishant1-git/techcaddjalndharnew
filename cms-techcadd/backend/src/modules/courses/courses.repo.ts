@@ -15,7 +15,6 @@ import type { CourseInput } from './courses.schema.js'
  */
 const SORTABLE: Record<string, string> = {
   title: 'c.title',
-  fee: 'c.fee',
   status: 'c.status',
   createdAt: 'c.created_at',
   updatedAt: 'c.updated_at',
@@ -52,15 +51,11 @@ function toCourse(row: Row, children: Children): unknown {
     shortDescription: row.short_description,
     description: row.description,
     duration: row.duration,
-    // DECIMAL comes back as a string from the driver; the UI expects a number.
-    fee: Number(row.fee),
-    discountedFee: row.discounted_fee === null ? undefined : Number(row.discounted_fee),
-    level: row.level,
-    mode: row.mode,
+    level: row.level ?? undefined,
+    mode: row.mode ?? undefined,
     thumbnail: row.thumbnail_id
       ? { id: row.thumbnail_id, url: row.thumbnail_url, alt: row.thumbnail_alt ?? '' }
       : undefined,
-    gallery: children.gallery,
     syllabus: children.syllabus,
     highlights: children.highlights,
     overview: row.overview ?? undefined,
@@ -70,7 +65,6 @@ function toCourse(row: Row, children: Children): unknown {
     sections: children.sections,
     eligibility: row.eligibility ?? undefined,
     certification: row.certification ?? undefined,
-    branchIds: children.branchIds,
     featured: Boolean(row.featured),
     seo: {
       metaTitle: row.meta_title ?? undefined,
@@ -87,12 +81,10 @@ function toCourse(row: Row, children: Children): unknown {
 interface Children {
   syllabus: unknown[]
   highlights: string[]
-  branchIds: string[]
-  gallery: unknown[]
   sections: unknown[]
 }
 
-const EMPTY: Children = { syllabus: [], highlights: [], branchIds: [], gallery: [], sections: [] }
+const EMPTY: Children = { syllabus: [], highlights: [], sections: [] }
 
 /**
  * Loads every child row for a set of courses in four queries rather than four
@@ -103,7 +95,7 @@ async function loadChildren(ids: string[]): Promise<Map<string, Children>> {
   if (ids.length === 0) return map
 
   for (const id of ids) {
-    map.set(id, { syllabus: [], highlights: [], branchIds: [], gallery: [], sections: [] })
+    map.set(id, { syllabus: [], highlights: [], sections: [] })
   }
   const placeholders = ids.map(() => '?').join(',')
 
@@ -128,24 +120,6 @@ async function loadChildren(ids: string[]): Promise<Map<string, Children>> {
   )
   for (const row of highlights) {
     map.get(row.course_id as string)?.highlights.push(row.value as string)
-  }
-
-  const branches = await query<Row>(
-    `SELECT course_id, branch_id FROM course_branches WHERE course_id IN (${placeholders})`,
-    ids,
-  )
-  for (const row of branches) {
-    map.get(row.course_id as string)?.branchIds.push(row.branch_id as string)
-  }
-
-  const gallery = await query<Row>(
-    `SELECT cg.course_id, m.id, m.url, m.alt
-       FROM course_gallery cg JOIN media m ON m.id = cg.media_id
-      WHERE cg.course_id IN (${placeholders}) ORDER BY cg.position`,
-    ids,
-  )
-  for (const row of gallery) {
-    map.get(row.course_id as string)?.gallery.push({ id: row.id, url: row.url, alt: row.alt })
   }
 
   // Ordered by anchor then position so the CMS receives them already grouped
@@ -239,13 +213,26 @@ export async function get(id: string): Promise<unknown> {
   return toCourse(row, children.get(id) ?? EMPTY)
 }
 
-/** Slugs become public URLs, so a duplicate would shadow an existing page. */
-async function assertSlugFree(slug: string, exceptId?: string): Promise<void> {
+/**
+ * Slugs become public URLs, so a duplicate would shadow an existing page.
+ *
+ * Scoped to the segment, because that is what the URL is scoped to:
+ * /courses/cybersecurity and /after-12th-courses/cybersecurity are two
+ * different pages and may both exist. Checking the slug alone rejected the
+ * second one for clashing with a page it could never shadow.
+ */
+async function assertSlugFree(
+  segment: string,
+  slug: string,
+  exceptId?: string,
+): Promise<void> {
   const clash = await queryOne<{ id: string }>(
-    `SELECT id FROM courses WHERE slug = ?${exceptId ? ' AND id <> ?' : ''} LIMIT 1`,
-    exceptId ? [slug, exceptId] : [slug],
+    `SELECT id FROM courses WHERE segment = ? AND slug = ?${exceptId ? ' AND id <> ?' : ''} LIMIT 1`,
+    exceptId ? [segment, slug, exceptId] : [segment, slug],
   )
-  if (clash) throw unprocessable({ slug: 'This slug is already in use.' })
+  if (clash) {
+    throw unprocessable({ slug: 'Another course in this section already uses this slug.' })
+  }
 }
 
 async function writeChildren(
@@ -257,8 +244,6 @@ async function writeChildren(
   // state, and positions must end up contiguous.
   await connection.execute<ResultSetHeader>('DELETE FROM course_syllabus   WHERE course_id = ?', [courseId])
   await connection.execute<ResultSetHeader>('DELETE FROM course_highlights WHERE course_id = ?', [courseId])
-  await connection.execute<ResultSetHeader>('DELETE FROM course_branches   WHERE course_id = ?', [courseId])
-  await connection.execute<ResultSetHeader>('DELETE FROM course_gallery    WHERE course_id = ?', [courseId])
   await connection.execute<ResultSetHeader>('DELETE FROM course_sections   WHERE course_id = ?', [courseId])
 
   for (const [index, module] of input.syllabus.entries()) {
@@ -273,20 +258,6 @@ async function writeChildren(
     await connection.execute<ResultSetHeader>(
       'INSERT INTO course_highlights (course_id, value, position) VALUES (?, ?, ?)',
       [courseId, value, index],
-    )
-  }
-
-  for (const branchId of input.branchIds) {
-    await connection.execute<ResultSetHeader>(
-      'INSERT INTO course_branches (course_id, branch_id) VALUES (?, ?)',
-      [courseId, branchId],
-    )
-  }
-
-  for (const [index, image] of input.gallery.entries()) {
-    await connection.execute<ResultSetHeader>(
-      'INSERT INTO course_gallery (course_id, media_id, position) VALUES (?, ?, ?)',
-      [courseId, image.id, index],
     )
   }
 
@@ -329,8 +300,8 @@ async function writeChildren(
 }
 
 const COLUMNS = `title, slug, segment, category_id, short_description, tagline, demand,
-  careers, tools, salary, description, duration, fee,
-  discounted_fee, level, mode, thumbnail_id, eligibility, certification, featured, status,
+  careers, tools, salary, description, duration,
+  level, mode, thumbnail_id, eligibility, certification, featured, status,
   overview, video_url, video_title, hidden_sections,
   meta_title, meta_description, meta_keywords, og_image_id, canonical_url`
 
@@ -348,10 +319,8 @@ function columnValues(input: CourseInput): unknown[] {
     input.salary || null,
     input.description,
     input.duration,
-    input.fee,
-    input.discountedFee ?? null,
-    input.level,
-    input.mode,
+    input.level || null,
+    input.mode || null,
     input.thumbnail?.id ?? null,
     input.eligibility ?? null,
     input.certification ?? null,
@@ -370,7 +339,7 @@ function columnValues(input: CourseInput): unknown[] {
 }
 
 export async function create(input: CourseInput): Promise<unknown> {
-  await assertSlugFree(input.slug)
+  await assertSlugFree(input.segment, input.slug)
 
   const id = randomUUID()
   await transaction(async (connection) => {
@@ -390,7 +359,7 @@ export async function update(id: string, input: CourseInput): Promise<unknown> {
   const existing = await queryOne<{ id: string }>('SELECT id FROM courses WHERE id = ? LIMIT 1', [id])
   if (!existing) throw notFound('Course')
 
-  await assertSlugFree(input.slug, id)
+  await assertSlugFree(input.segment, input.slug, id)
 
   await transaction(async (connection) => {
     const assignments = COLUMNS.split(',')

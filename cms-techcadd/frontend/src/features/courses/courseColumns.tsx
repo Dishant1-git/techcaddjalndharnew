@@ -6,13 +6,7 @@ import { formatShortDate } from '../../lib/format'
 import type { Course } from '../../types'
 import { assetUrl } from '../../api/client'
 
-const currency = new Intl.NumberFormat('en-IN', {
-  style: 'currency',
-  currency: 'INR',
-  maximumFractionDigits: 0,
-})
-
-const modeLabels: Record<Course['mode'], string> = {
+const modeLabels: Record<string, string> = {
   online: 'Online',
   offline: 'Offline',
   hybrid: 'Hybrid',
@@ -71,30 +65,12 @@ export function buildCourseColumns(
       cell: (course) => course.duration,
     },
     {
-      id: 'fee',
-      header: 'Fee',
-      sortable: true,
-      align: 'right',
-      cell: (course) => (
-        <span className="whitespace-nowrap">
-          {course.discountedFee !== undefined ? (
-            <>
-              <span className="font-medium text-slate-900">
-                {currency.format(course.discountedFee)}
-              </span>
-              <s className="ml-1.5 text-xs text-slate-400">{currency.format(course.fee)}</s>
-            </>
-          ) : (
-            currency.format(course.fee)
-          )}
-        </span>
-      ),
-    },
-    {
       id: 'mode',
       header: 'Mode',
       hideBelow: 'lg',
-      cell: (course) => modeLabels[course.mode],
+      // An em dash, not a blank cell: "nobody has set this" and "the column
+      // failed to render" look identical otherwise.
+      cell: (course) => (course.mode ? (modeLabels[course.mode] ?? course.mode) : '—'),
     },
     {
       id: 'status',

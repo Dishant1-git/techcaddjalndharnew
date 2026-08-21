@@ -25,7 +25,6 @@ const FILTERABLE: Record<string, string> = {
   status: 'e.status',
   source: 'e.source',
   courseId: 'e.course_id',
-  branchId: 'e.branch_id',
   assigneeId: 'e.assignee_id',
   followUpDate: 'e.follow_up_date',
   createdAt: 'e.created_at',
@@ -40,8 +39,6 @@ function toEnquiry(row: Row, notes: unknown[]): unknown {
     email: row.email ?? undefined,
     courseId: row.course_id ?? undefined,
     courseName: row.course_name,
-    branchId: row.branch_id ?? undefined,
-    branchName: row.branch_name,
     source: row.source,
     formType: row.form_type ?? undefined,
     sourceUrl: row.source_url ?? undefined,
@@ -156,7 +153,7 @@ async function writeNotes(
   }
 }
 
-const COLUMNS = `student_name, phone, email, course_id, course_name, branch_id, branch_name,
+const COLUMNS = `student_name, phone, email, course_id, course_name,
   source, form_type, source_url, ip, user_agent, message, status, assignee_id, follow_up_date`
 
 function values(input: EnquiryInput): unknown[] {
@@ -166,8 +163,6 @@ function values(input: EnquiryInput): unknown[] {
     input.email || null,
     input.courseId || null,
     input.courseName,
-    input.branchId || null,
-    input.branchName,
     input.source,
     input.formType || null,
     input.sourceUrl || null,
@@ -197,9 +192,9 @@ export async function create(input: EnquiryInput): Promise<unknown> {
   return get(id)
 }
 
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set([
-  'email', 'course_id', 'branch_id', 'assignee_id', 'follow_up_date', 'message',
+  'email', 'course_id', 'assignee_id', 'follow_up_date', 'message',
 ])
 
 const MAPPING: Record<string, string> = {
@@ -208,8 +203,6 @@ const MAPPING: Record<string, string> = {
   email: 'email',
   courseId: 'course_id',
   courseName: 'course_name',
-  branchId: 'branch_id',
-  branchName: 'branch_name',
   source: 'source',
   message: 'message',
   status: 'status',

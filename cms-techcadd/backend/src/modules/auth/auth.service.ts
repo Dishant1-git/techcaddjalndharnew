@@ -6,7 +6,7 @@ import { execute, query, queryOne } from '../../db/pool.js'
 import { forbidden, unauthorised, unprocessable } from '../../http/errors.js'
 
 /** The CMS has a single role: an admin can do everything. */
-export type UserRole = 'admin'
+export type UserRole = 'admin' | 'editor'
 
 export interface SessionUser {
   userId: string

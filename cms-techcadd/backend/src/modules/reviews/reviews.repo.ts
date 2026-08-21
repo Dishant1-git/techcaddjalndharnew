@@ -104,7 +104,7 @@ export async function create(input: ReviewInput): Promise<unknown> {
   return get(id)
 }
 
-/** Columns where '' means "clear this" — see the note in faculty.repo.ts. */
+/** Columns where '' means "clear this" — see the note in categories.repo.ts. */
 const NULLABLE = new Set(['reviewed_on', 'course_name', 'google_url'])
 
 export async function update(id: string, patch: ReviewPatch): Promise<unknown> {

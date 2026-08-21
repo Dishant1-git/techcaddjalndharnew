@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-/** Optional image slots accept null — see the note in faculty.schema.ts. */
+/** Optional image slots accept null — see the note in blogs.schema.ts. */
 const mediaRef = z.object({
   id: z.string().min(1),
   url: z.string().optional(),
@@ -9,8 +9,13 @@ const mediaRef = z.object({
   height: z.number().optional(),
 })
 
-/** One role. Kept as a list so adding another stays a one-line change. */
-export const ROLES = ['admin'] as const
+/**
+ * Who can do what.
+ *
+ * `editor` is the content role: everything an author needs to publish, and
+ * nothing that changes how the site runs or who can sign in.
+ */
+export const ROLES = ['admin', 'editor'] as const
 
 /**
  * Long rather than complex.
@@ -32,7 +37,9 @@ const base = z.object({
 })
 
 export const userSchema = base.extend({
-  role: z.enum(ROLES).default('admin'),
+  // Editor by default: the common case is adding someone who writes content,
+  // and the safer of the two is the right thing to fall back to.
+  role: z.enum(ROLES).default('editor'),
   active: z.boolean().default(true),
   /**
    * Optional: the CMS form does not collect one.
